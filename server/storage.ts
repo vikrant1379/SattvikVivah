@@ -202,6 +202,31 @@ export class MemStorage implements IStorage {
       profiles = profiles.filter(p => p.residentialStatus === filters.residentialStatus);
     }
 
+    // Apply caste filters - handle combined caste and subcaste
+    if (filters.combinedCastes?.length) {
+      const casteConditions = filters.combinedCastes
+        .map(caste => ilike(spiritualProfiles.caste, `%${caste}%`));
+
+      conditions.push(or(...casteConditions));
+    } else {
+      // Fallback to separate group and subcaste filtering if combinedCastes not provided
+      if (filters.casteGroups?.length) {
+        const casteGroupConditions = filters.casteGroups
+          .filter(group => group !== "All")
+          .map(group => ilike(spiritualProfiles.caste, `%${group}%`));
+
+        if (casteGroupConditions.length > 0) {
+          conditions.push(or(...casteGroupConditions));
+        }
+      }
+
+      if (filters.casteSubcastes?.length) {
+        const casteSubcasteConditions = filters.casteSubcastes
+          .map(subcaste => ilike(spiritualProfiles.caste, `%${subcaste}%`));
+
+        conditions.push(or(...casteSubcasteConditions));
+      }
+    }
 
     return profiles;
   }

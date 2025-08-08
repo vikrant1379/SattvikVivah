@@ -150,6 +150,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const filters = profileFilterSchema.parse(req.body.filters || {});
       const excludeUserId = req.body.excludeUserId;
 
+      // Process caste combinations if both groups and subcastes are selected
+      if (filters.casteGroups?.length && filters.casteSubcastes?.length) {
+        const combinedCastes: string[] = [];
+        
+        filters.casteGroups.forEach(group => {
+          if (group !== "All") {
+            filters.casteSubcastes?.forEach(subcaste => {
+              // Create combination like "Brahmin - Iyer" or "Rajput - Chauhan"
+              combinedCastes.push(`${group} - ${subcaste}`);
+              // Also include just the subcaste for broader matching
+              combinedCastes.push(subcaste);
+            });
+          } else {
+            // If "All" is selected in groups, include all subcastes
+            filters.casteSubcastes?.forEach(subcaste => {
+              combinedCastes.push(subcaste);
+            });
+          }
+        });
+
+        // Remove duplicates
+        filters.combinedCastes = [...new Set(combinedCastes)];
+      } else if (filters.casteGroups?.length) {
+        // Only groups selected
+        filters.combinedCastes = filters.casteGroups.filter(group => group !== "All");
+      } else if (filters.casteSubcastes?.length) {
+        // Only subcastes selected
+        filters.combinedCastes = filters.casteSubcastes;
+      }
+
       const profiles = await storage.searchProfiles(filters, excludeUserId);
       res.json({ profiles });
     } catch (error) {

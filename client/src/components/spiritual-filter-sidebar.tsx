@@ -238,15 +238,22 @@ const SpiritualFilterSidebar = memo(() => {
       });
     }
 
-    if (localFilters.casteGroups?.length) {
+    // Show combined caste filter if both are selected
+    if (localFilters.casteGroups?.length && localFilters.casteSubcastes?.length) {
+      const groupsText = localFilters.casteGroups.includes("All") ? "All Groups" : `${localFilters.casteGroups.length} Groups`;
+      const subcastesText = `${localFilters.casteSubcastes.length} Subcastes`;
+      active.push({
+        key: 'combinedCaste',
+        label: `Caste: ${groupsText} + ${subcastesText}`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, casteGroups: [], casteSubcastes: [] }))
+      });
+    } else if (localFilters.casteGroups?.length) {
       active.push({
         key: 'casteGroups',
         label: localFilters.casteGroups.includes("All") ? "All Caste Groups" : `${localFilters.casteGroups.length} Caste Groups`,
         onRemove: () => setLocalFilters(prev => ({ ...prev, casteGroups: [], casteSubcastes: [] }))
       });
-    }
-
-    if (localFilters.casteSubcastes?.length) {
+    } else if (localFilters.casteSubcastes?.length) {
       active.push({
         key: 'casteSubcastes',
         label: `${localFilters.casteSubcastes.length} Subcastes`,
