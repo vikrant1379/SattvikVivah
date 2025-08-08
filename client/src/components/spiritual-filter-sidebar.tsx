@@ -442,96 +442,89 @@ const SpiritualFilterSidebar = memo(() => {
             </div>
             
             {openSections.location && (
-              <div className="mt-3">
-                <Input 
-                  placeholder="Search Countries" 
-                  className="mb-3 h-9 text-sm"
-                  value={searchStates.countries || ""}
-                  onChange={(e) => updateSearch('countries', e.target.value)}
-                />
-                <div className="max-h-48 overflow-y-auto space-y-2">
-                  {getFilteredOptions(countries.map(c => c.label), searchStates.countries || "").map((countryLabel) => {
-                    const country = countries.find(c => c.label === countryLabel);
-                    return (
-                      <div key={country?.value} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={country?.value}
-                          checked={localFilters.country === country?.value}
-                          onCheckedChange={(checked) => {
-                            setLocalFilters(prev => ({
-                              ...prev,
-                              country: checked ? country?.value : undefined,
-                              state: undefined,
-                              city: undefined
-                            }));
-                          }}
-                        />
-                        <Label htmlFor={country?.value} className="text-sm text-gray-700 cursor-pointer">
-                          {countryLabel}
-                        </Label>
-                      </div>
-                    );
-                  })}
-                </div>
-                
-                {localFilters.country && (
-                  <div className="mt-4">
-                    <Input 
-                      placeholder="Search States" 
-                      className="mb-3 h-9 text-sm"
-                      value={searchStates.states || ""}
-                      onChange={(e) => updateSearch('states', e.target.value)}
-                    />
-                    <div className="max-h-48 overflow-y-auto space-y-2">
-                      {getFilteredOptions(statesByCountry[localFilters.country] || [], searchStates.states || "").map((state) => (
-                        <div key={state} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={`state-${state}`}
-                            checked={localFilters.state === state}
-                            onCheckedChange={(checked) => {
-                              setLocalFilters(prev => ({
-                                ...prev,
-                                state: checked ? state : undefined,
-                                city: undefined
-                              }));
-                            }}
-                          />
-                          <Label htmlFor={`state-${state}`} className="text-sm text-gray-700 cursor-pointer">
-                            {state}
-                          </Label>
-                        </div>
+              <div className="mt-3 space-y-3">
+                {/* Country Selection */}
+                <div>
+                  <Select
+                    value={localFilters.country || ""}
+                    onValueChange={(value) => {
+                      const selectedCountry = value || undefined;
+                      setLocalFilters(prev => ({
+                        ...prev,
+                        country: selectedCountry,
+                        state: undefined,
+                        city: undefined
+                      }));
+                    }}
+                  >
+                    <SelectTrigger className="h-11 text-sm bg-white border border-gray-300 rounded-md">
+                      <SelectValue placeholder="Select Country" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">Any Country</SelectItem>
+                      {countries.map((country) => (
+                        <SelectItem key={country.value} value={country.value}>
+                          {country.label}
+                        </SelectItem>
                       ))}
-                    </div>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* State Selection - only show if country is selected */}
+                {localFilters.country && (
+                  <div>
+                    <Select
+                      value={localFilters.state || ""}
+                      onValueChange={(value) => {
+                        const selectedState = value || undefined;
+                        setLocalFilters(prev => ({
+                          ...prev,
+                          state: selectedState,
+                          city: undefined
+                        }));
+                      }}
+                    >
+                      <SelectTrigger className="h-11 text-sm bg-white border border-gray-300 rounded-md">
+                        <SelectValue placeholder="Select State" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">Any State</SelectItem>
+                        {(statesByCountry[localFilters.country] || []).map((state) => (
+                          <SelectItem key={state} value={state}>
+                            {state}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 )}
-                
+
+                {/* City Selection - only show if state is selected */}
                 {localFilters.state && (
-                  <div className="mt-4">
-                    <Input 
-                      placeholder="Search Cities" 
-                      className="mb-3 h-9 text-sm"
-                      value={searchStates.cities || ""}
-                      onChange={(e) => updateSearch('cities', e.target.value)}
-                    />
-                    <div className="max-h-48 overflow-y-auto space-y-2">
-                      {getFilteredOptions(citiesByState[localFilters.state] || [], searchStates.cities || "").map((city) => (
-                        <div key={city} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={`city-${city}`}
-                            checked={localFilters.city === city}
-                            onCheckedChange={(checked) => {
-                              setLocalFilters(prev => ({
-                                ...prev,
-                                city: checked ? city : undefined
-                              }));
-                            }}
-                          />
-                          <Label htmlFor={`city-${city}`} className="text-sm text-gray-700 cursor-pointer">
+                  <div>
+                    <Select
+                      value={localFilters.city || ""}
+                      onValueChange={(value) => {
+                        const selectedCity = value || undefined;
+                        setLocalFilters(prev => ({
+                          ...prev,
+                          city: selectedCity
+                        }));
+                      }}
+                    >
+                      <SelectTrigger className="h-11 text-sm bg-white border border-gray-300 rounded-md">
+                        <SelectValue placeholder="Any City" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">Any City</SelectItem>
+                        {(citiesByState[localFilters.state] || []).map((city) => (
+                          <SelectItem key={city} value={city}>
                             {city}
-                          </Label>
-                        </div>
-                      ))}
-                    </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 )}
               </div>
