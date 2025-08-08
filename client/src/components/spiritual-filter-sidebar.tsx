@@ -12,7 +12,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { ChevronDown, ChevronRight, X } from "lucide-react";
 import { useSpiritualContext } from "@/contexts/spiritual-context";
 import { countries, statesByCountry, citiesByState, motherTongues } from "@/data/locations";
-import { casteOptions } from "../data/caste";
+import { casteGroupOptions } from "../data/caste";
 import { educationOptions } from "../data/education";
 import { professionOptions } from "../data/profession";
 import { 
@@ -848,7 +848,7 @@ const SpiritualFilterSidebar = memo(() => {
                   onChange={(e) => updateSearch('caste', e.target.value)}
                 />
                 <div className="max-h-48 overflow-y-auto space-y-2">
-                  {getVisibleOptions(casteOptions, 'caste').map((caste) => (
+                  {getVisibleOptions(casteGroupOptions, 'caste').map((caste) => (
                     <div key={caste} className="flex items-center space-x-2">
                       <Checkbox
                         id={caste}
@@ -865,13 +865,13 @@ const SpiritualFilterSidebar = memo(() => {
                       </Label>
                     </div>
                   ))}
-                  {getRemainingCount(casteOptions, 'caste') > 0 && (
+                  {getRemainingCount(casteGroupOptions, 'caste') > 0 && (
                     <Button
                       variant="ghost"
                       className="mt-2 text-xs text-blue-600"
                       onClick={() => toggleExpanded('caste')}
                     >
-                      {expandedSections.caste ? 'Show Less' : `+${getRemainingCount(casteOptions, 'caste')} More`}
+                      {expandedSections.caste ? 'Show Less' : `+${getRemainingCount(casteGroupOptions, 'caste')} More`}
                     </Button>
                   )}
                 </div>
