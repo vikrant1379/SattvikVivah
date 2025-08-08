@@ -18,13 +18,28 @@ const emailSchema = z.string()
   .min(1, "Email is required")
   .email("Please enter a valid email address")
   .refine((email) => {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    // Check for proper email format with domain validation
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
     return emailRegex.test(email);
   }, "Please enter a valid email format")
   .refine((email) => {
-    const domain = email.split('@')[1];
-    return domain && domain.length > 3;
-  }, "Please enter a valid email domain");
+    const parts = email.split('@');
+    if (parts.length !== 2) return false;
+    const [localPart, domain] = parts;
+    
+    // Check local part is not empty and domain exists
+    if (!localPart || !domain) return false;
+    
+    // Check domain has at least one dot and proper structure
+    const domainParts = domain.split('.');
+    return domainParts.length >= 2 && domainParts.every(part => part.length > 0);
+  }, "Please enter a valid email domain")
+  .refine((email) => {
+    // Additional check for common invalid domains
+    const domain = email.split('@')[1]?.toLowerCase();
+    const invalidDomains = ['test.com', 'example.com', 'temp.com', 'fake.com'];
+    return domain && !invalidDomains.includes(domain);
+  }, "Please enter a real email address");
 
 // Strong password validation
 const passwordSchema = z.string()

@@ -2,6 +2,8 @@ import { memo } from "react";
 import { Link } from "wouter";
 import { Clover } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { LoginOptions } from "@/components/login-options";
 
 const Header = memo(() => {
   return (
@@ -18,7 +20,7 @@ const Header = memo(() => {
               <p className="text-xs text-temple-gold font-devanagari">सत्त्विक विवाह</p>
             </div>
           </Link>
-          
+
           <nav className="hidden md:flex items-center space-x-8">
             <Link href="/search" className="text-foreground hover:text-saffron transition-colors font-medium">
               Search Profiles
@@ -33,11 +35,18 @@ const Header = memo(() => {
               Help
             </Link>
           </nav>
-          
+
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" className="text-foreground hover:text-saffron border-temple-gold/30">
-              Login
-            </Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="ghost" className="text-foreground hover:text-saffron border-temple-gold/30">
+                  Login
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px] bg-card border-temple-gold/20">
+                <LoginOptions />
+              </DialogContent>
+            </Dialog>
             <Button className="bg-saffron text-primary-foreground hover:bg-saffron/90 shadow-lg hover-elevate">
               Register Free
             </Button>
