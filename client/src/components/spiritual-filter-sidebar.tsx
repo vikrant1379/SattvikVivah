@@ -1098,13 +1098,14 @@ const SpiritualFilterSidebar = memo(() => {
           </div>
 
           {/* Lifestyle & Preferences Section (Replaced with direct filters) */}
-          <div className="border-b border-gray-200 pb-4">
-            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 text-left hover:bg-gray-50 transition-colors" onClick={() => toggleSection('lifestyle')}>
-              <span className="font-medium text-gray-900">Personal Preferences</span>
-              {openSections.lifestyle ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-            </CollapsibleTrigger>
-            <CollapsibleContent forceMount={openSections.lifestyle}>
-              {openSections.lifestyle && (
+          <Collapsible open={openSections.lifestyle} onOpenChange={(open) => setOpenSections(prev => ({ ...prev, lifestyle: open }))}>
+            <div className="border-b border-gray-200 pb-4">
+              <CollapsibleTrigger className="flex items-center justify-between w-full p-3 text-left hover:bg-gray-50 transition-colors">
+                <span className="font-medium text-gray-900">Personal Preferences</span>
+                {openSections.lifestyle ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                {openSections.lifestyle && (</old_str>
               <div className="mt-3 space-y-4">
                 <div>
                   <Label className="text-sm font-medium text-gray-700 mb-2 block">Marital Status</Label>
@@ -1298,9 +1299,10 @@ const SpiritualFilterSidebar = memo(() => {
                   </Select>
                 </div>
               </div>
-            )}
-            </CollapsibleContent>
-          </div>
+              )}
+              </CollapsibleContent>
+            </div>
+          </Collapsible></old_str>
 
           {/* Additional Options */}
           <div className="space-y-3">
