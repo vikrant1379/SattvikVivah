@@ -1,8 +1,7 @@
-
 export const casteGroupOptions = [
   "All",
   "Scheduled Caste All",
-  "Rajput All", 
+  "Rajput All",
   "Bania All",
   "Brahmin All",
   "Khatri All",
@@ -17,13 +16,13 @@ export const casteGroupOptions = [
   "Vishwakarma All",
   "Kurmi All",
   "Kshatriya All",
-  "OBC All"
+  "OBC All",
 ];
 
 export const casteSubcasteOptions = {
   "Scheduled Caste All": [
     "Chamar",
-    "Jatav", 
+    "Jatav",
     "Mahar",
     "Mang",
     "Matang",
@@ -59,12 +58,12 @@ export const casteSubcasteOptions = {
     "Raigar",
     "Sonkar",
     "Valmiki",
-    "Other"
+    "Other",
   ],
 
   "Rajput All": [
     "Chauhan",
-    "Rathore", 
+    "Rathore",
     "Sisodia",
     "Tomar",
     "Parmar/Panwar",
@@ -111,7 +110,7 @@ export const casteSubcasteOptions = {
     "Somvansha",
     "Suryavanshi",
     "Thakur",
-    "Other"
+    "Other",
   ],
 
   "Bania All": [
@@ -164,7 +163,7 @@ export const casteSubcasteOptions = {
     "Vaishnav",
     "Vani/Vaishya",
     "Varshneys",
-    "Other"
+    "Other",
   ],
 
   "Brahmin All": [
@@ -220,7 +219,7 @@ export const casteSubcasteOptions = {
     "Shivalli",
     "Vaishnav",
     "Vyas",
-    "Other"
+    "Other",
   ],
 
   "Khatri All": [
@@ -264,7 +263,7 @@ export const casteSubcasteOptions = {
     "Verma",
     "Vij",
     "Wadhawan",
-    "Other"
+    "Other",
   ],
 
   "Kayastha All": [
@@ -284,7 +283,7 @@ export const casteSubcasteOptions = {
     "Ghosh",
     "Johri",
     "Sen",
-    "Other"
+    "Other",
   ],
 
   "Jat All": [
@@ -318,7 +317,7 @@ export const casteSubcasteOptions = {
     "Sidhu",
     "Singhal",
     "Tomar",
-    "Other"
+    "Other",
   ],
 
   "Scheduled Tribe All": [
@@ -348,7 +347,7 @@ export const casteSubcasteOptions = {
     "Kharwar",
     "Manipuri",
     "Santhali",
-    "Other"
+    "Other",
   ],
 
   "Sindhi All": [
@@ -367,7 +366,7 @@ export const casteSubcasteOptions = {
     "Moorjani",
     "Sindhi Bhatia",
     "Sindhi Sakkhar",
-    "Other"
+    "Other",
   ],
 
   "Patel All": [
@@ -381,7 +380,7 @@ export const casteSubcasteOptions = {
     "Leva Patel",
     "Leva-Chaa Gam",
     "Lodhi",
-    "Other"
+    "Other",
   ],
 
   "Maratha All": [
@@ -401,7 +400,7 @@ export const casteSubcasteOptions = {
     "Kunbi- Dhanoje",
     "Kunbi- Maratha",
     "Kunbi- Tirale",
-    "Other"
+    "Other",
   ],
 
   "Vellalar All": [
@@ -412,7 +411,7 @@ export const casteSubcasteOptions = {
     "Karkathar",
     "Isai Vellalar",
     "Desikar",
-    "Other"
+    "Other",
   ],
 
   "Yadav All": [
@@ -429,7 +428,7 @@ export const casteSubcasteOptions = {
     "Yadav Golla",
     "Yaduvanshi",
     "Yadava Naidu",
-    "Other"
+    "Other",
   ],
 
   "Vishwakarma All": [
@@ -440,7 +439,7 @@ export const casteSubcasteOptions = {
     "Lohar",
     "Sutar",
     "Badhai",
-    "Other"
+    "Other",
   ],
 
   "Kurmi All": [
@@ -471,7 +470,7 @@ export const casteSubcasteOptions = {
     "Mahto",
     "Patidar",
     "Rai",
-    "Other"
+    "Other",
   ],
 
   "Kshatriya All": [
@@ -500,7 +499,7 @@ export const casteSubcasteOptions = {
     "Somavanshi Sahasrarjun Kshatriya",
     "Somvanshi",
     "Tomar / Tanwar",
-    "Other"
+    "Other",
   ],
 
   "OBC All": [
@@ -632,6 +631,6 @@ export const casteSubcasteOptions = {
     "Vaishya-Mathur Vaishya",
     "Varshney",
     "Wani",
-    "Other"
-  ]
+    "Other",
+  ],
 };
