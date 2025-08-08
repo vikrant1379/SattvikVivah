@@ -44,6 +44,7 @@ const SpiritualFilterSidebar = memo(() => {
     state: filters.state,
     city: filters.city,
     motherTongue: filters.motherTongue,
+    otherLanguages: filters.otherLanguages || [],
     spiritualPractices: filters.spiritualPractices,
     sacredTexts: filters.sacredTexts,
     guruLineage: filters.guruLineage,
@@ -68,11 +69,34 @@ const SpiritualFilterSidebar = memo(() => {
   const [openSections, setOpenSections] = useState({
     age: true,
     location: true,
+    motherTongue: false,
+    otherLanguages: false,
     education: false,
     profession: false,
+    caste: false,
     spiritualPractices: false,
     sacredTexts: false,
     lifestyle: false,
+  });
+
+  // Search states for each section
+  const [searchStates, setSearchStates] = useState({
+    education: "",
+    profession: "",
+    caste: "",
+    spiritualPractices: "",
+    sacredTexts: "",
+    guruLineages: "",
+  });
+
+  // Expanded states for "MORE" sections
+  const [expandedSections, setExpandedSections] = useState({
+    education: false,
+    profession: false,
+    caste: false,
+    spiritualPractices: false,
+    sacredTexts: false,
+    guruLineages: false,
   });
 
   const toggleSection = (section: string) => {
@@ -80,6 +104,35 @@ const SpiritualFilterSidebar = memo(() => {
       ...prev,
       [section]: !prev[section as keyof typeof prev]
     }));
+  };
+
+  const toggleExpanded = (section: string) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section as keyof typeof prev]
+    }));
+  };
+
+  const updateSearch = (section: string, value: string) => {
+    setSearchStates(prev => ({
+      ...prev,
+      [section]: value
+    }));
+  };
+
+  // Filter options based on search
+  const getFilteredOptions = (options: string[], searchTerm: string) => {
+    if (!searchTerm) return options;
+    return options.filter(option => 
+      option.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  };
+
+  // Get visible options for a section
+  const getVisibleOptions = (options: string[], section: string, limit: number = 8) => {
+    const filtered = getFilteredOptions(options, searchStates[section as keyof typeof searchStates] || "");
+    const isExpanded = expandedSections[section as keyof typeof expandedSections];
+    return isExpanded ? filtered : filtered.slice(0, limit);
   };
 
   // Get active filters for display
@@ -133,6 +186,14 @@ const SpiritualFilterSidebar = memo(() => {
         key: 'motherTongue',
         label: localFilters.motherTongue,
         onRemove: () => setLocalFilters(prev => ({ ...prev, motherTongue: undefined }))
+      });
+    }
+    
+    if (localFilters.otherLanguages?.length) {
+      active.push({
+        key: 'otherLanguages',
+        label: `${localFilters.otherLanguages.length} other languages`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, otherLanguages: [] }))
       });
     }
     
@@ -351,22 +412,88 @@ const SpiritualFilterSidebar = memo(() => {
 
           {/* Mother Tongue */}
           <div className="border-b border-gray-200 pb-4">
-            <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide mb-3">MOTHER TONGUE</h3>
-            <Combobox
-              options={motherTongues.map(lang => ({
-                value: lang,
-                label: lang
-              }))}
-              value={localFilters.motherTongue || ""}
-              onSelect={(value) =>
-                setLocalFilters(prev => ({
-                  ...prev,
-                  motherTongue: value || undefined
-                }))
+            <div 
+              className="flex items-center justify-between cursor-pointer py-2"
+              onClick={() => toggleSection('motherTongue')}
+            >
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">MOTHER TONGUE</h3>
+              {openSections.motherTongue ? 
+                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
+                <ChevronRight className="w-4 h-4 text-gray-500" />
               }
-              placeholder="Select Language"
-              searchPlaceholder="Search languages..."
-            />
+            </div>
+            
+            {openSections.motherTongue && (
+              <div className="mt-3">
+                <Combobox
+                  options={motherTongues.map(lang => ({
+                    value: lang,
+                    label: lang
+                  }))}
+                  value={localFilters.motherTongue || ""}
+                  onSelect={(value) =>
+                    setLocalFilters(prev => ({
+                      ...prev,
+                      motherTongue: value || undefined
+                    }))
+                  }
+                  placeholder="Select Language"
+                  searchPlaceholder="Search languages..."
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Other Languages */}
+          <div className="border-b border-gray-200 pb-4">
+            <div 
+              className="flex items-center justify-between cursor-pointer py-2"
+              onClick={() => toggleSection('otherLanguages')}
+            >
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">OTHER LANGUAGES</h3>
+              {openSections.otherLanguages ? 
+                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
+                <ChevronRight className="w-4 h-4 text-gray-500" />
+              }
+            </div>
+            
+            {openSections.otherLanguages && (
+              <div className="mt-3">
+                <Input 
+                  placeholder="Search Languages" 
+                  className="mb-3 h-9 text-sm"
+                  value={searchStates.otherLanguages || ""}
+                  onChange={(e) => updateSearch('otherLanguages', e.target.value)}
+                />
+                <div className="max-h-48 overflow-y-auto space-y-2">
+                  {getFilteredOptions(motherTongues, searchStates.otherLanguages || "").map((language) => (
+                    <div key={language} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`other-${language}`}
+                        checked={localFilters.otherLanguages?.includes(language) || false}
+                        onCheckedChange={(checked) => {
+                          const current = localFilters.otherLanguages || [];
+                          if (checked) {
+                            setLocalFilters(prev => ({
+                              ...prev,
+                              otherLanguages: [...current, language]
+                            }));
+                          } else {
+                            setLocalFilters(prev => ({
+                              ...prev,
+                              otherLanguages: current.filter(l => l !== language)
+                            }));
+                          }
+                        }}
+                      />
+                      <Label htmlFor={`other-${language}`} className="text-sm text-gray-700 cursor-pointer">
+                        {language}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Education */}
@@ -384,8 +511,14 @@ const SpiritualFilterSidebar = memo(() => {
             
             {openSections.education && (
               <div className="mt-3">
+                <Input 
+                  placeholder="Search Education" 
+                  className="mb-3 h-9 text-sm"
+                  value={searchStates.education}
+                  onChange={(e) => updateSearch('education', e.target.value)}
+                />
                 <div className="max-h-48 overflow-y-auto space-y-2">
-                  {educationOptions.slice(0, 8).map((education) => (
+                  {getVisibleOptions(educationOptions, 'education').map((education) => (
                     <div key={education} className="flex items-center space-x-2">
                       <Checkbox
                         id={education}
@@ -402,9 +535,12 @@ const SpiritualFilterSidebar = memo(() => {
                       </Label>
                     </div>
                   ))}
-                  {educationOptions.length > 8 && (
-                    <div className="text-blue-600 text-sm font-medium cursor-pointer">
-                      {educationOptions.length - 8} MORE
+                  {!expandedSections.education && getFilteredOptions(educationOptions, searchStates.education).length > 8 && (
+                    <div 
+                      className="text-blue-600 text-sm font-medium cursor-pointer hover:underline"
+                      onClick={() => toggleExpanded('education')}
+                    >
+                      {getFilteredOptions(educationOptions, searchStates.education).length - 8} MORE
                     </div>
                   )}
                 </div>
@@ -430,9 +566,11 @@ const SpiritualFilterSidebar = memo(() => {
                 <Input 
                   placeholder="Search Profession" 
                   className="mb-3 h-9 text-sm"
+                  value={searchStates.profession}
+                  onChange={(e) => updateSearch('profession', e.target.value)}
                 />
                 <div className="max-h-48 overflow-y-auto space-y-2">
-                  {professionOptions.slice(0, 8).map((profession) => (
+                  {getVisibleOptions(professionOptions, 'profession').map((profession) => (
                     <div key={profession} className="flex items-center space-x-2">
                       <Checkbox
                         id={profession}
@@ -449,9 +587,12 @@ const SpiritualFilterSidebar = memo(() => {
                       </Label>
                     </div>
                   ))}
-                  {professionOptions.length > 8 && (
-                    <div className="text-blue-600 text-sm font-medium cursor-pointer">
-                      {professionOptions.length - 8} MORE
+                  {!expandedSections.profession && getFilteredOptions(professionOptions, searchStates.profession).length > 8 && (
+                    <div 
+                      className="text-blue-600 text-sm font-medium cursor-pointer hover:underline"
+                      onClick={() => toggleExpanded('profession')}
+                    >
+                      {getFilteredOptions(professionOptions, searchStates.profession).length - 8} MORE
                     </div>
                   )}
                 </div>
@@ -461,35 +602,54 @@ const SpiritualFilterSidebar = memo(() => {
 
           {/* Caste */}
           <div className="border-b border-gray-200 pb-4">
-            <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide mb-3">CASTE</h3>
-            <Input 
-              placeholder="Search Caste" 
-              className="mb-3 h-9 text-sm"
-            />
-            <div className="max-h-48 overflow-y-auto space-y-2">
-              {casteOptions.slice(0, 8).map((caste) => (
-                <div key={caste} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={caste}
-                    checked={localFilters.caste === caste}
-                    onCheckedChange={(checked) => {
-                      setLocalFilters(prev => ({
-                        ...prev,
-                        caste: checked ? caste : undefined
-                      }));
-                    }}
-                  />
-                  <Label htmlFor={caste} className="text-sm text-gray-700 cursor-pointer">
-                    {caste}
-                  </Label>
-                </div>
-              ))}
-              {casteOptions.length > 8 && (
-                <div className="text-blue-600 text-sm font-medium cursor-pointer">
-                  {casteOptions.length - 8} MORE
-                </div>
-              )}
+            <div 
+              className="flex items-center justify-between cursor-pointer py-2"
+              onClick={() => toggleSection('caste')}
+            >
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">CASTE</h3>
+              {openSections.caste ? 
+                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
+                <ChevronRight className="w-4 h-4 text-gray-500" />
+              }
             </div>
+            
+            {openSections.caste && (
+              <div className="mt-3">
+                <Input 
+                  placeholder="Search Caste" 
+                  className="mb-3 h-9 text-sm"
+                  value={searchStates.caste}
+                  onChange={(e) => updateSearch('caste', e.target.value)}
+                />
+                <div className="max-h-48 overflow-y-auto space-y-2">
+                  {getVisibleOptions(casteOptions, 'caste').map((caste) => (
+                    <div key={caste} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={caste}
+                        checked={localFilters.caste === caste}
+                        onCheckedChange={(checked) => {
+                          setLocalFilters(prev => ({
+                            ...prev,
+                            caste: checked ? caste : undefined
+                          }));
+                        }}
+                      />
+                      <Label htmlFor={caste} className="text-sm text-gray-700 cursor-pointer">
+                        {caste}
+                      </Label>
+                    </div>
+                  ))}
+                  {!expandedSections.caste && getFilteredOptions(casteOptions, searchStates.caste).length > 8 && (
+                    <div 
+                      className="text-blue-600 text-sm font-medium cursor-pointer hover:underline"
+                      onClick={() => toggleExpanded('caste')}
+                    >
+                      {getFilteredOptions(casteOptions, searchStates.caste).length - 8} MORE
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Spiritual Practices */}
@@ -507,8 +667,14 @@ const SpiritualFilterSidebar = memo(() => {
             
             {openSections.spiritualPractices && (
               <div className="mt-3">
+                <Input 
+                  placeholder="Search Practices" 
+                  className="mb-3 h-9 text-sm"
+                  value={searchStates.spiritualPractices}
+                  onChange={(e) => updateSearch('spiritualPractices', e.target.value)}
+                />
                 <div className="max-h-48 overflow-y-auto space-y-2">
-                  {spiritualPractices.slice(0, 8).map((practice) => (
+                  {getVisibleOptions(spiritualPractices, 'spiritualPractices').map((practice) => (
                     <div key={practice} className="flex items-center space-x-2">
                       <Checkbox
                         id={practice}
@@ -533,9 +699,12 @@ const SpiritualFilterSidebar = memo(() => {
                       </Label>
                     </div>
                   ))}
-                  {spiritualPractices.length > 8 && (
-                    <div className="text-blue-600 text-sm font-medium cursor-pointer">
-                      {spiritualPractices.length - 8} MORE
+                  {!expandedSections.spiritualPractices && getFilteredOptions(spiritualPractices, searchStates.spiritualPractices).length > 8 && (
+                    <div 
+                      className="text-blue-600 text-sm font-medium cursor-pointer hover:underline"
+                      onClick={() => toggleExpanded('spiritualPractices')}
+                    >
+                      {getFilteredOptions(spiritualPractices, searchStates.spiritualPractices).length - 8} MORE
                     </div>
                   )}
                 </div>
