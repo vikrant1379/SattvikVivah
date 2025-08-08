@@ -79,6 +79,8 @@ const SpiritualFilterSidebar = memo(() => {
     caste: filters.caste,
     casteGroup: filters.casteGroup,
     casteSubcaste: filters.casteSubcaste,
+    casteGroups: filters.casteGroups || [],
+    casteSubcastes: filters.casteSubcastes || [],
     religion: filters.religion,
     ethnicity: filters.ethnicity,
     annualIncome: filters.annualIncome,
@@ -236,19 +238,19 @@ const SpiritualFilterSidebar = memo(() => {
       });
     }
 
-    if (localFilters.casteGroup) {
+    if (localFilters.casteGroups?.length) {
       active.push({
-        key: 'casteGroup',
-        label: `Caste Group: ${localFilters.casteGroup}`,
-        onRemove: () => setLocalFilters(prev => ({ ...prev, casteGroup: undefined, casteSubcaste: undefined }))
+        key: 'casteGroups',
+        label: localFilters.casteGroups.includes("All") ? "All Caste Groups" : `${localFilters.casteGroups.length} Caste Groups`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, casteGroups: [], casteSubcastes: [] }))
       });
     }
 
-    if (localFilters.casteSubcaste) {
+    if (localFilters.casteSubcastes?.length) {
       active.push({
-        key: 'casteSubcaste',
-        label: `Subcaste: ${localFilters.casteSubcaste}`,
-        onRemove: () => setLocalFilters(prev => ({ ...prev, casteSubcaste: undefined }))
+        key: 'casteSubcastes',
+        label: `${localFilters.casteSubcastes.length} Subcastes`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, casteSubcastes: [] }))
       });
     }
 
@@ -391,7 +393,10 @@ const SpiritualFilterSidebar = memo(() => {
   }, [localFilters, setFilters, searchProfiles]);
 
   const clearFilters = useCallback(() => {
-    const clearedFilters = {};
+    const clearedFilters = {
+      casteGroups: [],
+      casteSubcastes: []
+    };
     setLocalFilters(clearedFilters);
     setFilters(clearedFilters);
   }, [setFilters]);
@@ -873,13 +878,47 @@ const SpiritualFilterSidebar = memo(() => {
                     <div key={casteGroup} className="flex items-center space-x-2">
                       <Checkbox
                         id={`group-${casteGroup}`}
-                        checked={localFilters.casteGroup === casteGroup}
+                        checked={
+                          casteGroup === "All" 
+                            ? (!localFilters.casteGroups || localFilters.casteGroups.length === 0 || localFilters.casteGroups.includes("All"))
+                            : localFilters.casteGroups?.includes(casteGroup) || false
+                        }
                         onCheckedChange={(checked) => {
-                          setLocalFilters(prev => ({
-                            ...prev,
-                            casteGroup: checked ? casteGroup : undefined,
-                            casteSubcaste: undefined // Reset subcaste when group changes
-                          }));
+                          const current = localFilters.casteGroups || [];
+                          
+                          if (casteGroup === "All") {
+                            if (checked) {
+                              // Select all
+                              setLocalFilters(prev => ({
+                                ...prev,
+                                casteGroups: ["All"],
+                                casteSubcastes: undefined // Reset subcastes when selecting all
+                              }));
+                            } else {
+                              // Deselect all
+                              setLocalFilters(prev => ({
+                                ...prev,
+                                casteGroups: [],
+                                casteSubcastes: undefined
+                              }));
+                            }
+                          } else {
+                            if (checked) {
+                              // Remove "All" if selecting specific option
+                              const newGroups = current.filter(g => g !== "All");
+                              setLocalFilters(prev => ({
+                                ...prev,
+                                casteGroups: [...newGroups, casteGroup],
+                                casteSubcastes: undefined // Reset subcastes when groups change
+                              }));
+                            } else {
+                              setLocalFilters(prev => ({
+                                ...prev,
+                                casteGroups: current.filter(g => g !== casteGroup),
+                                casteSubcastes: undefined
+                              }));
+                            }
+                          }
                         }}
                       />
                       <Label htmlFor={`group-${casteGroup}`} className="text-sm text-gray-700 cursor-pointer">
@@ -916,57 +955,83 @@ const SpiritualFilterSidebar = memo(() => {
 
             {openSections.casteSubcaste && (
               <div className="mt-3">
-                {localFilters.casteGroup && casteSubcasteOptions[localFilters.casteGroup as keyof typeof casteSubcasteOptions] ? (
-                  <>
-                    <Input 
-                      placeholder="Search Subcaste" 
-                      className="mb-3 h-9 text-sm"
-                      value={searchStates.casteSubcaste}
-                      onChange={(e) => updateSearch('casteSubcaste', e.target.value)}
-                    />
-                    <div className="max-h-48 overflow-y-auto space-y-2">
-                      {getVisibleOptions(
-                        casteSubcasteOptions[localFilters.casteGroup as keyof typeof casteSubcasteOptions] || [], 
-                        'casteSubcaste'
-                      ).map((subcaste) => (
-                        <div key={subcaste} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={`subcaste-${subcaste}`}
-                            checked={localFilters.casteSubcaste === subcaste}
-                            onCheckedChange={(checked) => {
-                              setLocalFilters(prev => ({
-                                ...prev,
-                                casteSubcaste: checked ? subcaste : undefined
-                              }));
-                            }}
-                          />
-                          <Label htmlFor={`subcaste-${subcaste}`} className="text-sm text-gray-700 cursor-pointer">
-                            {subcaste}
-                          </Label>
+                {(() => {
+                  // Get all available subcastes based on selected caste groups
+                  const selectedGroups = localFilters.casteGroups || [];
+                  const hasAllSelected = selectedGroups.includes("All") || selectedGroups.length === 0;
+                  
+                  let availableSubcastes: string[] = [];
+                  
+                  if (hasAllSelected) {
+                    // If "All" is selected, show subcastes from all groups
+                    availableSubcastes = Object.values(casteSubcasteOptions).flat();
+                  } else {
+                    // Show subcastes only for selected groups
+                    selectedGroups.forEach(group => {
+                      if (casteSubcasteOptions[group as keyof typeof casteSubcasteOptions]) {
+                        availableSubcastes.push(...casteSubcasteOptions[group as keyof typeof casteSubcasteOptions]);
+                      }
+                    });
+                  }
+                  
+                  // Remove duplicates
+                  availableSubcastes = [...new Set(availableSubcastes)];
+                  
+                  if (availableSubcastes.length > 0) {
+                    return (
+                      <>
+                        <Input 
+                          placeholder="Search Subcaste" 
+                          className="mb-3 h-9 text-sm"
+                          value={searchStates.casteSubcaste}
+                          onChange={(e) => updateSearch('casteSubcaste', e.target.value)}
+                        />
+                        <div className="max-h-48 overflow-y-auto space-y-2">
+                          {getVisibleOptions(availableSubcastes, 'casteSubcaste').map((subcaste) => (
+                            <div key={subcaste} className="flex items-center space-x-2">
+                              <Checkbox
+                                id={`subcaste-${subcaste}`}
+                                checked={localFilters.casteSubcastes?.includes(subcaste) || false}
+                                onCheckedChange={(checked) => {
+                                  const current = localFilters.casteSubcastes || [];
+                                  if (checked) {
+                                    setLocalFilters(prev => ({
+                                      ...prev,
+                                      casteSubcastes: [...current, subcaste]
+                                    }));
+                                  } else {
+                                    setLocalFilters(prev => ({
+                                      ...prev,
+                                      casteSubcastes: current.filter(s => s !== subcaste)
+                                    }));
+                                  }
+                                }}
+                              />
+                              <Label htmlFor={`subcaste-${subcaste}`} className="text-sm text-gray-700 cursor-pointer">
+                                {subcaste}
+                              </Label>
+                            </div>
+                          ))}
+                          {getRemainingCount(availableSubcastes, 'casteSubcaste') > 0 && (
+                            <Button
+                              variant="ghost"
+                              className="mt-2 text-xs text-blue-600"
+                              onClick={() => toggleExpanded('casteSubcaste')}
+                            >
+                              {expandedSections.casteSubcaste ? 'Show Less' : `+${getRemainingCount(availableSubcastes, 'casteSubcaste')} More`}
+                            </Button>
+                          )}
                         </div>
-                      ))}
-                      {getRemainingCount(
-                        casteSubcasteOptions[localFilters.casteGroup as keyof typeof casteSubcasteOptions] || [], 
-                        'casteSubcaste'
-                      ) > 0 && (
-                        <Button
-                          variant="ghost"
-                          className="mt-2 text-xs text-blue-600"
-                          onClick={() => toggleExpanded('casteSubcaste')}
-                        >
-                          {expandedSections.casteSubcaste ? 'Show Less' : `+${getRemainingCount(
-                            casteSubcasteOptions[localFilters.casteGroup as keyof typeof casteSubcasteOptions] || [], 
-                            'casteSubcaste'
-                          )} More`}
-                        </Button>
-                      )}
-                    </div>
-                  </>
-                ) : (
-                  <div className="text-sm text-gray-500 italic">
-                    Please select a Caste Group first to see subcaste options
-                  </div>
-                )}
+                      </>
+                    );
+                  } else {
+                    return (
+                      <div className="text-sm text-gray-500 italic">
+                        {selectedGroups.length === 0 ? "Please select a Caste Group first to see subcaste options" : "No subcastes available for selected caste groups"}
+                      </div>
+                    );
+                  }
+                })()}
               </div>
             )}
           </div>

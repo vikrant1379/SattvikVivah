@@ -126,6 +126,8 @@ export const profileFilterSchema = z.object({
   caste: z.string().optional(),
   casteGroup: z.string().optional(),
   casteSubcaste: z.string().optional(),
+  casteGroups: z.array(z.string()).optional(),
+  casteSubcastes: z.array(z.string()).optional(),
   religion: z.string().optional(),
   ethnicity: z.string().optional(),
   annualIncomeMin: z.string().optional(),
