@@ -111,6 +111,11 @@ const SpiritualFilterSidebar = memo(() => {
     annualIncome: false
   });
 
+  // Saved filters functionality
+  const [savedFilters, setSavedFilters] = useState<ProfileFilter[]>([]);
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [filterName, setFilterName] = useState("");
+
   // Search states for each section
   const [searchStates, setSearchStates] = useState({
     education: "",
@@ -156,6 +161,49 @@ const SpiritualFilterSidebar = memo(() => {
       ...prev,
       [section]: !prev[section as keyof typeof prev]
     }));
+  };
+
+  const collapseAllSections = () => {
+    setOpenSections({
+      age: false,
+      height: false,
+      location: false,
+      motherTongue: false,
+      otherLanguages: false,
+      education: false,
+      profession: false,
+      casteGroup: false,
+      casteSubcaste: false,
+      spiritualPractices: false,
+      sacredTexts: false,
+      maritalStatus: false,
+      lifestyleHabits: false,
+      lifestyle: false,
+      religion: false,
+      ethnicity: false,
+      annualIncome: false
+    });
+  };
+
+  const saveCurrentFilters = () => {
+    if (filterName.trim()) {
+      const newSavedFilter = {
+        ...localFilters,
+        name: filterName.trim()
+      };
+      setSavedFilters(prev => [...prev, newSavedFilter]);
+      setFilterName("");
+      setShowSaveDialog(false);
+    }
+  };
+
+  const loadSavedFilter = (savedFilter: ProfileFilter) => {
+    const { name, ...filterData } = savedFilter;
+    setLocalFilters(filterData);
+  };
+
+  const deleteSavedFilter = (index: number) => {
+    setSavedFilters(prev => prev.filter((_, i) => i !== index));
   };
 
   const updateSearch = (section: string, value: string) => {
@@ -416,31 +464,110 @@ const SpiritualFilterSidebar = memo(() => {
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
-          {activeFilters.length > 0 && (
+          <div className="flex gap-2">
             <Button 
               variant="ghost" 
-              onClick={clearFilters}
-              className="text-blue-600 text-sm font-medium hover:bg-blue-50 px-2 py-1 h-auto"
+              onClick={collapseAllSections}
+              className="text-gray-600 text-xs font-medium hover:bg-gray-50 px-2 py-1 h-auto"
+              title="Collapse All Sections"
             >
-              CLEAR ALL
+              ⌄ COLLAPSE
             </Button>
-          )}
+            <Button 
+              variant="ghost" 
+              onClick={() => setShowSaveDialog(true)}
+              className="text-green-600 text-xs font-medium hover:bg-green-50 px-2 py-1 h-auto"
+              title="Save Current Filters"
+            >
+              💾 SAVE
+            </Button>
+            {activeFilters.length > 0 && (
+              <Button 
+                variant="ghost" 
+                onClick={clearFilters}
+                className="text-blue-600 text-xs font-medium hover:bg-blue-50 px-2 py-1 h-auto relative z-10"
+                title="Clear All Filters"
+              >
+                CLEAR ALL
+              </Button>
+            )}
+          </div>
         </div>
+
+        {/* Save Filter Dialog */}
+        {showSaveDialog && (
+          <div className="mb-4 p-3 bg-gray-50 border border-gray-200 rounded-md">
+            <div className="flex items-center gap-2 mb-2">
+              <Input
+                placeholder="Enter filter name"
+                value={filterName}
+                onChange={(e) => setFilterName(e.target.value)}
+                className="h-8 text-sm flex-1"
+                onKeyPress={(e) => e.key === 'Enter' && saveCurrentFilters()}
+              />
+              <Button
+                size="sm"
+                onClick={saveCurrentFilters}
+                disabled={!filterName.trim()}
+                className="h-8 px-3 text-xs"
+              >
+                Save
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => {
+                  setShowSaveDialog(false);
+                  setFilterName("");
+                }}
+                className="h-8 px-2 text-xs"
+              >
+                ✕
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Saved Filters */}
+        {savedFilters.length > 0 && (
+          <div className="mb-4">
+            <h3 className="text-sm font-medium text-gray-700 mb-2">Saved Filters</h3>
+            <div className="space-y-2">
+              {savedFilters.map((savedFilter, index) => (
+                <div key={index} className="flex items-center justify-between bg-blue-50 border border-blue-200 rounded-md p-2">
+                  <button
+                    onClick={() => loadSavedFilter(savedFilter)}
+                    className="text-sm text-blue-700 hover:text-blue-900 flex-1 text-left font-medium"
+                  >
+                    {(savedFilter as any).name}
+                  </button>
+                  <button
+                    onClick={() => deleteSavedFilter(index)}
+                    className="text-red-500 hover:text-red-700 ml-2 text-xs px-1"
+                    title="Delete saved filter"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Active Filters */}
         {activeFilters.length > 0 && (
-          <div className="mb-6">
+          <div className="mb-6 relative z-0">
             <div className="flex flex-wrap gap-2">
               {activeFilters.map((filter) => (
                 <div 
                   key={filter.key}
-                  className="inline-flex items-center bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-full"
+                  className="inline-flex items-center bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-full hover:bg-gray-200 transition-colors"
                 >
                   <X 
-                    className="w-3 h-3 mr-1 cursor-pointer hover:text-gray-900" 
+                    className="w-3 h-3 mr-1 cursor-pointer hover:text-gray-900 transition-colors" 
                     onClick={filter.onRemove}
                   />
-                  {filter.label}
+                  <span className="select-none">{filter.label}</span>
                 </div>
               ))}
             </div>
