@@ -1,7 +1,6 @@
-
 export const religionOptions = [
   "Hinduism",
-  "Buddhism", 
+  "Buddhism",
   "Jainism",
   "Sikhism",
   "Christianity",
@@ -11,12 +10,12 @@ export const religionOptions = [
   "Bahá'í Faith",
   "Spiritual but not religious",
   "Other",
-  "Prefer not to say"
+  "Prefer not to say",
 ];
 
 export const ethnicityOptions = [
   "Indian",
-  "Pakistani", 
+  "Pakistani",
   "Bangladeshi",
   "Sri Lankan",
   "Nepalese",
@@ -28,17 +27,22 @@ export const ethnicityOptions = [
   "Mixed/Multi-ethnic",
   "Other South Asian",
   "Other",
-  "Prefer not to say"
+  "Prefer not to say",
 ];
 
 export const annualIncomeOptions = [
   "Below ₹2 Lakh",
-  "₹2-5 Lakh", 
+  "₹2-5 Lakh",
   "₹5-10 Lakh",
   "₹10-15 Lakh",
-  "₹15-25 Lakh",
-  "₹25-50 Lakh",
+  "₹15-20 Lakh",
+  "₹20-25 Lakh",
+  "₹25-30 Lakh",
+  "₹30-35 Lakh",
+  "₹35-40 Lakh",
+  "₹40-45 Lakh",
+  "₹45-50 Lakh",
   "₹50 Lakh - ₹1 Crore",
   "Above ₹1 Crore",
-  "Prefer not to disclose"
+  "Prefer not to disclose",
 ];
