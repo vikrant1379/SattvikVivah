@@ -1,4 +1,3 @@
-
 import { memo, useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -36,7 +35,7 @@ const SpiritualFilterSidebar = memo(() => {
     bloodGroup: filters.bloodGroup,
     healthConditions: filters.healthConditions,
   });
-  
+
   const [ageDialogOpen, setAgeDialogOpen] = useState(false);
   const [heightDialogOpen, setHeightDialogOpen] = useState(false);
 
@@ -50,22 +49,8 @@ const SpiritualFilterSidebar = memo(() => {
     staleTime: Infinity,
   });
 
-  const { data: countriesData } = useQuery({
-    queryKey: ['/api/countries'],
-    staleTime: Infinity,
-  });
-
-  const { data: statesData } = useQuery({
-    queryKey: ['/api/states', { country: localFilters.country }],
-    enabled: !!localFilters.country,
-    staleTime: Infinity,
-  });
-
-  const { data: citiesData } = useQuery({
-    queryKey: ['/api/cities', { state: localFilters.state }],
-    enabled: !!localFilters.state,
-    staleTime: Infinity,
-  });
+  // Removed queries for countries, states, and cities as per the instructions.
+  // The data fetching and handling for these will be managed by separate data files.
 
   const { data: languagesData } = useQuery({
     queryKey: ['/api/languages'],
@@ -94,15 +79,15 @@ const SpiritualFilterSidebar = memo(() => {
 
   // Static data
   const educationOptions = [
-    "High School", "Diploma", "Bachelor's Degree", "Master's Degree", 
+    "High School", "Diploma", "Bachelor's Degree", "Master's Degree",
     "PhD", "Professional Degree", "Trade Certification"
   ];
 
   const professionOptions = [
     "Volunteer", "Freelancer", "Doctor", "Software Engineer", "IT Professional",
-    "Banking Professional", "Government Employee", "Working Professional", 
+    "Banking Professional", "Government Employee", "Working Professional",
     "Agripreneur", "Entrepreneur", "Businessperson", "Not Working",
-    "Teacher", "Lawyer", "Consultant", "Manager", "Designer", "Artist", 
+    "Teacher", "Lawyer", "Consultant", "Manager", "Designer", "Artist",
     "Student", "Homemaker", "Nurse", "Accountant", "Sales Professional",
     "Marketing Professional", "Engineer", "Architect", "Researcher"
   ];
@@ -110,13 +95,13 @@ const SpiritualFilterSidebar = memo(() => {
   const smokingHabitsOptions = ["No", "Socially", "Regularly"];
   const drinkingHabitsOptions = ["No", "Socially", "Regularly"];
   const eatingHabitsOptions = ["Vegetarian", "Vegan", "Non Vegetarian", "Eggetarian", "Pescetarian"];
-  
+
   const physicalStatusOptions = ["Normal", "Physically Challenged"];
   const bloodGroupOptions = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
   const healthConditionsOptions = [
-    "None", "Diabetes", "Hypertension", "Asthma", "Heart Disease", 
-    "Thyroid Disorder", "PCOD/PCOS", "Mental Health Condition", 
-    "Cancer Survivor", "HIV+", "Hepatitis B", "Hepatitis C", 
+    "None", "Diabetes", "Hypertension", "Asthma", "Heart Disease",
+    "Thyroid Disorder", "PCOD/PCOS", "Mental Health Condition",
+    "Cancer Survivor", "HIV+", "Hepatitis B", "Hepatitis C",
     "Kidney Disease", "Liver Disease", "Epilepsy", "Migraine",
     "Arthritis", "Skin Condition", "Vision Impairment", "Hearing Impairment",
     "Other", "Prefer not to disclose"
@@ -124,7 +109,7 @@ const SpiritualFilterSidebar = memo(() => {
 
   // Age options from 18 to 70
   const ageOptions = Array.from({ length: 53 }, (_, i) => 18 + i);
-  
+
   const heightOptions = [
     "4'0\"", "4'1\"", "4'2\"", "4'3\"", "4'4\"", "4'5\"", "4'6\"", "4'7\"", "4'8\"", "4'9\"", "4'10\"", "4'11\"",
     "5'0\"", "5'1\"", "5'2\"", "5'3\"", "5'4\"", "5'5\"", "5'6\"", "5'7\"", "5'8\"", "5'9\"", "5'10\"", "5'11\"",
@@ -138,49 +123,49 @@ const SpiritualFilterSidebar = memo(() => {
   const casteOptions = [
     // Varna System
     "Brahmin", "Kshatriya", "Vaishya", "Shudra",
-    
+
     // Brahmin Sub-castes
-    "Agarwal", "Bhumihar", "Chitpavan", "Deshastha", "Gaur", "Iyer", "Iyengar", "Joshi", 
-    "Kanyakubja", "Kashmiri Pandit", "Konkanastha", "Maithil", "Nagar", "Namboodiri", 
+    "Agarwal", "Bhumihar", "Chitpavan", "Deshastha", "Gaur", "Iyer", "Iyengar", "Joshi",
+    "Kanyakubja", "Kashmiri Pandit", "Konkanastha", "Maithil", "Nagar", "Namboodiri",
     "Pandit", "Saraswat", "Sharma", "Shukla", "Tiwari", "Tyagi", "Upadhyay",
-    
+
     // Kshatriya Sub-castes
-    "Rajput", "Thakur", "Chauhan", "Rathore", "Sisodiya", "Tomar", "Chandel", "Parmar", 
-    "Solanki", "Yadav", "Ahir", "Gujjar", "Jat", "Khatri", "Arora", "Sood", "Bhatia", 
+    "Rajput", "Thakur", "Chauhan", "Rathore", "Sisodiya", "Tomar", "Chandel", "Parmar",
+    "Solanki", "Yadav", "Ahir", "Gujjar", "Jat", "Khatri", "Arora", "Sood", "Bhatia",
     "Lohana", "Maheshwari", "Oswal", "Porwal",
-    
+
     // Vaishya Sub-castes
-    "Baniya", "Agrawal", "Gupta", "Mittal", "Singhal", "Goyal", "Jindal", "Khandelwal", 
+    "Baniya", "Agrawal", "Gupta", "Mittal", "Singhal", "Goyal", "Jindal", "Khandelwal",
     "Maheshwari", "Oswal", "Porwal", "Rastogi", "Saxena", "Srivastava", "Varshney",
-    
+
     // Other Traditional Castes
-    "Kayastha", "Khatri", "Bunt", "Nair", "Menon", "Pillai", "Reddy", "Naidu", "Chettiar", 
+    "Kayastha", "Khatri", "Bunt", "Nair", "Menon", "Pillai", "Reddy", "Naidu", "Chettiar",
     "Mudaliar", "Gounder", "Vellalar", "Thevar", "Maravar", "Kallar", "Agamudayar",
     "Lingayat", "Vokkaliga", "Bunts", "Saraswat", "Konkani",
-    
+
     // Scheduled Castes (Dalit)
-    "Chamar", "Mahar", "Mala", "Madiga", "Dhobi", "Dom", "Khatik", "Koli", "Bhangi", 
+    "Chamar", "Mahar", "Mala", "Madiga", "Dhobi", "Dom", "Khatik", "Koli", "Bhangi",
     "Valmiki", "Ravidasia", "Meghwal", "Balmiki", "Mazhabi", "Ramdasia", "Ad Dharmi",
-    
+
     // Scheduled Tribes (Adivasi)
-    "Bhil", "Gond", "Santal", "Munda", "Oraon", "Ho", "Khasi", "Garo", "Mizo", "Naga", 
+    "Bhil", "Gond", "Santal", "Munda", "Oraon", "Ho", "Khasi", "Garo", "Mizo", "Naga",
     "Bodo", "Rabha", "Tripuri", "Chakma", "Dimasa", "Karbi", "Tiwa",
-    
+
     // Other Backward Classes (OBC)
-    "Kurmi", "Koeri", "Yadav", "Gujjar", "Jat", "Ahir", "Mali", "Kumhar", "Teli", 
+    "Kurmi", "Koeri", "Yadav", "Gujjar", "Jat", "Ahir", "Mali", "Kumhar", "Teli",
     "Kachhi", "Lodh", "Saini", "Rajbhar", "Maurya", "Kushwaha", "Patel", "Thakur",
-    
+
     // Regional Castes
-    "Maratha", "Kunbi", "Dhangar", "Maali", "Sonar", "Sutar", "Lohar", "Kumbhar", 
+    "Maratha", "Kunbi", "Dhangar", "Maali", "Sonar", "Sutar", "Lohar", "Kumbhar",
     "Shimpi", "Nhavi", "Chambhar", "Matang", "Banjara", "Pardhi", "Katkari", "Warli",
-    
+
     // South Indian Castes
-    "Brahmin", "Chettiar", "Mudaliar", "Pillai", "Gounder", "Naidu", "Reddy", "Kamma", 
+    "Brahmin", "Chettiar", "Mudaliar", "Pillai", "Gounder", "Naidu", "Reddy", "Kamma",
     "Kapu", "Velama", "Raju", "Kshatriya", "Vysya", "Komati", "Arya Vysya", "Balija",
     "Devanga", "Padmashali", "Kaikolan", "Senguntha", "Sourastra", "Parkavakulam",
-    
+
     // Modern Categories
-    "Arya Samaj", "ISKCON", "Brahmo Samaj", "Prarthana Samaj", 
+    "Arya Samaj", "ISKCON", "Brahmo Samaj", "Prarthana Samaj",
     "No Caste / Inter Caste", "Prefer Not to Say", "Other"
   ];
 
@@ -201,7 +186,7 @@ const SpiritualFilterSidebar = memo(() => {
             <Dialog open={ageDialogOpen} onOpenChange={setAgeDialogOpen}>
               <DialogTrigger asChild>
                 <Button variant="outline" className="w-full justify-start text-left font-normal">
-                  {localFilters.ageMin || localFilters.ageMax 
+                  {localFilters.ageMin || localFilters.ageMax
                     ? `${localFilters.ageMin || 18} Years - ${localFilters.ageMax || 70} Years`
                     : "18 Years - 70 Years"
                   }
@@ -258,8 +243,8 @@ const SpiritualFilterSidebar = memo(() => {
                       </SelectContent>
                     </Select>
                   </div>
-                  <Button 
-                    onClick={() => setAgeDialogOpen(false)} 
+                  <Button
+                    onClick={() => setAgeDialogOpen(false)}
                     className="w-full bg-saffron text-primary-foreground hover:bg-saffron/90"
                   >
                     Apply Age Range
@@ -277,7 +262,7 @@ const SpiritualFilterSidebar = memo(() => {
             <Dialog open={heightDialogOpen} onOpenChange={setHeightDialogOpen}>
               <DialogTrigger asChild>
                 <Button variant="outline" className="w-full justify-start text-left font-normal">
-                  {localFilters.heightMin || localFilters.heightMax 
+                  {localFilters.heightMin || localFilters.heightMax
                     ? `${localFilters.heightMin || "4'0\""} - ${localFilters.heightMax || "6'7\""}`
                     : "4'0\" - 6'7\""
                   }
@@ -334,8 +319,8 @@ const SpiritualFilterSidebar = memo(() => {
                       </SelectContent>
                     </Select>
                   </div>
-                  <Button 
-                    onClick={() => setHeightDialogOpen(false)} 
+                  <Button
+                    onClick={() => setHeightDialogOpen(false)}
                     className="w-full bg-saffron text-primary-foreground hover:bg-saffron/90"
                   >
                     Apply Height Range
@@ -343,69 +328,6 @@ const SpiritualFilterSidebar = memo(() => {
                 </div>
               </DialogContent>
             </Dialog>
-          </div>
-
-          {/* Location */}
-          <div>
-            <Label className="block text-sm font-medium text-earth-brown mb-2">
-              Location
-            </Label>
-            <div className="space-y-2">
-              <Combobox
-                options={(countriesData as any)?.countries?.map((country: any) => ({
-                  value: country.value,
-                  label: country.label
-                })) || []}
-                value={localFilters.country || ""}
-                onSelect={(value) =>
-                  setLocalFilters(prev => ({
-                    ...prev,
-                    country: value || undefined,
-                    state: undefined,
-                    city: undefined
-                  }))
-                }
-                placeholder="Select Country"
-                searchPlaceholder="Search countries..."
-              />
-              
-              {localFilters.country && (
-                <Combobox
-                  options={(statesData as any)?.states?.map((state: string) => ({
-                    value: state,
-                    label: state
-                  })) || []}
-                  value={localFilters.state || ""}
-                  onSelect={(value) =>
-                    setLocalFilters(prev => ({
-                      ...prev,
-                      state: value || undefined,
-                      city: undefined
-                    }))
-                  }
-                  placeholder="Select State"
-                  searchPlaceholder="Search states..."
-                />
-              )}
-              
-              {localFilters.state && (
-                <Combobox
-                  options={(citiesData as any)?.cities?.map((city: string) => ({
-                    value: city,
-                    label: city
-                  })) || []}
-                  value={localFilters.city || ""}
-                  onSelect={(value) =>
-                    setLocalFilters(prev => ({
-                      ...prev,
-                      city: value || undefined
-                    }))
-                  }
-                  placeholder="Select City"
-                  searchPlaceholder="Search cities..."
-                />
-              )}
-            </div>
           </div>
 
           {/* Mother Tongue */}
@@ -562,7 +484,7 @@ const SpiritualFilterSidebar = memo(() => {
             </Select>
           </div>
 
-          
+
 
           {/* Guru Lineage */}
           <div>
@@ -743,7 +665,7 @@ const SpiritualFilterSidebar = memo(() => {
             </Select>
           </div>
 
-          
+
 
           <div className="space-y-2">
             <Button onClick={handleSearch} className="w-full bg-saffron text-primary-foreground hover:bg-saffron/90 shadow-lg hover-elevate">

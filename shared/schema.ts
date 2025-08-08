@@ -25,7 +25,7 @@ export const spiritualProfiles = pgTable("spiritual_profiles", {
   profession: text("profession"),
   maritalStatus: text("marital_status").default("Never Married"),
   caste: text("caste"),
-  
+
   // Spiritual attributes
   spiritualPractices: jsonb("spiritual_practices").$type<string[]>().notNull().default([]),
   sacredTexts: jsonb("sacred_texts").$type<string[]>().notNull().default([]),
@@ -36,24 +36,24 @@ export const spiritualProfiles = pgTable("spiritual_profiles", {
   smokingHabits: text("smoking_habits"), // No, Socially, Regularly
   drinkingHabits: text("drinking_habits"), // No, Socially, Regularly
   eatingHabits: text("eating_habits"), // Vegetarian, Vegan, Non Vegetarian, Eggetarian, Pescetarian
-  
+
   // Physical and health attributes
   physicalStatus: text("physical_status"), // Normal, Physically Challenged
   bloodGroup: text("blood_group"), // A+, A-, B+, B-, AB+, AB-, O+, O-
   healthConditions: text("health_conditions"), // Any chronic conditions including HIV+
   medicalHistory: text("medical_history"), // Any relevant medical history
-  
+
   // Life goals and spiritual aspirations
   dharmaGoals: text("dharma_goals"),
   mokshaPerspective: text("moksha_perspective"),
   grhasthaVision: text("grhastha_vision"),
-  
+
   // Profile details
   bio: text("bio"),
   photoUrl: text("photo_url"),
   verified: boolean("verified").default(false),
   active: boolean("active").default(true),
-  
+
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
