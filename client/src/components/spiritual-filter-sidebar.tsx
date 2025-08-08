@@ -267,84 +267,145 @@ const SpiritualFilterSidebar = memo(() => {
           <div>
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full justify-start text-left font-normal">
-                  <Label className="text-sm font-medium text-earth-brown cursor-pointer">
-                    Location
-                  </Label>
-                  {(localFilters.country || localFilters.state || localFilters.city) && (
-                    <span className="ml-2 text-xs text-muted-foreground">
-                      {[localFilters.country, localFilters.state, localFilters.city].filter(Boolean).join(", ")}
-                    </span>
-                  )}
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-between text-left font-normal border-temple-gold/30 hover:border-temple-gold/50 transition-all duration-200 group"
+                >
+                  <div className="flex flex-col items-start">
+                    <Label className="text-sm font-medium text-earth-brown cursor-pointer group-hover:text-earth-brown/80">
+                      Location
+                    </Label>
+                    {(localFilters.country || localFilters.state || localFilters.city) ? (
+                      <div className="text-xs text-muted-foreground mt-1 bg-sage/10 px-2 py-1 rounded-md">
+                        {(() => {
+                          const selectedCountry = countries.find(c => c.value === localFilters.country)?.label;
+                          const parts = [selectedCountry, localFilters.state, localFilters.city].filter(Boolean);
+                          return parts.join(" → ");
+                        })()}
+                      </div>
+                    ) : (
+                      <span className="text-xs text-muted-foreground/60">Select your location</span>
+                    )}
+                  </div>
+                  <svg 
+                    className="w-4 h-4 text-temple-gold/60 group-hover:text-temple-gold transition-colors" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-80" align="start" side="right">
-                <div className="space-y-4">
-                  <h4 className="font-medium text-sm">Select Location</h4>
-
-                  {/* Country */}
-                  <div>
-                    <Label className="text-xs text-muted-foreground mb-1">Country</Label>
-                    <Combobox
-                      options={countries.map(country => ({ value: country.value, label: country.label }))}
-                      value={localFilters.country || ""}
-                      onSelect={(value) => {
-                        setLocalFilters(prev => ({
-                          ...prev,
-                          country: value || undefined,
-                          state: undefined, // Reset state when country changes
-                          city: undefined   // Reset city when country changes
-                        }));
-                      }}
-                      placeholder="Select Country"
-                      searchPlaceholder="Search countries..."
-                    />
+              <PopoverContent 
+                className="w-96 p-0 border-temple-gold/30 shadow-xl bg-card/95 backdrop-blur-sm" 
+                align="start" 
+                side="right"
+                sideOffset={8}
+              >
+                <div className="p-6">
+                  <div className="flex items-center gap-2 mb-6">
+                    <div className="w-8 h-8 bg-sage/20 rounded-full flex items-center justify-center">
+                      <svg className="w-4 h-4 text-sage" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-serif font-semibold text-lg text-earth-brown">Select Location</h4>
+                      <p className="text-xs text-muted-foreground">Choose your preferred location</p>
+                    </div>
                   </div>
 
-                  {/* State */}
-                  {localFilters.country && (
-                    <div>
-                      <Label className="text-xs text-muted-foreground mb-1">State/Province</Label>
+                  <div className="space-y-6">
+                    {/* Country */}
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-temple-gold rounded-full"></div>
+                        <Label className="text-sm font-medium text-earth-brown">Country</Label>
+                      </div>
                       <Combobox
-                        options={(statesByCountry[localFilters.country] || []).map(state => ({ 
-                          value: state, 
-                          label: state 
-                        }))}
-                        value={localFilters.state || ""}
+                        options={countries.map(country => ({ value: country.value, label: country.label }))}
+                        value={localFilters.country || ""}
                         onSelect={(value) => {
                           setLocalFilters(prev => ({
                             ...prev,
-                            state: value || undefined,
-                            city: undefined // Reset city when state changes
+                            country: value || undefined,
+                            state: undefined,
+                            city: undefined
                           }));
                         }}
-                        placeholder="Select State/Province"
-                        searchPlaceholder="Search states..."
+                        placeholder="Select Country"
+                        searchPlaceholder="Search countries..."
                       />
                     </div>
-                  )}
 
-                  {/* City */}
-                  {localFilters.state && (
-                    <div>
-                      <Label className="text-xs text-muted-foreground mb-1">City</Label>
-                      <Combobox
-                        options={(citiesByState[localFilters.state] || []).map(city => ({ 
-                          value: city, 
-                          label: city 
-                        }))}
-                        value={localFilters.city || ""}
-                        onSelect={(value) => {
-                          setLocalFilters(prev => ({
-                            ...prev,
-                            city: value || undefined
-                          }));
-                        }}
-                        placeholder="Select City"
-                        searchPlaceholder="Search cities..."
-                      />
-                    </div>
-                  )}
+                    {/* State */}
+                    {localFilters.country && (
+                      <div className="space-y-2 animate-in slide-in-from-top-2 duration-300">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-lotus-pink rounded-full"></div>
+                          <Label className="text-sm font-medium text-earth-brown">State/Province</Label>
+                        </div>
+                        <Combobox
+                          options={(statesByCountry[localFilters.country] || []).map(state => ({ 
+                            value: state, 
+                            label: state 
+                          }))}
+                          value={localFilters.state || ""}
+                          onSelect={(value) => {
+                            setLocalFilters(prev => ({
+                              ...prev,
+                              state: value || undefined,
+                              city: undefined
+                            }));
+                          }}
+                          placeholder="Select State/Province"
+                          searchPlaceholder="Search states..."
+                        />
+                      </div>
+                    )}
+
+                    {/* City */}
+                    {localFilters.state && (
+                      <div className="space-y-2 animate-in slide-in-from-top-2 duration-300">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-sage rounded-full"></div>
+                          <Label className="text-sm font-medium text-earth-brown">City</Label>
+                        </div>
+                        <Combobox
+                          options={(citiesByState[localFilters.state] || []).map(city => ({ 
+                            value: city, 
+                            label: city 
+                          }))}
+                          value={localFilters.city || ""}
+                          onSelect={(value) => {
+                            setLocalFilters(prev => ({
+                              ...prev,
+                              city: value || undefined
+                            }));
+                          }}
+                          placeholder="Select City"
+                          searchPlaceholder="Search cities..."
+                        />
+                      </div>
+                    )}
+
+                    {/* Summary */}
+                    {(localFilters.country || localFilters.state || localFilters.city) && (
+                      <div className="mt-4 p-3 bg-warm-beige/20 rounded-lg border border-temple-gold/20 animate-in slide-in-from-bottom-2 duration-300">
+                        <Label className="text-xs font-medium text-earth-brown mb-1 block">Selected Location:</Label>
+                        <div className="text-sm text-earth-brown/80 font-medium">
+                          {(() => {
+                            const selectedCountry = countries.find(c => c.value === localFilters.country)?.label;
+                            const parts = [selectedCountry, localFilters.state, localFilters.city].filter(Boolean);
+                            return parts.join(" → ");
+                          })()}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </PopoverContent>
             </Popover>
