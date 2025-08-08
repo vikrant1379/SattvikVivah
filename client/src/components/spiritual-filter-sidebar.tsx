@@ -8,7 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Combobox } from "@/components/ui/combobox";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useSpiritualContext } from "@/contexts/spiritual-context";
 import type { ProfileFilter } from "@shared/schema";
 
@@ -36,8 +36,8 @@ const SpiritualFilterSidebar = memo(() => {
     healthConditions: filters.healthConditions,
   });
 
-  const [ageDialogOpen, setAgeDialogOpen] = useState(false);
-  const [heightDialogOpen, setHeightDialogOpen] = useState(false);
+  const [agePopoverOpen, setAgePopoverOpen] = useState(false);
+  const [heightPopoverOpen, setHeightPopoverOpen] = useState(false);
 
   const { data: practicesData } = useQuery({
     queryKey: ['/api/spiritual-practices'],
@@ -183,20 +183,18 @@ const SpiritualFilterSidebar = memo(() => {
             <Label className="block text-sm font-medium text-earth-brown mb-2">
               Age
             </Label>
-            <Dialog open={ageDialogOpen} onOpenChange={setAgeDialogOpen}>
-              <DialogTrigger asChild>
+            <Popover open={agePopoverOpen} onOpenChange={setAgePopoverOpen}>
+              <PopoverTrigger asChild>
                 <Button variant="outline" className="w-full justify-start text-left font-normal">
                   {localFilters.ageMin || localFilters.ageMax
                     ? `${localFilters.ageMin || 18} Years - ${localFilters.ageMax || 70} Years`
                     : "18 Years - 70 Years"
                   }
                 </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                  <DialogTitle>Select Age Range</DialogTitle>
-                </DialogHeader>
+              </PopoverTrigger>
+              <PopoverContent className="w-80" align="start" side="right">
                 <div className="space-y-4">
+                  <h4 className="font-medium text-sm">Select Age Range</h4>
                   <div>
                     <Label className="text-sm font-medium">Minimum Age</Label>
                     <Select
@@ -244,14 +242,14 @@ const SpiritualFilterSidebar = memo(() => {
                     </Select>
                   </div>
                   <Button
-                    onClick={() => setAgeDialogOpen(false)}
+                    onClick={() => setAgePopoverOpen(false)}
                     className="w-full bg-saffron text-primary-foreground hover:bg-saffron/90"
                   >
                     Apply Age Range
                   </Button>
                 </div>
-              </DialogContent>
-            </Dialog>
+              </PopoverContent>
+            </Popover>
           </div>
 
           {/* Height Range */}
@@ -259,20 +257,18 @@ const SpiritualFilterSidebar = memo(() => {
             <Label className="block text-sm font-medium text-earth-brown mb-2">
               Height
             </Label>
-            <Dialog open={heightDialogOpen} onOpenChange={setHeightDialogOpen}>
-              <DialogTrigger asChild>
+            <Popover open={heightPopoverOpen} onOpenChange={setHeightPopoverOpen}>
+              <PopoverTrigger asChild>
                 <Button variant="outline" className="w-full justify-start text-left font-normal">
                   {localFilters.heightMin || localFilters.heightMax
                     ? `${localFilters.heightMin || "4'0\""} - ${localFilters.heightMax || "6'7\""}`
                     : "4'0\" - 6'7\""
                   }
                 </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                  <DialogTitle>Select Height Range</DialogTitle>
-                </DialogHeader>
+              </PopoverTrigger>
+              <PopoverContent className="w-80" align="start" side="right">
                 <div className="space-y-4">
+                  <h4 className="font-medium text-sm">Select Height Range</h4>
                   <div>
                     <Label className="text-sm font-medium">Minimum Height</Label>
                     <Select
@@ -320,14 +316,14 @@ const SpiritualFilterSidebar = memo(() => {
                     </Select>
                   </div>
                   <Button
-                    onClick={() => setHeightDialogOpen(false)}
+                    onClick={() => setHeightPopoverOpen(false)}
                     className="w-full bg-saffron text-primary-foreground hover:bg-saffron/90"
                   >
                     Apply Height Range
                   </Button>
                 </div>
-              </DialogContent>
-            </Dialog>
+              </PopoverContent>
+            </Popover>
           </div>
 
           {/* Mother Tongue */}
