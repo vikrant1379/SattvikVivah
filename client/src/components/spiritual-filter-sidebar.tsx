@@ -68,6 +68,7 @@ const SpiritualFilterSidebar = memo(() => {
   // Collapsible states - start with some sections open
   const [openSections, setOpenSections] = useState({
     age: true,
+    height: true,
     location: true,
     motherTongue: false,
     otherLanguages: false,
@@ -144,6 +145,14 @@ const SpiritualFilterSidebar = memo(() => {
         key: 'age',
         label: `${localFilters.ageMin || 18}-${localFilters.ageMax || 70} years`,
         onRemove: () => setLocalFilters(prev => ({ ...prev, ageMin: undefined, ageMax: undefined }))
+      });
+    }
+    
+    if (localFilters.heightMin || localFilters.heightMax) {
+      active.push({
+        key: 'height',
+        label: `${localFilters.heightMin || '4\'0"'}-${localFilters.heightMax || '6\'7"'}`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, heightMin: undefined, heightMax: undefined }))
       });
     }
     
@@ -330,6 +339,71 @@ const SpiritualFilterSidebar = memo(() => {
                         {ageOptions.map((age) => (
                           <SelectItem key={age} value={age.toString()}>
                             {age}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Height Section */}
+          <div className="border-b border-gray-200 pb-4">
+            <div 
+              className="flex items-center justify-between cursor-pointer py-2"
+              onClick={() => toggleSection('height')}
+            >
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">HEIGHT</h3>
+              {openSections.height ? 
+                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
+                <ChevronRight className="w-4 h-4 text-gray-500" />
+              }
+            </div>
+            
+            {openSections.height && (
+              <div className="mt-3 space-y-3">
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <Select
+                      value={localFilters.heightMin || ""}
+                      onValueChange={(value) =>
+                        setLocalFilters(prev => ({
+                          ...prev,
+                          heightMin: value || undefined
+                        }))
+                      }
+                    >
+                      <SelectTrigger className="h-9 text-sm">
+                        <SelectValue placeholder="Min" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {heightOptions.map((height) => (
+                          <SelectItem key={height} value={height}>
+                            {height}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Select
+                      value={localFilters.heightMax || ""}
+                      onValueChange={(value) =>
+                        setLocalFilters(prev => ({
+                          ...prev,
+                          heightMax: value || undefined
+                        }))
+                      }
+                    >
+                      <SelectTrigger className="h-9 text-sm">
+                        <SelectValue placeholder="Max" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {heightOptions.map((height) => (
+                          <SelectItem key={height} value={height}>
+                            {height}
                           </SelectItem>
                         ))}
                       </SelectContent>
