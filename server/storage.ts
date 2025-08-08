@@ -183,6 +183,18 @@ export class MemStorage implements IStorage {
     if (filters.eatingHabits) {
       profiles = profiles.filter(p => p.eatingHabits === filters.eatingHabits);
     }
+    if (filters.physicalStatus) {
+      profiles = profiles.filter(p => p.physicalStatus === filters.physicalStatus);
+    }
+    if (filters.bloodGroup) {
+      profiles = profiles.filter(p => p.bloodGroup === filters.bloodGroup);
+    }
+    if (filters.healthConditions) {
+      profiles = profiles.filter(p => p.healthConditions === filters.healthConditions);
+    }
+    if (filters.hivStatus) {
+      profiles = profiles.filter(p => p.hivStatus === filters.hivStatus);
+    }
 
     return profiles;
   }
@@ -317,7 +329,12 @@ export class MemStorage implements IStorage {
         verified: true,
         smokingHabits: "No",
         drinkingHabits: "No",
-        eatingHabits: "Vegetarian"
+        eatingHabits: "Vegetarian",
+        physicalStatus: "Normal",
+        bloodGroup: "O+",
+        healthConditions: "None",
+        hivStatus: "Negative",
+        medicalHistory: null
       },
       {
         userId: randomUUID(),
@@ -345,7 +362,12 @@ export class MemStorage implements IStorage {
         verified: true,
         smokingHabits: "No",
         drinkingHabits: "Socially",
-        eatingHabits: "Vegetarian"
+        eatingHabits: "Vegetarian",
+        physicalStatus: "Normal",
+        bloodGroup: "A+",
+        healthConditions: "None",
+        hivStatus: "Negative",
+        medicalHistory: null
       }
     ];
 

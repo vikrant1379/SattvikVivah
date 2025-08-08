@@ -39,6 +39,13 @@ export const spiritualProfiles = pgTable("spiritual_profiles", {
   drinkingHabits: text("drinking_habits"), // No, Socially, Regularly
   eatingHabits: text("eating_habits"), // Vegetarian, Vegan, Non Vegetarian, Eggetarian, Pescetarian
   
+  // Physical and health attributes
+  physicalStatus: text("physical_status"), // Normal, Physically Challenged
+  bloodGroup: text("blood_group"), // A+, A-, B+, B-, AB+, AB-, O+, O-
+  healthConditions: text("health_conditions"), // Any chronic conditions
+  hivStatus: text("hiv_status"), // Negative, Positive, Prefer not to disclose
+  medicalHistory: text("medical_history"), // Any relevant medical history
+  
   // Life goals and spiritual aspirations
   dharmaGoals: text("dharma_goals"),
   mokshaPerspective: text("moksha_perspective"),
@@ -115,6 +122,10 @@ export const profileFilterSchema = z.object({
   smokingHabits: z.string().optional(),
   drinkingHabits: z.string().optional(),
   eatingHabits: z.string().optional(),
+  physicalStatus: z.string().optional(),
+  bloodGroup: z.string().optional(),
+  healthConditions: z.string().optional(),
+  hivStatus: z.string().optional(),
 });
 
 // Types

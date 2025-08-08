@@ -32,6 +32,10 @@ const SpiritualFilterSidebar = memo(() => {
     smokingHabits: filters.smokingHabits,
     drinkingHabits: filters.drinkingHabits,
     eatingHabits: filters.eatingHabits,
+    physicalStatus: filters.physicalStatus,
+    bloodGroup: filters.bloodGroup,
+    healthConditions: filters.healthConditions,
+    hivStatus: filters.hivStatus,
   });
 
   const { data: practicesData } = useQuery({
@@ -104,6 +108,15 @@ const SpiritualFilterSidebar = memo(() => {
   const smokingHabitsOptions = ["No", "Socially", "Regularly"];
   const drinkingHabitsOptions = ["No", "Socially", "Regularly"];
   const eatingHabitsOptions = ["Vegetarian", "Vegan", "Non Vegetarian", "Eggetarian", "Pescetarian"];
+  
+  const physicalStatusOptions = ["Normal", "Physically Challenged"];
+  const bloodGroupOptions = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+  const hivStatusOptions = ["Negative", "Positive", "Prefer not to disclose"];
+  const healthConditionsOptions = [
+    "None", "Diabetes", "Hypertension", "Asthma", "Heart Disease", 
+    "Thyroid Disorder", "PCOD/PCOS", "Mental Health Condition", 
+    "Cancer Survivor", "Other", "Prefer not to disclose"
+  ];
 
   const heightOptions = [
     "4'0\"", "4'1\"", "4'2\"", "4'3\"", "4'4\"", "4'5\"", "4'6\"", "4'7\"", "4'8\"", "4'9\"", "4'10\"", "4'11\"",
@@ -540,6 +553,114 @@ const SpiritualFilterSidebar = memo(() => {
                 {eatingHabitsOptions.map((habit: string) => (
                   <SelectItem key={habit} value={habit}>
                     {habit}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Physical Status */}
+          <div>
+            <Label className="block text-sm font-medium text-earth-brown mb-2">
+              Physical Status
+            </Label>
+            <Select
+              value={localFilters.physicalStatus || ""}
+              onValueChange={(value) =>
+                setLocalFilters(prev => ({
+                  ...prev,
+                  physicalStatus: value || undefined
+                }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select Physical Status" />
+              </SelectTrigger>
+              <SelectContent>
+                {physicalStatusOptions.map((status: string) => (
+                  <SelectItem key={status} value={status}>
+                    {status}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Blood Group */}
+          <div>
+            <Label className="block text-sm font-medium text-earth-brown mb-2">
+              Blood Group
+            </Label>
+            <Select
+              value={localFilters.bloodGroup || ""}
+              onValueChange={(value) =>
+                setLocalFilters(prev => ({
+                  ...prev,
+                  bloodGroup: value || undefined
+                }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select Blood Group" />
+              </SelectTrigger>
+              <SelectContent>
+                {bloodGroupOptions.map((group: string) => (
+                  <SelectItem key={group} value={group}>
+                    {group}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Health Conditions */}
+          <div>
+            <Label className="block text-sm font-medium text-earth-brown mb-2">
+              Health Conditions
+            </Label>
+            <Select
+              value={localFilters.healthConditions || ""}
+              onValueChange={(value) =>
+                setLocalFilters(prev => ({
+                  ...prev,
+                  healthConditions: value || undefined
+                }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select Health Conditions" />
+              </SelectTrigger>
+              <SelectContent>
+                {healthConditionsOptions.map((condition: string) => (
+                  <SelectItem key={condition} value={condition}>
+                    {condition}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* HIV Status */}
+          <div>
+            <Label className="block text-sm font-medium text-earth-brown mb-2">
+              HIV Status
+            </Label>
+            <Select
+              value={localFilters.hivStatus || ""}
+              onValueChange={(value) =>
+                setLocalFilters(prev => ({
+                  ...prev,
+                  hivStatus: value || undefined
+                }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select HIV Status" />
+              </SelectTrigger>
+              <SelectContent>
+                {hivStatusOptions.map((status: string) => (
+                  <SelectItem key={status} value={status}>
+                    {status}
                   </SelectItem>
                 ))}
               </SelectContent>
