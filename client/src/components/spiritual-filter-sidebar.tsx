@@ -12,7 +12,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { ChevronDown, ChevronRight, X } from "lucide-react";
 import { useSpiritualContext } from "@/contexts/spiritual-context";
 import { countries, statesByCountry, citiesByState, motherTongues } from "@/data/locations";
-import { casteGroupOptions } from "../data/caste";
+import { casteGroupOptions, casteSubcasteOptions } from "../data/caste";
 import { educationOptions } from "../data/education";
 import { professionOptions } from "../data/profession";
 import { 
@@ -77,6 +77,8 @@ const SpiritualFilterSidebar = memo(() => {
     verified: filters.verified,
     withPhoto: filters.withPhoto,
     caste: filters.caste,
+    casteGroup: filters.casteGroup,
+    casteSubcaste: filters.casteSubcaste,
     religion: filters.religion,
     ethnicity: filters.ethnicity,
     annualIncome: filters.annualIncome,
@@ -95,7 +97,8 @@ const SpiritualFilterSidebar = memo(() => {
     otherLanguages: false,
     education: false,
     profession: false,
-    caste: false,
+    casteGroup: false,
+    casteSubcaste: false,
     spiritualPractices: false,
     sacredTexts: false,
     maritalStatus: true,
@@ -110,7 +113,8 @@ const SpiritualFilterSidebar = memo(() => {
   const [searchStates, setSearchStates] = useState({
     education: "",
     profession: "",
-    caste: "",
+    casteGroup: "",
+    casteSubcaste: "",
     spiritualPractices: "",
     sacredTexts: "",
     guruLineages: "",
@@ -128,7 +132,8 @@ const SpiritualFilterSidebar = memo(() => {
   const [expandedSections, setExpandedSections] = useState({
     education: false,
     profession: false,
-    caste: false,
+    casteGroup: false,
+    casteSubcaste: false,
     spiritualPractices: false,
     sacredTexts: false,
     guruLineages: false,
@@ -228,6 +233,22 @@ const SpiritualFilterSidebar = memo(() => {
         key: 'caste',
         label: localFilters.caste,
         onRemove: () => setLocalFilters(prev => ({ ...prev, caste: undefined }))
+      });
+    }
+
+    if (localFilters.casteGroup) {
+      active.push({
+        key: 'casteGroup',
+        label: `Caste Group: ${localFilters.casteGroup}`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, casteGroup: undefined, casteSubcaste: undefined }))
+      });
+    }
+
+    if (localFilters.casteSubcaste) {
+      active.push({
+        key: 'casteSubcaste',
+        label: `Subcaste: ${localFilters.casteSubcaste}`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, casteSubcaste: undefined }))
       });
     }
 
@@ -826,55 +847,126 @@ const SpiritualFilterSidebar = memo(() => {
             )}
           </div>
 
-          {/* Caste */}
+          {/* Caste Group */}
           <div className="border-b border-gray-200 pb-4">
             <div 
               className="flex items-center justify-between cursor-pointer py-2"
-              onClick={() => toggleSection('caste')}
+              onClick={() => toggleSection('casteGroup')}
             >
-              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">CASTE</h3>
-              {openSections.caste ? 
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">CASTE GROUP</h3>
+              {openSections.casteGroup ? 
                 <ChevronDown className="w-4 h-4 text-gray-500" /> : 
                 <ChevronRight className="w-4 h-4 text-gray-500" />
               }
             </div>
 
-            {openSections.caste && (
+            {openSections.casteGroup && (
               <div className="mt-3">
                 <Input 
-                  placeholder="Search Caste" 
+                  placeholder="Search Caste Group" 
                   className="mb-3 h-9 text-sm"
-                  value={searchStates.caste}
-                  onChange={(e) => updateSearch('caste', e.target.value)}
+                  value={searchStates.casteGroup}
+                  onChange={(e) => updateSearch('casteGroup', e.target.value)}
                 />
                 <div className="max-h-48 overflow-y-auto space-y-2">
-                  {getVisibleOptions(casteGroupOptions, 'caste').map((caste) => (
-                    <div key={caste} className="flex items-center space-x-2">
+                  {getVisibleOptions(casteGroupOptions, 'casteGroup').map((casteGroup) => (
+                    <div key={casteGroup} className="flex items-center space-x-2">
                       <Checkbox
-                        id={caste}
-                        checked={localFilters.caste === caste}
+                        id={`group-${casteGroup}`}
+                        checked={localFilters.casteGroup === casteGroup}
                         onCheckedChange={(checked) => {
                           setLocalFilters(prev => ({
                             ...prev,
-                            caste: checked ? caste : undefined
+                            casteGroup: checked ? casteGroup : undefined,
+                            casteSubcaste: undefined // Reset subcaste when group changes
                           }));
                         }}
                       />
-                      <Label htmlFor={caste} className="text-sm text-gray-700 cursor-pointer">
-                        {caste}
+                      <Label htmlFor={`group-${casteGroup}`} className="text-sm text-gray-700 cursor-pointer">
+                        {casteGroup}
                       </Label>
                     </div>
                   ))}
-                  {getRemainingCount(casteGroupOptions, 'caste') > 0 && (
+                  {getRemainingCount(casteGroupOptions, 'casteGroup') > 0 && (
                     <Button
                       variant="ghost"
                       className="mt-2 text-xs text-blue-600"
-                      onClick={() => toggleExpanded('caste')}
+                      onClick={() => toggleExpanded('casteGroup')}
                     >
-                      {expandedSections.caste ? 'Show Less' : `+${getRemainingCount(casteGroupOptions, 'caste')} More`}
+                      {expandedSections.casteGroup ? 'Show Less' : `+${getRemainingCount(casteGroupOptions, 'casteGroup')} More`}
                     </Button>
                   )}
                 </div>
+              </div>
+            )}
+          </div>
+
+          {/* Caste Subcaste */}
+          <div className="border-b border-gray-200 pb-4">
+            <div 
+              className="flex items-center justify-between cursor-pointer py-2"
+              onClick={() => toggleSection('casteSubcaste')}
+            >
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">CASTE SUBCASTE</h3>
+              {openSections.casteSubcaste ? 
+                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
+                <ChevronRight className="w-4 h-4 text-gray-500" />
+              }
+            </div>
+
+            {openSections.casteSubcaste && (
+              <div className="mt-3">
+                {localFilters.casteGroup && casteSubcasteOptions[localFilters.casteGroup as keyof typeof casteSubcasteOptions] ? (
+                  <>
+                    <Input 
+                      placeholder="Search Subcaste" 
+                      className="mb-3 h-9 text-sm"
+                      value={searchStates.casteSubcaste}
+                      onChange={(e) => updateSearch('casteSubcaste', e.target.value)}
+                    />
+                    <div className="max-h-48 overflow-y-auto space-y-2">
+                      {getVisibleOptions(
+                        casteSubcasteOptions[localFilters.casteGroup as keyof typeof casteSubcasteOptions] || [], 
+                        'casteSubcaste'
+                      ).map((subcaste) => (
+                        <div key={subcaste} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`subcaste-${subcaste}`}
+                            checked={localFilters.casteSubcaste === subcaste}
+                            onCheckedChange={(checked) => {
+                              setLocalFilters(prev => ({
+                                ...prev,
+                                casteSubcaste: checked ? subcaste : undefined
+                              }));
+                            }}
+                          />
+                          <Label htmlFor={`subcaste-${subcaste}`} className="text-sm text-gray-700 cursor-pointer">
+                            {subcaste}
+                          </Label>
+                        </div>
+                      ))}
+                      {getRemainingCount(
+                        casteSubcasteOptions[localFilters.casteGroup as keyof typeof casteSubcasteOptions] || [], 
+                        'casteSubcaste'
+                      ) > 0 && (
+                        <Button
+                          variant="ghost"
+                          className="mt-2 text-xs text-blue-600"
+                          onClick={() => toggleExpanded('casteSubcaste')}
+                        >
+                          {expandedSections.casteSubcaste ? 'Show Less' : `+${getRemainingCount(
+                            casteSubcasteOptions[localFilters.casteGroup as keyof typeof casteSubcasteOptions] || [], 
+                            'casteSubcaste'
+                          )} More`}
+                        </Button>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-sm text-gray-500 italic">
+                    Please select a Caste Group first to see subcaste options
+                  </div>
+                )}
               </div>
             )}
           </div>
