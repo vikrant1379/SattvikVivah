@@ -99,7 +99,7 @@ const SpiritualFilterSidebar = memo(() => {
     spiritualPractices: false,
     sacredTexts: false,
     maritalStatus: true,
-    dietaryPreference: true,
+    lifestyleHabits: true,
     lifestyle: false,
     religion: false,
     ethnicity: false,
@@ -1138,60 +1138,45 @@ const SpiritualFilterSidebar = memo(() => {
             )}
           </div>
 
-          {/* Dietary Preference Section */}
+          {/* Lifestyle & Habits Section */}
           <div className="border-b border-gray-200 pb-4">
             <div 
               className="flex items-center justify-between cursor-pointer py-2"
-              onClick={() => toggleSection('dietaryPreference')}
+              onClick={() => toggleSection('lifestyleHabits')}
             >
-              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">DIETARY PREFERENCE</h3>
-              {openSections.dietaryPreference ? 
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">LIFESTYLE & HABITS</h3>
+              {openSections.lifestyleHabits ? 
                 <ChevronDown className="w-4 h-4 text-gray-500" /> : 
                 <ChevronRight className="w-4 h-4 text-gray-500" />
               }
             </div>
 
-            {openSections.dietaryPreference && (
-              <div className="mt-3">
-                <Select
-                  value={localFilters.eatingHabits || ""}
-                  onValueChange={(value) =>
-                    setLocalFilters(prev => ({
-                      ...prev,
-                      eatingHabits: value || undefined
-                    }))
-                  }
-                >
-                  <SelectTrigger className="h-9 text-sm">
-                    <SelectValue placeholder="Select Preference" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {eatingHabitsOptions.map((habit: string) => (
-                      <SelectItem key={habit} value={habit}>
-                        {habit}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-          </div>
-
-          {/* Lifestyle & Other Preferences Section */}
-          <div className="border-b border-gray-200 pb-4">
-            <div 
-              className="flex items-center justify-between cursor-pointer py-2"
-              onClick={() => toggleSection('lifestyle')}
-            >
-              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">OTHER PREFERENCES</h3>
-              {openSections.lifestyle ? 
-                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
-                <ChevronRight className="w-4 h-4 text-gray-500" />
-              }
-            </div>
-
-            {openSections.lifestyle && (
+            {openSections.lifestyleHabits && (
               <div className="mt-3 space-y-4">
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Dietary Preference</Label>
+                  <Select
+                    value={localFilters.eatingHabits || ""}
+                    onValueChange={(value) =>
+                      setLocalFilters(prev => ({
+                        ...prev,
+                        eatingHabits: value || undefined
+                      }))
+                    }
+                  >
+                    <SelectTrigger className="h-9 text-sm">
+                      <SelectValue placeholder="Select Preference" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {eatingHabitsOptions.map((habit: string) => (
+                        <SelectItem key={habit} value={habit}>
+                          {habit}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
                 <div>
                   <Label className="text-sm font-medium text-gray-700 mb-2 block">Drinking Habits</Label>
                   <Select
@@ -1239,7 +1224,25 @@ const SpiritualFilterSidebar = memo(() => {
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
+            )}
+          </div>
 
+          {/* Other Preferences Section */}
+          <div className="border-b border-gray-200 pb-4">
+            <div 
+              className="flex items-center justify-between cursor-pointer py-2"
+              onClick={() => toggleSection('lifestyle')}
+            >
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">OTHER PREFERENCES</h3>
+              {openSections.lifestyle ? 
+                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
+                <ChevronRight className="w-4 h-4 text-gray-500" />
+              }
+            </div>
+
+            {openSections.lifestyle && (
+              <div className="mt-3 space-y-4">
                 <div>
                   <Label className="text-sm font-medium text-gray-700 mb-2 block">Have Children</Label>
                   <Select
