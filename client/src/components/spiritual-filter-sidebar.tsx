@@ -11,7 +11,26 @@ import { Combobox } from "@/components/ui/combobox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useSpiritualContext } from "@/contexts/spiritual-context";
 import { countries, statesByCountry, citiesByState, motherTongues } from "@/data/locations";
-import { casteOptions } from "@/data/caste";
+import { casteOptions } from "../data/caste";
+  import { educationOptions } from "../data/education";
+  import { professionOptions } from "../data/profession";
+  import { 
+    maritalStatusOptions,
+    smokingHabitsOptions,
+    drinkingHabitsOptions,
+    eatingHabitsOptions,
+    physicalStatusOptions,
+    bloodGroupOptions,
+    healthConditionsOptions,
+    ageOptions,
+    heightOptions
+  } from "../data/personal-attributes";
+  import { 
+    spiritualPractices,
+    sacredTexts,
+    guruLineages,
+    dietaryLifestyles
+  } from "../data/spiritual-practices";
 import type { ProfileFilter } from "@shared/schema";
 
 const SpiritualFilterSidebar = memo(() => {
@@ -36,6 +55,10 @@ const SpiritualFilterSidebar = memo(() => {
     physicalStatus: filters.physicalStatus,
     bloodGroup: filters.bloodGroup,
     healthConditions: filters.healthConditions,
+    dietaryLifestyle: filters.dietaryLifestyle,
+    maritalStatus: filters.maritalStatus,
+    verified: filters.verified,
+    withPhoto: filters.withPhoto,
   });
 
   const [agePopoverOpen, setAgePopoverOpen] = useState(false);
@@ -80,49 +103,8 @@ const SpiritualFilterSidebar = memo(() => {
   }, [setFilters]);
 
   // Static data
-  const educationOptions = [
-    "High School", "Diploma", "Bachelor's Degree", "Master's Degree",
-    "PhD", "Professional Degree", "Trade Certification"
-  ];
-
-  const professionOptions = [
-    "Volunteer", "Freelancer", "Doctor", "Software Engineer", "IT Professional",
-    "Banking Professional", "Government Employee", "Working Professional",
-    "Agripreneur", "Entrepreneur", "Businessperson", "Not Working",
-    "Teacher", "Lawyer", "Consultant", "Manager", "Designer", "Artist",
-    "Student", "Homemaker", "Nurse", "Accountant", "Sales Professional",
-    "Marketing Professional", "Engineer", "Architect", "Researcher"
-  ];
-
-  const smokingHabitsOptions = ["No", "Socially", "Regularly"];
-  const drinkingHabitsOptions = ["No", "Socially", "Regularly"];
-  const eatingHabitsOptions = ["Vegetarian", "Vegan", "Non Vegetarian", "Eggetarian", "Pescetarian"];
-
-  const physicalStatusOptions = ["Normal", "Physically Challenged"];
-  const bloodGroupOptions = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
-  const healthConditionsOptions = [
-    "None", "Diabetes", "Hypertension", "Asthma", "Heart Disease",
-    "Thyroid Disorder", "PCOD/PCOS", "Mental Health Condition",
-    "Cancer Survivor", "HIV+", "Hepatitis B", "Hepatitis C",
-    "Kidney Disease", "Liver Disease", "Epilepsy", "Migraine",
-    "Arthritis", "Skin Condition", "Vision Impairment", "Hearing Impairment",
-    "Other", "Prefer not to disclose"
-  ];
-
-  // Age options from 18 to 70
-  const ageOptions = Array.from({ length: 53 }, (_, i) => 18 + i);
-
-  const heightOptions = [
-    "4'0\"", "4'1\"", "4'2\"", "4'3\"", "4'4\"", "4'5\"", "4'6\"", "4'7\"", "4'8\"", "4'9\"", "4'10\"", "4'11\"",
-    "5'0\"", "5'1\"", "5'2\"", "5'3\"", "5'4\"", "5'5\"", "5'6\"", "5'7\"", "5'8\"", "5'9\"", "5'10\"", "5'11\"",
-    "6'0\"", "6'1\"", "6'2\"", "6'3\"", "6'4\"", "6'5\"", "6'6\"", "6'7\""
-  ];
-
-  const maritalStatusOptions = [
-    "Never Married", "Divorced", "Widowed", "Separated"
-  ];
-
-    
+  // Removed hardcoded options as per the instructions.
+  // The data fetching and handling for these will be managed by separate data files.
 
   return (
     <aside className="w-80 bg-card border-r border-temple-gold/20 p-6 overflow-y-auto hidden lg:block">
@@ -299,7 +281,7 @@ const SpiritualFilterSidebar = memo(() => {
               <PopoverContent className="w-80" align="start" side="right">
                 <div className="space-y-4">
                   <h4 className="font-medium text-sm">Select Location</h4>
-                  
+
                   {/* Country */}
                   <div>
                     <Label className="text-xs text-muted-foreground mb-1">Country</Label>
@@ -392,40 +374,68 @@ const SpiritualFilterSidebar = memo(() => {
 
           {/* Education */}
           <div>
-            <Label className="block text-sm font-medium text-earth-brown mb-2">
-              Education
-            </Label>
-            <Combobox
-              options={educationOptions.map(edu => ({ value: edu, label: edu }))}
-              value={localFilters.education || ""}
-              onSelect={(value) =>
-                setLocalFilters(prev => ({
-                  ...prev,
-                  education: value || undefined
-                }))
-              }
-              placeholder="Select Education"
-              searchPlaceholder="Search education..."
-            />
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="w-full justify-start text-left font-normal">
+                  <Label className="text-sm font-medium text-earth-brown cursor-pointer">
+                    Education
+                  </Label>
+                  {localFilters.education && (
+                    <span className="ml-2 text-xs text-muted-foreground">
+                      {localFilters.education}
+                    </span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80" align="start" side="right">
+                <div className="space-y-4">
+                  <h4 className="font-medium text-sm">Select Education</h4>
+                  <Combobox
+                    options={educationOptions.map(education => ({ 
+                      value: education, 
+                      label: education 
+                    }))}
+                    value={localFilters.education || ""}
+                    onSelect={(value) => setLocalFilters(prev => ({ ...prev, education: value || undefined }))}
+                    placeholder="Select Education Level"
+                    searchPlaceholder="Search education levels..."
+                  />
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
 
           {/* Profession */}
           <div>
-            <Label className="block text-sm font-medium text-earth-brown mb-2">
-              Profession
-            </Label>
-            <Combobox
-              options={professionOptions.map(prof => ({ value: prof, label: prof }))}
-              value={localFilters.profession || ""}
-              onSelect={(value) =>
-                setLocalFilters(prev => ({
-                  ...prev,
-                  profession: value || undefined
-                }))
-              }
-              placeholder="Select Profession"
-              searchPlaceholder="Search professions..."
-            />
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="w-full justify-start text-left font-normal">
+                  <Label className="text-sm font-medium text-earth-brown cursor-pointer">
+                    Profession
+                  </Label>
+                  {localFilters.profession && (
+                    <span className="ml-2 text-xs text-muted-foreground">
+                      {localFilters.profession}
+                    </span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80" align="start" side="right">
+                <div className="space-y-4">
+                  <h4 className="font-medium text-sm">Select Profession</h4>
+                  <Combobox
+                    options={professionOptions.map(profession => ({ 
+                      value: profession, 
+                      label: profession 
+                    }))}
+                    value={localFilters.profession || ""}
+                    onSelect={(value) => setLocalFilters(prev => ({ ...prev, profession: value || undefined }))}
+                    placeholder="Select Profession"
+                    searchPlaceholder="Search professions..."
+                  />
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
 
           {/* Caste */}
@@ -476,69 +486,133 @@ const SpiritualFilterSidebar = memo(() => {
 
           {/* Spiritual Practices Filter */}
           <div>
-            <Label className="block text-sm font-medium text-foreground mb-2">
-              Spiritual Practices
-            </Label>
-            <div className="space-y-2 max-h-32 overflow-y-auto">
-              {(practicesData as any)?.practices?.map((practice: string) => (
-                <div key={practice} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={practice}
-                    checked={(localFilters.spiritualPractices || []).includes(practice)}
-                    onCheckedChange={(checked) => handlePracticeChange(practice, !!checked)}
-                  />
-                  <Label htmlFor={practice} className="text-sm cursor-pointer">
-                    {practice}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="w-full justify-start text-left font-normal">
+                  <Label className="text-sm font-medium text-earth-brown cursor-pointer">
+                    Spiritual Practices
                   </Label>
+                  {localFilters.spiritualPractices && localFilters.spiritualPractices.length > 0 && (
+                    <span className="ml-2 text-xs text-muted-foreground">
+                      {localFilters.spiritualPractices.length} selected
+                    </span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80" align="start" side="right">
+                <div className="space-y-4">
+                  <h4 className="font-medium text-sm">Select Spiritual Practices</h4>
+                  <div className="max-h-48 overflow-y-auto space-y-2">
+                    {spiritualPractices.map((practice) => (
+                      <div key={practice} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={practice}
+                          checked={localFilters.spiritualPractices?.includes(practice) || false}
+                          onCheckedChange={(checked) => {
+                            const current = localFilters.spiritualPractices || [];
+                            if (checked) {
+                              setLocalFilters(prev => ({
+                                ...prev,
+                                spiritualPractices: [...current, practice]
+                              }));
+                            } else {
+                              setLocalFilters(prev => ({
+                                ...prev,
+                                spiritualPractices: current.filter(p => p !== practice)
+                              }));
+                            }
+                          }}
+                        />
+                        <Label htmlFor={practice} className="text-sm">{practice}</Label>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              ))}
-            </div>
+              </PopoverContent>
+            </Popover>
           </div>
 
           {/* Sacred Texts */}
           <div>
-            <Label className="block text-sm font-medium text-earth-brown mb-2">
-              Sacred Texts Study
-            </Label>
-            <Select
-              value={localFilters.sacredTexts?.[0] || ""}
-              onValueChange={(value) =>
-                setLocalFilters(prev => ({
-                  ...prev,
-                  sacredTexts: value ? [value] : undefined
-                }))
-              }
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select Scripture" />
-              </SelectTrigger>
-              <SelectContent>
-                {(textsData as any)?.texts?.map((text: string) => (
-                  <SelectItem key={text} value={text}>
-                    {text}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="w-full justify-start text-left font-normal">
+                  <Label className="text-sm font-medium text-earth-brown cursor-pointer">
+                    Sacred Texts
+                  </Label>
+                  {localFilters.sacredTexts && localFilters.sacredTexts.length > 0 && (
+                    <span className="ml-2 text-xs text-muted-foreground">
+                      {localFilters.sacredTexts.length} selected
+                    </span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80" align="start" side="right">
+                <div className="space-y-4">
+                  <h4 className="font-medium text-sm">Select Sacred Texts</h4>
+                  <div className="max-h-48 overflow-y-auto space-y-2">
+                    {sacredTexts.map((text) => (
+                      <div key={text} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={text}
+                          checked={localFilters.sacredTexts?.includes(text) || false}
+                          onCheckedChange={(checked) => {
+                            const current = localFilters.sacredTexts || [];
+                            if (checked) {
+                              setLocalFilters(prev => ({
+                                ...prev,
+                                sacredTexts: [...current, text]
+                              }));
+                            } else {
+                              setLocalFilters(prev => ({
+                                ...prev,
+                                sacredTexts: current.filter(t => t !== text)
+                              }));
+                            }
+                          }}
+                        />
+                        <Label htmlFor={text} className="text-sm">{text}</Label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
 
 
 
           {/* Guru Lineage */}
           <div>
-            <Label className="block text-sm font-medium text-earth-brown mb-2">
-              Guru Lineage / Ashram
-            </Label>
-            <Input
-              placeholder="Enter lineage or ashram"
-              value={localFilters.guruLineage || ""}
-              onChange={(e) =>
-                setLocalFilters(prev => ({
-                  ...prev,
-                  guruLineage: e.target.value || undefined
-                }))
-              }
-            />
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="w-full justify-start text-left font-normal">
+                  <Label className="text-sm font-medium text-earth-brown cursor-pointer">
+                    Guru Lineage
+                  </Label>
+                  {localFilters.guruLineage && (
+                    <span className="ml-2 text-xs text-muted-foreground">
+                      {localFilters.guruLineage}
+                    </span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80" align="start" side="right">
+                <div className="space-y-4">
+                  <h4 className="font-medium text-sm">Select Guru Lineage</h4>
+                  <Combobox
+                    options={guruLineages.map(lineage => ({ 
+                      value: lineage, 
+                      label: lineage 
+                    }))}
+                    value={localFilters.guruLineage || ""}
+                    onSelect={(value) => setLocalFilters(prev => ({ ...prev, guruLineage: value || undefined }))}
+                    placeholder="Select Guru Lineage"
+                    searchPlaceholder="Search lineages..."
+                  />
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
 
           {/* Smoking Habits */}
@@ -701,6 +775,70 @@ const SpiritualFilterSidebar = memo(() => {
                 ))}
               </SelectContent>
             </Select>
+          </div>
+
+          {/* Dietary Lifestyle */}
+          <div>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="w-full justify-start text-left font-normal">
+                  <Label className="text-sm font-medium text-earth-brown cursor-pointer">
+                    Dietary Lifestyle
+                  </Label>
+                  {localFilters.dietaryLifestyle && (
+                    <span className="ml-2 text-xs text-muted-foreground">
+                      {localFilters.dietaryLifestyle}
+                    </span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80" align="start" side="right">
+                <div className="space-y-4">
+                  <h4 className="font-medium text-sm">Select Dietary Lifestyle</h4>
+                  <Combobox
+                    options={dietaryLifestyles.map(lifestyle => ({ 
+                      value: lifestyle, 
+                      label: lifestyle 
+                    }))}
+                    value={localFilters.dietaryLifestyle || ""}
+                    onSelect={(value) => setLocalFilters(prev => ({ ...prev, dietaryLifestyle: value || undefined }))}
+                    placeholder="Select Dietary Lifestyle"
+                    searchPlaceholder="Search dietary lifestyles..."
+                  />
+                </div>
+              </PopoverContent>
+            </Popover>
+          </div>
+
+          {/* Additional Spiritual Filters */}
+          <div>
+            <Label className="block text-sm font-medium text-earth-brown mb-2">
+              Additional Filters
+            </Label>
+
+            <div className="space-y-3">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="verified"
+                  checked={localFilters.verified || false}
+                  onCheckedChange={(checked) => 
+                    setLocalFilters(prev => ({ ...prev, verified: checked === true }))
+                  }
+                />
+                <Label htmlFor="verified" className="text-sm">Verified Profiles Only</Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="withPhoto"
+                  checked={localFilters.withPhoto || false}
+                  onCheckedChange={(checked) => 
+                    setLocalFilters(prev => ({ ...prev, withPhoto: checked === true }))
+                  }
+                />
+                <Label htmlFor="withPhoto" className="text-sm">With Photo Only</Label>
+              </div>
+            </div>
           </div>
 
 
