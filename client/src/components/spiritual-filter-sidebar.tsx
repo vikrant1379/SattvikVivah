@@ -1,4 +1,3 @@
-
 import { memo, useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -72,6 +71,9 @@ const SpiritualFilterSidebar = memo(() => {
     verified: filters.verified,
     withPhoto: filters.withPhoto,
     caste: filters.caste,
+    religion: filters.religion,
+    ethnicity: filters.ethnicity,
+    annualIncome: filters.annualIncome
   });
 
   // Collapsible states - start with some sections open
@@ -87,6 +89,9 @@ const SpiritualFilterSidebar = memo(() => {
     spiritualPractices: false,
     sacredTexts: false,
     lifestyle: false,
+    religion: false,
+    ethnicity: false,
+    annualIncome: false
   });
 
   // Search states for each section
@@ -102,6 +107,9 @@ const SpiritualFilterSidebar = memo(() => {
     countries: "",
     states: "",
     cities: "",
+    religion: "",
+    ethnicity: "",
+    annualIncome: ""
   });
 
   // Expanded states for "MORE" sections
@@ -112,6 +120,9 @@ const SpiritualFilterSidebar = memo(() => {
     spiritualPractices: false,
     sacredTexts: false,
     guruLineages: false,
+    religion: false,
+    ethnicity: false,
+    annualIncome: false
   });
 
   const toggleSection = (section: string) => {
@@ -150,10 +161,14 @@ const SpiritualFilterSidebar = memo(() => {
     return isExpanded ? filtered : filtered.slice(0, limit);
   };
 
+  const getRemainingCount = (options: string[], section: string): number => {
+    return Math.max(0, getFilteredOptions(options, searchStates[section as keyof typeof searchStates] || "").length - 8);
+  };
+
   // Get active filters for display
   const getActiveFilters = () => {
     const active = [];
-    
+
     if (localFilters.ageMin || localFilters.ageMax) {
       active.push({
         key: 'age',
@@ -161,7 +176,7 @@ const SpiritualFilterSidebar = memo(() => {
         onRemove: () => setLocalFilters(prev => ({ ...prev, ageMin: undefined, ageMax: undefined }))
       });
     }
-    
+
     if (localFilters.heightMin || localFilters.heightMax) {
       active.push({
         key: 'height',
@@ -169,7 +184,7 @@ const SpiritualFilterSidebar = memo(() => {
         onRemove: () => setLocalFilters(prev => ({ ...prev, heightMin: undefined, heightMax: undefined }))
       });
     }
-    
+
     if (localFilters.country || localFilters.state || localFilters.city) {
       const selectedCountry = countries.find(c => c.value === localFilters.country)?.label;
       const parts = [selectedCountry, localFilters.state, localFilters.city].filter(Boolean);
@@ -179,7 +194,7 @@ const SpiritualFilterSidebar = memo(() => {
         onRemove: () => setLocalFilters(prev => ({ ...prev, country: undefined, state: undefined, city: undefined }))
       });
     }
-    
+
     if (localFilters.education) {
       active.push({
         key: 'education',
@@ -187,7 +202,7 @@ const SpiritualFilterSidebar = memo(() => {
         onRemove: () => setLocalFilters(prev => ({ ...prev, education: undefined }))
       });
     }
-    
+
     if (localFilters.profession) {
       active.push({
         key: 'profession',
@@ -195,7 +210,7 @@ const SpiritualFilterSidebar = memo(() => {
         onRemove: () => setLocalFilters(prev => ({ ...prev, profession: undefined }))
       });
     }
-    
+
     if (localFilters.caste) {
       active.push({
         key: 'caste',
@@ -203,7 +218,7 @@ const SpiritualFilterSidebar = memo(() => {
         onRemove: () => setLocalFilters(prev => ({ ...prev, caste: undefined }))
       });
     }
-    
+
     if (localFilters.motherTongue) {
       active.push({
         key: 'motherTongue',
@@ -211,7 +226,7 @@ const SpiritualFilterSidebar = memo(() => {
         onRemove: () => setLocalFilters(prev => ({ ...prev, motherTongue: undefined }))
       });
     }
-    
+
     if (localFilters.otherLanguages?.length) {
       active.push({
         key: 'otherLanguages',
@@ -219,7 +234,7 @@ const SpiritualFilterSidebar = memo(() => {
         onRemove: () => setLocalFilters(prev => ({ ...prev, otherLanguages: [] }))
       });
     }
-    
+
     if (localFilters.spiritualPractices?.length) {
       active.push({
         key: 'spiritualPractices',
@@ -227,7 +242,7 @@ const SpiritualFilterSidebar = memo(() => {
         onRemove: () => setLocalFilters(prev => ({ ...prev, spiritualPractices: undefined }))
       });
     }
-    
+
     if (localFilters.verified) {
       active.push({
         key: 'verified',
@@ -235,7 +250,7 @@ const SpiritualFilterSidebar = memo(() => {
         onRemove: () => setLocalFilters(prev => ({ ...prev, verified: false }))
       });
     }
-    
+
     if (localFilters.withPhoto) {
       active.push({
         key: 'withPhoto',
@@ -243,7 +258,31 @@ const SpiritualFilterSidebar = memo(() => {
         onRemove: () => setLocalFilters(prev => ({ ...prev, withPhoto: false }))
       });
     }
-    
+
+    if (localFilters.religion) {
+      active.push({
+        key: 'religion',
+        label: localFilters.religion,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, religion: undefined }))
+      });
+    }
+
+    if (localFilters.ethnicity) {
+      active.push({
+        key: 'ethnicity',
+        label: localFilters.ethnicity,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, ethnicity: undefined }))
+      });
+    }
+
+    if (localFilters.annualIncome) {
+      active.push({
+        key: 'annualIncome',
+        label: localFilters.annualIncome,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, annualIncome: undefined }))
+      });
+    }
+
     return active;
   };
 
@@ -252,7 +291,7 @@ const SpiritualFilterSidebar = memo(() => {
     searchProfiles(localFilters);
   }, [localFilters, setFilters, searchProfiles]);
 
-  const handleClearAll = useCallback(() => {
+  const clearFilters = useCallback(() => {
     const clearedFilters = {};
     setLocalFilters(clearedFilters);
     setFilters(clearedFilters);
@@ -269,7 +308,7 @@ const SpiritualFilterSidebar = memo(() => {
           {activeFilters.length > 0 && (
             <Button 
               variant="ghost" 
-              onClick={handleClearAll}
+              onClick={clearFilters}
               className="text-blue-600 text-sm font-medium hover:bg-blue-50 px-2 py-1 h-auto"
             >
               CLEAR ALL
@@ -310,7 +349,7 @@ const SpiritualFilterSidebar = memo(() => {
                 <ChevronRight className="w-4 h-4 text-gray-500" />
               }
             </div>
-            
+
             {openSections.age && (
               <div className="mt-3 space-y-3">
                 <div className="grid grid-cols-2 gap-2">
@@ -375,7 +414,7 @@ const SpiritualFilterSidebar = memo(() => {
                 <ChevronRight className="w-4 h-4 text-gray-500" />
               }
             </div>
-            
+
             {openSections.height && (
               <div className="mt-3 space-y-3">
                 <div className="grid grid-cols-2 gap-2">
@@ -440,7 +479,7 @@ const SpiritualFilterSidebar = memo(() => {
                 <ChevronRight className="w-4 h-4 text-gray-500" />
               }
             </div>
-            
+
             {openSections.location && (
               <div className="mt-3 space-y-3">
                 {/* Country Selection */}
@@ -519,7 +558,7 @@ const SpiritualFilterSidebar = memo(() => {
                 <ChevronRight className="w-4 h-4 text-gray-500" />
               }
             </div>
-            
+
             {openSections.motherTongue && (
               <div className="mt-3">
                 <Input 
@@ -563,7 +602,7 @@ const SpiritualFilterSidebar = memo(() => {
                 <ChevronRight className="w-4 h-4 text-gray-500" />
               }
             </div>
-            
+
             {openSections.otherLanguages && (
               <div className="mt-3">
                 <Input 
@@ -615,7 +654,7 @@ const SpiritualFilterSidebar = memo(() => {
                 <ChevronRight className="w-4 h-4 text-gray-500" />
               }
             </div>
-            
+
             {openSections.education && (
               <div className="mt-3">
                 <Input 
@@ -642,13 +681,14 @@ const SpiritualFilterSidebar = memo(() => {
                       </Label>
                     </div>
                   ))}
-                  {!expandedSections.education && getFilteredOptions(educationOptions, searchStates.education).length > 8 && (
-                    <div 
-                      className="text-blue-600 text-sm font-medium cursor-pointer hover:underline"
+                  {getRemainingCount(educationOptions, 'education') > 0 && (
+                    <Button
+                      variant="ghost"
+                      className="mt-2 text-xs text-blue-600"
                       onClick={() => toggleExpanded('education')}
                     >
-                      {getFilteredOptions(educationOptions, searchStates.education).length - 8} MORE
-                    </div>
+                      {expandedSections.education ? 'Show Less' : `+${getRemainingCount(educationOptions, 'education')} More`}
+                    </Button>
                   )}
                 </div>
               </div>
@@ -667,7 +707,7 @@ const SpiritualFilterSidebar = memo(() => {
                 <ChevronRight className="w-4 h-4 text-gray-500" />
               }
             </div>
-            
+
             {openSections.profession && (
               <div className="mt-3">
                 <Input 
@@ -694,13 +734,14 @@ const SpiritualFilterSidebar = memo(() => {
                       </Label>
                     </div>
                   ))}
-                  {!expandedSections.profession && getFilteredOptions(professionOptions, searchStates.profession).length > 8 && (
-                    <div 
-                      className="text-blue-600 text-sm font-medium cursor-pointer hover:underline"
+                  {getRemainingCount(professionOptions, 'profession') > 0 && (
+                    <Button
+                      variant="ghost"
+                      className="mt-2 text-xs text-blue-600"
                       onClick={() => toggleExpanded('profession')}
                     >
-                      {getFilteredOptions(professionOptions, searchStates.profession).length - 8} MORE
-                    </div>
+                      {expandedSections.profession ? 'Show Less' : `+${getRemainingCount(professionOptions, 'profession')} More`}
+                    </Button>
                   )}
                 </div>
               </div>
@@ -719,7 +760,7 @@ const SpiritualFilterSidebar = memo(() => {
                 <ChevronRight className="w-4 h-4 text-gray-500" />
               }
             </div>
-            
+
             {openSections.caste && (
               <div className="mt-3">
                 <Input 
@@ -746,13 +787,14 @@ const SpiritualFilterSidebar = memo(() => {
                       </Label>
                     </div>
                   ))}
-                  {!expandedSections.caste && getFilteredOptions(casteOptions, searchStates.caste).length > 8 && (
-                    <div 
-                      className="text-blue-600 text-sm font-medium cursor-pointer hover:underline"
+                  {getRemainingCount(casteOptions, 'caste') > 0 && (
+                    <Button
+                      variant="ghost"
+                      className="mt-2 text-xs text-blue-600"
                       onClick={() => toggleExpanded('caste')}
                     >
-                      {getFilteredOptions(casteOptions, searchStates.caste).length - 8} MORE
-                    </div>
+                      {expandedSections.caste ? 'Show Less' : `+${getRemainingCount(casteOptions, 'caste')} More`}
+                    </Button>
                   )}
                 </div>
               </div>
@@ -771,7 +813,7 @@ const SpiritualFilterSidebar = memo(() => {
                 <ChevronRight className="w-4 h-4 text-gray-500" />
               }
             </div>
-            
+
             {openSections.spiritualPractices && (
               <div className="mt-3">
                 <Input 
@@ -806,15 +848,175 @@ const SpiritualFilterSidebar = memo(() => {
                       </Label>
                     </div>
                   ))}
-                  {!expandedSections.spiritualPractices && getFilteredOptions(spiritualPractices, searchStates.spiritualPractices).length > 8 && (
-                    <div 
-                      className="text-blue-600 text-sm font-medium cursor-pointer hover:underline"
+                  {getRemainingCount(spiritualPractices, 'spiritualPractices') > 0 && (
+                    <Button
+                      variant="ghost"
+                      className="mt-2 text-xs text-blue-600"
                       onClick={() => toggleExpanded('spiritualPractices')}
                     >
-                      {getFilteredOptions(spiritualPractices, searchStates.spiritualPractices).length - 8} MORE
-                    </div>
+                      {expandedSections.spiritualPractices ? 'Show Less' : `+${getRemainingCount(spiritualPractices, 'spiritualPractices')} More`}
+                    </Button>
                   )}
                 </div>
+              </div>
+            )}
+          </div>
+
+          {/* Religion */}
+          <div className="border-b border-gray-200 pb-4">
+            <div 
+              className="flex items-center justify-between cursor-pointer py-2"
+              onClick={() => toggleSection('religion')}
+            >
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">RELIGION</h3>
+              {openSections.religion ? 
+                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
+                <ChevronRight className="w-4 h-4 text-gray-500" />
+              }
+            </div>
+
+            {openSections.religion && (
+              <div className="mt-3">
+                <Input 
+                  placeholder="Search Religion" 
+                  className="mb-3 h-9 text-sm"
+                  value={searchStates.religion}
+                  onChange={(e) => updateSearch('religion', e.target.value)}
+                />
+                <div className="max-h-48 overflow-y-auto space-y-2">
+                  {getVisibleOptions(religionOptions, 'religion').map((religion) => (
+                    <div key={religion} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={religion}
+                        checked={localFilters.religion === religion}
+                        onCheckedChange={(checked) => {
+                          setLocalFilters(prev => ({
+                            ...prev,
+                            religion: checked ? religion : undefined
+                          }));
+                        }}
+                      />
+                      <label htmlFor={religion} className="text-sm text-gray-700 cursor-pointer">
+                        {religion}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+                {getRemainingCount(religionOptions, 'religion') > 0 && (
+                  <Button
+                    variant="ghost"
+                    className="mt-2 text-xs text-blue-600"
+                    onClick={() => toggleExpanded('religion')}
+                  >
+                    {expandedSections.religion ? 'Show Less' : `+${getRemainingCount(religionOptions, 'religion')} More`}
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Ethnicity */}
+          <div className="border-b border-gray-200 pb-4">
+            <div 
+              className="flex items-center justify-between cursor-pointer py-2"
+              onClick={() => toggleSection('ethnicity')}
+            >
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">ETHNICITY</h3>
+              {openSections.ethnicity ? 
+                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
+                <ChevronRight className="w-4 h-4 text-gray-500" />
+              }
+            </div>
+
+            {openSections.ethnicity && (
+              <div className="mt-3">
+                <Input 
+                  placeholder="Search Ethnicity" 
+                  className="mb-3 h-9 text-sm"
+                  value={searchStates.ethnicity}
+                  onChange={(e) => updateSearch('ethnicity', e.target.value)}
+                />
+                <div className="max-h-48 overflow-y-auto space-y-2">
+                  {getVisibleOptions(ethnicityOptions, 'ethnicity').map((ethnicity) => (
+                    <div key={ethnicity} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={ethnicity}
+                        checked={localFilters.ethnicity === ethnicity}
+                        onCheckedChange={(checked) => {
+                          setLocalFilters(prev => ({
+                            ...prev,
+                            ethnicity: checked ? ethnicity : undefined
+                          }));
+                        }}
+                      />
+                      <label htmlFor={ethnicity} className="text-sm text-gray-700 cursor-pointer">
+                        {ethnicity}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+                {getRemainingCount(ethnicityOptions, 'ethnicity') > 0 && (
+                  <Button
+                    variant="ghost"
+                    className="mt-2 text-xs text-blue-600"
+                    onClick={() => toggleExpanded('ethnicity')}
+                  >
+                    {expandedSections.ethnicity ? 'Show Less' : `+${getRemainingCount(ethnicityOptions, 'ethnicity')} More`}
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Annual Income */}
+          <div className="border-b border-gray-200 pb-4">
+            <div 
+              className="flex items-center justify-between cursor-pointer py-2"
+              onClick={() => toggleSection('annualIncome')}
+            >
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">ANNUAL INCOME</h3>
+              {openSections.annualIncome ? 
+                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
+                <ChevronRight className="w-4 h-4 text-gray-500" />
+              }
+            </div>
+
+            {openSections.annualIncome && (
+              <div className="mt-3">
+                <Input 
+                  placeholder="Search Income Range" 
+                  className="mb-3 h-9 text-sm"
+                  value={searchStates.annualIncome}
+                  onChange={(e) => updateSearch('annualIncome', e.target.value)}
+                />
+                <div className="max-h-48 overflow-y-auto space-y-2">
+                  {getVisibleOptions(annualIncomeOptions, 'annualIncome').map((income) => (
+                    <div key={income} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={income}
+                        checked={localFilters.annualIncome === income}
+                        onCheckedChange={(checked) => {
+                          setLocalFilters(prev => ({
+                            ...prev,
+                            annualIncome: checked ? income : undefined
+                          }));
+                        }}
+                      />
+                      <label htmlFor={income} className="text-sm text-gray-700 cursor-pointer">
+                        {income}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+                {getRemainingCount(annualIncomeOptions, 'annualIncome') > 0 && (
+                  <Button
+                    variant="ghost"
+                    className="mt-2 text-xs text-blue-600"
+                    onClick={() => toggleExpanded('annualIncome')}
+                  >
+                    {expandedSections.annualIncome ? 'Show Less' : `+${getRemainingCount(annualIncomeOptions, 'annualIncome')} More`}
+                  </Button>
+                )}
               </div>
             )}
           </div>
@@ -831,7 +1033,7 @@ const SpiritualFilterSidebar = memo(() => {
                 <ChevronRight className="w-4 h-4 text-gray-500" />
               }
             </div>
-            
+
             {openSections.lifestyle && (
               <div className="mt-3 space-y-4">
                 <div>
