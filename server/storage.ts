@@ -174,6 +174,15 @@ export class MemStorage implements IStorage {
     if (filters.heightMax) {
       profiles = profiles.filter(p => p.height && p.height <= filters.heightMax!);
     }
+    if (filters.smokingHabits) {
+      profiles = profiles.filter(p => p.smokingHabits === filters.smokingHabits);
+    }
+    if (filters.drinkingHabits) {
+      profiles = profiles.filter(p => p.drinkingHabits === filters.drinkingHabits);
+    }
+    if (filters.eatingHabits) {
+      profiles = profiles.filter(p => p.eatingHabits === filters.eatingHabits);
+    }
 
     return profiles;
   }
@@ -305,7 +314,10 @@ export class MemStorage implements IStorage {
         grhasthaVision: "Spiritual partnership in family life",
         bio: "Practicing Vipassana meditation for 5 years. Seeking a partner for conscious living in Grihastha Ashram.",
         photoUrl: null,
-        verified: true
+        verified: true,
+        smokingHabits: "No",
+        drinkingHabits: "No",
+        eatingHabits: "Vegetarian"
       },
       {
         userId: randomUUID(),
@@ -330,7 +342,10 @@ export class MemStorage implements IStorage {
         grhasthaVision: "Creating a dharmic household",
         bio: "Teaching underprivileged children. Looking for a spiritually aligned partner for dharmic life.",
         photoUrl: null,
-        verified: true
+        verified: true,
+        smokingHabits: "No",
+        drinkingHabits: "Socially",
+        eatingHabits: "Vegetarian"
       }
     ];
 

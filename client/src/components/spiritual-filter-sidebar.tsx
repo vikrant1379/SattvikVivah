@@ -29,6 +29,9 @@ const SpiritualFilterSidebar = memo(() => {
     profession: filters.profession,
     heightMin: filters.heightMin,
     heightMax: filters.heightMax,
+    smokingHabits: filters.smokingHabits,
+    drinkingHabits: filters.drinkingHabits,
+    eatingHabits: filters.eatingHabits,
   });
 
   const { data: practicesData } = useQuery({
@@ -90,11 +93,17 @@ const SpiritualFilterSidebar = memo(() => {
   ];
 
   const professionOptions = [
-    "Software Engineer", "Doctor", "Teacher", "Lawyer", "Business Owner",
-    "Consultant", "Manager", "Designer", "Artist", "Student", "Homemaker",
-    "Government Employee", "Nurse", "Accountant", "Sales Professional",
+    "Volunteer", "Freelancer", "Doctor", "Software Engineer", "IT Professional",
+    "Banking Professional", "Government Employee", "Working Professional", 
+    "Agripreneur", "Entrepreneur", "Businessperson", "Not Working",
+    "Teacher", "Lawyer", "Consultant", "Manager", "Designer", "Artist", 
+    "Student", "Homemaker", "Nurse", "Accountant", "Sales Professional",
     "Marketing Professional", "Engineer", "Architect", "Researcher"
   ];
+
+  const smokingHabitsOptions = ["No", "Socially", "Regularly"];
+  const drinkingHabitsOptions = ["No", "Socially", "Regularly"];
+  const eatingHabitsOptions = ["Vegetarian", "Vegan", "Non Vegetarian", "Eggetarian", "Pescetarian"];
 
   const heightOptions = [
     "4'0\"", "4'1\"", "4'2\"", "4'3\"", "4'4\"", "4'5\"", "4'6\"", "4'7\"", "4'8\"", "4'9\"", "4'10\"", "4'11\"",
@@ -454,6 +463,87 @@ const SpiritualFilterSidebar = memo(() => {
                 }))
               }
             />
+          </div>
+
+          {/* Smoking Habits */}
+          <div>
+            <Label className="block text-sm font-medium text-earth-brown mb-2">
+              Smoking Habits
+            </Label>
+            <Select
+              value={localFilters.smokingHabits || ""}
+              onValueChange={(value) =>
+                setLocalFilters(prev => ({
+                  ...prev,
+                  smokingHabits: value || undefined
+                }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select Smoking Habits" />
+              </SelectTrigger>
+              <SelectContent>
+                {smokingHabitsOptions.map((habit: string) => (
+                  <SelectItem key={habit} value={habit}>
+                    {habit}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Drinking Habits */}
+          <div>
+            <Label className="block text-sm font-medium text-earth-brown mb-2">
+              Drinking Habits
+            </Label>
+            <Select
+              value={localFilters.drinkingHabits || ""}
+              onValueChange={(value) =>
+                setLocalFilters(prev => ({
+                  ...prev,
+                  drinkingHabits: value || undefined
+                }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select Drinking Habits" />
+              </SelectTrigger>
+              <SelectContent>
+                {drinkingHabitsOptions.map((habit: string) => (
+                  <SelectItem key={habit} value={habit}>
+                    {habit}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Eating Habits */}
+          <div>
+            <Label className="block text-sm font-medium text-earth-brown mb-2">
+              Eating Habits
+            </Label>
+            <Select
+              value={localFilters.eatingHabits || ""}
+              onValueChange={(value) =>
+                setLocalFilters(prev => ({
+                  ...prev,
+                  eatingHabits: value || undefined
+                }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select Eating Habits" />
+              </SelectTrigger>
+              <SelectContent>
+                {eatingHabitsOptions.map((habit: string) => (
+                  <SelectItem key={habit} value={habit}>
+                    {habit}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-2">

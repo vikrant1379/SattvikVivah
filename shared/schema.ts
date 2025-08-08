@@ -34,6 +34,11 @@ export const spiritualProfiles = pgTable("spiritual_profiles", {
   sevaActivities: text("seva_activities"),
   dietaryLifestyle: text("dietary_lifestyle"), // Sattvic, Lacto Vegetarian, Vegan
   
+  // Lifestyle attributes
+  smokingHabits: text("smoking_habits"), // No, Socially, Regularly
+  drinkingHabits: text("drinking_habits"), // No, Socially, Regularly
+  eatingHabits: text("eating_habits"), // Vegetarian, Vegan, Non Vegetarian, Eggetarian, Pescetarian
+  
   // Life goals and spiritual aspirations
   dharmaGoals: text("dharma_goals"),
   mokshaPerspective: text("moksha_perspective"),
@@ -107,6 +112,9 @@ export const profileFilterSchema = z.object({
   heightMax: z.string().optional(),
   maritalStatus: z.string().optional(),
   caste: z.string().optional(),
+  smokingHabits: z.string().optional(),
+  drinkingHabits: z.string().optional(),
+  eatingHabits: z.string().optional(),
 });
 
 // Types
