@@ -442,101 +442,65 @@ const SpiritualFilterSidebar = memo(() => {
             </div>
             
             {openSections.location && (
-              <div className="mt-3">
+              <div className="mt-3 space-y-3">
                 {/* Country Selection */}
-                <div className="mb-3">
-                  <Input 
-                    placeholder="Search Countries" 
-                    className="mb-3 h-9 text-sm"
-                    value={searchStates.countries || ""}
-                    onChange={(e) => updateSearch('countries', e.target.value)}
+                <div>
+                  <Combobox
+                    options={countries}
+                    value={localFilters.country || ""}
+                    onSelect={(value) => {
+                      setLocalFilters(prev => ({
+                        ...prev,
+                        country: value || undefined,
+                        state: undefined,
+                        city: undefined
+                      }));
+                    }}
+                    placeholder="Select Country"
+                    searchPlaceholder="Search countries..."
+                    emptyMessage="No country found."
+                    className="h-9 text-sm bg-amber-50 border-amber-200"
                   />
-                  <div className="max-h-48 overflow-y-auto space-y-2">
-                    {getFilteredOptions(countries.map(c => c.label), searchStates.countries || "").map((countryLabel) => {
-                      const country = countries.find(c => c.label === countryLabel);
-                      return (
-                        <div key={country?.value} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={`country-${country?.value}`}
-                            checked={localFilters.country === country?.value}
-                            onCheckedChange={(checked) => {
-                              setLocalFilters(prev => ({
-                                ...prev,
-                                country: checked ? country?.value : undefined,
-                                state: undefined,
-                                city: undefined
-                              }));
-                            }}
-                          />
-                          <Label htmlFor={`country-${country?.value}`} className="text-sm text-gray-700 cursor-pointer">
-                            {countryLabel}
-                          </Label>
-                        </div>
-                      );
-                    })}
-                  </div>
                 </div>
 
                 {/* State Selection - only show if country is selected */}
                 {localFilters.country && (
-                  <div className="mb-3">
-                    <Input 
-                      placeholder="Search States" 
-                      className="mb-3 h-9 text-sm"
-                      value={searchStates.states || ""}
-                      onChange={(e) => updateSearch('states', e.target.value)}
+                  <div>
+                    <Combobox
+                      options={(statesByCountry[localFilters.country] || []).map(state => ({ value: state, label: state }))}
+                      value={localFilters.state || ""}
+                      onSelect={(value) => {
+                        setLocalFilters(prev => ({
+                          ...prev,
+                          state: value || undefined,
+                          city: undefined
+                        }));
+                      }}
+                      placeholder="Select State"
+                      searchPlaceholder="Search states..."
+                      emptyMessage="No state found."
+                      className="h-9 text-sm bg-amber-50 border-amber-200"
                     />
-                    <div className="max-h-48 overflow-y-auto space-y-2">
-                      {getFilteredOptions(statesByCountry[localFilters.country] || [], searchStates.states || "").map((state) => (
-                        <div key={state} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={`state-${state}`}
-                            checked={localFilters.state === state}
-                            onCheckedChange={(checked) => {
-                              setLocalFilters(prev => ({
-                                ...prev,
-                                state: checked ? state : undefined,
-                                city: undefined
-                              }));
-                            }}
-                          />
-                          <Label htmlFor={`state-${state}`} className="text-sm text-gray-700 cursor-pointer">
-                            {state}
-                          </Label>
-                        </div>
-                      ))}
-                    </div>
                   </div>
                 )}
 
                 {/* City Selection - only show if state is selected */}
                 {localFilters.state && (
-                  <div className="mb-3">
-                    <Input 
-                      placeholder="Search Cities" 
-                      className="mb-3 h-9 text-sm"
-                      value={searchStates.cities || ""}
-                      onChange={(e) => updateSearch('cities', e.target.value)}
+                  <div>
+                    <Combobox
+                      options={(citiesByState[localFilters.state] || []).map(city => ({ value: city, label: city }))}
+                      value={localFilters.city || ""}
+                      onSelect={(value) => {
+                        setLocalFilters(prev => ({
+                          ...prev,
+                          city: value || undefined
+                        }));
+                      }}
+                      placeholder="Select City"
+                      searchPlaceholder="Search cities..."
+                      emptyMessage="No city found."
+                      className="h-9 text-sm bg-amber-50 border-amber-200"
                     />
-                    <div className="max-h-48 overflow-y-auto space-y-2">
-                      {getFilteredOptions(citiesByState[localFilters.state] || [], searchStates.cities || "").map((city) => (
-                        <div key={city} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={`city-${city}`}
-                            checked={localFilters.city === city}
-                            onCheckedChange={(checked) => {
-                              setLocalFilters(prev => ({
-                                ...prev,
-                                city: checked ? city : undefined
-                              }));
-                            }}
-                          />
-                          <Label htmlFor={`city-${city}`} className="text-sm text-gray-700 cursor-pointer">
-                            {city}
-                          </Label>
-                        </div>
-                      ))}
-                    </div>
                   </div>
                 )}
               </div>
