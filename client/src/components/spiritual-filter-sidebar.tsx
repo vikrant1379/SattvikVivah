@@ -1097,7 +1097,7 @@ const SpiritualFilterSidebar = memo(() => {
             )}
           </div>
 
-          {/* Lifestyle & Preferences Section (Replaced with direct filters) */}
+          {/* Lifestyle & Preferences Section */}
           <Collapsible open={openSections.lifestyle} onOpenChange={(open) => setOpenSections(prev => ({ ...prev, lifestyle: open }))}>
             <div className="border-b border-gray-200 pb-4">
               <CollapsibleTrigger className="flex items-center justify-between w-full p-3 text-left hover:bg-gray-50 transition-colors">
