@@ -162,6 +162,18 @@ export class MemStorage implements IStorage {
     if (filters.profession) {
       profiles = profiles.filter(p => p.profession === filters.profession);
     }
+    if (filters.maritalStatus) {
+      profiles = profiles.filter(p => p.maritalStatus === filters.maritalStatus);
+    }
+    if (filters.caste) {
+      profiles = profiles.filter(p => p.caste === filters.caste);
+    }
+    if (filters.heightMin) {
+      profiles = profiles.filter(p => p.height && p.height >= filters.heightMin!);
+    }
+    if (filters.heightMax) {
+      profiles = profiles.filter(p => p.height && p.height <= filters.heightMax!);
+    }
 
     return profiles;
   }

@@ -105,6 +105,8 @@ export const profileFilterSchema = z.object({
   profession: z.string().optional(),
   heightMin: z.string().optional(),
   heightMax: z.string().optional(),
+  maritalStatus: z.string().optional(),
+  caste: z.string().optional(),
 });
 
 // Types
