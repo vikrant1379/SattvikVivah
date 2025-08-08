@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Combobox } from "@/components/ui/combobox";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useSpiritualContext } from "@/contexts/spiritual-context";
 import type { ProfileFilter } from "@shared/schema";
 
@@ -35,6 +36,9 @@ const SpiritualFilterSidebar = memo(() => {
     bloodGroup: filters.bloodGroup,
     healthConditions: filters.healthConditions,
   });
+  
+  const [ageDialogOpen, setAgeDialogOpen] = useState(false);
+  const [heightDialogOpen, setHeightDialogOpen] = useState(false);
 
   const { data: practicesData } = useQuery({
     queryKey: ['/api/spiritual-practices'],
@@ -118,6 +122,9 @@ const SpiritualFilterSidebar = memo(() => {
     "Other", "Prefer not to disclose"
   ];
 
+  // Age options from 18 to 70
+  const ageOptions = Array.from({ length: 53 }, (_, i) => 18 + i);
+  
   const heightOptions = [
     "4'0\"", "4'1\"", "4'2\"", "4'3\"", "4'4\"", "4'5\"", "4'6\"", "4'7\"", "4'8\"", "4'9\"", "4'10\"", "4'11\"",
     "5'0\"", "5'1\"", "5'2\"", "5'3\"", "5'4\"", "5'5\"", "5'6\"", "5'7\"", "5'8\"", "5'9\"", "5'10\"", "5'11\"",
@@ -189,67 +196,153 @@ const SpiritualFilterSidebar = memo(() => {
           {/* Age Range */}
           <div>
             <Label className="block text-sm font-medium text-earth-brown mb-2">
-              Age Range
+              Age
             </Label>
-            <div className="flex space-x-2">
-              <Input
-                type="number"
-                placeholder="Min Age"
-                value={localFilters.ageMin || ""}
-                onChange={(e) =>
-                  setLocalFilters(prev => ({
-                    ...prev,
-                    ageMin: e.target.value ? parseInt(e.target.value) : undefined
-                  }))
-                }
-              />
-              <Input
-                type="number"
-                placeholder="Max Age"
-                value={localFilters.ageMax || ""}
-                onChange={(e) =>
-                  setLocalFilters(prev => ({
-                    ...prev,
-                    ageMax: e.target.value ? parseInt(e.target.value) : undefined
-                  }))
-                }
-              />
-            </div>
+            <Dialog open={ageDialogOpen} onOpenChange={setAgeDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="w-full justify-start text-left font-normal">
+                  {localFilters.ageMin || localFilters.ageMax 
+                    ? `${localFilters.ageMin || 18} Years - ${localFilters.ageMax || 70} Years`
+                    : "18 Years - 70 Years"
+                  }
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Select Age Range</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-sm font-medium">Minimum Age</Label>
+                    <Select
+                      value={localFilters.ageMin?.toString() || "18"}
+                      onValueChange={(value) =>
+                        setLocalFilters(prev => ({
+                          ...prev,
+                          ageMin: parseInt(value)
+                        }))
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select minimum age" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {ageOptions.map((age) => (
+                          <SelectItem key={age} value={age.toString()}>
+                            {age} Years
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium">Maximum Age</Label>
+                    <Select
+                      value={localFilters.ageMax?.toString() || "70"}
+                      onValueChange={(value) =>
+                        setLocalFilters(prev => ({
+                          ...prev,
+                          ageMax: parseInt(value)
+                        }))
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select maximum age" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {ageOptions.map((age) => (
+                          <SelectItem key={age} value={age.toString()}>
+                            {age} Years
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <Button 
+                    onClick={() => setAgeDialogOpen(false)} 
+                    className="w-full bg-saffron text-primary-foreground hover:bg-saffron/90"
+                  >
+                    Apply Age Range
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
 
           {/* Height Range */}
           <div>
             <Label className="block text-sm font-medium text-earth-brown mb-2">
-              Height Range
+              Height
             </Label>
-            <div className="flex space-x-2">
-              <Combobox
-                options={heightOptions.map(h => ({ value: h, label: h }))}
-                value={localFilters.heightMin || ""}
-                onSelect={(value) =>
-                  setLocalFilters(prev => ({
-                    ...prev,
-                    heightMin: value || undefined
-                  }))
-                }
-                placeholder="Min Height"
-                searchPlaceholder="Search height..."
-                className="flex-1"
-              />
-              <Combobox
-                options={heightOptions.map(h => ({ value: h, label: h }))}
-                value={localFilters.heightMax || ""}
-                onSelect={(value) =>
-                  setLocalFilters(prev => ({
-                    ...prev,
-                    heightMax: value || undefined
-                  }))
-                }
-                placeholder="Max Height"
-                searchPlaceholder="Search height..."
-                className="flex-1"
-              />
-            </div>
+            <Dialog open={heightDialogOpen} onOpenChange={setHeightDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="w-full justify-start text-left font-normal">
+                  {localFilters.heightMin || localFilters.heightMax 
+                    ? `${localFilters.heightMin || "4'0\""} - ${localFilters.heightMax || "6'7\""}`
+                    : "4'0\" - 6'7\""
+                  }
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Select Height Range</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-sm font-medium">Minimum Height</Label>
+                    <Select
+                      value={localFilters.heightMin || "4'0\""}
+                      onValueChange={(value) =>
+                        setLocalFilters(prev => ({
+                          ...prev,
+                          heightMin: value
+                        }))
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select minimum height" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {heightOptions.map((height) => (
+                          <SelectItem key={height} value={height}>
+                            {height}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium">Maximum Height</Label>
+                    <Select
+                      value={localFilters.heightMax || "6'7\""}
+                      onValueChange={(value) =>
+                        setLocalFilters(prev => ({
+                          ...prev,
+                          heightMax: value
+                        }))
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select maximum height" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {heightOptions.map((height) => (
+                          <SelectItem key={height} value={height}>
+                            {height}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <Button 
+                    onClick={() => setHeightDialogOpen(false)} 
+                    className="w-full bg-saffron text-primary-foreground hover:bg-saffron/90"
+                  >
+                    Apply Height Range
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
 
           {/* Location */}
