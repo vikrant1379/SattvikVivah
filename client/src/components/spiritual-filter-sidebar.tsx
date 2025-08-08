@@ -594,18 +594,23 @@ const SpiritualFilterSidebar = memo(() => {
                   <div>
                     <Select
                       value={localFilters.ageMin?.toString() || ""}
-                      onValueChange={(value) =>
+                      onValueChange={(value) => {
+                        const newMin = value ? parseInt(value) : undefined;
                         setLocalFilters(prev => ({
                           ...prev,
-                          ageMin: value ? parseInt(value) : undefined
-                        }))
-                      }
+                          ageMin: newMin,
+                          // Reset max age if it becomes less than min age
+                          ageMax: prev.ageMax && newMin && prev.ageMax < newMin ? undefined : prev.ageMax
+                        }));
+                      }}
                     >
                       <SelectTrigger className="h-9 text-sm">
                         <SelectValue placeholder="Min" />
                       </SelectTrigger>
                       <SelectContent>
-                        {ageOptions.map((age) => (
+                        {ageOptions
+                          .filter(age => !localFilters.ageMax || age <= localFilters.ageMax)
+                          .map((age) => (
                           <SelectItem key={age} value={age.toString()}>
                             {age}
                           </SelectItem>
@@ -616,18 +621,23 @@ const SpiritualFilterSidebar = memo(() => {
                   <div>
                     <Select
                       value={localFilters.ageMax?.toString() || ""}
-                      onValueChange={(value) =>
+                      onValueChange={(value) => {
+                        const newMax = value ? parseInt(value) : undefined;
                         setLocalFilters(prev => ({
                           ...prev,
-                          ageMax: value ? parseInt(value) : undefined
-                        }))
-                      }
+                          ageMax: newMax,
+                          // Reset min age if it becomes greater than max age
+                          ageMin: prev.ageMin && newMax && prev.ageMin > newMax ? undefined : prev.ageMin
+                        }));
+                      }}
                     >
                       <SelectTrigger className="h-9 text-sm">
                         <SelectValue placeholder="Max" />
                       </SelectTrigger>
                       <SelectContent>
-                        {ageOptions.map((age) => (
+                        {ageOptions
+                          .filter(age => !localFilters.ageMin || age >= localFilters.ageMin)
+                          .map((age) => (
                           <SelectItem key={age} value={age.toString()}>
                             {age}
                           </SelectItem>
@@ -636,6 +646,12 @@ const SpiritualFilterSidebar = memo(() => {
                     </Select>
                   </div>
                 </div>
+                {/* Age validation message */}
+                {localFilters.ageMin && localFilters.ageMax && localFilters.ageMin > localFilters.ageMax && (
+                  <div className="text-xs text-red-600 bg-red-50 px-2 py-1 rounded">
+                    Minimum age cannot be greater than maximum age
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -659,18 +675,26 @@ const SpiritualFilterSidebar = memo(() => {
                   <div>
                     <Select
                       value={localFilters.heightMin || ""}
-                      onValueChange={(value) =>
+                      onValueChange={(value) => {
+                        const newMinHeight = value || undefined;
                         setLocalFilters(prev => ({
                           ...prev,
-                          heightMin: value || undefined
-                        }))
-                      }
+                          heightMin: newMinHeight,
+                          // Reset max height if it becomes less than min height
+                          heightMax: prev.heightMax && newMinHeight && 
+                            heightOptions.indexOf(prev.heightMax) < heightOptions.indexOf(newMinHeight) 
+                            ? undefined : prev.heightMax
+                        }));
+                      }}
                     >
                       <SelectTrigger className="h-9 text-sm">
                         <SelectValue placeholder="Min" />
                       </SelectTrigger>
                       <SelectContent>
-                        {heightOptions.map((height) => (
+                        {heightOptions
+                          .filter(height => !localFilters.heightMax || 
+                            heightOptions.indexOf(height) <= heightOptions.indexOf(localFilters.heightMax))
+                          .map((height) => (
                           <SelectItem key={height} value={height}>
                             {height}
                           </SelectItem>
@@ -681,18 +705,26 @@ const SpiritualFilterSidebar = memo(() => {
                   <div>
                     <Select
                       value={localFilters.heightMax || ""}
-                      onValueChange={(value) =>
+                      onValueChange={(value) => {
+                        const newMaxHeight = value || undefined;
                         setLocalFilters(prev => ({
                           ...prev,
-                          heightMax: value || undefined
-                        }))
-                      }
+                          heightMax: newMaxHeight,
+                          // Reset min height if it becomes greater than max height
+                          heightMin: prev.heightMin && newMaxHeight && 
+                            heightOptions.indexOf(prev.heightMin) > heightOptions.indexOf(newMaxHeight) 
+                            ? undefined : prev.heightMin
+                        }));
+                      }}
                     >
                       <SelectTrigger className="h-9 text-sm">
                         <SelectValue placeholder="Max" />
                       </SelectTrigger>
                       <SelectContent>
-                        {heightOptions.map((height) => (
+                        {heightOptions
+                          .filter(height => !localFilters.heightMin || 
+                            heightOptions.indexOf(height) >= heightOptions.indexOf(localFilters.heightMin))
+                          .map((height) => (
                           <SelectItem key={height} value={height}>
                             {height}
                           </SelectItem>
@@ -701,6 +733,13 @@ const SpiritualFilterSidebar = memo(() => {
                     </Select>
                   </div>
                 </div>
+                {/* Height validation message */}
+                {localFilters.heightMin && localFilters.heightMax && 
+                 heightOptions.indexOf(localFilters.heightMin) > heightOptions.indexOf(localFilters.heightMax) && (
+                  <div className="text-xs text-red-600 bg-red-50 px-2 py-1 rounded">
+                    Minimum height cannot be greater than maximum height
+                  </div>
+                )}
               </div>
             )}
           </div>
