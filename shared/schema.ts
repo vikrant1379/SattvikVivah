@@ -93,6 +93,7 @@ export const insertInspirationalQuoteSchema = createInsertSchema(inspirationalQu
 export const profileFilterSchema = z.object({
   ageMin: z.number().optional(),
   ageMax: z.number().optional(),
+  country: z.string().optional(),
   state: z.string().optional(),
   city: z.string().optional(),
   motherTongue: z.string().optional(),

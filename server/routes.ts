@@ -1,11 +1,11 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { 
-  insertUserSchema, 
-  insertSpiritualProfileSchema, 
+import {
+  insertUserSchema,
+  insertSpiritualProfileSchema,
   insertInterestSchema,
-  profileFilterSchema 
+  profileFilterSchema
 } from "@shared/schema";
 import { z } from "zod";
 
@@ -14,7 +14,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/auth/login", async (req, res) => {
     try {
       const { email, mobile, password } = req.body;
-      
+
       if (!password) {
         return res.status(400).json({ error: "Password is required" });
       }
@@ -44,12 +44,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Here you would verify the password (implement password hashing/comparison)
       // For now, we'll just return success
-      res.json({ 
-        user: { 
-          id: user.id, 
-          email: user.email, 
-          profileFor: user.profileFor, 
-          gender: user.gender 
+      res.json({
+        user: {
+          id: user.id,
+          email: user.email,
+          profileFor: user.profileFor,
+          gender: user.gender
         },
         message: "Login successful"
       });
@@ -62,7 +62,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/users", async (req, res) => {
     try {
       const userData = insertUserSchema.parse(req.body);
-      
+
       // Check if user already exists
       const existingUser = await storage.getUserByEmail(userData.email);
       if (existingUser) {
@@ -92,7 +92,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/profiles", async (req, res) => {
     try {
       const profileData = insertSpiritualProfileSchema.parse(req.body);
-      
+
       // Check if profile already exists for this user
       const existingProfile = await storage.getProfileByUserId(profileData.userId);
       if (existingProfile) {
@@ -148,7 +148,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const filters = profileFilterSchema.parse(req.body.filters || {});
       const excludeUserId = req.body.excludeUserId;
-      
+
       const profiles = await storage.searchProfiles(filters, excludeUserId);
       res.json({ profiles });
     } catch (error) {
@@ -171,10 +171,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/interests", async (req, res) => {
     try {
       const interestData = insertInterestSchema.parse(req.body);
-      
+
       // Check if interest already exists
       const existingInterest = await storage.getInterest(
-        interestData.fromProfileId, 
+        interestData.fromProfileId,
         interestData.toProfileId
       );
       if (existingInterest) {
@@ -240,7 +240,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/spiritual-practices", (req, res) => {
     const practices = [
       "Meditation & Dhyana",
-      "Daily Sadhana", 
+      "Daily Sadhana",
       "Seva & Karma Yoga",
       "Yoga Practice",
       "Pranayama",
@@ -256,7 +256,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/sacred-texts", (req, res) => {
     const texts = [
       "Bhagavad Gita",
-      "Upanishads", 
+      "Upanishads",
       "Ramayana",
       "Mahabharata",
       "Vedas",
@@ -269,16 +269,85 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({ texts });
   });
 
-  app.get("/api/states", (req, res) => {
-    const states = [
-      "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
-      "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka",
-      "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram",
-      "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu",
-      "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
-      "Delhi", "Jammu and Kashmir", "Ladakh", "Puducherry"
+  app.get("/api/countries", (req, res) => {
+    const countries = [
+      { value: "IN", label: "India" },
+      { value: "US", label: "United States" },
+      { value: "CA", label: "Canada" },
+      { value: "GB", label: "United Kingdom" },
+      { value: "AU", label: "Australia" },
+      { value: "NZ", label: "New Zealand" },
+      { value: "SG", label: "Singapore" },
+      { value: "AE", label: "United Arab Emirates" },
+      { value: "DE", label: "Germany" },
+      { value: "FR", label: "France" },
+      { value: "NL", label: "Netherlands" },
+      { value: "SE", label: "Sweden" },
+      { value: "CH", label: "Switzerland" },
+      { value: "JP", label: "Japan" },
+      { value: "MY", label: "Malaysia" },
+      { value: "TH", label: "Thailand" },
+      { value: "ZA", label: "South Africa" },
     ];
+    res.json({ countries });
+  });
+
+  app.get("/api/states", (req, res) => {
+    const { country } = req.query;
+
+    const statesByCountry: Record<string, string[]> = {
+      IN: [
+        "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
+        "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand",
+        "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur",
+        "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab",
+        "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura",
+        "Uttar Pradesh", "Uttarakhand", "West Bengal", "Delhi",
+        "Jammu and Kashmir", "Ladakh", "Puducherry"
+      ],
+      US: [
+        "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut",
+        "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa",
+        "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan",
+        "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire",
+        "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio",
+        "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
+        "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia",
+        "Wisconsin", "Wyoming"
+      ],
+      CA: [
+        "Alberta", "British Columbia", "Manitoba", "New Brunswick", "Newfoundland and Labrador",
+        "Northwest Territories", "Nova Scotia", "Nunavut", "Ontario", "Prince Edward Island",
+        "Quebec", "Saskatchewan", "Yukon"
+      ],
+      GB: ["England", "Scotland", "Wales", "Northern Ireland"],
+      AU: [
+        "Australian Capital Territory", "New South Wales", "Northern Territory", "Queensland",
+        "South Australia", "Tasmania", "Victoria", "Western Australia"
+      ]
+    };
+
+    const states = statesByCountry[country as string] || statesByCountry.IN;
     res.json({ states });
+  });
+
+  app.get("/api/cities", (req, res) => {
+    const { state } = req.query;
+
+    const citiesByState: Record<string, string[]> = {
+      "Maharashtra": ["Mumbai", "Pune", "Nagpur", "Nashik", "Aurangabad", "Solapur", "Amravati", "Kolhapur"],
+      "Karnataka": ["Bangalore", "Mysore", "Hubli", "Mangalore", "Belgaum", "Gulbarga", "Davangere", "Shimoga"],
+      "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem", "Tirunelveli", "Vellore", "Erode"],
+      "Gujarat": ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Bhavnagar", "Jamnagar", "Junagadh", "Gandhinagar"],
+      "Delhi": ["New Delhi", "North Delhi", "South Delhi", "East Delhi", "West Delhi", "Central Delhi"],
+      "California": ["Los Angeles", "San Francisco", "San Diego", "San Jose", "Sacramento", "Fresno"],
+      "New York": ["New York City", "Buffalo", "Rochester", "Yonkers", "Syracuse", "Albany"],
+      "Ontario": ["Toronto", "Ottawa", "Mississauga", "Brampton", "Hamilton", "London"],
+      "England": ["London", "Birmingham", "Manchester", "Liverpool", "Leeds", "Sheffield"]
+    };
+
+    const cities = citiesByState[state as string] || [];
+    res.json({ cities });
   });
 
   app.get("/api/languages", (req, res) => {

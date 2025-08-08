@@ -12,7 +12,18 @@ import type { ProfileFilter } from "@shared/schema";
 
 const SpiritualFilterSidebar = memo(() => {
   const { filters, setFilters, searchProfiles } = useSpiritualContext();
-  const [localFilters, setLocalFilters] = useState<ProfileFilter>(filters);
+  const [localFilters, setLocalFilters] = useState<ProfileFilter>({
+    ageMin: filters.ageMin,
+    ageMax: filters.ageMax,
+    country: filters.country,
+    state: filters.state,
+    city: filters.city,
+    motherTongue: filters.motherTongue,
+    spiritualPractices: filters.spiritualPractices,
+    sacredTexts: filters.sacredTexts,
+    dietaryLifestyle: filters.dietaryLifestyle,
+    guruLineage: filters.guruLineage,
+  });
 
   const { data: practicesData } = useQuery({
     queryKey: ['/api/spiritual-practices'],
@@ -37,7 +48,7 @@ const SpiritualFilterSidebar = memo(() => {
   const handlePracticeChange = useCallback((practice: string, checked: boolean) => {
     setLocalFilters(prev => ({
       ...prev,
-      spiritualPractices: checked 
+      spiritualPractices: checked
         ? [...(prev.spiritualPractices || []), practice]
         : (prev.spiritualPractices || []).filter(p => p !== practice)
     }));
@@ -83,7 +94,7 @@ const SpiritualFilterSidebar = memo(() => {
               ))}
             </div>
           </div>
-          
+
           {/* Sacred Texts */}
           <div>
             <Label className="block text-sm font-medium text-earth-brown mb-2">
@@ -91,7 +102,7 @@ const SpiritualFilterSidebar = memo(() => {
             </Label>
             <Select
               value={localFilters.sacredTexts?.[0] || ""}
-              onValueChange={(value) => 
+              onValueChange={(value) =>
                 setLocalFilters(prev => ({
                   ...prev,
                   sacredTexts: value ? [value] : undefined
@@ -110,7 +121,7 @@ const SpiritualFilterSidebar = memo(() => {
               </SelectContent>
             </Select>
           </div>
-          
+
           {/* Guru Lineage */}
           <div>
             <Label className="block text-sm font-medium text-earth-brown mb-2">
@@ -119,7 +130,7 @@ const SpiritualFilterSidebar = memo(() => {
             <Input
               placeholder="Enter lineage or ashram"
               value={localFilters.guruLineage || ""}
-              onChange={(e) => 
+              onChange={(e) =>
                 setLocalFilters(prev => ({
                   ...prev,
                   guruLineage: e.target.value || undefined
@@ -127,7 +138,7 @@ const SpiritualFilterSidebar = memo(() => {
               }
             />
           </div>
-          
+
           {/* Age Range */}
           <div>
             <Label className="block text-sm font-medium text-earth-brown mb-2">
@@ -138,7 +149,7 @@ const SpiritualFilterSidebar = memo(() => {
                 type="number"
                 placeholder="Min"
                 value={localFilters.ageMin || ""}
-                onChange={(e) => 
+                onChange={(e) =>
                   setLocalFilters(prev => ({
                     ...prev,
                     ageMin: e.target.value ? parseInt(e.target.value) : undefined
@@ -149,7 +160,7 @@ const SpiritualFilterSidebar = memo(() => {
                 type="number"
                 placeholder="Max"
                 value={localFilters.ageMax || ""}
-                onChange={(e) => 
+                onChange={(e) =>
                   setLocalFilters(prev => ({
                     ...prev,
                     ageMax: e.target.value ? parseInt(e.target.value) : undefined
@@ -158,15 +169,35 @@ const SpiritualFilterSidebar = memo(() => {
               />
             </div>
           </div>
-          
+
           {/* Location */}
           <div>
             <Label className="block text-sm font-medium text-earth-brown mb-2">
               Location
             </Label>
             <Select
+              value={localFilters.country || ""}
+              onValueChange={(value) =>
+                setLocalFilters(prev => ({
+                  ...prev,
+                  country: value || undefined
+                }))
+              }
+            >
+              <SelectTrigger className="mb-2">
+                <SelectValue placeholder="Select Country" />
+              </SelectTrigger>
+              <SelectContent>
+                {(["USA", "Canada", "Mexico"] as any)?.map((country: string) => ( // Placeholder for countries, replace with actual data fetch
+                  <SelectItem key={country} value={country}>
+                    {country}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select
               value={localFilters.state || ""}
-              onValueChange={(value) => 
+              onValueChange={(value) =>
                 setLocalFilters(prev => ({
                   ...prev,
                   state: value || undefined
@@ -187,7 +218,7 @@ const SpiritualFilterSidebar = memo(() => {
             <Input
               placeholder="City"
               value={localFilters.city || ""}
-              onChange={(e) => 
+              onChange={(e) =>
                 setLocalFilters(prev => ({
                   ...prev,
                   city: e.target.value || undefined
@@ -195,7 +226,7 @@ const SpiritualFilterSidebar = memo(() => {
               }
             />
           </div>
-          
+
           {/* Dietary Preferences */}
           <div>
             <Label className="block text-sm font-medium text-earth-brown mb-2">
@@ -203,7 +234,7 @@ const SpiritualFilterSidebar = memo(() => {
             </Label>
             <RadioGroup
               value={localFilters.dietaryLifestyle || ""}
-              onValueChange={(value) => 
+              onValueChange={(value) =>
                 setLocalFilters(prev => ({
                   ...prev,
                   dietaryLifestyle: value || undefined
@@ -230,7 +261,7 @@ const SpiritualFilterSidebar = memo(() => {
               </div>
             </RadioGroup>
           </div>
-          
+
           {/* Mother Tongue */}
           <div>
             <Label className="block text-sm font-medium text-earth-brown mb-2">
@@ -238,7 +269,7 @@ const SpiritualFilterSidebar = memo(() => {
             </Label>
             <Select
               value={localFilters.motherTongue || ""}
-              onValueChange={(value) => 
+              onValueChange={(value) =>
                 setLocalFilters(prev => ({
                   ...prev,
                   motherTongue: value || undefined
@@ -257,7 +288,7 @@ const SpiritualFilterSidebar = memo(() => {
               </SelectContent>
             </Select>
           </div>
-          
+
           <div className="space-y-2">
             <Button onClick={handleSearch} className="w-full bg-saffron text-primary-foreground hover:bg-saffron/90 shadow-lg hover-elevate">
               Search Profiles
