@@ -461,7 +461,6 @@ const SpiritualFilterSidebar = memo(() => {
                       <SelectValue placeholder="Select Country" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Any Country</SelectItem>
                       {countries.map((country) => (
                         <SelectItem key={country.value} value={country.value}>
                           {country.label}
@@ -489,7 +488,6 @@ const SpiritualFilterSidebar = memo(() => {
                         <SelectValue placeholder="Select State" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">Any State</SelectItem>
                         {(statesByCountry[localFilters.country] || []).map((state) => (
                           <SelectItem key={state} value={state}>
                             {state}
@@ -517,7 +515,6 @@ const SpiritualFilterSidebar = memo(() => {
                         <SelectValue placeholder="Any City" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">Any City</SelectItem>
                         {(citiesByState[localFilters.state] || []).map((city) => (
                           <SelectItem key={city} value={city}>
                             {city}
