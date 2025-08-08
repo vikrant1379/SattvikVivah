@@ -282,74 +282,90 @@ const SpiritualFilterSidebar = memo(() => {
           </div>
 
           {/* Location */}
-          <div className="space-y-4">
-            <Label className="block text-sm font-medium text-earth-brown mb-2">
-              Location
-            </Label>
-            
-            {/* Country */}
-            <div>
-              <Label className="text-xs text-muted-foreground mb-1">Country</Label>
-              <Combobox
-                options={countries.map(country => ({ value: country.value, label: country.label }))}
-                value={localFilters.country || ""}
-                onSelect={(value) => {
-                  setLocalFilters(prev => ({
-                    ...prev,
-                    country: value || undefined,
-                    state: undefined, // Reset state when country changes
-                    city: undefined   // Reset city when country changes
-                  }));
-                }}
-                placeholder="Select Country"
-                searchPlaceholder="Search countries..."
-              />
-            </div>
+          <div>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="w-full justify-start text-left font-normal">
+                  <Label className="text-sm font-medium text-earth-brown cursor-pointer">
+                    Location
+                  </Label>
+                  {(localFilters.country || localFilters.state || localFilters.city) && (
+                    <span className="ml-2 text-xs text-muted-foreground">
+                      {[localFilters.country, localFilters.state, localFilters.city].filter(Boolean).join(", ")}
+                    </span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80" align="start" side="right">
+                <div className="space-y-4">
+                  <h4 className="font-medium text-sm">Select Location</h4>
+                  
+                  {/* Country */}
+                  <div>
+                    <Label className="text-xs text-muted-foreground mb-1">Country</Label>
+                    <Combobox
+                      options={countries.map(country => ({ value: country.value, label: country.label }))}
+                      value={localFilters.country || ""}
+                      onSelect={(value) => {
+                        setLocalFilters(prev => ({
+                          ...prev,
+                          country: value || undefined,
+                          state: undefined, // Reset state when country changes
+                          city: undefined   // Reset city when country changes
+                        }));
+                      }}
+                      placeholder="Select Country"
+                      searchPlaceholder="Search countries..."
+                    />
+                  </div>
 
-            {/* State */}
-            {localFilters.country && (
-              <div>
-                <Label className="text-xs text-muted-foreground mb-1">State/Province</Label>
-                <Combobox
-                  options={(statesByCountry[localFilters.country] || []).map(state => ({ 
-                    value: state, 
-                    label: state 
-                  }))}
-                  value={localFilters.state || ""}
-                  onSelect={(value) => {
-                    setLocalFilters(prev => ({
-                      ...prev,
-                      state: value || undefined,
-                      city: undefined // Reset city when state changes
-                    }));
-                  }}
-                  placeholder="Select State/Province"
-                  searchPlaceholder="Search states..."
-                />
-              </div>
-            )}
+                  {/* State */}
+                  {localFilters.country && (
+                    <div>
+                      <Label className="text-xs text-muted-foreground mb-1">State/Province</Label>
+                      <Combobox
+                        options={(statesByCountry[localFilters.country] || []).map(state => ({ 
+                          value: state, 
+                          label: state 
+                        }))}
+                        value={localFilters.state || ""}
+                        onSelect={(value) => {
+                          setLocalFilters(prev => ({
+                            ...prev,
+                            state: value || undefined,
+                            city: undefined // Reset city when state changes
+                          }));
+                        }}
+                        placeholder="Select State/Province"
+                        searchPlaceholder="Search states..."
+                      />
+                    </div>
+                  )}
 
-            {/* City */}
-            {localFilters.state && (
-              <div>
-                <Label className="text-xs text-muted-foreground mb-1">City</Label>
-                <Combobox
-                  options={(citiesByState[localFilters.state] || []).map(city => ({ 
-                    value: city, 
-                    label: city 
-                  }))}
-                  value={localFilters.city || ""}
-                  onSelect={(value) => {
-                    setLocalFilters(prev => ({
-                      ...prev,
-                      city: value || undefined
-                    }));
-                  }}
-                  placeholder="Select City"
-                  searchPlaceholder="Search cities..."
-                />
-              </div>
-            )}
+                  {/* City */}
+                  {localFilters.state && (
+                    <div>
+                      <Label className="text-xs text-muted-foreground mb-1">City</Label>
+                      <Combobox
+                        options={(citiesByState[localFilters.state] || []).map(city => ({ 
+                          value: city, 
+                          label: city 
+                        }))}
+                        value={localFilters.city || ""}
+                        onSelect={(value) => {
+                          setLocalFilters(prev => ({
+                            ...prev,
+                            city: value || undefined
+                          }));
+                        }}
+                        placeholder="Select City"
+                        searchPlaceholder="Search cities..."
+                      />
+                    </div>
+                  )}
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
 
           {/* Mother Tongue */}
