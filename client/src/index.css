@@ -1,0 +1,332 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Crimson+Text:wght@400;600;700&family=Noto+Serif+Devanagari:wght@400;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Vedic Color Tokens - Light Mode */
+  --background: hsl(42 87% 94%); /* Sandalwood/cream #FAF3E0 */
+  --foreground: hsl(32 35% 11%); /* Deep text #1D1A15 */
+  --card: hsl(42 87% 97%); /* Cards #FFF7EA */
+  --card-foreground: hsl(32 35% 11%);
+  --popover: hsl(42 87% 97%);
+  --popover-foreground: hsl(32 35% 11%);
+  --primary: hsl(33 100% 60%); /* Saffron #FF9933 */
+  --primary-foreground: hsl(32 35% 11%);
+  --secondary: hsl(42 83% 59%); /* Temple gold #C9A227 */
+  --secondary-foreground: hsl(32 35% 11%);
+  --muted: hsl(42 87% 90%);
+  --muted-foreground: hsl(32 35% 45%);
+  --accent: hsl(213 43% 20%); /* Indigo/night blue #1C2541 */
+  --accent-foreground: hsl(42 87% 94%);
+  --destructive: hsl(4 83% 22%); /* Deep maroon #6E0E0A */
+  --destructive-foreground: hsl(42 87% 94%);
+  --border: hsl(42 83% 59% / 0.2);
+  --input: hsl(42 83% 59% / 0.3);
+  --ring: hsl(33 100% 60%);
+  --chart-1: hsl(33 100% 60%);
+  --chart-2: hsl(42 83% 59%);
+  --chart-3: hsl(213 43% 20%);
+  --chart-4: hsl(4 83% 22%);
+  --chart-5: hsl(42 87% 78%);
+  --sidebar: hsl(42 87% 97%);
+  --sidebar-foreground: hsl(32 35% 11%);
+  --sidebar-primary: hsl(33 100% 60%);
+  --sidebar-primary-foreground: hsl(32 35% 11%);
+  --sidebar-accent: hsl(42 83% 59%);
+  --sidebar-accent-foreground: hsl(32 35% 11%);
+  --sidebar-border: hsl(42 83% 59% / 0.2);
+  --sidebar-ring: hsl(33 100% 60%);
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'Crimson Text', Georgia, serif;
+  --font-devanagari: 'Noto Serif Devanagari', serif;
+  --radius: 0.75rem;
+  
+  /* Vedic Spiritual Colors */
+  --saffron: hsl(33 100% 60%); /* #FF9933 */
+  --temple-gold: hsl(42 83% 59%); /* #C9A227 */
+  --deep-maroon: hsl(4 83% 22%); /* #6E0E0A */
+  --indigo-night: hsl(213 43% 20%); /* #1C2541 */
+  --sandalwood: hsl(42 87% 94%); /* #FAF3E0 */
+  --card-cream: hsl(42 87% 97%); /* #FFF7EA */
+}
+
+.dark {
+  /* Vedic Color Tokens - Dark Mode */
+  --background: hsl(213 43% 8%); /* #0F1320 */
+  --foreground: hsl(42 87% 89%); /* #EDEAE3 */
+  --card: hsl(213 43% 11%); /* #151A2C */
+  --card-foreground: hsl(42 87% 89%);
+  --popover: hsl(213 43% 11%);
+  --popover-foreground: hsl(42 87% 89%);
+  --primary: hsl(33 100% 60%); /* Saffron unchanged */
+  --primary-foreground: hsl(213 43% 8%);
+  --secondary: hsl(42 83% 59%); /* Temple gold unchanged */
+  --secondary-foreground: hsl(213 43% 8%);
+  --muted: hsl(213 43% 15%);
+  --muted-foreground: hsl(42 87% 65%);
+  --accent: hsl(42 83% 59%);
+  --accent-foreground: hsl(213 43% 8%);
+  --destructive: hsl(4 83% 35%); /* Lighter maroon for dark mode */
+  --destructive-foreground: hsl(42 87% 89%);
+  --border: hsl(213 43% 18%);
+  --input: hsl(213 43% 18%);
+  --ring: hsl(33 100% 60%);
+  --chart-1: hsl(33 100% 60%);
+  --chart-2: hsl(42 83% 59%);
+  --chart-3: hsl(213 43% 35%);
+  --chart-4: hsl(4 83% 35%);
+  --chart-5: hsl(42 87% 78%);
+  --sidebar: hsl(213 43% 11%);
+  --sidebar-foreground: hsl(42 87% 89%);
+  --sidebar-primary: hsl(33 100% 60%);
+  --sidebar-primary-foreground: hsl(213 43% 8%);
+  --sidebar-accent: hsl(42 83% 59%);
+  --sidebar-accent-foreground: hsl(213 43% 8%);
+  --sidebar-border: hsl(213 43% 18%);
+  --sidebar-ring: hsl(33 100% 60%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    font-feature-settings: "kern" 1, "liga" 1;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+    letter-spacing: -0.02em;
+  }
+
+  h1 {
+    @apply text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight;
+  }
+
+  h2 {
+    @apply text-3xl lg:text-4xl font-bold leading-tight;
+  }
+
+  h3 {
+    @apply text-2xl lg:text-3xl font-semibold leading-tight;
+  }
+
+  .mandala-border {
+    position: relative;
+  }
+
+  .mandala-border::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--temple-gold), transparent);
+    opacity: 0.6;
+  }
+}
+
+@layer utilities {
+  .font-devanagari {
+    font-family: var(--font-devanagari);
+  }
+  
+  /* Vedic Color Utilities */
+  .text-saffron {
+    color: var(--saffron);
+  }
+  
+  .text-temple-gold {
+    color: var(--temple-gold);
+  }
+  
+  .text-deep-maroon {
+    color: var(--deep-maroon);
+  }
+  
+  .text-indigo-night {
+    color: var(--indigo-night);
+  }
+  
+  .bg-saffron {
+    background-color: var(--saffron);
+  }
+  
+  .bg-temple-gold {
+    background-color: var(--temple-gold);
+  }
+  
+  .bg-deep-maroon {
+    background-color: var(--deep-maroon);
+  }
+  
+  .bg-indigo-night {
+    background-color: var(--indigo-night);
+  }
+  
+  .bg-sandalwood {
+    background-color: var(--sandalwood);
+  }
+  
+  .bg-card-cream {
+    background-color: var(--card-cream);
+  }
+  
+  .border-saffron {
+    border-color: var(--saffron);
+  }
+  
+  .border-temple-gold {
+    border-color: var(--temple-gold);
+  }
+  
+  /* Sacred Geometry Patterns */
+  .sacred-pattern {
+    position: relative;
+  }
+  
+  .sacred-pattern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: radial-gradient(circle at 25% 25%, var(--temple-gold) 1px, transparent 1px),
+                      radial-gradient(circle at 75% 75%, var(--saffron) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: 0.02;
+    pointer-events: none;
+    z-index: 0;
+  }
+  
+  .sacred-pattern > * {
+    position: relative;
+    z-index: 1;
+  }
+  
+  .vedic-gradient {
+    background: linear-gradient(135deg, 
+      hsla(33, 100%, 60%, 0.03) 0%, 
+      hsla(42, 83%, 59%, 0.05) 30%, 
+      hsla(42, 87%, 94%, 0.08) 60%,
+      hsla(213, 43%, 20%, 0.03) 100%);
+  }
+  
+  .mandala-divider {
+    position: relative;
+    text-align: center;
+  }
+  
+  .mandala-divider::before,
+  .mandala-divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 40%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--temple-gold), transparent);
+    opacity: 0.4;
+  }
+  
+  .mandala-divider::before {
+    left: 0;
+  }
+  
+  .mandala-divider::after {
+    right: 0;
+  }
+  
+  /* Enhanced Animations */
+  .animate-lotus-bloom {
+    animation: lotus-bloom 4s ease-in-out infinite;
+  }
+  
+  .animate-om-pulse {
+    animation: om-pulse 3s ease-in-out infinite;
+  }
+  
+  .animate-float {
+    animation: float 8s ease-in-out infinite;
+  }
+  
+  .animate-gentle-fade {
+    animation: gentle-fade 0.6s ease-out forwards;
+  }
+  
+  /* Hover Effects */
+  .hover-elevate {
+    transition: all 0.3s ease;
+  }
+  
+  .hover-elevate:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  }
+}
+
+@keyframes lotus-bloom {
+  0%, 100% { 
+    transform: scale(1) rotate(0deg); 
+    opacity: 0.8; 
+  }
+  33% { 
+    transform: scale(1.05) rotate(2deg); 
+    opacity: 0.9; 
+  }
+  66% { 
+    transform: scale(1.08) rotate(-1deg); 
+    opacity: 1; 
+  }
+}
+
+@keyframes om-pulse {
+  0%, 100% { 
+    transform: scale(1); 
+    opacity: 0.9; 
+  }
+  50% { 
+    transform: scale(1.03); 
+    opacity: 1; 
+  }
+}
+
+@keyframes float {
+  0%, 100% { 
+    transform: translateY(0px); 
+  }
+  50% { 
+    transform: translateY(-8px); 
+  }
+}
+
+@keyframes gentle-fade {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design Tokens */
+@media (max-width: 768px) {
+  :root {
+    --radius: 0.5rem;
+  }
+  
+  .sacred-pattern {
+    background-size: 25px 25px;
+    opacity: 0.03;
+  }
+}
