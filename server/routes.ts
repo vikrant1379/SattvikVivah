@@ -154,30 +154,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (filters.casteGroups?.length && filters.casteSubcastes?.length) {
         const combinedCastes: string[] = [];
         
-        filters.casteGroups.forEach(group => {
-          if (group !== "All") {
-            filters.casteSubcastes?.forEach(subcaste => {
-              // Create combination like "Brahmin - Iyer" or "Rajput - Chauhan"
-              combinedCastes.push(`${group} - ${subcaste}`);
-              // Also include just the subcaste for broader matching
-              combinedCastes.push(subcaste);
-            });
-          } else {
-            // If "All" is selected in groups, include all subcastes
-            filters.casteSubcastes?.forEach(subcaste => {
-              combinedCastes.push(subcaste);
-            });
-          }
-        });
-
-        // Remove duplicates
-        filters.combinedCastes = [...new Set(combinedCastes)];
+        const hasAllGroups = filters.casteGroups.includes("All");
+        const hasAllSubcastes = filters.casteSubcastes.includes("All");
+        
+        if (hasAllGroups && hasAllSubcastes) {
+          // If both "All" are selected, don't filter by caste at all
+          filters.combinedCastes = [];
+        } else if (hasAllGroups) {
+          // All groups, specific subcastes
+          filters.casteSubcastes.filter(s => s !== "All").forEach(subcaste => {
+            combinedCastes.push(subcaste);
+          });
+          filters.combinedCastes = [...new Set(combinedCastes)];
+        } else if (hasAllSubcastes) {
+          // Specific groups, all subcastes
+          filters.casteGroups.filter(g => g !== "All").forEach(group => {
+            combinedCastes.push(group);
+          });
+          filters.combinedCastes = [...new Set(combinedCastes)];
+        } else {
+          // Specific groups and specific subcastes
+          filters.casteGroups.forEach(group => {
+            if (group !== "All") {
+              filters.casteSubcastes?.forEach(subcaste => {
+                if (subcaste !== "All") {
+                  // Create combination like "Brahmin - Iyer" or "Rajput - Chauhan"
+                  combinedCastes.push(`${group} - ${subcaste}`);
+                  // Also include just the subcaste for broader matching
+                  combinedCastes.push(subcaste);
+                }
+              });
+            }
+          });
+          filters.combinedCastes = [...new Set(combinedCastes)];
+        }
       } else if (filters.casteGroups?.length) {
         // Only groups selected
-        filters.combinedCastes = filters.casteGroups.filter(group => group !== "All");
+        const hasAllGroups = filters.casteGroups.includes("All");
+        if (hasAllGroups) {
+          filters.combinedCastes = [];
+        } else {
+          filters.combinedCastes = filters.casteGroups.filter(group => group !== "All");
+        }
       } else if (filters.casteSubcastes?.length) {
         // Only subcastes selected
-        filters.combinedCastes = filters.casteSubcastes;
+        const hasAllSubcastes = filters.casteSubcastes.includes("All");
+        if (hasAllSubcastes) {
+          filters.combinedCastes = [];
+        } else {
+          filters.combinedCastes = filters.casteSubcastes.filter(subcaste => subcaste !== "All");
+        }
       }
 
       const profiles = await storage.searchProfiles(filters, excludeUserId);

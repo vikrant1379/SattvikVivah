@@ -241,7 +241,7 @@ const SpiritualFilterSidebar = memo(() => {
     // Show combined caste filter if both are selected
     if (localFilters.casteGroups?.length && localFilters.casteSubcastes?.length) {
       const groupsText = localFilters.casteGroups.includes("All") ? "All Groups" : `${localFilters.casteGroups.length} Groups`;
-      const subcastesText = `${localFilters.casteSubcastes.length} Subcastes`;
+      const subcastesText = localFilters.casteSubcastes.includes("All") ? "All Subcastes" : `${localFilters.casteSubcastes.length} Subcastes`;
       active.push({
         key: 'combinedCaste',
         label: `Caste: ${groupsText} + ${subcastesText}`,
@@ -256,7 +256,7 @@ const SpiritualFilterSidebar = memo(() => {
     } else if (localFilters.casteSubcastes?.length) {
       active.push({
         key: 'casteSubcastes',
-        label: `${localFilters.casteSubcastes.length} Subcastes`,
+        label: localFilters.casteSubcastes.includes("All") ? "All Subcastes" : `${localFilters.casteSubcastes.length} Subcastes`,
         onRemove: () => setLocalFilters(prev => ({ ...prev, casteSubcastes: [] }))
       });
     }
@@ -989,18 +989,21 @@ const SpiritualFilterSidebar = memo(() => {
 
                   if (hasAllSelected) {
                     // If "All" is selected, show subcastes from all groups
-                    availableSubcastes = Object.values(casteSubcasteOptions).flat();
+                    availableSubcastes = ["All", ...Object.values(casteSubcasteOptions).flat()];
                   } else {
                     // Show subcastes only for selected groups
+                    const groupSubcastes: string[] = [];
                     selectedGroups.forEach(group => {
                       if (casteSubcasteOptions[group as keyof typeof casteSubcasteOptions]) {
-                        availableSubcastes.push(...casteSubcasteOptions[group as keyof typeof casteSubcasteOptions]);
+                        groupSubcastes.push(...casteSubcasteOptions[group as keyof typeof casteSubcasteOptions]);
                       }
                     });
+                    availableSubcastes = ["All", ...groupSubcastes];
                   }
 
-                  // Remove duplicates
-                  availableSubcastes = [...new Set(availableSubcastes)];
+                  // Remove duplicates (except for "All" which should be first)
+                  const uniqueSubcastes = [...new Set(availableSubcastes.slice(1))];
+                  availableSubcastes = ["All", ...uniqueSubcastes];
 
                   if (availableSubcastes.length > 0) {
                     return (
@@ -1016,19 +1019,42 @@ const SpiritualFilterSidebar = memo(() => {
                             <div key={subcaste} className="flex items-center space-x-2">
                               <Checkbox
                                 id={`subcaste-${subcaste}`}
-                                checked={localFilters.casteSubcastes?.includes(subcaste) || false}
+                                checked={
+                                  subcaste === "All" 
+                                    ? (!localFilters.casteSubcastes || localFilters.casteSubcastes.length === 0 || localFilters.casteSubcastes.includes("All"))
+                                    : localFilters.casteSubcastes?.includes(subcaste) || false
+                                }
                                 onCheckedChange={(checked) => {
                                   const current = localFilters.casteSubcastes || [];
-                                  if (checked) {
-                                    setLocalFilters(prev => ({
-                                      ...prev,
-                                      casteSubcastes: [...current, subcaste]
-                                    }));
+                                  
+                                  if (subcaste === "All") {
+                                    if (checked) {
+                                      // Select all subcastes
+                                      setLocalFilters(prev => ({
+                                        ...prev,
+                                        casteSubcastes: ["All"]
+                                      }));
+                                    } else {
+                                      // Deselect all subcastes
+                                      setLocalFilters(prev => ({
+                                        ...prev,
+                                        casteSubcastes: []
+                                      }));
+                                    }
                                   } else {
-                                    setLocalFilters(prev => ({
-                                      ...prev,
-                                      casteSubcastes: current.filter(s => s !== subcaste)
-                                    }));
+                                    if (checked) {
+                                      // Remove "All" if selecting specific subcaste
+                                      const newSubcastes = current.filter(s => s !== "All");
+                                      setLocalFilters(prev => ({
+                                        ...prev,
+                                        casteSubcastes: [...newSubcastes, subcaste]
+                                      }));
+                                    } else {
+                                      setLocalFilters(prev => ({
+                                        ...prev,
+                                        casteSubcastes: current.filter(s => s !== subcaste)
+                                      }));
+                                    }
                                   }
                                 }}
                               />
