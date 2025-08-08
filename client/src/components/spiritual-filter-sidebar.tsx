@@ -117,18 +117,11 @@ const SpiritualFilterSidebar = memo(() => {
     "6'0\"", "6'1\"", "6'2\"", "6'3\"", "6'4\"", "6'5\"", "6'6\"", "6'7\""
   ];
 
+  import { casteOptions } from "../data/caste";
+
   const maritalStatusOptions = [
     "Never Married", "Divorced", "Widowed", "Separated"
   ];
-
-  const casteOptions = [
-    // Varna System
-    "Brahmin", "Kshatriya", "Vaishya", "Shudra",
-
-    // Brahmin Sub-castes
-    "Agarwal", "Bhumihar", "Chitpavan", "Deshastha", "Gaur", "Iyer", "Iyengar", "Joshi",
-    "Kanyakubja", "Kashmiri Pandit", "Konkanastha", "Maithil", "Nagar", "Namboodiri",
-    "Pandit", "Saraswat", "Sharma", "Shukla", "Tiwari", "Tyagi", "Upadhyay",
 
     // Kshatriya Sub-castes
     "Rajput", "Thakur", "Chauhan", "Rathore", "Sisodiya", "Tomar", "Chandel", "Parmar",
@@ -160,15 +153,7 @@ const SpiritualFilterSidebar = memo(() => {
     "Maratha", "Kunbi", "Dhangar", "Maali", "Sonar", "Sutar", "Lohar", "Kumbhar",
     "Shimpi", "Nhavi", "Chambhar", "Matang", "Banjara", "Pardhi", "Katkari", "Warli",
 
-    // South Indian Castes
-    "Brahmin", "Chettiar", "Mudaliar", "Pillai", "Gounder", "Naidu", "Reddy", "Kamma",
-    "Kapu", "Velama", "Raju", "Kshatriya", "Vysya", "Komati", "Arya Vysya", "Balija",
-    "Devanga", "Padmashali", "Kaikolan", "Senguntha", "Sourastra", "Parkavakulam",
-
-    // Modern Categories
-    "Arya Samaj", "ISKCON", "Brahmo Samaj", "Prarthana Samaj",
-    "No Caste / Inter Caste", "Prefer Not to Say", "Other"
-  ];
+    
 
   return (
     <aside className="w-80 bg-card border-r border-temple-gold/20 p-6 overflow-y-auto hidden lg:block">
