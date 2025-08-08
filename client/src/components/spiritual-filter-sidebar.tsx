@@ -23,7 +23,6 @@ const SpiritualFilterSidebar = memo(() => {
     motherTongue: filters.motherTongue,
     spiritualPractices: filters.spiritualPractices,
     sacredTexts: filters.sacredTexts,
-    dietaryLifestyle: filters.dietaryLifestyle,
     guruLineage: filters.guruLineage,
     education: filters.education,
     profession: filters.profession,
@@ -35,7 +34,6 @@ const SpiritualFilterSidebar = memo(() => {
     physicalStatus: filters.physicalStatus,
     bloodGroup: filters.bloodGroup,
     healthConditions: filters.healthConditions,
-    hivStatus: filters.hivStatus,
   });
 
   const { data: practicesData } = useQuery({
@@ -111,11 +109,13 @@ const SpiritualFilterSidebar = memo(() => {
   
   const physicalStatusOptions = ["Normal", "Physically Challenged"];
   const bloodGroupOptions = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
-  const hivStatusOptions = ["Negative", "Positive", "Prefer not to disclose"];
   const healthConditionsOptions = [
     "None", "Diabetes", "Hypertension", "Asthma", "Heart Disease", 
     "Thyroid Disorder", "PCOD/PCOS", "Mental Health Condition", 
-    "Cancer Survivor", "Other", "Prefer not to disclose"
+    "Cancer Survivor", "HIV+", "Hepatitis B", "Hepatitis C", 
+    "Kidney Disease", "Liver Disease", "Epilepsy", "Migraine",
+    "Arthritis", "Skin Condition", "Vision Impairment", "Hearing Impairment",
+    "Other", "Prefer not to disclose"
   ];
 
   const heightOptions = [
@@ -129,9 +129,52 @@ const SpiritualFilterSidebar = memo(() => {
   ];
 
   const casteOptions = [
-    "Brahmin", "Kshatriya", "Vaishya", "Shudra", "Arya Samaj", 
-    "Scheduled Caste", "Scheduled Tribe", "Other Backward Class",
-    "No Caste / Inter Caste", "Prefer Not to Say"
+    // Varna System
+    "Brahmin", "Kshatriya", "Vaishya", "Shudra",
+    
+    // Brahmin Sub-castes
+    "Agarwal", "Bhumihar", "Chitpavan", "Deshastha", "Gaur", "Iyer", "Iyengar", "Joshi", 
+    "Kanyakubja", "Kashmiri Pandit", "Konkanastha", "Maithil", "Nagar", "Namboodiri", 
+    "Pandit", "Saraswat", "Sharma", "Shukla", "Tiwari", "Tyagi", "Upadhyay",
+    
+    // Kshatriya Sub-castes
+    "Rajput", "Thakur", "Chauhan", "Rathore", "Sisodiya", "Tomar", "Chandel", "Parmar", 
+    "Solanki", "Yadav", "Ahir", "Gujjar", "Jat", "Khatri", "Arora", "Sood", "Bhatia", 
+    "Lohana", "Maheshwari", "Oswal", "Porwal",
+    
+    // Vaishya Sub-castes
+    "Baniya", "Agrawal", "Gupta", "Mittal", "Singhal", "Goyal", "Jindal", "Khandelwal", 
+    "Maheshwari", "Oswal", "Porwal", "Rastogi", "Saxena", "Srivastava", "Varshney",
+    
+    // Other Traditional Castes
+    "Kayastha", "Khatri", "Bunt", "Nair", "Menon", "Pillai", "Reddy", "Naidu", "Chettiar", 
+    "Mudaliar", "Gounder", "Vellalar", "Thevar", "Maravar", "Kallar", "Agamudayar",
+    "Lingayat", "Vokkaliga", "Bunts", "Saraswat", "Konkani",
+    
+    // Scheduled Castes (Dalit)
+    "Chamar", "Mahar", "Mala", "Madiga", "Dhobi", "Dom", "Khatik", "Koli", "Bhangi", 
+    "Valmiki", "Ravidasia", "Meghwal", "Balmiki", "Mazhabi", "Ramdasia", "Ad Dharmi",
+    
+    // Scheduled Tribes (Adivasi)
+    "Bhil", "Gond", "Santal", "Munda", "Oraon", "Ho", "Khasi", "Garo", "Mizo", "Naga", 
+    "Bodo", "Rabha", "Tripuri", "Chakma", "Dimasa", "Karbi", "Tiwa",
+    
+    // Other Backward Classes (OBC)
+    "Kurmi", "Koeri", "Yadav", "Gujjar", "Jat", "Ahir", "Mali", "Kumhar", "Teli", 
+    "Kachhi", "Lodh", "Saini", "Rajbhar", "Maurya", "Kushwaha", "Patel", "Thakur",
+    
+    // Regional Castes
+    "Maratha", "Kunbi", "Dhangar", "Maali", "Sonar", "Sutar", "Lohar", "Kumbhar", 
+    "Shimpi", "Nhavi", "Chambhar", "Matang", "Banjara", "Pardhi", "Katkari", "Warli",
+    
+    // South Indian Castes
+    "Brahmin", "Chettiar", "Mudaliar", "Pillai", "Gounder", "Naidu", "Reddy", "Kamma", 
+    "Kapu", "Velama", "Raju", "Kshatriya", "Vysya", "Komati", "Arya Vysya", "Balija",
+    "Devanga", "Padmashali", "Kaikolan", "Senguntha", "Sourastra", "Parkavakulam",
+    
+    // Modern Categories
+    "Arya Samaj", "ISKCON", "Brahmo Samaj", "Prarthana Samaj", 
+    "No Caste / Inter Caste", "Prefer Not to Say", "Other"
   ];
 
   return (
@@ -426,40 +469,7 @@ const SpiritualFilterSidebar = memo(() => {
             </Select>
           </div>
 
-          {/* Dietary Preferences */}
-          <div>
-            <Label className="block text-sm font-medium text-earth-brown mb-2">
-              Dietary Lifestyle
-            </Label>
-            <RadioGroup
-              value={localFilters.dietaryLifestyle || ""}
-              onValueChange={(value) =>
-                setLocalFilters(prev => ({
-                  ...prev,
-                  dietaryLifestyle: value || undefined
-                }))
-              }
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="Sattvic Vegetarian" id="sattvic" />
-                <Label htmlFor="sattvic" className="text-sm cursor-pointer">
-                  Sattvic Vegetarian
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="Lacto Vegetarian" id="lacto" />
-                <Label htmlFor="lacto" className="text-sm cursor-pointer">
-                  Lacto Vegetarian
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="Vegan" id="vegan" />
-                <Label htmlFor="vegan" className="text-sm cursor-pointer">
-                  Vegan
-                </Label>
-              </div>
-            </RadioGroup>
-          </div>
+          
 
           {/* Guru Lineage */}
           <div>
@@ -640,32 +650,7 @@ const SpiritualFilterSidebar = memo(() => {
             </Select>
           </div>
 
-          {/* HIV Status */}
-          <div>
-            <Label className="block text-sm font-medium text-earth-brown mb-2">
-              HIV Status
-            </Label>
-            <Select
-              value={localFilters.hivStatus || ""}
-              onValueChange={(value) =>
-                setLocalFilters(prev => ({
-                  ...prev,
-                  hivStatus: value || undefined
-                }))
-              }
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select HIV Status" />
-              </SelectTrigger>
-              <SelectContent>
-                {hivStatusOptions.map((status: string) => (
-                  <SelectItem key={status} value={status}>
-                    {status}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          
 
           <div className="space-y-2">
             <Button onClick={handleSearch} className="w-full bg-saffron text-primary-foreground hover:bg-saffron/90 shadow-lg hover-elevate">

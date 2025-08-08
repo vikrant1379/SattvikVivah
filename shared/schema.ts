@@ -32,8 +32,6 @@ export const spiritualProfiles = pgTable("spiritual_profiles", {
   guruLineage: text("guru_lineage"),
   dailySadhana: text("daily_sadhana"),
   sevaActivities: text("seva_activities"),
-  dietaryLifestyle: text("dietary_lifestyle"), // Sattvic, Lacto Vegetarian, Vegan
-  
   // Lifestyle attributes
   smokingHabits: text("smoking_habits"), // No, Socially, Regularly
   drinkingHabits: text("drinking_habits"), // No, Socially, Regularly
@@ -42,8 +40,7 @@ export const spiritualProfiles = pgTable("spiritual_profiles", {
   // Physical and health attributes
   physicalStatus: text("physical_status"), // Normal, Physically Challenged
   bloodGroup: text("blood_group"), // A+, A-, B+, B-, AB+, AB-, O+, O-
-  healthConditions: text("health_conditions"), // Any chronic conditions
-  hivStatus: text("hiv_status"), // Negative, Positive, Prefer not to disclose
+  healthConditions: text("health_conditions"), // Any chronic conditions including HIV+
   medicalHistory: text("medical_history"), // Any relevant medical history
   
   // Life goals and spiritual aspirations
@@ -111,7 +108,6 @@ export const profileFilterSchema = z.object({
   motherTongue: z.string().optional(),
   spiritualPractices: z.array(z.string()).optional(),
   sacredTexts: z.array(z.string()).optional(),
-  dietaryLifestyle: z.string().optional(),
   guruLineage: z.string().optional(),
   education: z.string().optional(),
   profession: z.string().optional(),
@@ -125,7 +121,6 @@ export const profileFilterSchema = z.object({
   physicalStatus: z.string().optional(),
   bloodGroup: z.string().optional(),
   healthConditions: z.string().optional(),
-  hivStatus: z.string().optional(),
 });
 
 // Types

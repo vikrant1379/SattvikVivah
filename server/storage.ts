@@ -1,7 +1,7 @@
-import { 
-  type User, 
-  type InsertUser, 
-  type SpiritualProfile, 
+import {
+  type User,
+  type InsertUser,
+  type SpiritualProfile,
   type InsertSpiritualProfile,
   type Interest,
   type InsertInterest,
@@ -17,7 +17,7 @@ export interface IStorage {
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
 
-  // Profile operations  
+  // Profile operations
   getSpiritualProfile(id: string): Promise<SpiritualProfile | undefined>;
   getProfileByUserId(userId: string): Promise<SpiritualProfile | undefined>;
   createSpiritualProfile(profile: InsertSpiritualProfile): Promise<SpiritualProfile>;
@@ -48,7 +48,7 @@ export class MemStorage implements IStorage {
     this.spiritualProfiles = new Map();
     this.interests = new Map();
     this.quotes = new Map();
-    
+
     // Initialize with sample inspirational quotes
     this.initializeQuotes();
     this.initializeSampleProfiles();
@@ -65,8 +65,8 @@ export class MemStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = randomUUID();
-    const user: User = { 
-      ...insertUser, 
+    const user: User = {
+      ...insertUser,
       id,
       createdAt: new Date()
     };
@@ -135,24 +135,21 @@ export class MemStorage implements IStorage {
       profiles = profiles.filter(p => p.motherTongue === filters.motherTongue);
     }
     if (filters.spiritualPractices && filters.spiritualPractices.length > 0) {
-      profiles = profiles.filter(p => 
-        filters.spiritualPractices!.some(practice => 
+      profiles = profiles.filter(p =>
+        filters.spiritualPractices!.some(practice =>
           (p.spiritualPractices || []).includes(practice)
         )
       );
     }
     if (filters.sacredTexts && filters.sacredTexts.length > 0) {
-      profiles = profiles.filter(p => 
-        filters.sacredTexts!.some(text => 
+      profiles = profiles.filter(p =>
+        filters.sacredTexts!.some(text =>
           (p.sacredTexts || []).includes(text)
         )
       );
     }
-    if (filters.dietaryLifestyle) {
-      profiles = profiles.filter(p => p.dietaryLifestyle === filters.dietaryLifestyle);
-    }
     if (filters.guruLineage) {
-      profiles = profiles.filter(p => 
+      profiles = profiles.filter(p =>
         p.guruLineage?.toLowerCase().includes(filters.guruLineage!.toLowerCase())
       );
     }
@@ -192,9 +189,7 @@ export class MemStorage implements IStorage {
     if (filters.healthConditions) {
       profiles = profiles.filter(p => p.healthConditions === filters.healthConditions);
     }
-    if (filters.hivStatus) {
-      profiles = profiles.filter(p => p.hivStatus === filters.hivStatus);
-    }
+
 
     return profiles;
   }
@@ -203,7 +198,7 @@ export class MemStorage implements IStorage {
     const profiles = Array.from(this.spiritualProfiles.values())
       .filter(profile => profile.active && profile.verified)
       .sort(() => Math.random() - 0.5);
-    
+
     return profiles.slice(0, limit);
   }
 
@@ -246,7 +241,7 @@ export class MemStorage implements IStorage {
   async getRandomQuote(): Promise<InspirationalQuote | undefined> {
     const quotes = Array.from(this.quotes.values()).filter(q => q.isActive);
     if (quotes.length === 0) return undefined;
-    
+
     const randomIndex = Math.floor(Math.random() * quotes.length);
     return quotes[randomIndex];
   }
@@ -333,7 +328,6 @@ export class MemStorage implements IStorage {
         physicalStatus: "Normal",
         bloodGroup: "O+",
         healthConditions: "None",
-        hivStatus: "Negative",
         medicalHistory: null
       },
       {
@@ -366,7 +360,6 @@ export class MemStorage implements IStorage {
         physicalStatus: "Normal",
         bloodGroup: "A+",
         healthConditions: "None",
-        hivStatus: "Negative",
         medicalHistory: null
       }
     ];
