@@ -39,6 +39,12 @@ export const spiritualProfiles = pgTable("spiritual_profiles", {
   smokingHabits: text("smoking_habits"), // No, Socially, Regularly
   drinkingHabits: text("drinking_habits"), // No, Socially, Regularly
   eatingHabits: text("eating_habits"), // Vegetarian, Vegan, Non Vegetarian, Eggetarian, Pescetarian
+  
+  // Family and astrological attributes
+  hasChildren: text("has_children"), // No, Yes - living with me, Yes - not living with me, Prefer not to say
+  horoscope: text("horoscope"), // Zodiac signs
+  mangalik: text("mangalik"), // Yes, No, Anshik, Don't know, Prefer not to say
+  residentialStatus: text("residential_status"), // Citizen, Permanent Resident, Work Permit, etc.
 
   // Physical and health attributes
   physicalStatus: text("physical_status"), // Normal, Physically Challenged
@@ -128,6 +134,10 @@ export const profileFilterSchema = z.object({
   physicalStatus: z.string().optional(),
   bloodGroup: z.string().optional(),
   healthConditions: z.string().optional(),
+  hasChildren: z.string().optional(),
+  horoscope: z.string().optional(),
+  mangalik: z.string().optional(),
+  residentialStatus: z.string().optional(),
 });
 
 // Types

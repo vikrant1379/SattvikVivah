@@ -37,6 +37,12 @@ import {
 } from "../data/spiritual-practices";
 import type { ProfileFilter } from "@shared/schema";
 
+// Placeholder options - replace with actual data imports
+const hasChildrenOptions = ["Yes", "No", "Doesn't Matter"];
+const horoscopeOptions = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces", "Doesn't Matter"];
+const mangalikOptions = ["Yes", "No", "Dosha less", "Doesn't Matter"];
+const residentialStatusOptions = ["Citizen", "Permanent Resident", "Temporary Resident", "Doesn't Matter"];
+
 interface SpiritualFilterSidebarProps {
   filters: ProfileFilter;
   onFiltersChange: (filters: ProfileFilter) => void;
@@ -73,7 +79,11 @@ const SpiritualFilterSidebar = memo(() => {
     caste: filters.caste,
     religion: filters.religion,
     ethnicity: filters.ethnicity,
-    annualIncome: filters.annualIncome
+    annualIncome: filters.annualIncome,
+    hasChildren: filters.hasChildren,
+    horoscope: filters.horoscope,
+    mangalik: filters.mangalik,
+    residentialStatus: filters.residentialStatus
   });
 
   // Collapsible states - start with some sections open
@@ -282,6 +292,72 @@ const SpiritualFilterSidebar = memo(() => {
         onRemove: () => setLocalFilters(prev => ({ ...prev, annualIncome: undefined }))
       });
     }
+    
+    // Add new active filters
+    if (localFilters.maritalStatus) {
+      active.push({
+        key: 'maritalStatus',
+        label: `Marital Status: ${localFilters.maritalStatus}`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, maritalStatus: undefined }))
+      });
+    }
+
+    if (localFilters.eatingHabits) {
+      active.push({
+        key: 'eatingHabits',
+        label: `Diet: ${localFilters.eatingHabits}`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, eatingHabits: undefined }))
+      });
+    }
+
+    if (localFilters.drinkingHabits) {
+      active.push({
+        key: 'drinkingHabits',
+        label: `Drinking: ${localFilters.drinkingHabits}`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, drinkingHabits: undefined }))
+      });
+    }
+
+    if (localFilters.smokingHabits) {
+      active.push({
+        key: 'smokingHabits',
+        label: `Smoking: ${localFilters.smokingHabits}`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, smokingHabits: undefined }))
+      });
+    }
+
+    if (localFilters.hasChildren) {
+      active.push({
+        key: 'hasChildren',
+        label: `Children: ${localFilters.hasChildren}`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, hasChildren: undefined }))
+      });
+    }
+
+    if (localFilters.horoscope) {
+      active.push({
+        key: 'horoscope',
+        label: `Horoscope: ${localFilters.horoscope}`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, horoscope: undefined }))
+      });
+    }
+
+    if (localFilters.mangalik) {
+      active.push({
+        key: 'mangalik',
+        label: `Mangalik: ${localFilters.mangalik}`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, mangalik: undefined }))
+      });
+    }
+
+    if (localFilters.residentialStatus) {
+      active.push({
+        key: 'residentialStatus',
+        label: `Residential Status: ${localFilters.residentialStatus}`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, residentialStatus: undefined }))
+      });
+    }
+
 
     return active;
   };
@@ -1021,20 +1097,14 @@ const SpiritualFilterSidebar = memo(() => {
             )}
           </div>
 
-          {/* Lifestyle */}
+          {/* Lifestyle & Preferences Section (Replaced with direct filters) */}
           <div className="border-b border-gray-200 pb-4">
-            <div 
-              className="flex items-center justify-between cursor-pointer py-2"
-              onClick={() => toggleSection('lifestyle')}
-            >
-              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">LIFESTYLE</h3>
-              {openSections.lifestyle ? 
-                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
-                <ChevronRight className="w-4 h-4 text-gray-500" />
-              }
-            </div>
-
-            {openSections.lifestyle && (
+            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 text-left hover:bg-gray-50 transition-colors" onClick={() => toggleSection('lifestyle')}>
+              <span className="font-medium text-gray-900">Personal Preferences</span>
+              {openSections.lifestyle ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+            </CollapsibleTrigger>
+            <CollapsibleContent forceMount={openSections.lifestyle}>
+              {openSections.lifestyle && (
               <div className="mt-3 space-y-4">
                 <div>
                   <Label className="text-sm font-medium text-gray-700 mb-2 block">Marital Status</Label>
@@ -1063,21 +1133,165 @@ const SpiritualFilterSidebar = memo(() => {
                 <div>
                   <Label className="text-sm font-medium text-gray-700 mb-2 block">Dietary Preference</Label>
                   <Select
-                    value={localFilters.dietaryLifestyle || ""}
+                    value={localFilters.eatingHabits || ""}
                     onValueChange={(value) =>
                       setLocalFilters(prev => ({
                         ...prev,
-                        dietaryLifestyle: value || undefined
+                        eatingHabits: value || undefined
                       }))
                     }
                   >
                     <SelectTrigger className="h-9 text-sm">
-                      <SelectValue placeholder="Select Diet" />
+                      <SelectValue placeholder="Select Preference" />
                     </SelectTrigger>
                     <SelectContent>
-                      {dietaryLifestyles.map((diet: string) => (
-                        <SelectItem key={diet} value={diet}>
-                          {diet}
+                      {eatingHabitsOptions.map((habit: string) => (
+                        <SelectItem key={habit} value={habit}>
+                          {habit}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Drinking Habits</Label>
+                  <Select
+                    value={localFilters.drinkingHabits || ""}
+                    onValueChange={(value) =>
+                      setLocalFilters(prev => ({
+                        ...prev,
+                        drinkingHabits: value || undefined
+                      }))
+                    }
+                  >
+                    <SelectTrigger className="h-9 text-sm">
+                      <SelectValue placeholder="Select Habit" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {drinkingHabitsOptions.map((habit: string) => (
+                        <SelectItem key={habit} value={habit}>
+                          {habit}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Smoking Habits</Label>
+                  <Select
+                    value={localFilters.smokingHabits || ""}
+                    onValueChange={(value) =>
+                      setLocalFilters(prev => ({
+                        ...prev,
+                        smokingHabits: value || undefined
+                      }))
+                    }
+                  >
+                    <SelectTrigger className="h-9 text-sm">
+                      <SelectValue placeholder="Select Habit" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {smokingHabitsOptions.map((habit: string) => (
+                        <SelectItem key={habit} value={habit}>
+                          {habit}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Have Children</Label>
+                  <Select
+                    value={localFilters.hasChildren || ""}
+                    onValueChange={(value) =>
+                      setLocalFilters(prev => ({
+                        ...prev,
+                        hasChildren: value || undefined
+                      }))
+                    }
+                  >
+                    <SelectTrigger className="h-9 text-sm">
+                      <SelectValue placeholder="Select Option" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {hasChildrenOptions.map((option: string) => (
+                        <SelectItem key={option} value={option}>
+                          {option}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Horoscope</Label>
+                  <Select
+                    value={localFilters.horoscope || ""}
+                    onValueChange={(value) =>
+                      setLocalFilters(prev => ({
+                        ...prev,
+                        horoscope: value || undefined
+                      }))
+                    }
+                  >
+                    <SelectTrigger className="h-9 text-sm">
+                      <SelectValue placeholder="Select Sign" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {horoscopeOptions.map((sign: string) => (
+                        <SelectItem key={sign} value={sign}>
+                          {sign}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Mangalik</Label>
+                  <Select
+                    value={localFilters.mangalik || ""}
+                    onValueChange={(value) =>
+                      setLocalFilters(prev => ({
+                        ...prev,
+                        mangalik: value || undefined
+                      }))
+                    }
+                  >
+                    <SelectTrigger className="h-9 text-sm">
+                      <SelectValue placeholder="Select Option" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {mangalikOptions.map((option: string) => (
+                        <SelectItem key={option} value={option}>
+                          {option}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Residential Status</Label>
+                  <Select
+                    value={localFilters.residentialStatus || ""}
+                    onValueChange={(value) =>
+                      setLocalFilters(prev => ({
+                        ...prev,
+                        residentialStatus: value || undefined
+                      }))
+                    }
+                  >
+                    <SelectTrigger className="h-9 text-sm">
+                      <SelectValue placeholder="Select Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {residentialStatusOptions.map((status: string) => (
+                        <SelectItem key={status} value={status}>
+                          {status}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -1085,6 +1299,7 @@ const SpiritualFilterSidebar = memo(() => {
                 </div>
               </div>
             )}
+            </CollapsibleContent>
           </div>
 
           {/* Additional Options */}

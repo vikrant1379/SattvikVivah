@@ -189,6 +189,18 @@ export class MemStorage implements IStorage {
     if (filters.healthConditions) {
       profiles = profiles.filter(p => p.healthConditions === filters.healthConditions);
     }
+    if (filters.hasChildren) {
+      profiles = profiles.filter(p => p.hasChildren === filters.hasChildren);
+    }
+    if (filters.horoscope) {
+      profiles = profiles.filter(p => p.horoscope === filters.horoscope);
+    }
+    if (filters.mangalik) {
+      profiles = profiles.filter(p => p.mangalik === filters.mangalik);
+    }
+    if (filters.residentialStatus) {
+      profiles = profiles.filter(p => p.residentialStatus === filters.residentialStatus);
+    }
 
 
     return profiles;
@@ -327,6 +339,10 @@ export class MemStorage implements IStorage {
         eatingHabits: "Vegetarian",
         physicalStatus: "Normal",
         bloodGroup: "O+",
+        hasChildren: "No",
+        horoscope: "Leo",
+        mangalik: "No",
+        residentialStatus: "Citizen",
         healthConditions: "None",
         medicalHistory: null
       },

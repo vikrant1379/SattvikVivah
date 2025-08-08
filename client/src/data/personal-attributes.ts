@@ -70,6 +70,47 @@ export const eatingHabitsOptions = [
   "Pescetarian"
 ];
 
+export const hasChildrenOptions = [
+  "No",
+  "Yes - living with me",
+  "Yes - not living with me",
+  "Prefer not to say"
+];
+
+export const horoscopeOptions = [
+  "Aries",
+  "Taurus", 
+  "Gemini",
+  "Cancer",
+  "Leo",
+  "Virgo",
+  "Libra",
+  "Scorpio",
+  "Sagittarius",
+  "Capricorn",
+  "Aquarius",
+  "Pisces",
+  "Don't know",
+  "Prefer not to say"
+];
+
+export const mangalikOptions = [
+  "Yes",
+  "No",
+  "Anshik",
+  "Don't know",
+  "Prefer not to say"
+];
+
+export const residentialStatusOptions = [
+  "Citizen",
+  "Permanent Resident",
+  "Work Permit",
+  "Student Visa",
+  "Temporary Visa",
+  "Other"
+];
+
 export const physicalStatusOptions = [
   "Normal",
   "Physically Challenged"
