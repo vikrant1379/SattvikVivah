@@ -98,6 +98,8 @@ const SpiritualFilterSidebar = memo(() => {
     caste: false,
     spiritualPractices: false,
     sacredTexts: false,
+    maritalStatus: true,
+    dietaryPreference: true,
     lifestyle: false,
     religion: false,
     ethnicity: false,
@@ -297,7 +299,7 @@ const SpiritualFilterSidebar = memo(() => {
     if (localFilters.maritalStatus) {
       active.push({
         key: 'maritalStatus',
-        label: `Marital Status: ${localFilters.maritalStatus}`,
+        label: `${localFilters.maritalStatus}`,
         onRemove: () => setLocalFilters(prev => ({ ...prev, maritalStatus: undefined }))
       });
     }
@@ -305,7 +307,7 @@ const SpiritualFilterSidebar = memo(() => {
     if (localFilters.eatingHabits) {
       active.push({
         key: 'eatingHabits',
-        label: `Diet: ${localFilters.eatingHabits}`,
+        label: `${localFilters.eatingHabits}`,
         onRemove: () => setLocalFilters(prev => ({ ...prev, eatingHabits: undefined }))
       });
     }
@@ -1097,63 +1099,93 @@ const SpiritualFilterSidebar = memo(() => {
             )}
           </div>
 
-          {/* Lifestyle & Preferences Section */}
+          {/* Marital Status Section */}
+          <div className="border-b border-gray-200 pb-4">
+            <div 
+              className="flex items-center justify-between cursor-pointer py-2"
+              onClick={() => toggleSection('maritalStatus')}
+            >
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">MARITAL STATUS</h3>
+              {openSections.maritalStatus ? 
+                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
+                <ChevronRight className="w-4 h-4 text-gray-500" />
+              }
+            </div>
+
+            {openSections.maritalStatus && (
+              <div className="mt-3">
+                <Select
+                  value={localFilters.maritalStatus || ""}
+                  onValueChange={(value) =>
+                    setLocalFilters(prev => ({
+                      ...prev,
+                      maritalStatus: value || undefined
+                    }))
+                  }
+                >
+                  <SelectTrigger className="h-9 text-sm">
+                    <SelectValue placeholder="Select Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {maritalStatusOptions.map((status: string) => (
+                      <SelectItem key={status} value={status}>
+                        {status}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+          </div>
+
+          {/* Dietary Preference Section */}
+          <div className="border-b border-gray-200 pb-4">
+            <div 
+              className="flex items-center justify-between cursor-pointer py-2"
+              onClick={() => toggleSection('dietaryPreference')}
+            >
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">DIETARY PREFERENCE</h3>
+              {openSections.dietaryPreference ? 
+                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
+                <ChevronRight className="w-4 h-4 text-gray-500" />
+              }
+            </div>
+
+            {openSections.dietaryPreference && (
+              <div className="mt-3">
+                <Select
+                  value={localFilters.eatingHabits || ""}
+                  onValueChange={(value) =>
+                    setLocalFilters(prev => ({
+                      ...prev,
+                      eatingHabits: value || undefined
+                    }))
+                  }
+                >
+                  <SelectTrigger className="h-9 text-sm">
+                    <SelectValue placeholder="Select Preference" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {eatingHabitsOptions.map((habit: string) => (
+                      <SelectItem key={habit} value={habit}>
+                        {habit}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+          </div>
+
+          {/* Lifestyle & Other Preferences Section */}
           <Collapsible open={openSections.lifestyle} onOpenChange={(open) => setOpenSections(prev => ({ ...prev, lifestyle: open }))}>
             <div className="border-b border-gray-200 pb-4">
               <CollapsibleTrigger className="flex items-center justify-between w-full p-3 text-left hover:bg-gray-50 transition-colors">
-                <span className="font-medium text-gray-900">Personal Preferences</span>
+                <span className="font-medium text-gray-900">Other Preferences</span>
                 {openSections.lifestyle ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <div className="mt-3 space-y-4">
-                  <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">Marital Status</Label>
-                    <Select
-                      value={localFilters.maritalStatus || ""}
-                      onValueChange={(value) =>
-                        setLocalFilters(prev => ({
-                          ...prev,
-                          maritalStatus: value || undefined
-                        }))
-                      }
-                    >
-                      <SelectTrigger className="h-9 text-sm">
-                        <SelectValue placeholder="Select Status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {maritalStatusOptions.map((status: string) => (
-                          <SelectItem key={status} value={status}>
-                            {status}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">Dietary Preference</Label>
-                    <Select
-                      value={localFilters.eatingHabits || ""}
-                      onValueChange={(value) =>
-                        setLocalFilters(prev => ({
-                          ...prev,
-                          eatingHabits: value || undefined
-                        }))
-                      }
-                    >
-                      <SelectTrigger className="h-9 text-sm">
-                        <SelectValue placeholder="Select Preference" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {eatingHabitsOptions.map((habit: string) => (
-                          <SelectItem key={habit} value={habit}>
-                            {habit}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
                   <div>
                     <Label className="text-sm font-medium text-gray-700 mb-2 block">Drinking Habits</Label>
                     <Select

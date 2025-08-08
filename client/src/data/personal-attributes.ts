@@ -64,9 +64,9 @@ export const drinkingHabitsOptions = [
 
 export const eatingHabitsOptions = [
   "Vegetarian",
+  "Non Vegetarian",
+  "Eggetarian", 
   "Vegan",
-  "Non Vegetarian", 
-  "Eggetarian",
   "Pescetarian"
 ];
 
