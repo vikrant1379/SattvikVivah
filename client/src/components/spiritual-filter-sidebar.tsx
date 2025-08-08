@@ -445,9 +445,10 @@ const SpiritualFilterSidebar = memo(() => {
               <div className="mt-3 space-y-3">
                 {/* Country Selection */}
                 <div>
-                  <Select
+                  <Combobox
+                    options={countries}
                     value={localFilters.country || ""}
-                    onValueChange={(value) => {
+                    onSelect={(value) => {
                       const selectedCountry = value || undefined;
                       setLocalFilters(prev => ({
                         ...prev,
@@ -456,26 +457,23 @@ const SpiritualFilterSidebar = memo(() => {
                         city: undefined
                       }));
                     }}
-                  >
-                    <SelectTrigger className="h-11 text-sm bg-white border border-gray-300 rounded-md">
-                      <SelectValue placeholder="Select Country" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {countries.map((country) => (
-                        <SelectItem key={country.value} value={country.value}>
-                          {country.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    placeholder="Select Country"
+                    searchPlaceholder="Search countries..."
+                    emptyMessage="No country found."
+                    className="h-11 text-sm bg-white border border-gray-300 rounded-md"
+                  />
                 </div>
 
                 {/* State Selection - only show if country is selected */}
                 {localFilters.country && (
                   <div>
-                    <Select
+                    <Combobox
+                      options={(statesByCountry[localFilters.country] || []).map(state => ({
+                        value: state,
+                        label: state
+                      }))}
                       value={localFilters.state || ""}
-                      onValueChange={(value) => {
+                      onSelect={(value) => {
                         const selectedState = value || undefined;
                         setLocalFilters(prev => ({
                           ...prev,
@@ -483,45 +481,35 @@ const SpiritualFilterSidebar = memo(() => {
                           city: undefined
                         }));
                       }}
-                    >
-                      <SelectTrigger className="h-11 text-sm bg-white border border-gray-300 rounded-md">
-                        <SelectValue placeholder="Select State" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {(statesByCountry[localFilters.country] || []).map((state) => (
-                          <SelectItem key={state} value={state}>
-                            {state}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      placeholder="Select State"
+                      searchPlaceholder="Search states..."
+                      emptyMessage="No state found."
+                      className="h-11 text-sm bg-white border border-gray-300 rounded-md"
+                    />
                   </div>
                 )}
 
                 {/* City Selection - only show if state is selected */}
                 {localFilters.state && (
                   <div>
-                    <Select
+                    <Combobox
+                      options={(citiesByState[localFilters.state] || []).map(city => ({
+                        value: city,
+                        label: city
+                      }))}
                       value={localFilters.city || ""}
-                      onValueChange={(value) => {
+                      onSelect={(value) => {
                         const selectedCity = value || undefined;
                         setLocalFilters(prev => ({
                           ...prev,
                           city: selectedCity
                         }));
                       }}
-                    >
-                      <SelectTrigger className="h-11 text-sm bg-white border border-gray-300 rounded-md">
-                        <SelectValue placeholder="Any City" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {(citiesByState[localFilters.state] || []).map((city) => (
-                          <SelectItem key={city} value={city}>
-                            {city}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      placeholder="Select City"
+                      searchPlaceholder="Search cities..."
+                      emptyMessage="No city found."
+                      className="h-11 text-sm bg-white border border-gray-300 rounded-md"
+                    />
                   </div>
                 )}
               </div>
