@@ -25,6 +25,9 @@ export const spiritualProfiles = pgTable("spiritual_profiles", {
   profession: text("profession"),
   maritalStatus: text("marital_status").default("Never Married"),
   caste: text("caste"),
+  religion: text("religion"),
+  ethnicity: text("ethnicity"),
+  annualIncome: text("annual_income"),
 
   // Spiritual attributes
   spiritualPractices: jsonb("spiritual_practices").$type<string[]>().notNull().default([]),
@@ -115,6 +118,10 @@ export const profileFilterSchema = z.object({
   heightMax: z.string().optional(),
   maritalStatus: z.string().optional(),
   caste: z.string().optional(),
+  religion: z.string().optional(),
+  ethnicity: z.string().optional(),
+  annualIncomeMin: z.string().optional(),
+  annualIncomeMax: z.string().optional(),
   smokingHabits: z.string().optional(),
   drinkingHabits: z.string().optional(),
   eatingHabits: z.string().optional(),

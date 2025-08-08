@@ -25,7 +25,10 @@ import {
   bloodGroupOptions,
   healthConditionsOptions,
   ageOptions,
-  heightOptions
+  heightOptions,
+  religionOptions,
+  ethnicityOptions,
+  annualIncomeOptions
 } from "../data/personal-attributes";
 import { 
   spiritualPractices,
@@ -34,6 +37,174 @@ import {
   dietaryLifestyles
 } from "../data/spiritual-practices";
 import type { ProfileFilter } from "@shared/schema";
+
+interface SpiritualFilterSidebarProps {
+  filters: ProfileFilter;
+  onFiltersChange: (filters: ProfileFilter) => void;
+  onClearFilters: () => void;
+}
+
+export const SpiritualFilterSidebar = memo(({ 
+  filters, 
+  onFiltersChange, 
+  onClearFilters 
+}: SpiritualFilterSidebarProps) => {
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    basic: true,
+    spiritual: false,
+    lifestyle: false,
+    background: false,
+    financial: false
+  });
+
+  const toggleSection = useCallback((section: string) => {
+    setOpenSections(prev => ({ ...prev, [section]: !prev[section] }));
+  }, []);
+
+  const updateFilter = useCallback((key: keyof ProfileFilter, value: any) => {
+    onFiltersChange({ ...filters, [key]: value });
+  }, [filters, onFiltersChange]);
+
+  const clearFilter = useCallback((key: keyof ProfileFilter) => {
+    const newFilters = { ...filters };
+    delete newFilters[key];
+    onFiltersChange(newFilters);
+  }, [filters, onFiltersChange]);
+
+  return (
+    <Card className="w-full max-w-sm">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-lg">Filter Profiles</CardTitle>
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={onClearFilters}
+          className="w-full"
+        >
+          <X className="w-4 h-4 mr-2" />
+          Clear All Filters
+        </Button>
+      </CardHeader>
+      
+      <CardContent className="space-y-4">
+        {/* Background & Identity Section */}
+        <Collapsible
+          open={openSections.background}
+          onOpenChange={() => toggleSection('background')}
+        >
+          <CollapsibleTrigger asChild>
+            <Button variant="ghost" className="w-full justify-between p-0">
+              <span className="font-medium">Background & Identity</span>
+              {openSections.background ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="space-y-3 mt-3">
+            {/* Religion */}
+            <div className="space-y-2">
+              <Label>Religion</Label>
+              <Select
+                value={filters.religion || ""}
+                onValueChange={(value) => updateFilter('religion', value || undefined)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Any" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Any</SelectItem>
+                  {religionOptions.map(option => (
+                    <SelectItem key={option} value={option}>{option}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Ethnicity */}
+            <div className="space-y-2">
+              <Label>Ethnicity</Label>
+              <Select
+                value={filters.ethnicity || ""}
+                onValueChange={(value) => updateFilter('ethnicity', value || undefined)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Any" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Any</SelectItem>
+                  {ethnicityOptions.map(option => (
+                    <SelectItem key={option} value={option}>{option}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Caste */}
+            <div className="space-y-2">
+              <Label>Caste</Label>
+              <Combobox
+                options={casteOptions.map(option => ({ label: option, value: option }))}
+                value={filters.caste || ""}
+                onValueChange={(value) => updateFilter('caste', value || undefined)}
+                placeholder="Any"
+                emptyText="No caste found"
+              />
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+
+        {/* Financial Section */}
+        <Collapsible
+          open={openSections.financial}
+          onOpenChange={() => toggleSection('financial')}
+        >
+          <CollapsibleTrigger asChild>
+            <Button variant="ghost" className="w-full justify-between p-0">
+              <span className="font-medium">Financial</span>
+              {openSections.financial ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="space-y-3 mt-3">
+            {/* Annual Income Range */}
+            <div className="space-y-2">
+              <Label>Minimum Annual Income</Label>
+              <Select
+                value={filters.annualIncomeMin || ""}
+                onValueChange={(value) => updateFilter('annualIncomeMin', value || undefined)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Any" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Any</SelectItem>
+                  {annualIncomeOptions.slice(0, -1).map(option => (
+                    <SelectItem key={option} value={option}>{option}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Maximum Annual Income</Label>
+              <Select
+                value={filters.annualIncomeMax || ""}
+                onValueChange={(value) => updateFilter('annualIncomeMax', value || undefined)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Any" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Any</SelectItem>
+                  {annualIncomeOptions.slice(0, -1).map(option => (
+                    <SelectItem key={option} value={option}>{option}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+      </CardContent>
+    </Card>
+  );
+});
 
 const SpiritualFilterSidebar = memo(() => {
   const { filters, setFilters, searchProfiles } = useSpiritualContext();
