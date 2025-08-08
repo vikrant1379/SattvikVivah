@@ -1105,7 +1105,7 @@ const SpiritualFilterSidebar = memo(() => {
                 {openSections.lifestyle ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
               </CollapsibleTrigger>
               <CollapsibleContent>
-                {openSections.lifestyle && (</old_str>
+                <div className="mt-3 space-y-4"></old_str>
               <div className="mt-3 space-y-4">
                 <div>
                   <Label className="text-sm font-medium text-gray-700 mb-2 block">Marital Status</Label>
@@ -1299,7 +1299,6 @@ const SpiritualFilterSidebar = memo(() => {
                   </Select>
                 </div>
               </div>
-              )}
               </CollapsibleContent>
             </div>
           </Collapsible></old_str>
