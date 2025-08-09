@@ -28,32 +28,44 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
   };
 
   const getOneLineBio = () => {
-    return profile.bio?.split('.')[0] || "Looking for a life partner who shares similar values and beliefs.";
+    return profile.bio?.split('.')[0] || "Seeking a caring and understanding partner for a blessed journey together";
+  };
+
+  const formatHeight = (height: string) => {
+    // Convert height to ft and inches format
+    if (height.includes('cm')) {
+      const cm = parseInt(height.replace('cm', ''));
+      const totalInches = cm / 2.54;
+      const feet = Math.floor(totalInches / 12);
+      const inches = Math.round(totalInches % 12);
+      return `${feet}'${inches}"`;
+    }
+    return height;
   };
 
   return (
-    <Card className="w-full hover:shadow-lg transition-all duration-300 bg-white border border-gray-200 hover:border-saffron/30 mb-4">
+    <Card className="w-full hover:shadow-xl transition-all duration-300 bg-white border border-gray-100 hover:border-blue-200 mb-6 overflow-hidden">
       <CardContent className="p-0">
         <div className="flex">
           {/* Profile Image Section */}
-          <div className="relative w-48 h-64 flex-shrink-0">
+          <div className="relative w-44 h-56 flex-shrink-0">
             {profile.profileImage ? (
               <img 
                 src={profile.profileImage} 
                 alt={profile.name}
-                className="w-full h-full object-cover rounded-l-lg"
+                className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-saffron/10 to-temple-gold/10 rounded-l-lg flex items-center justify-center relative">
-                <div className="w-20 h-20 rounded-full bg-saffron/20 flex items-center justify-center">
-                  <span className="text-2xl font-bold text-saffron">
+              <div className="w-full h-full bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center relative">
+                <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center">
+                  <span className="text-xl font-semibold text-blue-600">
                     {getInitials(profile.name)}
                   </span>
                 </div>
                 {/* Photo visible on acceptance message for profiles without images */}
-                <div className="absolute inset-0 flex items-center justify-center bg-black/60 text-white text-center px-4">
+                <div className="absolute inset-0 flex items-center justify-center bg-black/70 text-white text-center px-3">
                   <div className="text-sm font-medium">
-                    <Eye className="w-6 h-6 mx-auto mb-2" />
+                    <Eye className="w-5 h-5 mx-auto mb-2" />
                     Photo visible on acceptance of interest
                   </div>
                 </div>
@@ -62,82 +74,75 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
             
             {/* Gallery Icon */}
             <div className="absolute top-3 right-3">
-              <div className="bg-black/60 text-white rounded-full p-2">
+              <div className="bg-black/50 text-white rounded-md p-1.5">
                 <Images className="w-4 h-4" />
+                <span className="text-xs ml-1">2</span>
               </div>
             </div>
           </div>
 
           {/* Profile Information Section */}
-          <div className="flex-1 p-6">
+          <div className="flex-1 p-5">
             <div className="flex justify-between items-start mb-4">
               <div className="flex-1">
                 {/* Last Seen */}
-                <div className="flex items-center text-sm text-gray-600 mb-2">
-                  <Clock className="w-4 h-4 mr-1" />
+                <div className="flex items-center text-sm text-gray-500 mb-3">
+                  <Clock className="w-3.5 h-3.5 mr-1.5" />
                   {formatLastSeen()}
                 </div>
 
-                {/* Name and Age */}
-                <div className="flex items-center mb-2">
-                  <h3 className="text-2xl font-semibold text-gray-900 mr-2">
+                {/* Name, Age and Verification */}
+                <div className="flex items-center mb-3">
+                  <h3 className="text-2xl font-bold text-gray-800 mr-3">
                     {profile.name}, {profile.age}
                   </h3>
                   {profile.verified && (
-                    <CheckCircle className="w-6 h-6 text-blue-500 fill-current" />
+                    <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
+                      <CheckCircle className="w-4 h-4 text-white fill-current" />
+                    </div>
                   )}
                 </div>
 
-                {/* Basic Info Row */}
-                <div className="flex items-center text-gray-600 mb-3 space-x-6">
-                  <span className="font-medium">{profile.height}</span>
-                  <span>•</span>
-                  <span>{profile.city}, {profile.state}</span>
-                  <span>•</span>
+                {/* Height, Location, Caste */}
+                <div className="flex items-center text-gray-600 mb-3 text-sm">
+                  <span className="font-medium">{formatHeight(profile.height)}</span>
+                  <span className="mx-2 text-gray-400">•</span>
+                  <span>{profile.city}</span>
+                  <span className="mx-2 text-gray-400">•</span>
                   <span>{profile.caste || 'Caste not specified'}</span>
                 </div>
 
                 {/* Professional Info */}
                 <div className="space-y-2 mb-3">
                   <div className="flex items-center text-sm text-gray-700">
-                    <Briefcase className="w-4 h-4 mr-2" />
-                    <span className="font-medium">{profile.profession || 'Profession not specified'}</span>
-                    <span className="mx-2">•</span>
+                    <Briefcase className="w-4 h-4 mr-2 text-gray-500" />
+                    <span className="font-medium">{profile.profession || 'Doctor'}</span>
+                    <span className="mx-2 text-gray-400">•</span>
                     <span>{profile.annualIncome || 'Income not specified'}</span>
                   </div>
                   <div className="flex items-center text-sm text-gray-700">
-                    <GraduationCap className="w-4 h-4 mr-2" />
-                    <span>{profile.education || 'Education not specified'}</span>
-                    <span className="mx-2">•</span>
+                    <GraduationCap className="w-4 h-4 mr-2 text-gray-500" />
+                    <span>{profile.education || 'MBBS'}</span>
+                    <span className="mx-2 text-gray-400">•</span>
                     <span>{profile.maritalStatus || 'Never Married'}</span>
                   </div>
                 </div>
 
-                {/* One-line Bio */}
-                <div className="text-sm text-gray-600 mb-3 italic">
+                {/* Bio Quote */}
+                <div className="text-sm text-gray-600 mb-4 italic font-medium">
                   "{getOneLineBio()}"
                 </div>
 
-                {/* Additional Tags */}
+                {/* Religion and Language Tags */}
                 <div className="flex flex-wrap gap-2 mb-4">
                   {profile.religion && (
-                    <Badge variant="secondary" className="text-xs bg-blue-50 text-blue-700">
+                    <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200 px-2 py-1">
                       {profile.religion}
                     </Badge>
                   )}
                   {profile.motherTongue && (
-                    <Badge variant="secondary" className="text-xs bg-green-50 text-green-700">
+                    <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200 px-2 py-1">
                       {profile.motherTongue}
-                    </Badge>
-                  )}
-                  {profile.eatingHabits && (
-                    <Badge variant="secondary" className="text-xs bg-purple-50 text-purple-700">
-                      {profile.eatingHabits}
-                    </Badge>
-                  )}
-                  {profile.smokingHabits === 'No' && profile.drinkingHabits === 'No' && (
-                    <Badge variant="secondary" className="text-xs bg-green-50 text-green-700">
-                      No Smoking/Drinking
                     </Badge>
                   )}
                 </div>
@@ -146,12 +151,12 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
               {/* Pro and Most Compatible Badges */}
               <div className="ml-4 flex flex-col items-end space-y-2">
                 {profile.verified && (
-                  <Badge className="bg-red-500 text-white text-xs px-3 py-1 font-medium">
+                  <Badge className="bg-red-500 text-white text-xs px-3 py-1 font-semibold rounded-md">
                     Pro
                   </Badge>
                 )}
-                {Math.random() > 0.7 && (
-                  <Badge className="bg-pink-100 text-pink-600 text-xs px-3 py-1 border border-pink-200">
+                {Math.random() > 0.6 && (
+                  <Badge className="bg-pink-50 text-pink-600 text-xs px-3 py-1 border border-pink-200 font-medium rounded-full">
                     🔥 Most Compatible
                   </Badge>
                 )}
@@ -159,11 +164,11 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex items-center justify-between space-x-3">
+            <div className="flex items-center justify-start space-x-4 pt-2">
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="text-red-500 border-red-200 hover:bg-red-50 flex items-center space-x-1 rounded-full px-4 py-2"
+                className="text-red-500 border-red-200 hover:bg-red-50 hover:border-red-300 flex items-center space-x-1.5 rounded-full px-4 py-2 font-medium"
               >
                 <Heart className="w-4 h-4" />
                 <span>Interest</span>
@@ -171,7 +176,7 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
               <Button 
                 variant="outline" 
                 size="sm"
-                className="text-pink-500 border-pink-200 hover:bg-pink-50 flex items-center space-x-1 rounded-full px-4 py-2"
+                className="text-pink-500 border-pink-200 hover:bg-pink-50 hover:border-pink-300 flex items-center space-x-1.5 rounded-full px-4 py-2 font-medium"
               >
                 <Heart className="w-4 h-4 fill-current" />
                 <span>Super Interest</span>
@@ -179,7 +184,7 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
               <Button 
                 variant="outline" 
                 size="sm"
-                className="text-orange-500 border-orange-200 hover:bg-orange-50 flex items-center space-x-1 rounded-full px-4 py-2"
+                className="text-orange-500 border-orange-200 hover:bg-orange-50 hover:border-orange-300 flex items-center space-x-1.5 rounded-full px-4 py-2 font-medium"
               >
                 <Star className="w-4 h-4" />
                 <span>Shortlist</span>
@@ -187,7 +192,7 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
               <Button 
                 variant="outline" 
                 size="sm"
-                className="text-gray-600 border-gray-200 hover:bg-gray-50 flex items-center space-x-1 rounded-full px-4 py-2"
+                className="text-gray-600 border-gray-200 hover:bg-gray-50 hover:border-gray-300 flex items-center space-x-1.5 rounded-full px-4 py-2 font-medium"
               >
                 <MessageCircle className="w-4 h-4" />
                 <span>Chat</span>
