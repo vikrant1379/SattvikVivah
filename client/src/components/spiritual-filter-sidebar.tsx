@@ -113,9 +113,10 @@ const SpiritualFilterSidebar = memo(() => {
   });
 
   // Saved filters functionality
-  const [savedFilters, setSavedFilters] = useState<ProfileFilter[]>([]);
+  const [savedFilters, setSavedFilters] = useState<(ProfileFilter & { name: string })[]>([]);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [filterName, setFilterName] = useState("");
+  const [expandedSavedFilters, setExpandedSavedFilters] = useState<{ [key: number]: boolean }>({});
 
   // Search states for each section
   const [searchStates, setSearchStates] = useState({
@@ -467,6 +468,16 @@ const SpiritualFilterSidebar = memo(() => {
   }, [setFilters]);
 
   const activeFilters = getActiveFilters();
+  
+  // Check if there are any active filters to save
+  const hasFiltersToSave = () => {
+    return Object.values(localFilters).some(value => {
+      if (Array.isArray(value)) {
+        return value.length > 0;
+      }
+      return value !== undefined && value !== "" && value !== false;
+    });
+  };
 
   return (
     <aside className="w-80 bg-white border-r border-gray-200 overflow-y-auto hidden lg:block">
@@ -478,7 +489,7 @@ const SpiritualFilterSidebar = memo(() => {
           </div>
           
           {/* Action Buttons */}
-          <div className="grid grid-cols-3 gap-2 mb-4">
+          <div className={`grid gap-2 mb-4 ${hasFiltersToSave() ? 'grid-cols-3' : 'grid-cols-2'}`}>
             <Button 
               variant="outline" 
               size="sm"
@@ -490,20 +501,22 @@ const SpiritualFilterSidebar = memo(() => {
               <span>Collapse</span>
             </Button>
             
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => setShowSaveDialog(true)}
-              className="flex items-center justify-center gap-2 text-blue-600 text-xs font-medium hover:bg-blue-50 hover:text-blue-700 border-blue-200 px-3 py-2 h-8 rounded-lg bg-white shadow-sm transition-all duration-200 hover:shadow-md"
-              title="Save Current Filters"
-            >
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-              </svg>
-              <span>Save</span>
-            </Button>
+            {hasFiltersToSave() && (
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => setShowSaveDialog(true)}
+                className="flex items-center justify-center gap-2 text-blue-600 text-xs font-medium hover:bg-blue-50 hover:text-blue-700 border-blue-200 px-3 py-2 h-8 rounded-lg bg-white shadow-sm transition-all duration-200 hover:shadow-md"
+                title="Save Current Filters"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                </svg>
+                <span>Save</span>
+              </Button>
+            )}
             
-            {activeFilters.length > 0 && (
+            {activeFilters.length > 0 ? (
               <Button 
                 variant="outline"
                 size="sm"
@@ -514,9 +527,7 @@ const SpiritualFilterSidebar = memo(() => {
                 <X className="w-3.5 h-3.5" />
                 <span>Clear</span>
               </Button>
-            )}
-            
-            {activeFilters.length === 0 && (
+            ) : (
               <div className="flex items-center justify-center px-3 py-2 h-8 bg-gray-50 border border-gray-100 rounded-lg">
                 <span className="text-xs text-gray-400">No filters</span>
               </div>
@@ -564,20 +575,110 @@ const SpiritualFilterSidebar = memo(() => {
             <h3 className="text-sm font-medium text-gray-700 mb-2">Saved Filters</h3>
             <div className="space-y-2">
               {savedFilters.map((savedFilter, index) => (
-                <div key={index} className="flex items-center justify-between bg-blue-50 border border-blue-200 rounded-md p-2">
-                  <button
-                    onClick={() => loadSavedFilter(savedFilter)}
-                    className="text-sm text-blue-700 hover:text-blue-900 flex-1 text-left font-medium"
-                  >
-                    {(savedFilter as any).name}
-                  </button>
-                  <button
-                    onClick={() => deleteSavedFilter(index)}
-                    className="text-red-500 hover:text-red-700 ml-2 text-xs px-1"
-                    title="Delete saved filter"
-                  >
-                    ✕
-                  </button>
+                <div key={index} className="bg-blue-50 border border-blue-200 rounded-md">
+                  <div className="flex items-center justify-between p-2">
+                    <div className="flex items-center gap-2 flex-1">
+                      <button
+                        onClick={() => setExpandedSavedFilters(prev => ({
+                          ...prev,
+                          [index]: !prev[index]
+                        }))}
+                        className="text-blue-600 hover:text-blue-800"
+                        title="Toggle filter details"
+                      >
+                        {expandedSavedFilters[index] ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
+                      </button>
+                      <button
+                        onClick={() => loadSavedFilter(savedFilter)}
+                        className="text-sm text-blue-700 hover:text-blue-900 flex-1 text-left font-medium"
+                        title="Load this filter"
+                      >
+                        {savedFilter.name}
+                      </button>
+                    </div>
+                    <button
+                      onClick={() => deleteSavedFilter(index)}
+                      className="text-red-500 hover:text-red-700 ml-2 text-xs px-1"
+                      title="Delete saved filter"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                  
+                  {expandedSavedFilters[index] && (
+                    <div className="px-3 pb-2 border-t border-blue-200 bg-blue-25">
+                      <div className="text-xs text-gray-600 mt-2">
+                        <div className="space-y-1">
+                          {savedFilter.ageMin && savedFilter.ageMax && (
+                            <div className="flex justify-between">
+                              <span>Age:</span>
+                              <span>{savedFilter.ageMin}-{savedFilter.ageMax} years</span>
+                            </div>
+                          )}
+                          {savedFilter.heightMin && savedFilter.heightMax && (
+                            <div className="flex justify-between">
+                              <span>Height:</span>
+                              <span>{savedFilter.heightMin?.split(' (')[0]}-{savedFilter.heightMax?.split(' (')[0]}</span>
+                            </div>
+                          )}
+                          {savedFilter.country && (
+                            <div className="flex justify-between">
+                              <span>Location:</span>
+                              <span>{[savedFilter.country, savedFilter.state, savedFilter.city].filter(Boolean).join(', ')}</span>
+                            </div>
+                          )}
+                          {savedFilter.education && (
+                            <div className="flex justify-between">
+                              <span>Education:</span>
+                              <span>{savedFilter.education}</span>
+                            </div>
+                          )}
+                          {savedFilter.profession && (
+                            <div className="flex justify-between">
+                              <span>Profession:</span>
+                              <span>{savedFilter.profession}</span>
+                            </div>
+                          )}
+                          {savedFilter.motherTongue && (
+                            <div className="flex justify-between">
+                              <span>Mother Tongue:</span>
+                              <span>{savedFilter.motherTongue}</span>
+                            </div>
+                          )}
+                          {savedFilter.religion && (
+                            <div className="flex justify-between">
+                              <span>Religion:</span>
+                              <span>{savedFilter.religion}</span>
+                            </div>
+                          )}
+                          {savedFilter.maritalStatus && (
+                            <div className="flex justify-between">
+                              <span>Marital Status:</span>
+                              <span>{savedFilter.maritalStatus}</span>
+                            </div>
+                          )}
+                          {savedFilter.casteGroups && savedFilter.casteGroups.length > 0 && (
+                            <div className="flex justify-between">
+                              <span>Caste Groups:</span>
+                              <span>{savedFilter.casteGroups.includes("All") ? "All" : `${savedFilter.casteGroups.length} selected`}</span>
+                            </div>
+                          )}
+                          {savedFilter.spiritualPractices && savedFilter.spiritualPractices.length > 0 && (
+                            <div className="flex justify-between">
+                              <span>Spiritual Practices:</span>
+                              <span>{savedFilter.spiritualPractices.length} selected</span>
+                            </div>
+                          )}
+                          {(savedFilter.verified || savedFilter.withPhoto) && (
+                            <div className="flex justify-between">
+                              <span>Preferences:</span>
+                              <span>{[savedFilter.verified && "Verified", savedFilter.withPhoto && "With Photo"].filter(Boolean).join(", ")}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
