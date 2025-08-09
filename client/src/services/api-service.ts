@@ -1,23 +1,46 @@
+
+import { handleApiError, parseApiResponse } from '@/utils';
+import { ApiResponse } from '@/types';
+
 export async function apiRequest(
   method: string,
   url: string,
   data?: unknown
 ): Promise<Response> {
-  const response = await fetch(url, {
-    method,
-    headers: data ? { "Content-Type": "application/json" } : {},
-    body: data ? JSON.stringify(data) : undefined,
-    credentials: "include",
-  });
+  try {
+    const response = await fetch(url, {
+      method,
+      headers: data ? { "Content-Type": "application/json" } : {},
+      body: data ? JSON.stringify(data) : undefined,
+      credentials: "include",
+    });
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(errorText || `HTTP ${response.status}: ${response.statusText}`);
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || `HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    return response;
+  } catch (error) {
+    throw new Error(handleApiError(error));
   }
-
-  return response;
 }
 
+// Utility function for typed API requests
+export async function typedApiRequest<T>(
+  method: string,
+  url: string,
+  data?: unknown
+): Promise<ApiResponse<T>> {
+  try {
+    const response = await apiRequest(method, url, data);
+    return await parseApiResponse<T>(response);
+  } catch (error) {
+    return { error: handleApiError(error) };
+  }
+}
+
+// Legacy exports for backward compatibility
 export async function fetchSpiritualPractices(): Promise<string[]> {
   const response = await apiRequest("GET", "/api/spiritual-practices");
   const data = await response.json();
