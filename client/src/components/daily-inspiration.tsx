@@ -1,4 +1,3 @@
-
 import { memo, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
@@ -59,24 +58,38 @@ const DailyInspiration = memo(() => {
   }
 
   return (
-    <section className="py-12 lotus-pattern">
-      <div className="container mx-auto px-4">
+    <section className="py-10 md:py-12 lg:py-16 bg-gradient-to-r from-deep-maroon via-indigo-night to-deep-deep-maroon">
+      <div className="container mx-auto px-4 sm:px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <Card className="bg-white p-8 rounded-2xl shadow-lg border border-sage/20 hover:shadow-xl transition-shadow duration-300">
-            <CardContent>
-              <div className="flex items-start justify-center mb-6">
-                <Quote className="w-8 h-8 text-sage opacity-60" aria-hidden="true" />
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-6 md:mb-8">
+            Daily Spiritual Inspiration
+          </h2>
+
+          <div className="bg-white/10 backdrop-blur-sm rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 border border-white/20">
+            {isLoading ? (
+              <div className="space-y-3 md:space-y-4">
+                <div className="h-5 md:h-6 bg-white/20 rounded animate-pulse"></div>
+                <div className="h-3 md:h-4 bg-white/20 rounded animate-pulse w-3/4 mx-auto"></div>
               </div>
-              <blockquote className="text-xl md:text-2xl font-medium text-gray-800 mb-6 leading-relaxed">
-                "{quote.quoteText}"
-              </blockquote>
-              {quote.author && (
-                <cite className="text-sage font-medium not-italic">
+            ) : quote ? (
+              <div className="space-y-4 md:space-y-6">
+                <blockquote className="text-lg sm:text-xl lg:text-2xl text-white font-serif italic leading-relaxed">
+                  "{quote.quoteText}"
+                </blockquote>
+                <cite className="text-temple-gold font-medium text-sm md:text-base">
                   — {quote.author}
                 </cite>
-              )}
-            </CardContent>
-          </Card>
+                <button
+                  onClick={() => console.log("refetching quote...")} // Placeholder for actual refetch logic
+                  className="mt-4 md:mt-6 bg-temple-gold hover:bg-temple-gold/90 text-deep-maroon px-4 md:px-6 py-2 rounded-full font-medium transition-colors disabled:opacity-50 text-sm md:text-base"
+                >
+                  New Inspiration
+                </button>
+              </div>
+            ) : (
+              <div className="text-white/70 text-sm md:text-base">No inspiration available</div>
+            )}
+          </div>
         </div>
       </div>
     </section>

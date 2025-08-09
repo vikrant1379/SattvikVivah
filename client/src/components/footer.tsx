@@ -38,7 +38,7 @@ const Footer = memo(() => {
               A platform for spiritually aligned souls seeking dharmic companionship in Grihastha Ashram.
             </p>
           </div>
-          
+
           {/* Browse By Section */}
           <div>
             <h4 className="font-semibold mb-4">Browse By</h4>
@@ -55,7 +55,7 @@ const Footer = memo(() => {
               ))}
             </ul>
           </div>
-          
+
           {/* Services Section */}
           <div>
             <h4 className="font-semibold mb-4">Services</h4>
@@ -72,7 +72,7 @@ const Footer = memo(() => {
               ))}
             </ul>
           </div>
-          
+
           {/* Connect Section */}
           <div>
             <h4 className="font-semibold mb-4">Connect With Us</h4>
@@ -101,7 +101,7 @@ const Footer = memo(() => {
             </p>
           </div>
         </div>
-        
+
         <div className="border-t border-warm-beige/20 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm text-warm-beige/60 mb-4 md:mb-0">

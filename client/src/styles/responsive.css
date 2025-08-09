@@ -1,0 +1,100 @@
+
+/* Mobile-First Responsive Design System */
+
+/* Touch targets for mobile */
+@media (pointer: coarse) {
+  .btn, button, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .input, input, textarea, select {
+    min-height: 44px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .avatar-image {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .animate-lotus-bloom,
+  .animate-om-pulse,
+  .transition-all,
+  .transition-colors,
+  .transition-transform {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: hsl(224 71% 4%);
+    --foreground: hsl(213 31% 91%);
+    --card: hsl(224 71% 4%);
+    --card-foreground: hsl(213 31% 91%);
+  }
+}
+
+/* Container queries for adaptive components */
+@container (max-width: 400px) {
+  .card-content {
+    padding: 0.75rem;
+  }
+  
+  .text-responsive {
+    font-size: 0.875rem;
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .bg-gradient-to-r,
+  .bg-gradient-to-b {
+    background: white !important;
+    color: black !important;
+  }
+}
+
+/* Landscape orientation on mobile */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+  .hero-section {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+  
+  .mobile-landscape-compact {
+    height: auto;
+    min-height: auto;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .border-temple-gold\/20 {
+    border-color: hsl(42 83% 40%) !important;
+  }
+  
+  .text-gray-700 {
+    color: hsl(0 0% 20%) !important;
+  }
+}
+
+/* Focus visible for keyboard navigation */
+.focus-visible:focus-visible {
+  outline: 2px solid var(--temple-gold);
+  outline-offset: 2px;
+}

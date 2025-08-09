@@ -5,3 +5,5 @@ export * from './compatibility.utils';
 export * from './storage.utils';
 export * from './spiritual-helpers';
 export * from './performance.utils';
+export * from './monitoring.utils';
+export * from './responsive.utils';
