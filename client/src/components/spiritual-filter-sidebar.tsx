@@ -246,9 +246,18 @@ const SpiritualFilterSidebar = memo(() => {
     }
 
     if (localFilters.heightMin || localFilters.heightMax) {
+      // Extract just the feet/inches part without cm
+      const formatHeight = (height: string) => {
+        if (!height) return '';
+        return height.split(' (')[0]; // Takes "5'4" (163 cm)" and returns "5'4""
+      };
+      
+      const minHeight = formatHeight(localFilters.heightMin || '4\'0"');
+      const maxHeight = formatHeight(localFilters.heightMax || '6\'7"');
+      
       active.push({
         key: 'height',
-        label: `${localFilters.heightMin || '4\'0"'}-${localFilters.heightMax || '6\'7"'}`,
+        label: `${minHeight}-${maxHeight}`,
         onRemove: () => setLocalFilters(prev => ({ ...prev, heightMin: undefined, heightMax: undefined }))
       });
     }
@@ -590,31 +599,69 @@ const SpiritualFilterSidebar = memo(() => {
             </div>
 
             {openSections.age && (
-              <div className="mt-3 space-y-4">
-                <div className="space-y-3">
-                  <div className="flex justify-between text-sm text-gray-600">
-                    <span>{localFilters.ageMin || 18} years</span>
-                    <span>{localFilters.ageMax || 70} years</span>
+              <div className="mt-3 space-y-3">
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <Select
+                      value={localFilters.ageMin?.toString() || ""}
+                      onValueChange={(value) => {
+                        const newMin = value ? parseInt(value) : undefined;
+                        setLocalFilters(prev => ({
+                          ...prev,
+                          ageMin: newMin,
+                          // Reset max age if it becomes less than min age
+                          ageMax: prev.ageMax && newMin && prev.ageMax < newMin ? undefined : prev.ageMax
+                        }));
+                      }}
+                    >
+                      <SelectTrigger className="h-9 text-sm">
+                        <SelectValue placeholder="Min" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {ageOptions
+                          .filter(age => !localFilters.ageMax || age <= localFilters.ageMax)
+                          .map((age) => (
+                          <SelectItem key={age} value={age.toString()}>
+                            {age}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
-                  <Slider
-                    value={[localFilters.ageMin || 18, localFilters.ageMax || 70]}
-                    onValueChange={([min, max]) => {
-                      setLocalFilters(prev => ({
-                        ...prev,
-                        ageMin: min,
-                        ageMax: max
-                      }));
-                    }}
-                    min={18}
-                    max={70}
-                    step={1}
-                    className="w-full"
-                  />
-                  <div className="flex justify-between text-xs text-gray-500">
-                    <span>18</span>
-                    <span>70</span>
+                  <div>
+                    <Select
+                      value={localFilters.ageMax?.toString() || ""}
+                      onValueChange={(value) => {
+                        const newMax = value ? parseInt(value) : undefined;
+                        setLocalFilters(prev => ({
+                          ...prev,
+                          ageMax: newMax,
+                          // Reset min age if it becomes greater than max age
+                          ageMin: prev.ageMin && newMax && prev.ageMin > newMax ? undefined : prev.ageMin
+                        }));
+                      }}
+                    >
+                      <SelectTrigger className="h-9 text-sm">
+                        <SelectValue placeholder="Max" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {ageOptions
+                          .filter(age => !localFilters.ageMin || age >= localFilters.ageMin)
+                          .map((age) => (
+                          <SelectItem key={age} value={age.toString()}>
+                            {age}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
+                {/* Age validation message */}
+                {localFilters.ageMin && localFilters.ageMax && localFilters.ageMin > localFilters.ageMax && (
+                  <div className="text-xs text-red-600 bg-red-50 px-2 py-1 rounded">
+                    Minimum age cannot be greater than maximum age
+                  </div>
+                )}
               </div>
             )}
           </div>
