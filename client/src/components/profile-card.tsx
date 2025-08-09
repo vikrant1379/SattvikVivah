@@ -97,9 +97,11 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
                     {profile.name}, {profile.age}
                   </h3>
                   {profile.verified && (
-                    <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
-                      <CheckCircle className="w-4 h-4 text-white fill-current" />
-                    </div>
+                    <img 
+                      src="https://www.citypng.com/public/uploads/preview/blue-instagram-account-verified-check-mark-icon-701751695136711q4jgagbecy.png?v=2025061916" 
+                      alt="Verified"
+                      className="w-6 h-6"
+                    />
                   )}
                 </div>
 
