@@ -1,7 +1,8 @@
-import { memo } from "react";
+import { memo, useState } from "react";
 import { useSpiritualContext } from "@/contexts/spiritual-context";
 import SpiritualFilterSidebar from "@/components/spiritual-filter-sidebar";
 import ProfileCard from "@/components/profile-card";
+import ProfileDetailModal from "@/components/profile-detail-modal";
 import PremiumBenefits from "@/components/premium-benefits";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
@@ -9,6 +10,18 @@ import type { UserProfile } from "@shared/schema";
 
 const ProfileBrowser = memo(() => {
   const { searchResults, isSearching } = useSpiritualContext();
+  const [selectedProfile, setSelectedProfile] = useState<UserProfile | null>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+
+  const handleProfileClick = (profile: UserProfile) => {
+    setSelectedProfile(profile);
+    setIsDetailModalOpen(true);
+  };
+
+  const handleCloseDetailModal = () => {
+    setIsDetailModalOpen(false);
+    setSelectedProfile(null);
+  };
 
   return (
     <div className="flex flex-1 bg-gray-50">
@@ -58,6 +71,7 @@ const ProfileBrowser = memo(() => {
                 <ProfileCard 
                   key={profile.id} 
                   profile={profile} 
+                  onProfileClick={handleProfileClick}
                 />
               ))}
             </div>
@@ -79,7 +93,13 @@ const ProfileBrowser = memo(() => {
         <PremiumBenefits />
       </div>
 
-      </div>
+      {/* Profile Detail Modal */}
+      <ProfileDetailModal
+        profile={selectedProfile}
+        isOpen={isDetailModalOpen}
+        onClose={handleCloseDetailModal}
+      />
+    </div>
   );
 });
 

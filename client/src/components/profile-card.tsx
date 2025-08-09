@@ -1,5 +1,4 @@
 import { memo } from "react";
-import { useLocation } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -25,8 +24,6 @@ interface ProfileCardProps {
 }
 
 const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
-  const [, setLocation] = useLocation();
-
   const getInitials = (name: string) => {
     return name
       .split(" ")
@@ -65,7 +62,7 @@ const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
 
   const formatHeight = (height: string) => {
     if (!height) return 'Not specified';
-
+    
     // Handle format like "5'6\" (168 cm)" - extract just the feet/inches part
     const feetInchesMatch = height.match(/(\d+)'(\d+)"/);
     if (feetInchesMatch) {
@@ -73,7 +70,7 @@ const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
       const inches = feetInchesMatch[2];
       return `${feet}ft ${inches}in`;
     }
-
+    
     // Handle pure cm format like "168 cm"
     if (height.includes("cm") && !height.includes("'")) {
       const cmMatch = height.match(/(\d+)\s*cm/);
@@ -85,23 +82,14 @@ const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
         return `${feet}ft ${inches}in`;
       }
     }
-
+    
     return height;
   };
 
-  const handleProfileClick = () => {
-    const targetPath = `/profile/${profile.id}`;
-    console.log("=== Profile Card Click ===");
-    console.log("Profile ID:", profile.id);
-    console.log("Target path:", targetPath);
-    console.log("Profile object:", { id: profile.id, name: profile.name });
-    setLocation(targetPath);
-  };
-
   return (
-    <Card
+    <Card 
       className="w-full max-w-3xl bg-white border border-gray-200 mb-4 overflow-hidden cursor-pointer"
-      onClick={handleProfileClick}
+      onClick={() => onProfileClick?.(profile)}
     >
       <CardContent className="p-0 relative">
         <div className="flex">
