@@ -15,6 +15,7 @@ import {
   Images,
 } from "lucide-react";
 import { GiBigDiamondRing } from "react-icons/gi";
+import { formatAnnualIncome } from "../data/annual-income";
 import type { UserProfile } from "@shared/schema";
 
 interface ProfileCardProps {
@@ -277,7 +278,7 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
                 {profile.annualIncome && (
                   <>
                     <span style={{ margin: "0 16px", color: "#667085" }}>•</span>
-                    <span>{profile.annualIncome}</span>
+                    <span>{formatAnnualIncome(profile.annualIncome)}</span>
                   </>
                 )}
               </div>

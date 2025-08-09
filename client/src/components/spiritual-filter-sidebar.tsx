@@ -36,6 +36,7 @@ import {
   guruLineages,
   dietaryLifestyles
 } from "../data/spiritual-practices";
+import { annualIncomeOptions } from "../data/annual-income";
 import type { ProfileFilter } from "@shared/schema";
 
 // Placeholder options - replace with actual data imports
