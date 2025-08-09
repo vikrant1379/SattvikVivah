@@ -14,8 +14,7 @@ import ProfileBrowser from "@/components/profile-browser";
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/profile/:id" component={ProfileBrowser} /> {/* Added ProfileBrowser route */}
+      <Route path="/" component={ProfileBrowser} />
       <Route component={NotFound} />
     </Switch>
   );
