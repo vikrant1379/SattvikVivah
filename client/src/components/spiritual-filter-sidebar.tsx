@@ -27,8 +27,7 @@ import {
   ageOptions,
   heightOptions,
   religionOptions,
-  ethnicityOptions,
-  annualIncomeOptions
+  ethnicityOptions
 } from "../data/personal-attributes";
 import { 
   spiritualPractices,
