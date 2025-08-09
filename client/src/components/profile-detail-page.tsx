@@ -1,4 +1,3 @@
-
 import { memo, useState } from "react";
 import { useParams, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -38,14 +37,21 @@ import { GiBigDiamondRing } from "react-icons/gi";
 import { formatAnnualIncome } from "../data/annual-income";
 import { mockProfiles } from "../data/mock-profiles";
 import type { UserProfile } from "@shared/schema";
+import { useRouter } from "@/lib/router";
+
 
 const ProfileDetailPage = memo(() => {
-  const params = useParams();
+  const { profileId } = useParams();
   const [location, setLocation] = useLocation();
-  const [activeTab, setActiveTab] = useState("about");
+  const router = useRouter();
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const handleBackToHome = () => {
+    setLocation('/');
+  };
 
   // Extract profileId
-  let profileId = params.profileId;
+  let profileId = useParams<{ profileId?: string }>().profileId;
   if (!profileId) {
     const pathMatch = location.match(/\/profile\/([^\/]+)/);
     if (pathMatch) {
@@ -129,7 +135,7 @@ const ProfileDetailPage = memo(() => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setLocation("/")}
+            onClick={handleBackToHome}
             className="flex items-center space-x-2"
           >
             <ChevronLeft className="w-4 h-4" />
@@ -204,7 +210,7 @@ const ProfileDetailPage = memo(() => {
                     )}
                   </div>
                   <p className="text-sm text-gray-600 mb-3">{formatLastSeen()}</p>
-                  
+
                   {/* Status Badges */}
                   <div className="flex justify-center space-x-2 mb-4">
                     {profile.verified && (
