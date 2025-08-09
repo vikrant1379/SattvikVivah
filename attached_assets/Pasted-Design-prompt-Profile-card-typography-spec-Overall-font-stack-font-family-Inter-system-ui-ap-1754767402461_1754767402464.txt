@@ -1,0 +1,177 @@
+Design prompt: Profile card typography spec
+
+Overall font stack:
+
+font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif.
+
+Use optical sizing where available; prefer variable fonts if supported.
+
+Time/status (e.g., “Last seen at 12:06 AM”)
+
+font-size: 12px (mobile: 12px; desktop: 12–13px)
+
+font-weight: 500
+
+line-height: 16px
+
+letter-spacing: 0
+
+color: #667085
+
+spacing: 4px margin-bottom
+
+Name and age (e.g., “Sandhya Jaiswar, 28”)
+
+font-size: 28px (mobile: 22–24px; desktop: 28–30px)
+
+font-weight: 700
+
+line-height: 34px
+
+letter-spacing: 0
+
+color: #101828
+
+spacing: 6px margin-bottom
+
+Basic profile line (height - city - caste/community) (e.g., “5ft 0in - Mumbai - Chamar”)
+
+font-size: 14px (mobile: 13–14px; desktop: 14–15px)
+
+font-weight: 600
+
+line-height: 20px
+
+letter-spacing: 0.1px
+
+color: #344054
+
+separator: use “- ” with 8px horizontal gap
+
+spacing: 8px margin-bottom
+
+Row 1: Profession and income (with icons) (e.g., “Software Engineer - ₹12–18LPA”)
+
+font-size: 14px
+
+font-weight: 500
+
+line-height: 20px
+
+letter-spacing: 0
+
+color: #344054
+
+icon size: 16px; icon-text gap: 6px; item gap: 16px
+
+spacing: 4px margin-bottom
+
+Row 2: Education and marital status (with icons) (e.g., “B.Tech - Never Married”)
+
+font-size: 14px
+
+font-weight: 500
+
+line-height: 20px
+
+letter-spacing: 0
+
+color: #344054
+
+icon size: 16px; icon-text gap: 6px; item gap: 16px
+
+spacing: 12px margin-bottom before actions
+
+Action bar labels (e.g., “Interest - Super Interest - Shortlist - Chat”)
+
+default state:
+
+font-size: 14px
+
+font-weight: 600
+
+line-height: 18px
+
+letter-spacing: 0
+
+color: #475467
+
+active/primary CTA (highlighted):
+
+color: #D12C4A
+
+disabled:
+
+color: #98A2B3
+
+icon size: 18px; icon-text gap: 6px; item gap: 20–24px
+
+Small counters/badges (e.g., photo count on avatar)
+
+font-size: 11–12px
+
+font-weight: 700
+
+line-height: 1
+
+color: #FFFFFF
+
+background: #D12C4A
+
+padding: 2px 6px; border-radius: 999px
+
+Tag/badge chips (optional, e.g., “Premium”, “Verified”)
+
+font-size: 12px
+
+font-weight: 600
+
+line-height: 16px
+
+color: #175CD3
+
+background: #EFF8FF
+
+padding: 2px 8px; border-radius: 999px
+
+chip gap: 8px
+
+Accessibility and truncation
+
+Minimum contrast: WCAG AA (≥4.5:1 for body, ≥3:1 for bold).
+
+Truncate long names and locations with ellipsis after 1 line; provide title attributes for hover.
+
+Keep tap targets ≥44px height on mobile.
+
+Spacing and layout rhythm
+
+Vertical rhythm: 4px base unit.
+
+Section paddings: 12–16px internally; 16–20px card padding.
+
+Keep 8–12px spacing around separators and between icon-text pairs.
+
+Responsive adjustments
+
+Mobile (≤375px width):
+
+Name: 22–24px/30px
+
+Body rows: 13–14px/18–20px
+
+Reduce item gaps by ~2px
+
+Tablet/desktop:
+
+Name up to 30px
+
+Keep body at 14–15px
+
+Increase action gaps for clarity
+
+Optional alternate font pairing
+
+Display (name): 'Poppins' or 'Nunito Sans' at 700–800 weight
+
+Body/UI: 'Inter' or 'Roboto'
