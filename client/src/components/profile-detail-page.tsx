@@ -1,4 +1,3 @@
-
 import { memo, useState } from "react";
 import { useParams, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -26,7 +25,8 @@ import {
   BookOpen,
   Banknote,
   Clock,
-  Award
+  Award,
+  AlertCircle // Import AlertCircle
 } from "lucide-react";
 import { GiBigDiamondRing } from "react-icons/gi";
 import { formatAnnualIncome } from "../data/annual-income";
@@ -45,10 +45,10 @@ const ProfileDetailPage = memo(() => {
   console.log("Current location path:", location);
   console.log("Window pathname:", window.location.pathname);
   console.log("Window href:", window.location.href);
-  
+
   // Extract profileId - try multiple approaches
   let profileId = params.profileId || params['0']; // wouter sometimes puts it in index 0
-  
+
   if (!profileId) {
     // Manual extraction from location
     const pathMatch = location.match(/\/profile\/([^\/]+)/);
@@ -65,36 +65,50 @@ const ProfileDetailPage = memo(() => {
       }
     }
   }
-  
+
   console.log("Final profileId:", profileId);
-  
+
   const profile = mockProfiles.find(p => p.id === profileId);
-  
+
   console.log("Looking for profile with ID:", profileId);
   console.log("Available profile IDs:", mockProfiles.map(p => p.id));
   console.log("Found profile:", profile ? profile.name : "NOT FOUND");
 
   if (!profile) {
+    console.log("Profile not found, showing error page");
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Profile not found</h1>
-          <Button onClick={() => setLocation("/browse")}>Go back</Button>
-        </div>
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50 flex items-center justify-center p-4">
+        <Card className="w-full max-w-md text-center">
+          <CardContent className="p-8">
+            <AlertCircle className="h-16 w-16 text-orange-500 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Profile Not Found</h2>
+            <p className="text-gray-600 mb-2">
+              The profile you're looking for doesn't exist or has been removed.
+            </p>
+            <p className="text-sm text-gray-500 mb-6">
+              Looking for ID: {profileId}
+            </p>
+            <Button onClick={() => setLocation("/browse")} className="w-full">
+              Browse Profiles
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
+  console.log("Profile found, rendering detail page for:", profile.name);
+
   const formatHeight = (height: string) => {
     if (!height) return 'Not specified';
-    
+
     const feetInchesMatch = height.match(/(\d+)'(\d+)"/);
     if (feetInchesMatch) {
       const feet = feetInchesMatch[1];
       const inches = feetInchesMatch[2];
       return `${feet}' ${inches}"`;
     }
-    
+
     return height;
   };
 
@@ -131,7 +145,7 @@ const ProfileDetailPage = memo(() => {
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
-            
+
             {/* Top Controls */}
             <div className="absolute top-4 left-4 right-4 flex justify-between items-center">
               <Button
