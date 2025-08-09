@@ -1,32 +1,13 @@
 import { memo } from "react";
 import Header from "@/components/header";
-import HeroSection from "@/components/hero-section";
-import DailyInspiration from "@/components/daily-inspiration";
-import ThreeSacredSteps from "@/components/three-sacred-steps";
-import SuccessStoriesCarousel from "@/components/success-stories-carousel";
-import MembershipPlans from "@/components/membership-plans";
-import SattvikConnectPreview from "@/components/sattvik-connect-preview";
+import ProfileBrowser from "@/components/profile-browser";
 import Footer from "@/components/footer";
-import SpiritualFilterSidebar from "@/components/spiritual-filter-sidebar";
 
 const Home = memo(() => {
   return (
-    <div className="bg-background font-sans leading-relaxed">
+    <div className="bg-background min-h-screen flex flex-col">
       <Header />
-      
-      <div className="flex min-h-screen">
-        <SpiritualFilterSidebar />
-        
-        <main className="flex-1 overflow-x-hidden">
-          <HeroSection />
-          <DailyInspiration />
-          <ThreeSacredSteps />
-          <SuccessStoriesCarousel />
-          <MembershipPlans />
-          <SattvikConnectPreview />
-        </main>
-      </div>
-      
+      <ProfileBrowser />
       <Footer />
     </div>
   );

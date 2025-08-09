@@ -694,12 +694,12 @@ const SpiritualFilterSidebar = memo(() => {
   };
 
   return (
-    <aside className="w-80 bg-white border-r border-gray-200 overflow-y-auto hidden lg:block">
-      <div className="p-4">
+    <aside className="w-full h-full bg-white overflow-y-auto">
+      <div className="p-6">
         {/* Header */}
-        <div className="mb-6">
+        <div className="mb-6 border-b border-gray-100 pb-4">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
+            <h2 className="text-xl font-semibold text-gray-900">🔍 Filters</h2>
           </div>
           
           {/* Action Buttons */}

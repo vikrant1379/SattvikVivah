@@ -36,10 +36,10 @@ const Header = memo(() => {
             </Link>
           </nav>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-3">
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="ghost" className="text-foreground hover:text-saffron border-temple-gold/30">
+                <Button variant="ghost" size="sm" className="text-foreground hover:text-saffron">
                   Login
                 </Button>
               </DialogTrigger>
@@ -47,9 +47,16 @@ const Header = memo(() => {
                 <LoginOptions />
               </DialogContent>
             </Dialog>
-            <Button className="bg-saffron text-primary-foreground hover:bg-saffron/90 shadow-lg hover-elevate">
-              Register Free
-            </Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button size="sm" className="bg-saffron text-primary-foreground hover:bg-saffron/90">
+                  Sign Up
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px] bg-card border-temple-gold/20">
+                <LoginOptions />
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </div>

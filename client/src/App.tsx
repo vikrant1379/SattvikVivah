@@ -1,4 +1,3 @@
-
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -35,7 +34,7 @@ function App() {
 
     criticalAssets.forEach(asset => {
       if (asset.startsWith('http') || asset.startsWith('/')) {
-        fetch(asset, { 
+        fetch(asset, {
           method: 'HEAD',
           credentials: 'include'
         }).catch(() => {
