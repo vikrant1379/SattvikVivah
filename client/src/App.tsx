@@ -13,10 +13,12 @@ import ProfileBrowser from "@/components/profile-browser";
 
 function Router() {
   return (
-    <Switch>
-      <Route path="/" component={ProfileBrowser} />
-      <Route component={NotFound} />
-    </Switch>
+    <SpiritualProvider>
+      <Switch>
+        <Route path="/" component={ProfileBrowser} />
+        <Route component={NotFound} />
+      </Switch>
+    </SpiritualProvider>
   );
 }
 
@@ -47,12 +49,10 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SpiritualProvider> {/* ProfileBrowser is now correctly wrapped */}
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
-      </SpiritualProvider>
+      <TooltipProvider>
+        <Router />
+        <Toaster />
+      </TooltipProvider>
     </QueryClientProvider>
   );
 }
