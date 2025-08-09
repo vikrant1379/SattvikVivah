@@ -75,7 +75,7 @@ const ProfileDetailPage = memo(() => {
             <p className="text-sm text-gray-500 mb-6">
               Looking for ID: {profileId}
             </p>
-            <Button onClick={() => setLocation("/browse")} className="w-full">
+            <Button onClick={() => setLocation("/")} className="w-full">
               Browse Profiles
             </Button>
           </CardContent>
@@ -129,11 +129,11 @@ const ProfileDetailPage = memo(() => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setLocation("/browse")}
+            onClick={() => setLocation("/")}
             className="flex items-center space-x-2"
           >
             <ChevronLeft className="w-4 h-4" />
-            <span>Back to Browse</span>
+            <span>Back to Home</span>
           </Button>
           <div className="text-sm text-gray-600">
             Profile ID: {profile.id.toUpperCase()}
