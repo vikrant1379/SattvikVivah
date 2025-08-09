@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Combobox } from "@/components/ui/combobox";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Slider } from "@/components/ui/slider";
-import { ChevronDown, ChevronRight, X } from "lucide-react";
+import { ChevronDown, ChevronRight, X, Loader2 } from "lucide-react";
 import { useSpiritualContext } from "@/contexts/spiritual-context";
 import { countries, statesByCountry, citiesByState, motherTongues } from "@/data/locations";
 import { casteGroupOptions, casteSubcasteOptions } from "../data/caste";
@@ -51,7 +51,7 @@ interface SpiritualFilterSidebarProps {
 }
 
 const SpiritualFilterSidebar = memo(() => {
-  const { filters, setFilters, searchProfiles } = useSpiritualContext();
+  const { filters, setFilters, searchProfiles, isSearching } = useSpiritualContext();
   const [localFilters, setLocalFilters] = useState<ProfileFilter>({
     ageMin: filters.ageMin,
     ageMax: filters.ageMax,
@@ -634,6 +634,15 @@ const SpiritualFilterSidebar = memo(() => {
     localStorage.setItem('spiritualFiltersLatest', JSON.stringify(localFilters));
     setCurrentLoadedFilterId('latest');
   }, [localFilters, setFilters, searchProfiles]);
+
+  // Auto-apply filters when localFilters change (with debouncing)
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      handleSearch();
+    }, 300); // 300ms debounce
+
+    return () => clearTimeout(timeoutId);
+  }, [localFilters, handleSearch]);
 
   const clearFilters = useCallback(() => {
     const clearedFilters = {
@@ -2118,9 +2127,20 @@ const SpiritualFilterSidebar = memo(() => {
           <Button 
             onClick={handleSearch} 
             className="w-full bg-blue-600 hover:bg-blue-700 text-white h-10"
+            disabled={isSearching}
           >
-            Apply Filters
+            {isSearching ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                Searching...
+              </>
+            ) : (
+              "Apply Filters Now"
+            )}
           </Button>
+          <p className="text-xs text-gray-500 text-center mt-2">
+            Filters apply automatically as you make changes
+          </p>
         </div>
       </div>
     </aside>

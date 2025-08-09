@@ -1,5 +1,5 @@
 
-import { createContext, useContext, useState, useCallback, ReactNode, useMemo } from "react";
+import { createContext, useContext, useState, useCallback, ReactNode, useMemo, useEffect } from "react";
 import type { ProfileFilter, UserProfile } from "@shared/schema";
 import { mockProfiles } from "@/data/mock-profiles";
 
@@ -132,7 +132,10 @@ export function SpiritualProvider({ children }: { children: ReactNode }) {
     casteGroups: [],
     casteSubcastes: []
   });
-  const [searchResults, setSearchResults] = useState<UserProfile[]>(mockProfiles.slice(0, 10)); // Show first 10 by default
+  const [searchResults, setSearchResults] = useState<UserProfile[]>(() => {
+    // Initialize with first 10 profiles immediately
+    return mockProfiles.slice(0, 10);
+  });
   const [isSearching, setIsSearching] = useState(false);
 
   const searchProfiles = useCallback(async (searchFilters: ProfileFilter) => {
@@ -163,6 +166,15 @@ export function SpiritualProvider({ children }: { children: ReactNode }) {
     });
     setSearchResults(mockProfiles.slice(0, 10)); // Reset to first 10
   }, []);
+
+  // Initial search on mount
+  useEffect(() => {
+    // Perform initial search with empty filters to show all profiles
+    searchProfiles({
+      casteGroups: [],
+      casteSubcastes: []
+    });
+  }, []); // Run only once on mount
 
   const value = useMemo(() => ({
     filters,
