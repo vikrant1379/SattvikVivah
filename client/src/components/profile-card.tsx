@@ -3,7 +3,7 @@ import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Heart, MessageCircle, Star, MapPin, Briefcase, GraduationCap, User, Eye, CircleCheck } from "lucide-react";
+import { Heart, MessageCircle, Star, MapPin, Briefcase, GraduationCap, User, Eye, CircleCheck, Images } from "lucide-react";
 import { GiBigDiamondRing } from "react-icons/gi";
 import type { UserProfile } from "@shared/schema";
 
@@ -43,16 +43,23 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
 
   return (
     <Card className="w-full max-w-3xl bg-white border border-gray-200 mb-4 overflow-hidden cursor-pointer">
-      <CardContent className="p-0">
+      <CardContent className="p-0 relative">
         <div className="flex">
           {/* Profile Image Section */}
           <div className="relative w-56 flex-shrink-0">
             {profile.profileImage ? (
-              <img 
-                src={profile.profileImage} 
-                alt={profile.name}
-                className="w-full h-full object-cover"
-              />
+              <div className="relative w-full h-full">
+                <img 
+                  src={profile.profileImage} 
+                  alt={profile.name}
+                  className="w-full h-full object-cover"
+                />
+                {/* Image gallery icon */}
+                <div className="absolute top-3 right-3 bg-black/60 rounded-md px-2 py-1 flex items-center text-white text-sm">
+                  <Images className="w-4 h-4 mr-1" />
+                  <span>5</span>
+                </div>
+              </div>
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center relative">
                 <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center">
@@ -72,9 +79,9 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
           </div>
 
           {/* Profile Information Section */}
-          <div className="flex-1 p-4">
+          <div className="flex-1 pl-4 pr-0 py-4">
             {/* Header Section with Last Seen, Name, and Badges */}
-            <div className="flex justify-between items-start mb-2">
+            <div className="flex justify-between items-start mb-2 pr-4">
               <div className="flex-1">
                 {/* Last Seen */}
                 <div className="mb-1" style={{
@@ -116,44 +123,44 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
                   )}
                 </div>
               </div>
+            </div>
 
-              {/* Right side badges */}
-              <div className="flex flex-col items-end space-y-2">
-                {profile.verified && (
-                  <Badge className="bg-red-500 text-white rounded-md" style={{
-                    fontSize: '12px',
-                    fontWeight: 600,
-                    lineHeight: '16px',
-                    color: '#FFFFFF',
-                    background: '#D12C4A',
-                    padding: '2px 8px',
-                    borderRadius: '999px',
-                    fontFamily: 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
-                  }}>
-                    Pro
-                  </Badge>
-                )}
-                {Math.random() > 0.5 && (
-                  <Badge className="border border-pink-200 rounded-full flex items-center" style={{
-                    fontSize: '12px',
-                    fontWeight: 600,
-                    lineHeight: '16px',
-                    color: '#175CD3',
-                    background: '#EFF8FF',
-                    padding: '2px 8px',
-                    borderRadius: '999px',
-                    fontFamily: 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-                    gap: '8px'
-                  }}>
-                    <span>👍</span>
-                    Most Compatible
-                  </Badge>
-                )}
-              </div>
+            {/* Badges positioned absolutely to the right edge */}
+            <div className="absolute top-4 right-0 flex flex-col items-end space-y-2">
+              {profile.verified && (
+                <Badge className="bg-red-500 text-white rounded-l-full rounded-r-none" style={{
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  lineHeight: '16px',
+                  color: '#FFFFFF',
+                  background: '#D12C4A',
+                  padding: '4px 12px 4px 16px',
+                  borderRadius: '999px 0 0 999px',
+                  fontFamily: 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+                }}>
+                  Pro
+                </Badge>
+              )}
+              {Math.random() > 0.5 && (
+                <Badge className="border border-blue-200 rounded-l-full rounded-r-none flex items-center" style={{
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  lineHeight: '16px',
+                  color: '#175CD3',
+                  background: '#EFF8FF',
+                  padding: '4px 12px 4px 16px',
+                  borderRadius: '999px 0 0 999px',
+                  fontFamily: 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                  gap: '8px'
+                }}>
+                  <span>👍</span>
+                  Most Compatible
+                </Badge>
+              )}
             </div>
 
             {/* Basic Info Row */}
-            <div className="flex items-center mb-2" style={{
+            <div className="flex items-center mb-2 pr-4" style={{
               fontSize: '14px',
               fontWeight: 600,
               lineHeight: '20px',
@@ -171,7 +178,7 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
             </div>
 
             {/* Professional Info */}
-            <div style={{ marginBottom: '12px' }}>
+            <div style={{ marginBottom: '12px' }} className="pr-4">
               <div className="flex items-center mb-1" style={{
                 fontSize: '14px',
                 fontWeight: 500,
@@ -204,13 +211,13 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
 
             {/* One-liner About Section */}
             {(profile.bio || profile.oneLiner) && (
-              <div className="mb-3 text-sm text-gray-700 italic">
+              <div className="mb-3 text-sm text-gray-700 italic pr-4">
                 "{profile.bio || profile.oneLiner || 'Looking for a life partner who shares similar values and dreams for a beautiful future together.'}"
               </div>
             )}
 
             {/* Action Buttons */}
-            <div className="flex items-center" style={{ gap: '20px' }}>
+            <div className="flex items-center pr-4" style={{ gap: '20px' }}>
               <Button 
                 variant="outline" 
                 size="sm"
