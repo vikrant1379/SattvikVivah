@@ -472,14 +472,16 @@ const SpiritualFilterSidebar = memo(() => {
     <aside className="w-80 bg-white border-r border-gray-200 overflow-y-auto hidden lg:block">
       <div className="p-4">
         {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
-          <div className="flex gap-1">
+        <div className="mb-4">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
+          </div>
+          <div className="flex flex-wrap gap-1 justify-end">
             <Button 
               variant="outline" 
               size="sm"
               onClick={collapseAllSections}
-              className="text-gray-700 text-xs font-medium hover:bg-gray-50 border-gray-200 px-3 py-1.5 h-7 rounded-md shadow-sm"
+              className="text-gray-700 text-xs font-medium hover:bg-gray-100 hover:text-gray-900 border-gray-300 px-3 py-1.5 h-7 rounded-md bg-white"
               title="Collapse All Sections"
             >
               <ChevronDown className="w-3 h-3 mr-1" />
@@ -489,7 +491,7 @@ const SpiritualFilterSidebar = memo(() => {
               variant="outline" 
               size="sm"
               onClick={() => setShowSaveDialog(true)}
-              className="text-emerald-700 text-xs font-medium hover:bg-emerald-50 border-emerald-200 px-3 py-1.5 h-7 rounded-md shadow-sm"
+              className="text-emerald-700 text-xs font-medium hover:bg-emerald-100 hover:text-emerald-800 border-emerald-300 px-3 py-1.5 h-7 rounded-md bg-white"
               title="Save Current Filters"
             >
               <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -502,7 +504,7 @@ const SpiritualFilterSidebar = memo(() => {
                 variant="outline"
                 size="sm"
                 onClick={clearFilters}
-                className="text-red-700 text-xs font-medium hover:bg-red-50 border-red-200 px-3 py-1.5 h-7 rounded-md shadow-sm relative z-10"
+                className="text-red-700 text-xs font-medium hover:bg-red-100 hover:text-red-800 border-red-300 px-3 py-1.5 h-7 rounded-md bg-white"
                 title="Clear All Filters"
               >
                 <X className="w-3 h-3 mr-1" />
