@@ -1,7 +1,8 @@
+
 import { memo } from "react";
 import Header from "@/components/header";
-import ProfileBrowser from "@/components/profile-browser";
 import Footer from "@/components/footer";
+import ProfileBrowser from "@/components/profile-browser";
 
 const Home = memo(() => {
   return (
@@ -15,6 +16,6 @@ const Home = memo(() => {
   );
 });
 
-Home.displayName = "Home";
+Home.displayName = 'Home';
 
 export default Home;
