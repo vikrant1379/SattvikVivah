@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useState, useCallback, ReactNode, useMemo, useEffect } from "react";
 import type { ProfileFilter, UserProfile } from "@shared/schema";
 import { mockProfiles } from "@/data/mock-profiles";
@@ -17,7 +16,7 @@ const SpiritualContext = createContext<SpiritualContextValue | undefined>(undefi
 // Helper function to parse height for comparison
 const parseHeight = (height: string): number => {
   if (!height) return 0;
-  
+
   // Extract feet and inches from format like "5'6\" (168 cm)"
   const match = height.match(/(\d+)'(\d+)"/);
   if (match) {
@@ -25,14 +24,14 @@ const parseHeight = (height: string): number => {
     const inches = parseInt(match[2]);
     return feet * 12 + inches; // Convert to total inches
   }
-  
+
   // Fallback for other formats
   const cmMatch = height.match(/(\d+)\s*cm/);
   if (cmMatch) {
     const cm = parseInt(cmMatch[1]);
     return Math.round(cm / 2.54); // Convert cm to inches
   }
-  
+
   return 0;
 };
 
@@ -51,9 +50,13 @@ const filterProfiles = (profiles: UserProfile[], filters: ProfileFilter): UserPr
     // Height filters
     if (filters.heightMin || filters.heightMax) {
       const profileHeight = parseHeight(profile.height);
+
+      // Skip profiles with no height data
+      if (profileHeight === 0) return false;
+
       const minHeight = filters.heightMin ? parseHeight(filters.heightMin) : 0;
-      const maxHeight = filters.heightMax ? parseHeight(filters.heightMax) : 999;
-      
+      const maxHeight = filters.heightMax ? parseHeight(filters.heightMax) : Infinity;
+
       if (profileHeight < minHeight || profileHeight > maxHeight) return false;
     }
 
@@ -74,12 +77,12 @@ const filterProfiles = (profiles: UserProfile[], filters: ProfileFilter): UserPr
 
     // Caste filters
     if (filters.caste && profile.caste !== filters.caste) return false;
-    
+
     // Caste group filters
     if (filters.casteGroups?.length && !filters.casteGroups.includes("All")) {
       if (!profile.casteGroup || !filters.casteGroups.includes(profile.casteGroup)) return false;
     }
-    
+
     // Caste subcaste filters
     if (filters.casteSubcastes?.length && !filters.casteSubcastes.includes("All")) {
       if (!profile.casteSubcaste || !filters.casteSubcastes.includes(profile.casteSubcaste)) return false;
@@ -140,10 +143,10 @@ export function SpiritualProvider({ children }: { children: ReactNode }) {
 
   const searchProfiles = useCallback(async (searchFilters: ProfileFilter) => {
     setIsSearching(true);
-    
+
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     try {
       const filteredProfiles = filterProfiles(mockProfiles, searchFilters);
       setSearchResults(filteredProfiles);
