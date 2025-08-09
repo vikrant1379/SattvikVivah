@@ -268,31 +268,14 @@ const SpiritualFilterSidebar = memo(() => {
   };
 
   const saveCurrentFilters = () => {
-    // Check if current filters are unique
+    // Check if current filters are unique among saved filters only
     const isDuplicate = savedFilters.some(savedFilter => {
       const { name, id, ...filterData } = savedFilter;
       return areFiltersEqual(localFilters, filterData);
     });
 
-    // Also check against latest search
-    const latestSearch = localStorage.getItem('spiritualFiltersLatest');
-    let isDuplicateOfLatest = false;
-    if (latestSearch) {
-      try {
-        const parsedLatest = JSON.parse(latestSearch);
-        isDuplicateOfLatest = areFiltersEqual(localFilters, parsedLatest);
-      } catch (error) {
-        console.error('Failed to parse latest search:', error);
-      }
-    }
-
     if (isDuplicate) {
       alert("These filters have already been saved. Please modify the filters to save a new combination.");
-      return;
-    }
-
-    if (isDuplicateOfLatest) {
-      alert("These filters are the same as your latest search. Please modify the filters to save a new combination.");
       return;
     }
 
@@ -670,25 +653,14 @@ const SpiritualFilterSidebar = memo(() => {
 
     if (!hasActiveFilters) return false;
 
-    // Check if current filters are unique
+    // Check if current filters are unique among saved filters (not including latest search)
     const isDuplicate = savedFilters.some(savedFilter => {
       const { name, id, ...filterData } = savedFilter;
       return areFiltersEqual(localFilters, filterData);
     });
 
-    // Also check against latest search
-    const latestSearch = localStorage.getItem('spiritualFiltersLatest');
-    let isDuplicateOfLatest = false;
-    if (latestSearch) {
-      try {
-        const parsedLatest = JSON.parse(latestSearch);
-        isDuplicateOfLatest = areFiltersEqual(localFilters, parsedLatest);
-      } catch (error) {
-        console.error('Failed to parse latest search:', error);
-      }
-    }
-
-    return !isDuplicate && !isDuplicateOfLatest;
+    // Allow saving even if it matches latest search - users should be able to give it a name
+    return !isDuplicate;
   };
 
   // Check if current filters can be updated to an existing saved filter
