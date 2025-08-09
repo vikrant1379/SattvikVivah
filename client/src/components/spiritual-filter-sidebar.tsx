@@ -1867,7 +1867,7 @@ const SpiritualFilterSidebar = memo(() => {
                       <SelectContent>
                         {annualIncomeMaxOptions
                           .filter(income => !localFilters.annualIncomeMin || 
-                            annualIncomeMaxOptions.indexOf(income) > annualIncomeMinOptions.indexOf(localFilters.annualIncomeMin))
+                            annualIncomeMaxOptions.indexOf(income) >= annualIncomeMinOptions.indexOf(localFilters.annualIncomeMin))
                           .map((income) => (
                           <SelectItem key={income} value={income}>
                             {income}
