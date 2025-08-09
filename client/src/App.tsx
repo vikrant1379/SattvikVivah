@@ -10,11 +10,13 @@ import { StaticDataService } from "@/services";
 import Home from "@/pages/home";
 import NotFound from "@/pages/not-found";
 import ProfileBrowser from "@/components/profile-browser";
+import ProfileDetailPage from "@/components/profile-detail-page";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={ProfileBrowser} />
+      <Route path="/profile/:profileId" component={ProfileDetailPage} />
       <Route component={NotFound} />
     </Switch>
   );
