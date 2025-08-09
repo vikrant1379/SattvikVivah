@@ -43,7 +43,7 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
 
   return (
     <Card className="w-full max-w-3xl bg-white border border-gray-200 mb-4 overflow-hidden cursor-pointer">
-      <CardContent className="p-0 pr-6 relative">
+      <CardContent className="p-0 relative">
         <div className="flex">
           {/* Profile Image Section */}
           <div className="relative w-56 flex-shrink-0">
@@ -217,7 +217,7 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
             )}
 
             {/* Action Buttons */}
-            <div className="flex items-center mr-6" style={{ gap: '20px' }}>
+            <div className="flex items-center pr-4" style={{ gap: '20px' }}>
               <Button 
                 variant="outline" 
                 size="sm"
