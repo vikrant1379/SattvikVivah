@@ -615,14 +615,14 @@ const SpiritualFilterSidebar = memo(() => {
                       }}
                     >
                       <SelectTrigger className="h-9 text-sm">
-                        <SelectValue placeholder="Min" />
+                        <SelectValue placeholder="Min years" />
                       </SelectTrigger>
                       <SelectContent>
                         {ageOptions
                           .filter(age => !localFilters.ageMax || age <= localFilters.ageMax)
                           .map((age) => (
                           <SelectItem key={age} value={age.toString()}>
-                            {age}
+                            {age} years
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -642,14 +642,14 @@ const SpiritualFilterSidebar = memo(() => {
                       }}
                     >
                       <SelectTrigger className="h-9 text-sm">
-                        <SelectValue placeholder="Max" />
+                        <SelectValue placeholder="Max years" />
                       </SelectTrigger>
                       <SelectContent>
                         {ageOptions
                           .filter(age => !localFilters.ageMin || age >= localFilters.ageMin)
                           .map((age) => (
                           <SelectItem key={age} value={age.toString()}>
-                            {age}
+                            {age} years
                           </SelectItem>
                         ))}
                       </SelectContent>
