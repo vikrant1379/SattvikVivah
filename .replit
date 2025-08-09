@@ -10,3 +10,31 @@ run = ["sh", "-c", "npm run dev"]
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[workflows]
+
+[[workflows.workflow]]
+name = "Code Quality Check"
+author = 46188764
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run type-check"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run lint:check"
+
+[[workflows.workflow]]
+name = "Code Quality Check"
+author = 46188764
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run type-check"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run lint:check"
