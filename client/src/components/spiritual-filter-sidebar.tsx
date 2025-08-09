@@ -474,31 +474,39 @@ const SpiritualFilterSidebar = memo(() => {
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
-          <div className="flex gap-2">
+          <div className="flex gap-1">
             <Button 
-              variant="ghost" 
+              variant="outline" 
+              size="sm"
               onClick={collapseAllSections}
-              className="text-gray-600 text-xs font-medium hover:bg-gray-50 px-2 py-1 h-auto"
+              className="text-gray-700 text-xs font-medium hover:bg-gray-50 border-gray-200 px-3 py-1.5 h-7 rounded-md shadow-sm"
               title="Collapse All Sections"
             >
-              ⌄ COLLAPSE
+              <ChevronDown className="w-3 h-3 mr-1" />
+              Collapse
             </Button>
             <Button 
-              variant="ghost" 
+              variant="outline" 
+              size="sm"
               onClick={() => setShowSaveDialog(true)}
-              className="text-green-600 text-xs font-medium hover:bg-green-50 px-2 py-1 h-auto"
+              className="text-emerald-700 text-xs font-medium hover:bg-emerald-50 border-emerald-200 px-3 py-1.5 h-7 rounded-md shadow-sm"
               title="Save Current Filters"
             >
-              💾 SAVE
+              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3-3m0 0l-3 3m3-3v12" />
+              </svg>
+              Save
             </Button>
             {activeFilters.length > 0 && (
               <Button 
-                variant="ghost" 
+                variant="outline"
+                size="sm"
                 onClick={clearFilters}
-                className="text-blue-600 text-xs font-medium hover:bg-blue-50 px-2 py-1 h-auto relative z-10"
+                className="text-red-700 text-xs font-medium hover:bg-red-50 border-red-200 px-3 py-1.5 h-7 rounded-md shadow-sm relative z-10"
                 title="Clear All Filters"
               >
-                CLEAR ALL
+                <X className="w-3 h-3 mr-1" />
+                Clear All
               </Button>
             )}
           </div>
