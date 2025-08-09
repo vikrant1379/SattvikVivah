@@ -46,9 +46,11 @@ const ProfileDetailPage = memo(() => {
   console.log("Window pathname:", window.location.pathname);
   console.log("Window href:", window.location.href);
 
-  // Extract profileId - try multiple approaches
-  let profileId = params.profileId || params['0']; // wouter sometimes puts it in index 0
+  // Extract profileId - wouter puts route parameters in the params object
+  // The parameter name should match the route definition (:profileId)
+  let profileId = params.profileId;
 
+  // If wouter params doesn't work, extract manually from location
   if (!profileId) {
     // Manual extraction from location
     const pathMatch = location.match(/\/profile\/([^\/]+)/);
@@ -66,13 +68,22 @@ const ProfileDetailPage = memo(() => {
     }
   }
 
-  console.log("Final profileId:", profileId);
+  console.log("Trying to find profile with ID:", profileId);
+  console.log("Profile ID type:", typeof profileId);
 
-  const profile = mockProfiles.find(p => p.id === profileId);
+  // Ensure profileId is a string and trim any whitespace
+  const searchId = profileId ? String(profileId).trim() : "";
 
-  console.log("Looking for profile with ID:", profileId);
-  console.log("Available profile IDs:", mockProfiles.map(p => p.id));
+  const profile = mockProfiles.find(p => String(p.id) === searchId);
+
+  console.log("Looking for profile with ID:", searchId);
+  console.log("Available profile IDs:", mockProfiles.map(p => ({ id: p.id, type: typeof p.id })));
   console.log("Found profile:", profile ? profile.name : "NOT FOUND");
+  console.log("Search comparison results:", mockProfiles.map(p => ({
+    id: p.id,
+    matches: String(p.id) === searchId,
+    comparison: `"${p.id}" === "${searchId}"`
+  })));
 
   if (!profile) {
     console.log("Profile not found, showing error page");
