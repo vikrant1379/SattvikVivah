@@ -90,7 +90,12 @@ const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
   };
 
   const handleProfileClick = () => {
-    setLocation(`/profile/${profile.id}`);
+    const targetPath = `/profile/${profile.id}`;
+    console.log("=== Profile Card Click ===");
+    console.log("Profile ID:", profile.id);
+    console.log("Target path:", targetPath);
+    console.log("Profile object:", { id: profile.id, name: profile.name });
+    setLocation(targetPath);
   };
 
   return (

@@ -34,27 +34,45 @@ import { mockProfiles } from "../data/mock-profiles";
 import type { UserProfile } from "@shared/schema";
 
 const ProfileDetailPage = memo(() => {
-  const params = useParams<{ profileId: string }>();
+  const params = useParams();
   const [location, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("about");
 
-  // Debug logging
-  console.log("All params:", params);
-  console.log("Profile ID from params:", params.profileId);
-  console.log("Current location:", location);
+  // Debug logging - comprehensive debugging
+  console.log("=== ProfileDetailPage Debug ===");
+  console.log("Raw params object:", params);
+  console.log("Params keys:", Object.keys(params));
+  console.log("Current location path:", location);
+  console.log("Window pathname:", window.location.pathname);
+  console.log("Window href:", window.location.href);
   
-  // Fallback: extract profileId from location if params doesn't work
-  let profileId = params.profileId;
+  // Extract profileId - try multiple approaches
+  let profileId = params.profileId || params['0']; // wouter sometimes puts it in index 0
+  
   if (!profileId) {
-    const pathSegments = location.split('/');
-    profileId = pathSegments[pathSegments.length - 1];
-    console.log("Fallback profileId from path:", profileId);
+    // Manual extraction from location
+    const pathMatch = location.match(/\/profile\/([^\/]+)/);
+    if (pathMatch) {
+      profileId = pathMatch[1];
+      console.log("Extracted from regex match:", profileId);
+    } else {
+      // Simple split fallback
+      const pathSegments = location.split('/');
+      const profileIndex = pathSegments.indexOf('profile');
+      if (profileIndex >= 0 && pathSegments[profileIndex + 1]) {
+        profileId = pathSegments[profileIndex + 1];
+        console.log("Extracted from path segments:", profileId);
+      }
+    }
   }
+  
+  console.log("Final profileId:", profileId);
   
   const profile = mockProfiles.find(p => p.id === profileId);
   
   console.log("Looking for profile with ID:", profileId);
-  console.log("Found profile:", profile);
+  console.log("Available profile IDs:", mockProfiles.map(p => p.id));
+  console.log("Found profile:", profile ? profile.name : "NOT FOUND");
 
   if (!profile) {
     return (
