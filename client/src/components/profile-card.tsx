@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Heart, MessageCircle, Star, MapPin, Briefcase, GraduationCap, User, Eye, CircleCheck } from "lucide-react";
+import { GiBigDiamondRing } from "react-icons/gi";
 import type { UserProfile } from "@shared/schema";
 
 interface ProfileCardProps {
@@ -196,15 +197,7 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
                 <GraduationCap style={{ width: '16px', height: '16px', marginRight: '6px', color: '#667085' }} />
                 <span>{profile.education || 'MBA/PGDM, B.Com'}</span>
                 <span style={{ margin: '0 16px', color: '#667085' }}>•</span>
-                <svg style={{ width: '16px', height: '16px', marginRight: '6px', color: '#667085' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="9" cy="12" r="1"/>
-                  <circle cx="15" cy="12" r="1"/>
-                  <path d="m8 5 8 8"/>
-                  <path d="m12 2 4 4"/>
-                  <path d="m12 2-4 4"/>
-                  <path d="m12 22 4-4"/>
-                  <path d="m12 22-4-4"/>
-                </svg>
+                <GiBigDiamondRing style={{ width: '16px', height: '16px', marginRight: '6px', color: '#667085' }} />
                 <span>{profile.maritalStatus || 'Never Married'}</span>
               </div>
             </div>
