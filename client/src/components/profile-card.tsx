@@ -162,10 +162,10 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
               marginBottom: '8px'
             }}>
               <span>{formatHeight(profile.height)}</span>
-              <span style={{ margin: '0 8px', color: '#667085' }}>-</span>
+              <span style={{ margin: '0 8px', color: '#667085' }}>•</span>
               <MapPin className="w-4 h-4 mr-1.5" style={{ width: '16px', height: '16px', marginRight: '6px', color: '#667085' }} />
               <span>{profile.city}</span>
-              <span style={{ margin: '0 8px', color: '#667085' }}>-</span>
+              <span style={{ margin: '0 8px', color: '#667085' }}>•</span>
               <span>{profile.caste || 'Chandravanshi Kahar'}</span>
             </div>
 
@@ -182,7 +182,7 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
               }}>
                 <Briefcase style={{ width: '16px', height: '16px', marginRight: '6px', color: '#667085' }} />
                 <span>{profile.profession || 'Accounting Professional'}</span>
-                <span style={{ margin: '0 16px', color: '#667085' }}>-</span>
+                <span style={{ margin: '0 16px', color: '#667085' }}>•</span>
                 <span>{profile.annualIncome || 'Rs. 5 - 7.5 Lakh p.a'}</span>
               </div>
               <div className="flex items-center" style={{
@@ -195,8 +195,16 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
               }}>
                 <GraduationCap style={{ width: '16px', height: '16px', marginRight: '6px', color: '#667085' }} />
                 <span>{profile.education || 'MBA/PGDM, B.Com'}</span>
-                <span style={{ margin: '0 16px', color: '#667085' }}>-</span>
-                <CircleCheck style={{ width: '16px', height: '16px', marginRight: '6px', color: '#667085' }} />
+                <span style={{ margin: '0 16px', color: '#667085' }}>•</span>
+                <svg style={{ width: '16px', height: '16px', marginRight: '6px', color: '#667085' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="9" cy="12" r="1"/>
+                  <circle cx="15" cy="12" r="1"/>
+                  <path d="m8 5 8 8"/>
+                  <path d="m12 2 4 4"/>
+                  <path d="m12 2-4 4"/>
+                  <path d="m12 22 4-4"/>
+                  <path d="m12 22-4-4"/>
+                </svg>
                 <span>{profile.maritalStatus || 'Never Married'}</span>
               </div>
             </div>
