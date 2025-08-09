@@ -3,7 +3,7 @@ import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Heart, MessageCircle, Star, MapPin, Briefcase, GraduationCap, Clock, Eye, User, Phone, Images, CheckCircle } from "lucide-react";
+import { Heart, MessageCircle, Star, MapPin, Briefcase, GraduationCap, User, Eye } from "lucide-react";
 import type { UserProfile } from "@shared/schema";
 
 interface ProfileCardProps {
@@ -17,17 +17,13 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
 
   const formatLastSeen = () => {
     const lastSeenOptions = [
-      "Last seen at 4:41 PM",
-      "Last seen at 1:48 PM", 
-      "Last seen at 11:51 AM",
       "Last seen on 09-Aug-25",
+      "Last seen on 08-Aug-25", 
+      "Last seen on 07-Aug-25",
+      "Online now",
       "Last seen yesterday"
     ];
     return lastSeenOptions[Math.floor(Math.random() * lastSeenOptions.length)];
-  };
-
-  const getOneLineBio = () => {
-    return profile.bio?.split('.')[0] || "Family-oriented person looking for a life partner to share spiritual journey";
   };
 
   const formatHeight = (height: string) => {
@@ -45,11 +41,11 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
   };
 
   return (
-    <Card className="w-full bg-white border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200 mb-4 overflow-hidden">
+    <Card className="w-full max-w-3xl bg-white border border-gray-200 mb-4 overflow-hidden cursor-pointer">
       <CardContent className="p-0">
         <div className="flex">
           {/* Profile Image Section */}
-          <div className="relative w-36 h-48 flex-shrink-0">
+          <div className="relative w-56 flex-shrink-0">
             {profile.profileImage ? (
               <img 
                 src={profile.profileImage} 
@@ -57,143 +53,124 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center relative">
-                <div className="w-14 h-14 rounded-full bg-gray-300 flex items-center justify-center">
-                  <span className="text-lg font-semibold text-gray-600">
+              <div className="w-full h-full bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center relative">
+                <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center">
+                  <span className="text-xl font-semibold text-blue-600">
                     {getInitials(profile.name)}
                   </span>
                 </div>
+                {/* Photo visible on acceptance overlay */}
                 <div className="absolute inset-0 flex items-center justify-center bg-black/60 text-white text-center px-3">
-                  <div className="text-xs font-medium leading-tight">
-                    <Eye className="w-4 h-4 mx-auto mb-1" />
-                    Photo visible on acceptance of interest
+                  <div className="text-sm font-medium leading-tight">
+                    <Eye className="w-6 h-6 mx-auto mb-2 opacity-80" />
+                    Photo visible on<br />acceptance of<br />interest
                   </div>
                 </div>
               </div>
             )}
-            
-            {/* Photo Count */}
-            <div className="absolute top-2 right-2">
-              <div className="bg-black/70 text-white rounded px-1.5 py-0.5 text-xs flex items-center">
-                <Images className="w-3 h-3 mr-1" />
-                2
-              </div>
-            </div>
           </div>
 
           {/* Profile Information Section */}
-          <div className="flex-1 p-4 relative">
-            {/* Pro Badge */}
-            <div className="absolute top-3 right-3">
-              {profile.verified && (
-                <Badge className="bg-red-500 text-white text-xs px-2 py-0.5 font-medium">
-                  Pro
-                </Badge>
-              )}
-            </div>
+          <div className="flex-1 p-4">
+            {/* Header Section with Last Seen, Name, and Badges */}
+            <div className="flex justify-between items-start mb-2">
+              <div className="flex-1">
+                {/* Last Seen */}
+                <div className="text-xs text-gray-500 mb-2 font-medium">
+                  {formatLastSeen()}
+                </div>
 
-            {/* Most Compatible Badge */}
-            {Math.random() > 0.6 && (
-              <div className="absolute top-3 right-16">
-                <Badge className="bg-pink-50 text-pink-600 border-pink-200 text-xs px-2 py-0.5 font-medium">
-                  🔥 Most Compatible
-                </Badge>
+                {/* Name, Age and Verification */}
+                <div className="flex items-center mb-1">
+                  <h2 className="text-2xl font-bold text-gray-900 mr-2">
+                    {profile.name}, {profile.age}
+                  </h2>
+                  {profile.verified && (
+                    <svg 
+                      className="w-5 h-5 text-blue-500" 
+                      viewBox="0 0 24 24" 
+                      fill="currentColor"
+                    >
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                  )}
+                </div>
               </div>
-            )}
 
-            {/* Last Seen */}
-            <div className="flex items-center text-xs text-gray-500 mb-2">
-              <Clock className="w-3 h-3 mr-1" />
-              {formatLastSeen()}
+              {/* Right side badges */}
+              <div className="flex flex-col items-end space-y-2">
+                {profile.verified && (
+                  <Badge className="bg-red-500 text-white text-xs px-3 py-1 font-semibold rounded-md">
+                    Pro
+                  </Badge>
+                )}
+                {Math.random() > 0.5 && (
+                  <Badge className="bg-pink-50 text-pink-600 text-xs px-3 py-1 border border-pink-200 font-medium rounded-full flex items-center">
+                    <span className="mr-1">👍</span>
+                    Most Compatible
+                  </Badge>
+                )}
+              </div>
             </div>
 
-            {/* Name, Age and Verification */}
-            <div className="flex items-center mb-2">
-              <h3 className="text-xl font-semibold text-gray-900 mr-2">
-                {profile.name}, {profile.age}
-              </h3>
-              {profile.verified && (
-                <CheckCircle className="w-4 h-4 text-blue-500 fill-current" />
-              )}
-            </div>
-
-            {/* Basic Info Line 1 */}
-            <div className="text-sm text-gray-600 mb-1">
-              <span className="font-medium">{formatHeight(profile.height)}</span>
-              <span className="mx-1">•</span>
+            {/* Basic Info Row */}
+            <div className="flex items-center text-gray-700 mb-2 text-sm font-medium">
+              <span>{formatHeight(profile.height)}</span>
+              <span className="mx-2 text-gray-400">•</span>
               <span>{profile.city}</span>
-              <span className="mx-1">•</span>
-              <span>{profile.caste || 'Caste not specified'}</span>
+              <span className="mx-2 text-gray-400">•</span>
+              <span>{profile.caste || 'Rajput-Lodhi Rajput'}</span>
             </div>
 
-            {/* Professional Info Line 1 */}
-            <div className="flex items-center text-sm text-gray-700 mb-1">
-              <Briefcase className="w-3.5 h-3.5 mr-1.5 text-gray-500" />
-              <span className="font-medium">{profile.profession || 'Software Professional'}</span>
-              <span className="mx-1.5">•</span>
-              <span>{profile.annualIncome || 'Rs. 15 - 20 Lakh p.a'}</span>
-            </div>
-
-            {/* Professional Info Line 2 */}
-            <div className="flex items-center text-sm text-gray-700 mb-3">
-              <GraduationCap className="w-3.5 h-3.5 mr-1.5 text-gray-500" />
-              <span>{profile.education || 'B.E/B.Tech'}</span>
-              <span className="mx-1.5">•</span>
-              <span>{profile.maritalStatus || 'Never Married'}</span>
-            </div>
-
-            {/* Bio Quote */}
-            <div className="text-sm text-gray-600 mb-3 italic">
-              "{getOneLineBio()}"
-            </div>
-
-            {/* Religion and Language Tags */}
-            <div className="flex flex-wrap gap-1.5 mb-4">
-              {profile.religion && (
-                <Badge variant="outline" className="text-xs bg-blue-50 text-blue-600 border-blue-200 px-2 py-0.5 rounded-full">
-                  {profile.religion}
-                </Badge>
-              )}
-              {profile.motherTongue && (
-                <Badge variant="outline" className="text-xs bg-green-50 text-green-600 border-green-200 px-2 py-0.5 rounded-full">
-                  {profile.motherTongue}
-                </Badge>
-              )}
+            {/* Professional Info */}
+            <div className="space-y-1 mb-3">
+              <div className="flex items-center text-gray-700 text-sm">
+                <Briefcase className="w-4 h-4 mr-2 text-gray-500" />
+                <span className="font-medium">{profile.profession || 'Software Professional'}</span>
+                <span className="mx-2 text-gray-400">•</span>
+                <span>{profile.annualIncome || 'Rs. 20 - 25 Lakh p.a'}</span>
+              </div>
+              <div className="flex items-center text-gray-700 text-sm">
+                <GraduationCap className="w-4 h-4 mr-2 text-gray-500" />
+                <span className="font-medium">{profile.education || 'M.E/M.Tech, B.E/B.Tech'}</span>
+                <span className="mx-2 text-gray-400">•</span>
+                <span>{profile.maritalStatus || 'Never Married'}</span>
+              </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center space-x-3">
               <Button 
                 variant="outline" 
-                size="sm" 
-                className="text-red-500 border-red-200 hover:bg-red-50 flex items-center gap-1.5 px-3 py-1.5 h-8 text-xs font-medium"
+                size="sm"
+                className="text-red-500 border-red-300 hover:bg-red-50 hover:border-red-400 flex items-center space-x-1 rounded-full px-4 py-1.5 font-medium text-sm"
               >
-                <Heart className="w-3.5 h-3.5" />
-                Interest
+                <Heart className="w-4 h-4" />
+                <span>Interest</span>
               </Button>
               <Button 
                 variant="outline" 
                 size="sm"
-                className="text-pink-500 border-pink-200 hover:bg-pink-50 flex items-center gap-1.5 px-3 py-1.5 h-8 text-xs font-medium"
+                className="text-pink-500 border-pink-300 hover:bg-pink-50 hover:border-pink-400 flex items-center space-x-1 rounded-full px-4 py-1.5 font-medium text-sm"
               >
-                <Heart className="w-3.5 h-3.5 fill-current" />
-                Super Interest
+                <Heart className="w-4 h-4 fill-current" />
+                <span>Super Interest</span>
               </Button>
               <Button 
                 variant="outline" 
                 size="sm"
-                className="text-orange-500 border-orange-200 hover:bg-orange-50 flex items-center gap-1.5 px-3 py-1.5 h-8 text-xs font-medium"
+                className="text-orange-500 border-orange-300 hover:bg-orange-50 hover:border-orange-400 flex items-center space-x-1 rounded-full px-4 py-1.5 font-medium text-sm"
               >
-                <Star className="w-3.5 h-3.5" />
-                Shortlist
+                <Star className="w-4 h-4" />
+                <span>Shortlist</span>
               </Button>
               <Button 
                 variant="outline" 
                 size="sm"
-                className="text-gray-600 border-gray-200 hover:bg-gray-50 flex items-center gap-1.5 px-3 py-1.5 h-8 text-xs font-medium"
+                className="text-gray-600 border-gray-300 hover:bg-gray-50 hover:border-gray-400 flex items-center space-x-1 rounded-full px-4 py-1.5 font-medium text-sm"
               >
-                <MessageCircle className="w-3.5 h-3.5" />
-                Chat
+                <MessageCircle className="w-4 h-4" />
+                <span>Chat</span>
               </Button>
             </div>
           </div>
