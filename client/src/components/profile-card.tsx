@@ -20,9 +20,10 @@ import type { UserProfile } from "@shared/schema";
 
 interface ProfileCardProps {
   profile: UserProfile;
+  onProfileClick?: (profile: UserProfile) => void;
 }
 
-const ProfileCard = memo(({ profile }: ProfileCardProps) => {
+const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
   const getInitials = (name: string) => {
     return name
       .split(" ")
@@ -86,7 +87,10 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
   };
 
   return (
-    <Card className="w-full max-w-3xl bg-white border border-gray-200 mb-4 overflow-hidden cursor-pointer">
+    <Card 
+      className="w-full max-w-3xl bg-white border border-gray-200 mb-4 overflow-hidden cursor-pointer"
+      onClick={() => onProfileClick?.(profile)}
+    >
       <CardContent className="p-0 relative">
         <div className="flex">
           {/* Profile Image Section */}
