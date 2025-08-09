@@ -1,6 +1,6 @@
 
 import { memo, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -35,7 +35,7 @@ import type { UserProfile } from "@shared/schema";
 
 const ProfileDetailPage = memo(() => {
   const { profileId } = useParams<{ profileId: string }>();
-  const navigate = useNavigate();
+  const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("about");
 
   const profile = mockProfiles.find(p => p.id === profileId);
@@ -45,7 +45,7 @@ const ProfileDetailPage = memo(() => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Profile not found</h1>
-          <Button onClick={() => navigate(-1)}>Go back</Button>
+          <Button onClick={() => setLocation("/browse")}>Go back</Button>
         </div>
       </div>
     );
@@ -103,7 +103,7 @@ const ProfileDetailPage = memo(() => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => navigate(-1)}
+                onClick={() => setLocation("/browse")}
                 className="text-white hover:bg-white/20 rounded-full p-2"
               >
                 <ChevronLeft className="w-5 h-5" />
@@ -156,7 +156,7 @@ const ProfileDetailPage = memo(() => {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => navigate(-1)}
+              onClick={() => setLocation("/browse")}
               className="absolute top-4 left-4 text-blue-800 hover:bg-white/20 rounded-full p-2"
             >
               <ChevronLeft className="w-5 h-5" />
