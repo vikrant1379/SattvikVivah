@@ -1,4 +1,49 @@
 
+export const annualIncomeMinOptions = [
+  "Rs. 0",
+  "Rs. 1 Lakh",
+  "Rs. 2 Lakh",
+  "Rs. 3 Lakh",
+  "Rs. 4 Lakh",
+  "Rs. 5 Lakh",
+  "Rs. 7.5 Lakh",
+  "Rs. 10 Lakh",
+  "Rs. 12.5 Lakh",
+  "Rs. 15 Lakh",
+  "Rs. 20 Lakh",
+  "Rs. 25 Lakh",
+  "Rs. 30 Lakh",
+  "Rs. 35 Lakh",
+  "Rs. 40 Lakh",
+  "Rs. 45 Lakh",
+  "Rs. 50 Lakh",
+  "Rs. 75 Lakh",
+  "Rs. 1 Crore"
+];
+
+export const annualIncomeMaxOptions = [
+  "Rs. 1 Lakh",
+  "Rs. 2 Lakh",
+  "Rs. 3 Lakh",
+  "Rs. 4 Lakh",
+  "Rs. 5 Lakh",
+  "Rs. 7.5 Lakh",
+  "Rs. 10 Lakh",
+  "Rs. 12.5 Lakh",
+  "Rs. 15 Lakh",
+  "Rs. 20 Lakh",
+  "Rs. 25 Lakh",
+  "Rs. 30 Lakh",
+  "Rs. 35 Lakh",
+  "Rs. 40 Lakh",
+  "Rs. 45 Lakh",
+  "Rs. 50 Lakh",
+  "Rs. 75 Lakh",
+  "Rs. 1 Crore",
+  "Above Rs. 1 Crore"
+];
+
+// Legacy options for backward compatibility (used by existing profiles)
 export const annualIncomeOptions = [
   "Below Rs. 1 Lakh",
   "Rs. 1 - 2 Lakh p.a",

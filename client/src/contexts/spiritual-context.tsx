@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useCallback, ReactNode, useMemo, useEffect } from "react";
 import { mockProfiles } from "@/data/mock-profiles";
-import { annualIncomeOptions } from "@/data/annual-income";
+import { annualIncomeMinOptions, annualIncomeMaxOptions, annualIncomeOptions } from "../data/annual-income";
 import type { UserProfile, ProfileFilter } from "@shared/schema";
 
 interface SpiritualContextValue {
@@ -115,8 +115,8 @@ const filterProfiles = (profiles: UserProfile[], filters: ProfileFilter): UserPr
       const profileIncomeIndex = annualIncomeOptions.indexOf(profile.annualIncome);
       if (profileIncomeIndex === -1) return false;
 
-      const minIndex = filters.annualIncomeMin ? annualIncomeOptions.indexOf(filters.annualIncomeMin) : 0;
-      const maxIndex = filters.annualIncomeMax ? annualIncomeOptions.indexOf(filters.annualIncomeMax) : annualIncomeOptions.length - 1;
+      const minIndex = filters.annualIncomeMin ? annualIncomeMinOptions.indexOf(filters.annualIncomeMin) : 0;
+      const maxIndex = filters.annualIncomeMax ? annualIncomeMaxOptions.indexOf(filters.annualIncomeMax) : annualIncomeMaxOptions.length - 1;
 
       return profileIncomeIndex >= minIndex && profileIncomeIndex <= maxIndex;
     }

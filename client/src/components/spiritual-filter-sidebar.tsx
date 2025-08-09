@@ -35,7 +35,7 @@ import {
   guruLineages,
   dietaryLifestyles
 } from "../data/spiritual-practices";
-import { annualIncomeOptions } from "../data/annual-income";
+import { annualIncomeMinOptions, annualIncomeMaxOptions, annualIncomeOptions } from "../data/annual-income";
 import type { ProfileFilter } from "@shared/schema";
 
 // Placeholder options - replace with actual data imports
@@ -1824,9 +1824,9 @@ const SpiritualFilterSidebar = memo(() => {
                         setLocalFilters(prev => ({
                           ...prev,
                           annualIncomeMin: newMin,
-                          // Reset max income if it becomes less than min income
+                          // Reset max income if it becomes less than or equal to min income
                           annualIncomeMax: prev.annualIncomeMax && newMin && 
-                            annualIncomeOptions.indexOf(prev.annualIncomeMax) < annualIncomeOptions.indexOf(newMin) 
+                            annualIncomeMaxOptions.indexOf(prev.annualIncomeMax) <= annualIncomeMinOptions.indexOf(newMin) 
                             ? undefined : prev.annualIncomeMax
                         }));
                       }}
@@ -1835,9 +1835,9 @@ const SpiritualFilterSidebar = memo(() => {
                         <SelectValue placeholder="Min Salary" />
                       </SelectTrigger>
                       <SelectContent>
-                        {annualIncomeOptions
+                        {annualIncomeMinOptions
                           .filter(income => !localFilters.annualIncomeMax || 
-                            annualIncomeOptions.indexOf(income) <= annualIncomeOptions.indexOf(localFilters.annualIncomeMax))
+                            annualIncomeMinOptions.indexOf(income) < annualIncomeMaxOptions.indexOf(localFilters.annualIncomeMax))
                           .map((income) => (
                           <SelectItem key={income} value={income}>
                             {income}
@@ -1854,9 +1854,9 @@ const SpiritualFilterSidebar = memo(() => {
                         setLocalFilters(prev => ({
                           ...prev,
                           annualIncomeMax: newMax,
-                          // Reset min income if it becomes greater than max income
+                          // Reset min income if it becomes greater than or equal to max income
                           annualIncomeMin: prev.annualIncomeMin && newMax && 
-                            annualIncomeOptions.indexOf(prev.annualIncomeMin) > annualIncomeOptions.indexOf(newMax) 
+                            annualIncomeMinOptions.indexOf(prev.annualIncomeMin) >= annualIncomeMaxOptions.indexOf(newMax) 
                             ? undefined : prev.annualIncomeMin
                         }));
                       }}
@@ -1865,9 +1865,9 @@ const SpiritualFilterSidebar = memo(() => {
                         <SelectValue placeholder="Max Salary" />
                       </SelectTrigger>
                       <SelectContent>
-                        {annualIncomeOptions
+                        {annualIncomeMaxOptions
                           .filter(income => !localFilters.annualIncomeMin || 
-                            annualIncomeOptions.indexOf(income) >= annualIncomeOptions.indexOf(localFilters.annualIncomeMin))
+                            annualIncomeMaxOptions.indexOf(income) > annualIncomeMinOptions.indexOf(localFilters.annualIncomeMin))
                           .map((income) => (
                           <SelectItem key={income} value={income}>
                             {income}
@@ -1879,7 +1879,7 @@ const SpiritualFilterSidebar = memo(() => {
                 </div>
                 {/* Annual Income validation message */}
                 {localFilters.annualIncomeMin && localFilters.annualIncomeMax && 
-                 annualIncomeOptions.indexOf(localFilters.annualIncomeMin) > annualIncomeOptions.indexOf(localFilters.annualIncomeMax) && (
+                 annualIncomeMinOptions.indexOf(localFilters.annualIncomeMin) >= annualIncomeMaxOptions.indexOf(localFilters.annualIncomeMax) && (
                   <div className="text-xs text-red-600 bg-red-50 px-2 py-1 rounded">
                     Minimum salary cannot be greater than maximum salary
                   </div>
