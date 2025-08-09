@@ -45,7 +45,7 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
       <CardContent className="p-0">
         <div className="flex">
           {/* Profile Image Section */}
-          <div className="relative w-56 h-48 flex-shrink-0">
+          <div className="relative w-56 flex-shrink-0">
             {profile.profileImage ? (
               <img 
                 src={profile.profileImage} 
@@ -73,7 +73,7 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
           {/* Profile Information Section */}
           <div className="flex-1 p-4">
             {/* Header Section with Last Seen, Name, and Badges */}
-            <div className="flex justify-between items-start mb-3">
+            <div className="flex justify-between items-start mb-2">
               <div className="flex-1">
                 {/* Last Seen */}
                 <div className="text-xs text-gray-500 mb-2 font-medium">
@@ -81,7 +81,7 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
                 </div>
 
                 {/* Name, Age and Verification */}
-                <div className="flex items-center mb-2">
+                <div className="flex items-center mb-1">
                   <h2 className="text-2xl font-bold text-gray-900 mr-2">
                     {profile.name}, {profile.age}
                   </h2>
