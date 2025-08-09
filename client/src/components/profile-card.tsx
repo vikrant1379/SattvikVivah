@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -25,7 +25,7 @@ interface ProfileCardProps {
 }
 
 const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
-  const navigate = useNavigate();
+  const [, setLocation] = useLocation();
 
   const getInitials = (name: string) => {
     return name
@@ -90,7 +90,7 @@ const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
   };
 
   const handleProfileClick = () => {
-    navigate(`/profiles/${profile.id}`);
+    setLocation(`/profile/${profile.id}`);
   };
 
   return (
