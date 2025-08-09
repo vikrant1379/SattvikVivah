@@ -682,6 +682,17 @@ const SpiritualFilterSidebar = memo(() => {
     return !isDuplicate && !isDuplicateOfLatest;
   };
 
+  // Check if current filters can be updated to an existing saved filter
+  const canUpdateCurrentFilter = () => {
+    if (!currentLoadedFilterId || currentLoadedFilterId === 'latest') return false;
+    
+    const currentSavedFilter = savedFilters.find(f => f.id === currentLoadedFilterId);
+    if (!currentSavedFilter) return false;
+    
+    const { name, id, ...savedFilterData } = currentSavedFilter;
+    return !areFiltersEqual(localFilters, savedFilterData);
+  };
+
   return (
     <aside className="w-80 bg-white border-r border-gray-200 overflow-y-auto hidden lg:block">
       <div className="p-4">
@@ -692,7 +703,7 @@ const SpiritualFilterSidebar = memo(() => {
           </div>
           
           {/* Action Buttons */}
-          <div className={`grid gap-2 mb-4 ${hasFiltersToSave() ? 'grid-cols-3' : 'grid-cols-2'}`}>
+          <div className={`grid gap-2 mb-4 ${hasFiltersToSave() || canUpdateCurrentFilter() ? 'grid-cols-3' : 'grid-cols-2'}`}>
             <Button 
               variant="outline" 
               size="sm"
@@ -716,6 +727,21 @@ const SpiritualFilterSidebar = memo(() => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
                 </svg>
                 <span>Save</span>
+              </Button>
+            )}
+
+            {canUpdateCurrentFilter() && (
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => updateExistingFilter(currentLoadedFilterId!)}
+                className="flex items-center justify-center gap-2 text-orange-600 text-xs font-medium hover:bg-orange-50 hover:text-orange-700 border-orange-200 px-3 py-2 h-8 rounded-lg bg-white shadow-sm transition-all duration-200 hover:shadow-md"
+                title="Update Current Saved Filter"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <span>Update</span>
               </Button>
             )}
             
@@ -1242,7 +1268,10 @@ const SpiritualFilterSidebar = memo(() => {
                   onChange={(e) => updateSearch('otherLanguages', e.target.value)}
                 />
                 <div className="max-h-48 overflow-y-auto space-y-2">
-                  {getFilteredOptions(motherTongues, searchStates.otherLanguages || "").map((language) => (
+                  {getFilteredOptions(
+                    motherTongues.filter(language => language !== localFilters.motherTongue), 
+                    searchStates.otherLanguages || ""
+                  ).map((language) => (
                     <div key={language} className="flex items-center space-x-2">
                       <Checkbox
                         id={`other-${language}`}
