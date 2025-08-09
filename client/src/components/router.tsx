@@ -9,7 +9,9 @@ export default function AppRouter() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/browse" component={ProfileBrowser} />
-      <Route path="/profile/:profileId" component={ProfileDetailPage} />
+      <Route path="/profile/:profileId">
+        <ProfileDetailPage />
+      </Route>
       <Route component={NotFound} />
     </Switch>
   );

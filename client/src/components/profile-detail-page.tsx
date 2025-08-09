@@ -34,11 +34,27 @@ import { mockProfiles } from "../data/mock-profiles";
 import type { UserProfile } from "@shared/schema";
 
 const ProfileDetailPage = memo(() => {
-  const { profileId } = useParams<{ profileId: string }>();
-  const [, setLocation] = useLocation();
+  const params = useParams<{ profileId: string }>();
+  const [location, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("about");
 
+  // Debug logging
+  console.log("All params:", params);
+  console.log("Profile ID from params:", params.profileId);
+  console.log("Current location:", location);
+  
+  // Fallback: extract profileId from location if params doesn't work
+  let profileId = params.profileId;
+  if (!profileId) {
+    const pathSegments = location.split('/');
+    profileId = pathSegments[pathSegments.length - 1];
+    console.log("Fallback profileId from path:", profileId);
+  }
+  
   const profile = mockProfiles.find(p => p.id === profileId);
+  
+  console.log("Looking for profile with ID:", profileId);
+  console.log("Found profile:", profile);
 
   if (!profile) {
     return (
