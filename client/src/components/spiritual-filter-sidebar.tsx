@@ -113,10 +113,14 @@ const SpiritualFilterSidebar = memo(() => {
   });
 
   // Saved filters functionality
-  const [savedFilters, setSavedFilters] = useState<(ProfileFilter & { name: string })[]>([]);
+  const [savedFilters, setSavedFilters] = useState<(ProfileFilter & { name: string; id: string })[]>([]);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [filterName, setFilterName] = useState("");
-  const [expandedSavedFilters, setExpandedSavedFilters] = useState<{ [key: number]: boolean }>({});
+  const [expandedSavedFilters, setExpandedSavedFilters] = useState<{ [key: string]: boolean }>({});
+  const [editingFilterId, setEditingFilterId] = useState<string | null>(null);
+  const [editingFilterName, setEditingFilterName] = useState("");
+  const [renamingFilterId, setRenamingFilterId] = useState<string | null>(null);
+  const [currentLoadedFilterId, setCurrentLoadedFilterId] = useState<string | null>(null);
 
   // Search states for each section
   const [searchStates, setSearchStates] = useState({
@@ -187,25 +191,86 @@ const SpiritualFilterSidebar = memo(() => {
     });
   };
 
+  const generateFilterName = () => {
+    const existingNumbers = savedFilters
+      .map(f => f.name.match(/^Filter (\d+)$/))
+      .filter(match => match)
+      .map(match => parseInt(match![1]));
+    
+    const nextNumber = existingNumbers.length > 0 ? Math.max(...existingNumbers) + 1 : 1;
+    return `Filter ${nextNumber}`;
+  };
+
   const saveCurrentFilters = () => {
-    if (filterName.trim()) {
-      const newSavedFilter = {
-        ...localFilters,
-        name: filterName.trim()
-      };
-      setSavedFilters(prev => [...prev, newSavedFilter]);
-      setFilterName("");
-      setShowSaveDialog(false);
+    const name = filterName.trim() || generateFilterName();
+    const newSavedFilter = {
+      ...localFilters,
+      name,
+      id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
+    };
+    setSavedFilters(prev => [...prev, newSavedFilter]);
+    setFilterName("");
+    setShowSaveDialog(false);
+  };
+
+  const updateExistingFilter = (filterId: string) => {
+    setSavedFilters(prev => prev.map(filter => 
+      filter.id === filterId 
+        ? { ...localFilters, name: filter.name, id: filter.id }
+        : filter
+    ));
+    setEditingFilterId(null);
+    setCurrentLoadedFilterId(filterId);
+  };
+
+  const saveAsNewFilter = () => {
+    const name = filterName.trim() || generateFilterName();
+    const newSavedFilter = {
+      ...localFilters,
+      name,
+      id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
+    };
+    setSavedFilters(prev => [...prev, newSavedFilter]);
+    setFilterName("");
+    setShowSaveDialog(false);
+    setEditingFilterId(null);
+    setCurrentLoadedFilterId(newSavedFilter.id);
+  };
+
+  const loadSavedFilter = (savedFilter: ProfileFilter & { name: string; id: string }) => {
+    const { name, id, ...filterData } = savedFilter;
+    setLocalFilters(filterData);
+    setCurrentLoadedFilterId(id);
+    setEditingFilterId(null);
+  };
+
+  const deleteSavedFilter = (filterId: string) => {
+    setSavedFilters(prev => prev.filter(f => f.id !== filterId));
+    if (currentLoadedFilterId === filterId) {
+      setCurrentLoadedFilterId(null);
     }
   };
 
-  const loadSavedFilter = (savedFilter: ProfileFilter) => {
-    const { name, ...filterData } = savedFilter;
-    setLocalFilters(filterData);
+  const startRenaming = (filterId: string, currentName: string) => {
+    setRenamingFilterId(filterId);
+    setEditingFilterName(currentName);
   };
 
-  const deleteSavedFilter = (index: number) => {
-    setSavedFilters(prev => prev.filter((_, i) => i !== index));
+  const saveRename = (filterId: string) => {
+    if (editingFilterName.trim()) {
+      setSavedFilters(prev => prev.map(filter => 
+        filter.id === filterId 
+          ? { ...filter, name: editingFilterName.trim() }
+          : filter
+      ));
+    }
+    setRenamingFilterId(null);
+    setEditingFilterName("");
+  };
+
+  const cancelRename = () => {
+    setRenamingFilterId(null);
+    setEditingFilterName("");
   };
 
   const updateSearch = (section: string, value: string) => {
@@ -538,33 +603,48 @@ const SpiritualFilterSidebar = memo(() => {
         {/* Save Filter Dialog */}
         {showSaveDialog && (
           <div className="mb-4 p-3 bg-gray-50 border border-gray-200 rounded-md">
-            <div className="flex items-center gap-2 mb-2">
-              <Input
-                placeholder="Enter filter name"
-                value={filterName}
-                onChange={(e) => setFilterName(e.target.value)}
-                className="h-8 text-sm flex-1"
-                onKeyPress={(e) => e.key === 'Enter' && saveCurrentFilters()}
-              />
-              <Button
-                size="sm"
-                onClick={saveCurrentFilters}
-                disabled={!filterName.trim()}
-                className="h-8 px-3 text-xs"
-              >
-                Save
-              </Button>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => {
-                  setShowSaveDialog(false);
-                  setFilterName("");
-                }}
-                className="h-8 px-2 text-xs"
-              >
-                ✕
-              </Button>
+            <div className="mb-2">
+              <div className="flex items-center gap-2 mb-2">
+                <Input
+                  placeholder={`Filter name (default: ${generateFilterName()})`}
+                  value={filterName}
+                  onChange={(e) => setFilterName(e.target.value)}
+                  className="h-8 text-sm flex-1"
+                  onKeyPress={(e) => e.key === 'Enter' && (editingFilterId ? saveAsNewFilter() : saveCurrentFilters())}
+                />
+                <Button
+                  size="sm"
+                  onClick={editingFilterId ? saveAsNewFilter : saveCurrentFilters}
+                  className="h-8 px-3 text-xs bg-blue-600 hover:bg-blue-700"
+                >
+                  Save
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => {
+                    setShowSaveDialog(false);
+                    setFilterName("");
+                    setEditingFilterId(null);
+                  }}
+                  className="h-8 px-2 text-xs"
+                >
+                  ✕
+                </Button>
+              </div>
+              {editingFilterId && (
+                <div className="flex items-center gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => updateExistingFilter(editingFilterId)}
+                    className="h-7 px-2 text-xs text-orange-600 border-orange-200 hover:bg-orange-50"
+                  >
+                    Update Existing
+                  </Button>
+                  <span className="text-xs text-gray-500">or save as new filter above</span>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -574,39 +654,110 @@ const SpiritualFilterSidebar = memo(() => {
           <div className="mb-4">
             <h3 className="text-sm font-medium text-gray-700 mb-2">Saved Filters</h3>
             <div className="space-y-2">
-              {savedFilters.map((savedFilter, index) => (
-                <div key={index} className="bg-blue-50 border border-blue-200 rounded-md">
+              {savedFilters.map((savedFilter) => (
+                <div key={savedFilter.id} className={`border rounded-md transition-all ${
+                  currentLoadedFilterId === savedFilter.id 
+                    ? 'bg-green-50 border-green-200' 
+                    : 'bg-blue-50 border-blue-200'
+                }`}>
                   <div className="flex items-center justify-between p-2">
                     <div className="flex items-center gap-2 flex-1">
                       <button
                         onClick={() => setExpandedSavedFilters(prev => ({
                           ...prev,
-                          [index]: !prev[index]
+                          [savedFilter.id]: !prev[savedFilter.id]
                         }))}
-                        className="text-blue-600 hover:text-blue-800"
+                        className={`hover:text-blue-800 ${
+                          currentLoadedFilterId === savedFilter.id ? 'text-green-600' : 'text-blue-600'
+                        }`}
                         title="Toggle filter details"
                       >
-                        {expandedSavedFilters[index] ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
+                        {expandedSavedFilters[savedFilter.id] ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
                       </button>
+                      
+                      {renamingFilterId === savedFilter.id ? (
+                        <div className="flex items-center gap-1 flex-1">
+                          <Input
+                            value={editingFilterName}
+                            onChange={(e) => setEditingFilterName(e.target.value)}
+                            className="h-6 text-xs flex-1"
+                            onKeyPress={(e) => {
+                              if (e.key === 'Enter') saveRename(savedFilter.id);
+                              if (e.key === 'Escape') cancelRename();
+                            }}
+                            autoFocus
+                          />
+                          <button
+                            onClick={() => saveRename(savedFilter.id)}
+                            className="text-green-600 hover:text-green-700 text-xs px-1"
+                            title="Save name"
+                          >
+                            ✓
+                          </button>
+                          <button
+                            onClick={cancelRename}
+                            className="text-red-500 hover:text-red-700 text-xs px-1"
+                            title="Cancel"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2 flex-1">
+                          <button
+                            onClick={() => loadSavedFilter(savedFilter)}
+                            className={`text-sm hover:text-blue-900 flex-1 text-left font-medium ${
+                              currentLoadedFilterId === savedFilter.id 
+                                ? 'text-green-700' 
+                                : 'text-blue-700'
+                            }`}
+                            title="Load this filter"
+                          >
+                            {savedFilter.name}
+                            {currentLoadedFilterId === savedFilter.id && (
+                              <span className="ml-2 text-xs text-green-600 font-normal">(Active)</span>
+                            )}
+                          </button>
+                          <button
+                            onClick={() => startRenaming(savedFilter.id, savedFilter.name)}
+                            className="text-gray-500 hover:text-gray-700 text-xs px-1"
+                            title="Rename filter"
+                          >
+                            ✏️
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="flex items-center gap-1">
+                      {currentLoadedFilterId === savedFilter.id && (
+                        <button
+                          onClick={() => {
+                            setEditingFilterId(savedFilter.id);
+                            setShowSaveDialog(true);
+                          }}
+                          className="text-orange-600 hover:text-orange-700 text-xs px-1"
+                          title="Edit this filter"
+                        >
+                          ✏️
+                        </button>
+                      )}
                       <button
-                        onClick={() => loadSavedFilter(savedFilter)}
-                        className="text-sm text-blue-700 hover:text-blue-900 flex-1 text-left font-medium"
-                        title="Load this filter"
+                        onClick={() => deleteSavedFilter(savedFilter.id)}
+                        className="text-red-500 hover:text-red-700 text-xs px-1"
+                        title="Delete saved filter"
                       >
-                        {savedFilter.name}
+                        ✕
                       </button>
                     </div>
-                    <button
-                      onClick={() => deleteSavedFilter(index)}
-                      className="text-red-500 hover:text-red-700 ml-2 text-xs px-1"
-                      title="Delete saved filter"
-                    >
-                      ✕
-                    </button>
                   </div>
                   
-                  {expandedSavedFilters[index] && (
-                    <div className="px-3 pb-2 border-t border-blue-200 bg-blue-25">
+                  {expandedSavedFilters[savedFilter.id] && (
+                    <div className={`px-3 pb-2 border-t ${
+                      currentLoadedFilterId === savedFilter.id 
+                        ? 'border-green-200 bg-green-25' 
+                        : 'border-blue-200 bg-blue-25'
+                    }`}>
                       <div className="text-xs text-gray-600 mt-2">
                         <div className="space-y-1">
                           {savedFilter.ageMin && savedFilter.ageMax && (
