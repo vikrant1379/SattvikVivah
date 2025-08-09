@@ -159,3 +159,6 @@ export type InspirationalQuote = typeof inspirationalQuotes.$inferSelect;
 export type InsertInspirationalQuote = z.infer<typeof insertInspirationalQuoteSchema>;
 
 export type ProfileFilter = z.infer<typeof profileFilterSchema>;
+
+// Alias for backward compatibility
+export type UserProfile = SpiritualProfile;

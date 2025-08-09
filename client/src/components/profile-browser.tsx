@@ -46,14 +46,14 @@ const ProfileBrowser = memo(() => {
             </div>
           </div>
 
-          {/* Profile Grid */}
+          {/* Profile List */}
           {isSearching ? (
             <div className="flex items-center justify-center py-20">
               <Loader2 className="w-8 h-8 animate-spin text-saffron" />
               <span className="ml-2 text-gray-600">Finding your perfect matches...</span>
             </div>
           ) : searchResults.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="space-y-4">
               {searchResults.map((profile) => (
                 <ProfileCard key={profile.id} profile={profile} />
               ))}
