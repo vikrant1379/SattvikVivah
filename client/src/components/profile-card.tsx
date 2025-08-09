@@ -98,7 +98,7 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
                   </h3>
                   {profile.verified && (
                     <img 
-                      src="https://www.citypng.com/public/uploads/preview/blue-instagram-account-verified-check-mark-icon-701751695136711q4jgagbecy.png?v=2025061916" 
+                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Twitter_Verified_Badge.svg/1200px-Twitter_Verified_Badge.svg.png" 
                       alt="Verified"
                       className="w-6 h-6"
                     />
