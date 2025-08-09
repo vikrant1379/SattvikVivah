@@ -316,7 +316,7 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
             )}
 
             {/* Action Buttons */}
-            <div className="flex items-center pr-4" style={{ gap: "20px" }}>
+            <div className="flex items-center pr-4" style={{ gap: "12px" }}>
               <Button
                 variant="outline"
                 size="sm"
