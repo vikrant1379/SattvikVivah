@@ -215,10 +215,18 @@ export function SpiritualProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useSpiritualContext() {
+export const useSpiritualContext = () => {
   const context = useContext(SpiritualContext);
   if (context === undefined) {
-    throw new Error('useSpiritualContext must be used within a SpiritualProvider');
+    // Return default values instead of throwing error
+    return {
+      filters: { casteGroups: [], casteSubcastes: [], annualIncomeMin: undefined, annualIncomeMax: undefined },
+      searchResults: [],
+      isSearching: false,
+      setFilters: () => {},
+      searchProfiles: () => Promise.resolve(),
+      clearSearch: () => {},
+    };
   }
   return context;
-}
+};

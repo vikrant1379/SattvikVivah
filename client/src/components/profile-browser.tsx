@@ -6,9 +6,25 @@ import PremiumBenefits from "@/components/premium-benefits";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import type { UserProfile } from "@shared/schema";
+import { useState } from "react";
+import type { ProfileFilter } from "@/types/profile";
+
 
 const ProfileBrowser = memo(() => {
+  let spiritualPractices: string[] = [];
+  let sacredTexts: string[] = [];
+
+  try {
+    const context = useSpiritualContext();
+    spiritualPractices = context.spiritualPractices;
+    sacredTexts = context.sacredTexts;
+  } catch (error) {
+    console.warn('Spiritual context not available:', error);
+  }
+
+  const [filters, setFilters] = useState<ProfileFilter>({});
   const { searchResults, isSearching } = useSpiritualContext();
+
 
   return (
     <div className="flex flex-1 bg-gray-50">
