@@ -629,7 +629,7 @@ const SpiritualFilterSidebar = memo(() => {
             <CollapsibleTrigger asChild>
               <Button
                 variant="outline"
-                className="flex items-center justify-between w-full p-2 h-auto text-sm font-medium text-gray-700 border border-gray-200 hover:bg-gray-50"
+                className="flex items-center justify-between w-full p-2 h-auto text-sm font-medium text-gray-700 border border-gray-200 hover:bg-gray-100 hover:border-gray-300 hover:text-gray-800"
               >
                 <span>Saved Filters ({savedFilters.length})</span>
                 {savedFiltersOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
