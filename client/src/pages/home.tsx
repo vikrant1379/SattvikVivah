@@ -5,9 +5,11 @@ import Footer from "@/components/footer";
 
 const Home = memo(() => {
   return (
-    <div className="bg-background min-h-screen flex flex-col">
+    <div className="min-h-screen bg-gray-50">
       <Header />
-      <ProfileBrowser />
+      <main className="flex-1">
+        <ProfileBrowser />
+      </main>
       <Footer />
     </div>
   );

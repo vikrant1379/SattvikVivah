@@ -9,11 +9,13 @@ import { preloadResource } from "@/utils";
 import { StaticDataService } from "@/services";
 import Home from "@/pages/home";
 import NotFound from "@/pages/not-found";
+import ProfileBrowser from "@/components/profile-browser";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/profile/:id" component={ProfileBrowser} /> {/* Added ProfileBrowser route */}
       <Route component={NotFound} />
     </Switch>
   );
@@ -46,7 +48,7 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SpiritualProvider>
+      <SpiritualProvider> {/* ProfileBrowser is now correctly wrapped */}
         <TooltipProvider>
           <Toaster />
           <Router />
