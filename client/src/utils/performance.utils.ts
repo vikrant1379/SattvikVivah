@@ -1,4 +1,6 @@
 
+import React from 'react';
+
 // Debounce utility for search and input fields
 export const debounce = <T extends (...args: any[]) => any>(
   func: T,

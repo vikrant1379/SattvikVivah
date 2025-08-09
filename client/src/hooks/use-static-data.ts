@@ -3,209 +3,207 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { StaticDataService } from '@/services';
 import { handleApiError } from '@/utils';
 
-interface UseStaticDataOptions {
-  preload?: boolean;
-  autoLoadCommon?: boolean;
+interface LoadingStatus {
+  isLoading: boolean;
+  isComplete: boolean;
+  progress: number;
 }
 
-export const useStaticData = (options: UseStaticDataOptions = {}) => {
-  const { preload = false, autoLoadCommon = true } = options;
-  
-  const [spiritualPractices, setSpiritualPractices] = useState<string[]>([]);
-  const [sacredTexts, setSacredTexts] = useState<string[]>([]);
-  const [countries, setCountries] = useState<string[]>([]);
-  const [states, setStates] = useState<string[]>([]);
-  const [cities, setCities] = useState<string[]>([]);
-  const [languages, setLanguages] = useState<string[]>([]);
+interface StaticDataState {
+  spiritualPractices: string[];
+  sacredTexts: string[];
+  countries: string[];
+  states: string[];
+  cities: string[];
+  languages: string[];
+}
+
+interface StaticDataHook extends StaticDataState {
+  isLoading: boolean;
+  error: string | null;
+  loadingStatus: LoadingStatus;
+  loadCommonData: () => Promise<void>;
+  loadLocationData: (country?: string, state?: string) => Promise<void>;
+  refreshData: (dataType?: keyof StaticDataState) => Promise<void>;
+  clearError: () => void;
+}
+
+export const useStaticData = (): StaticDataHook => {
+  // State management with better TypeScript support
+  const [state, setState] = useState<StaticDataState>({
+    spiritualPractices: [],
+    sacredTexts: [],
+    countries: [],
+    states: [],
+    cities: [],
+    languages: []
+  });
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loadedData, setLoadedData] = useState<Set<string>>(new Set());
 
-  // Memoized loading status
-  const loadingStatus = useMemo(() => ({
-    hasData: spiritualPractices.length > 0 || sacredTexts.length > 0,
-    isComplete: loadedData.has('spiritual') && loadedData.has('texts') && loadedData.has('countries'),
-    completionPercentage: (loadedData.size / 6) * 100
-  }), [spiritualPractices.length, sacredTexts.length, loadedData]);
+  // Memoized loading status calculation
+  const loadingStatus = useMemo((): LoadingStatus => {
+    const totalDataTypes = 6; // spiritual, texts, countries, states, cities, languages
+    const loadedCount = loadedData.size;
+    const progress = (loadedCount / totalDataTypes) * 100;
+    
+    return {
+      isLoading,
+      isComplete: loadedCount === totalDataTypes,
+      progress: Math.round(progress)
+    };
+  }, [isLoading, loadedData]);
 
-  const updateLoadedData = useCallback((key: string) => {
-    setLoadedData(prev => new Set([...prev, key]));
+  // Generic data loader with error handling
+  const loadData = useCallback(async <T>(
+    dataLoader: () => Promise<T>,
+    stateKey: keyof StaticDataState,
+    dataType: string
+  ): Promise<T | null> => {
+    try {
+      const data = await StaticDataService.getDataWithMetrics(dataLoader, dataType);
+      
+      setState(prevState => ({
+        ...prevState,
+        [stateKey]: data
+      }));
+      
+      setLoadedData(prev => new Set([...prev, dataType]));
+      return data;
+    } catch (err) {
+      const errorMessage = handleApiError(err);
+      setError(errorMessage);
+      console.error(`Failed to load ${dataType}:`, err);
+      return null;
+    }
   }, []);
 
-  const loadSpiritualPractices = useCallback(async () => {
-    if (loadedData.has('spiritual')) return;
-    
-    try {
-      setIsLoading(true);
-      const data = await StaticDataService.getSpiritualPractices();
-      setSpiritualPractices(data);
-      updateLoadedData('spiritual');
-    } catch (err) {
-      setError(handleApiError(err));
-    } finally {
-      setIsLoading(false);
-    }
-  }, [loadedData, updateLoadedData]);
-
-  const loadSacredTexts = useCallback(async () => {
-    if (loadedData.has('texts')) return;
-    
-    try {
-      setIsLoading(true);
-      const data = await StaticDataService.getSacredTexts();
-      setSacredTexts(data);
-      updateLoadedData('texts');
-    } catch (err) {
-      setError(handleApiError(err));
-    } finally {
-      setIsLoading(false);
-    }
-  }, [loadedData, updateLoadedData]);
-
-  const loadCountries = useCallback(async () => {
-    if (loadedData.has('countries')) return;
-    
-    try {
-      setIsLoading(true);
-      const data = await StaticDataService.getCountries();
-      setCountries(data);
-      updateLoadedData('countries');
-    } catch (err) {
-      setError(handleApiError(err));
-    } finally {
-      setIsLoading(false);
-    }
-  }, [loadedData, updateLoadedData]);
-
-  const loadStates = useCallback(async (country?: string) => {
-    const key = `states_${country || 'all'}`;
-    if (loadedData.has(key)) return;
-    
-    try {
-      setIsLoading(true);
-      const data = await StaticDataService.getStates(country);
-      setStates(data);
-      updateLoadedData(key);
-    } catch (err) {
-      setError(handleApiError(err));
-    } finally {
-      setIsLoading(false);
-    }
-  }, [loadedData, updateLoadedData]);
-
-  const loadCities = useCallback(async (state?: string) => {
-    const key = `cities_${state || 'all'}`;
-    if (loadedData.has(key)) return;
-    
-    try {
-      setIsLoading(true);
-      const data = await StaticDataService.getCities(state);
-      setCities(data);
-      updateLoadedData(key);
-    } catch (err) {
-      setError(handleApiError(err));
-    } finally {
-      setIsLoading(false);
-    }
-  }, [loadedData, updateLoadedData]);
-
-  const loadLanguages = useCallback(async () => {
-    if (loadedData.has('languages')) return;
-    
-    try {
-      setIsLoading(true);
-      const data = await StaticDataService.getLanguages();
-      setLanguages(data);
-      updateLoadedData('languages');
-    } catch (err) {
-      setError(handleApiError(err));
-    } finally {
-      setIsLoading(false);
-    }
-  }, [loadedData, updateLoadedData]);
-
-  // Batch load common data
-  const loadCommonData = useCallback(async () => {
+  // Optimized batch loading with progress tracking
+  const loadCommonData = useCallback(async (): Promise<void> => {
     if (loadingStatus.isComplete) return;
     
+    setIsLoading(true);
+    setError(null);
+    
     try {
-      setIsLoading(true);
-      await StaticDataService.preloadCommonData();
-      // Update all states at once to reduce re-renders
-      const [practices, texts, countriesData, langs] = await Promise.all([
-        StaticDataService.getSpiritualPractices(),
-        StaticDataService.getSacredTexts(),
-        StaticDataService.getCountries(),
-        StaticDataService.getLanguages()
-      ]);
+      // Load data in batches for better UX
+      const batch1 = [
+        () => loadData(StaticDataService.getSpiritualPractices, 'spiritualPractices', 'spiritual'),
+        () => loadData(StaticDataService.getSacredTexts, 'sacredTexts', 'texts')
+      ];
       
-      setSpiritualPractices(practices);
-      setSacredTexts(texts);
-      setCountries(countriesData);
-      setLanguages(langs);
-      
-      setLoadedData(new Set(['spiritual', 'texts', 'countries', 'languages']));
-    } catch (err) {
-      setError(handleApiError(err));
-    } finally {
-      setIsLoading(false);
-    }
-  }, [loadingStatus.isComplete]);
+      const batch2 = [
+        () => loadData(StaticDataService.getCountries, 'countries', 'countries'),
+        () => loadData(StaticDataService.getLanguages, 'languages', 'languages')
+      ];
 
-  // Load location data efficiently
-  const loadLocationData = useCallback(async (country?: string, state?: string) => {
-    try {
-      setIsLoading(true);
-      const { countries: countriesData, states: statesData, cities: citiesData } = 
-        await StaticDataService.getLocationData(country, state);
+      // Execute batches sequentially for better perceived performance
+      await Promise.allSettled(batch1.map(fn => fn()));
+      await Promise.allSettled(batch2.map(fn => fn()));
       
-      setCountries(countriesData);
-      setStates(statesData);
-      setCities(citiesData);
-      
-      updateLoadedData('countries');
-      updateLoadedData(`states_${country || 'all'}`);
-      updateLoadedData(`cities_${state || 'all'}`);
     } catch (err) {
       setError(handleApiError(err));
     } finally {
       setIsLoading(false);
     }
-  }, [updateLoadedData]);
+  }, [loadData, loadingStatus.isComplete]);
+
+  // Location-specific data loading
+  const loadLocationData = useCallback(async (
+    country?: string, 
+    state?: string
+  ): Promise<void> => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const locationData = await StaticDataService.getLocationData(country, state);
+      
+      setState(prevState => ({
+        ...prevState,
+        countries: locationData.countries.length > 0 ? locationData.countries : prevState.countries,
+        states: locationData.states,
+        cities: locationData.cities
+      }));
+
+      // Update loaded data tracking
+      const newLoadedData = new Set([...loadedData]);
+      if (locationData.countries.length > 0) newLoadedData.add('countries');
+      if (locationData.states.length > 0) newLoadedData.add('states');
+      if (locationData.cities.length > 0) newLoadedData.add('cities');
+      setLoadedData(newLoadedData);
+
+    } catch (err) {
+      setError(handleApiError(err));
+    } finally {
+      setIsLoading(false);
+    }
+  }, [loadedData]);
+
+  // Selective data refresh
+  const refreshData = useCallback(async (
+    dataType?: keyof StaticDataState
+  ): Promise<void> => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      if (dataType) {
+        // Refresh specific data type
+        switch (dataType) {
+          case 'spiritualPractices':
+            await loadData(StaticDataService.getSpiritualPractices, 'spiritualPractices', 'spiritual');
+            break;
+          case 'sacredTexts':
+            await loadData(StaticDataService.getSacredTexts, 'sacredTexts', 'texts');
+            break;
+          case 'countries':
+            await loadData(StaticDataService.getCountries, 'countries', 'countries');
+            break;
+          case 'languages':
+            await loadData(StaticDataService.getLanguages, 'languages', 'languages');
+            break;
+          default:
+            throw new Error(`Unknown data type: ${dataType}`);
+        }
+      } else {
+        // Refresh all data
+        await loadCommonData();
+      }
+    } catch (err) {
+      setError(handleApiError(err));
+    } finally {
+      setIsLoading(false);
+    }
+  }, [loadData, loadCommonData]);
+
+  // Clear error state
+  const clearError = useCallback(() => {
+    setError(null);
+  }, []);
 
   // Auto-load common data on mount
   useEffect(() => {
-    if (autoLoadCommon && !loadingStatus.hasData) {
+    if (!loadingStatus.isComplete && !isLoading) {
       loadCommonData();
     }
-  }, [autoLoadCommon, loadCommonData, loadingStatus.hasData]);
+  }, [loadCommonData, loadingStatus.isComplete, isLoading]);
 
-  // Preload data in the background
+  // Preload high-priority data
   useEffect(() => {
-    if (preload && !isLoading) {
-      requestIdleCallback(() => {
-        loadCommonData();
-      });
-    }
-  }, [preload, isLoading, loadCommonData]);
+    StaticDataService.preloadByPriority('high');
+  }, []);
 
   return {
-    spiritualPractices,
-    sacredTexts,
-    countries,
-    states,
-    cities,
-    languages,
+    ...state,
     isLoading,
     error,
     loadingStatus,
-    loadSpiritualPractices,
-    loadSacredTexts,
-    loadCountries,
-    loadStates,
-    loadCities,
-    loadLanguages,
     loadCommonData,
-    loadLocationData
+    loadLocationData,
+    refreshData,
+    clearError
   };
 };

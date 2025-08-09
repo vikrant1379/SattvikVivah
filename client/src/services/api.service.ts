@@ -252,16 +252,16 @@ export async function batchRequests<T>(
 
 // Enhanced preload utility with priority support
 export function preloadData(
-  urls: string[], 
+  urls: string[],
   priority: 'high' | 'low' = 'low',
   cacheTTL?: number
 ): void {
   const preloadFn = () => {
     urls.forEach(url => {
-      cachedApiRequest(url, { 
-        method: 'GET', 
-        cache: true, 
-        cacheTTL 
+      cachedApiRequest(url, {
+        method: 'GET',
+        cache: true,
+        cacheTTL
       }).catch(() => {
         // Silently fail preload requests
       });
