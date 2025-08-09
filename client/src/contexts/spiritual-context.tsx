@@ -105,7 +105,7 @@ const filterProfiles = (profiles: UserProfile[], filters: ProfileFilter): UserPr
     if (filters.maritalStatus && profile.maritalStatus !== filters.maritalStatus) return false;
     if (filters.religion && profile.religion !== filters.religion) return false;
     if (filters.ethnicity && profile.ethnicity !== filters.ethnicity) return false;
-    if (filters.annualIncome && filters.annualIncome !== "Doesn't Matter" && profile.annualIncome !== filters.annualIncome) return false;
+    if (filters.annualIncome && profile.annualIncome !== filters.annualIncome) return false;
 
     // Lifestyle filters
     if (filters.smokingHabits && profile.smokingHabits !== filters.smokingHabits) return false;
