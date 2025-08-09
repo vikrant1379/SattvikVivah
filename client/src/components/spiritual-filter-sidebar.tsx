@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Combobox } from "@/components/ui/combobox";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Slider } from "@/components/ui/slider";
-import { ChevronDown, ChevronRight, X, Filter, Search, Settings } from "lucide-react";
+import { ChevronDown, ChevronRight, X } from "lucide-react";
 import { useSpiritualContext } from "@/contexts/spiritual-context";
 import { countries, statesByCountry, citiesByState, motherTongues } from "@/data/locations";
 import { casteGroupOptions, casteSubcasteOptions } from "../data/caste";
@@ -37,19 +37,6 @@ import {
   dietaryLifestyles
 } from "../data/spiritual-practices";
 import type { ProfileFilter } from "@shared/schema";
-import { 
-  Sidebar,
-  SidebarContent,
-  SidebarHeader,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarGroupContent,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarSeparator,
-  useSidebar
-} from "@/components/ui/sidebar";
 
 // Placeholder options - replace with actual data imports
 const hasChildrenOptions = ["Yes", "No", "Doesn't Matter"];
@@ -104,14 +91,87 @@ const SpiritualFilterSidebar = memo(() => {
     residentialStatus: filters.residentialStatus
   });
 
-  // Collapsible states - start with key sections open
+  // Collapsible states - start with some sections open
   const [openSections, setOpenSections] = useState({
-    basic: true,
+    age: true,
+    height: true,
     location: true,
-    spiritual: false,
-    professional: false,
+    motherTongue: false,
+    otherLanguages: false,
+    education: false,
+    profession: false,
+    casteGroup: false,
+    casteSubcaste: false,
+    spiritualPractices: false,
+    sacredTexts: false,
+    maritalStatus: true,
+    lifestyleHabits: true,
     lifestyle: false,
-    preferences: false
+    religion: false,
+    ethnicity: false,
+    annualIncome: false
+  });
+
+  // Saved filters functionality
+  const [savedFilters, setSavedFilters] = useState<(ProfileFilter & { name: string; id: string })[]>([]);
+  const [savedFiltersOpen, setSavedFiltersOpen] = useState(false);
+  const [renamingFilterId, setRenamingFilterId] = useState<string | null>(null);
+  const [editingFilterName, setEditingFilterName] = useState("");
+  const [currentLoadedFilterId, setCurrentLoadedFilterId] = useState<string | null>(null);
+
+  // Load saved filters and latest search from localStorage on mount
+  useEffect(() => {
+    try {
+      // Load saved filters
+      const saved = localStorage.getItem('spiritualFiltersSaved');
+      if (saved) {
+        const parsedSaved = JSON.parse(saved);
+        setSavedFilters(parsedSaved);
+      }
+
+      // Load and apply latest search
+      const latestSearch = localStorage.getItem('spiritualFiltersLatest');
+      if (latestSearch) {
+        const parsedLatest = JSON.parse(latestSearch);
+        setLocalFilters(parsedLatest);
+        setCurrentLoadedFilterId('latest');
+      }
+    } catch (error) {
+      console.error('Failed to load saved filters:', error);
+    }
+  }, []);
+
+  // Search states for each section
+  const [searchStates, setSearchStates] = useState({
+    education: "",
+    profession: "",
+    casteGroup: "",
+    casteSubcaste: "",
+    spiritualPractices: "",
+    sacredTexts: "",
+    guruLineages: "",
+    motherTongue: "",
+    otherLanguages: "",
+    countries: "",
+    states: "",
+    cities: "",
+    religion: "",
+    ethnicity: "",
+    annualIncome: ""
+  });
+
+  // Expanded states for "MORE" sections
+  const [expandedSections, setExpandedSections] = useState({
+    education: false,
+    profession: false,
+    casteGroup: false,
+    casteSubcaste: false,
+    spiritualPractices: false,
+    sacredTexts: false,
+    guruLineages: false,
+    religion: false,
+    ethnicity: false,
+    annualIncome: false
   });
 
   const toggleSection = (section: string) => {
@@ -121,22 +181,458 @@ const SpiritualFilterSidebar = memo(() => {
     }));
   };
 
-  // Get active filters count for each section
-  const getActiveFiltersCount = () => {
-    let count = 0;
-    Object.values(localFilters).forEach(value => {
-      if (Array.isArray(value)) {
-        if (value.length > 0) count++;
-      } else if (value !== undefined && value !== "" && value !== false) {
-        count++;
-      }
+  const toggleExpanded = (section: string) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section as keyof typeof prev]
+    }));
+  };
+
+  const collapseAllSections = () => {
+    setOpenSections({
+      age: false,
+      height: false,
+      location: false,
+      motherTongue: false,
+      otherLanguages: false,
+      education: false,
+      profession: false,
+      casteGroup: false,
+      casteSubcaste: false,
+      spiritualPractices: false,
+      sacredTexts: false,
+      maritalStatus: false,
+      lifestyleHabits: false,
+      lifestyle: false,
+      religion: false,
+      ethnicity: false,
+      annualIncome: false
     });
-    return count;
+  };
+
+  const generateFilterName = () => {
+    // Find the next available "Save X" number
+    const existingNumbers = savedFilters
+      .map(f => f.name.match(/^Save (\d+)$/))
+      .filter(match => match)
+      .map(match => parseInt(match![1]));
+    
+    // Find the smallest available number starting from 1
+    let nextNumber = 1;
+    while (existingNumbers.includes(nextNumber)) {
+      nextNumber++;
+    }
+    return `Save ${nextNumber}`;
+  };
+
+  const renumberSavedFilters = (filters: (ProfileFilter & { name: string; id: string })[]) => {
+    // Renumber only the auto-generated names (Save X format)
+    const autoGenerated = filters.filter(f => f.name.match(/^Save (\d+)$/));
+    const customNamed = filters.filter(f => !f.name.match(/^Save (\d+)$/));
+    
+    // Sort auto-generated by current number and reassign sequential numbers
+    autoGenerated.sort((a, b) => {
+      const aNum = parseInt(a.name.match(/^Save (\d+)$/)![1]);
+      const bNum = parseInt(b.name.match(/^Save (\d+)$/)![1]);
+      return aNum - bNum;
+    });
+    
+    autoGenerated.forEach((filter, index) => {
+      filter.name = `Save ${index + 1}`;
+    });
+    
+    return [...autoGenerated, ...customNamed];
+  };
+
+  const areFiltersEqual = (filters1: ProfileFilter, filters2: ProfileFilter) => {
+    // Compare all filter properties for equality
+    const keys = new Set([...Object.keys(filters1), ...Object.keys(filters2)]);
+    
+    for (const key of keys) {
+      const value1 = filters1[key as keyof ProfileFilter];
+      const value2 = filters2[key as keyof ProfileFilter];
+      
+      // Handle arrays
+      if (Array.isArray(value1) && Array.isArray(value2)) {
+        if (value1.length !== value2.length) return false;
+        const sorted1 = [...value1].sort();
+        const sorted2 = [...value2].sort();
+        if (!sorted1.every((val, index) => val === sorted2[index])) return false;
+      } else if (Array.isArray(value1) || Array.isArray(value2)) {
+        return false;
+      } else if (value1 !== value2) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const saveCurrentFilters = () => {
+    // Check if current filters are unique
+    const isDuplicate = savedFilters.some(savedFilter => {
+      const { name, id, ...filterData } = savedFilter;
+      return areFiltersEqual(localFilters, filterData);
+    });
+
+    // Also check against latest search
+    const latestSearch = localStorage.getItem('spiritualFiltersLatest');
+    let isDuplicateOfLatest = false;
+    if (latestSearch) {
+      try {
+        const parsedLatest = JSON.parse(latestSearch);
+        isDuplicateOfLatest = areFiltersEqual(localFilters, parsedLatest);
+      } catch (error) {
+        console.error('Failed to parse latest search:', error);
+      }
+    }
+
+    if (isDuplicate) {
+      alert("These filters have already been saved. Please modify the filters to save a new combination.");
+      return;
+    }
+
+    if (isDuplicateOfLatest) {
+      alert("These filters are the same as your latest search. Please modify the filters to save a new combination.");
+      return;
+    }
+
+    const name = generateFilterName();
+    const newSavedFilter = {
+      ...localFilters,
+      name,
+      id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
+    };
+    setSavedFilters(prev => {
+      const updated = [...prev, newSavedFilter];
+      const renumbered = renumberSavedFilters(updated);
+      // Save to localStorage
+      localStorage.setItem('spiritualFiltersSaved', JSON.stringify(renumbered));
+      return renumbered;
+    });
+    setCurrentLoadedFilterId(newSavedFilter.id);
+  };
+
+  const updateExistingFilter = (filterId: string) => {
+    setSavedFilters(prev => {
+      const updated = prev.map(filter => 
+        filter.id === filterId 
+          ? { ...localFilters, name: filter.name, id: filter.id }
+          : filter
+      );
+      // Save to localStorage
+      localStorage.setItem('spiritualFiltersSaved', JSON.stringify(updated));
+      return updated;
+    });
+    setCurrentLoadedFilterId(filterId);
+  };
+
+  const loadSavedFilter = (savedFilter: ProfileFilter & { name: string; id: string }) => {
+    const { name, id, ...filterData } = savedFilter;
+    setLocalFilters(filterData);
+    setCurrentLoadedFilterId(id);
+    setRenamingFilterId(null);
+  };
+
+  const deleteSavedFilter = (filterId: string) => {
+    setSavedFilters(prev => {
+      const filtered = prev.filter(f => f.id !== filterId);
+      const renumbered = renumberSavedFilters(filtered);
+      // Save to localStorage
+      localStorage.setItem('spiritualFiltersSaved', JSON.stringify(renumbered));
+      return renumbered;
+    });
+    if (currentLoadedFilterId === filterId) {
+      setCurrentLoadedFilterId(null);
+    }
+  };
+
+  const startRenaming = (filterId: string, currentName: string) => {
+    setRenamingFilterId(filterId);
+    setEditingFilterName(currentName);
+  };
+
+  const saveRename = (filterId: string) => {
+    const newName = editingFilterName.trim();
+    if (newName) {
+      // Check if name is unique (excluding current filter)
+      const nameExists = savedFilters.some(f => f.id !== filterId && f.name === newName);
+      if (!nameExists) {
+        setSavedFilters(prev => {
+          const updated = prev.map(filter => 
+            filter.id === filterId 
+              ? { ...filter, name: newName }
+              : filter
+          );
+          // Save to localStorage
+          localStorage.setItem('spiritualFiltersSaved', JSON.stringify(updated));
+          return updated;
+        });
+        setRenamingFilterId(null);
+        setEditingFilterName("");
+      } else {
+        // Name already exists, keep editing mode
+        alert("This name already exists. Please choose a different name.");
+      }
+    }
+  };
+
+  const cancelRename = () => {
+    setRenamingFilterId(null);
+    setEditingFilterName("");
+  };
+
+  const updateSearch = (section: string, value: string) => {
+    setSearchStates(prev => ({
+      ...prev,
+      [section]: value
+    }));
+  };
+
+  // Filter options based on search
+  const getFilteredOptions = (options: string[], searchTerm: string) => {
+    if (!searchTerm) return options;
+    return options.filter(option => 
+      option.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  };
+
+  // Get visible options for a section
+  const getVisibleOptions = (options: string[], section: string, limit: number = 8) => {
+    const filtered = getFilteredOptions(options, searchStates[section as keyof typeof searchStates] || "");
+    const isExpanded = expandedSections[section as keyof typeof expandedSections];
+    return isExpanded ? filtered : filtered.slice(0, limit);
+  };
+
+  const getRemainingCount = (options: string[], section: string): number => {
+    return Math.max(0, getFilteredOptions(options, searchStates[section as keyof typeof searchStates] || "").length - 8);
+  };
+
+  // Get active filters for display
+  const getActiveFilters = () => {
+    const active = [];
+
+    if (localFilters.ageMin || localFilters.ageMax) {
+      active.push({
+        key: 'age',
+        label: `${localFilters.ageMin || 18}-${localFilters.ageMax || 70} years`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, ageMin: undefined, ageMax: undefined }))
+      });
+    }
+
+    if (localFilters.heightMin || localFilters.heightMax) {
+      // Extract just the feet/inches part without cm
+      const formatHeight = (height: string) => {
+        if (!height) return '';
+        return height.split(' (')[0]; // Takes "5'4" (163 cm)" and returns "5'4""
+      };
+      
+      const minHeight = formatHeight(localFilters.heightMin || '4\'0"');
+      const maxHeight = formatHeight(localFilters.heightMax || '6\'7"');
+      
+      active.push({
+        key: 'height',
+        label: `${minHeight}-${maxHeight}`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, heightMin: undefined, heightMax: undefined }))
+      });
+    }
+
+    if (localFilters.country || localFilters.state || localFilters.city) {
+      const selectedCountry = countries.find(c => c.value === localFilters.country)?.label;
+      const parts = [selectedCountry, localFilters.state, localFilters.city].filter(Boolean);
+      active.push({
+        key: 'location',
+        label: parts.join(', '),
+        onRemove: () => setLocalFilters(prev => ({ ...prev, country: undefined, state: undefined, city: undefined }))
+      });
+    }
+
+    if (localFilters.education) {
+      active.push({
+        key: 'education',
+        label: localFilters.education,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, education: undefined }))
+      });
+    }
+
+    if (localFilters.profession) {
+      active.push({
+        key: 'profession',
+        label: localFilters.profession,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, profession: undefined }))
+      });
+    }
+
+    if (localFilters.caste) {
+      active.push({
+        key: 'caste',
+        label: localFilters.caste,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, caste: undefined }))
+      });
+    }
+
+    // Show combined caste filter if both are selected
+    if (localFilters.casteGroups?.length && localFilters.casteSubcastes?.length) {
+      const groupsText = localFilters.casteGroups.includes("All") ? "All Groups" : `${localFilters.casteGroups.length} Groups`;
+      const subcastesText = localFilters.casteSubcastes.includes("All") ? "All Subcastes" : `${localFilters.casteSubcastes.length} Subcastes`;
+      active.push({
+        key: 'combinedCaste',
+        label: `Caste: ${groupsText} + ${subcastesText}`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, casteGroups: [], casteSubcastes: [] }))
+      });
+    } else if (localFilters.casteGroups?.length) {
+      active.push({
+        key: 'casteGroups',
+        label: localFilters.casteGroups.includes("All") ? "All Caste Groups" : `${localFilters.casteGroups.length} Caste Groups`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, casteGroups: [], casteSubcastes: [] }))
+      });
+    } else if (localFilters.casteSubcastes?.length) {
+      active.push({
+        key: 'casteSubcastes',
+        label: localFilters.casteSubcastes.includes("All") ? "All Subcastes" : `${localFilters.casteSubcastes.length} Subcastes`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, casteSubcastes: [] }))
+      });
+    }
+
+    if (localFilters.motherTongue) {
+      active.push({
+        key: 'motherTongue',
+        label: localFilters.motherTongue,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, motherTongue: undefined }))
+      });
+    }
+
+    if (localFilters.otherLanguages?.length) {
+      active.push({
+        key: 'otherLanguages',
+        label: `${localFilters.otherLanguages.length} other languages`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, otherLanguages: [] }))
+      });
+    }
+
+    if (localFilters.spiritualPractices?.length) {
+      active.push({
+        key: 'spiritualPractices',
+        label: `${localFilters.spiritualPractices.length} practices`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, spiritualPractices: undefined }))
+      });
+    }
+
+    if (localFilters.verified) {
+      active.push({
+        key: 'verified',
+        label: 'Verified only',
+        onRemove: () => setLocalFilters(prev => ({ ...prev, verified: false }))
+      });
+    }
+
+    if (localFilters.withPhoto) {
+      active.push({
+        key: 'withPhoto',
+        label: 'With photo',
+        onRemove: () => setLocalFilters(prev => ({ ...prev, withPhoto: false }))
+      });
+    }
+
+    if (localFilters.religion) {
+      active.push({
+        key: 'religion',
+        label: localFilters.religion,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, religion: undefined }))
+      });
+    }
+
+    if (localFilters.ethnicity) {
+      active.push({
+        key: 'ethnicity',
+        label: localFilters.ethnicity,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, ethnicity: undefined }))
+      });
+    }
+
+    if (localFilters.annualIncome) {
+      active.push({
+        key: 'annualIncome',
+        label: localFilters.annualIncome,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, annualIncome: undefined }))
+      });
+    }
+
+    // Add new active filters
+    if (localFilters.maritalStatus) {
+      active.push({
+        key: 'maritalStatus',
+        label: `${localFilters.maritalStatus}`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, maritalStatus: undefined }))
+      });
+    }
+
+    if (localFilters.eatingHabits) {
+      active.push({
+        key: 'eatingHabits',
+        label: `${localFilters.eatingHabits}`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, eatingHabits: undefined }))
+      });
+    }
+
+    if (localFilters.drinkingHabits) {
+      active.push({
+        key: 'drinkingHabits',
+        label: `Drinking: ${localFilters.drinkingHabits}`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, drinkingHabits: undefined }))
+      });
+    }
+
+    if (localFilters.smokingHabits) {
+      active.push({
+        key: 'smokingHabits',
+        label: `Smoking: ${localFilters.smokingHabits}`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, smokingHabits: undefined }))
+      });
+    }
+
+    if (localFilters.hasChildren) {
+      active.push({
+        key: 'hasChildren',
+        label: `Children: ${localFilters.hasChildren}`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, hasChildren: undefined }))
+      });
+    }
+
+    if (localFilters.horoscope) {
+      active.push({
+        key: 'horoscope',
+        label: `Horoscope: ${localFilters.horoscope}`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, horoscope: undefined }))
+      });
+    }
+
+    if (localFilters.mangalik) {
+      active.push({
+        key: 'mangalik',
+        label: `Mangalik: ${localFilters.mangalik}`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, mangalik: undefined }))
+      });
+    }
+
+    if (localFilters.residentialStatus) {
+      active.push({
+        key: 'residentialStatus',
+        label: `Residential Status: ${localFilters.residentialStatus}`,
+        onRemove: () => setLocalFilters(prev => ({ ...prev, residentialStatus: undefined }))
+      });
+    }
+
+
+    return active;
   };
 
   const handleSearch = useCallback(() => {
     setFilters(localFilters);
     searchProfiles(localFilters);
+    
+    // Save as latest search to localStorage
+    localStorage.setItem('spiritualFiltersLatest', JSON.stringify(localFilters));
+    setCurrentLoadedFilterId('latest');
   }, [localFilters, setFilters, searchProfiles]);
 
   const clearFilters = useCallback(() => {
@@ -146,462 +642,1488 @@ const SpiritualFilterSidebar = memo(() => {
     };
     setLocalFilters(clearedFilters);
     setFilters(clearedFilters);
+    setCurrentLoadedFilterId(null);
+    // Clear latest search from localStorage as well
+    localStorage.removeItem('spiritualFiltersLatest');
   }, [setFilters]);
 
-  const activeCount = getActiveFiltersCount();
+  const activeFilters = getActiveFilters();
+  
+  // Check if there are any active filters to save and if they are unique
+  const hasFiltersToSave = () => {
+    // First check if there are any active filters
+    const hasActiveFilters = Object.values(localFilters).some(value => {
+      if (Array.isArray(value)) {
+        return value.length > 0;
+      }
+      return value !== undefined && value !== "" && value !== false;
+    });
+
+    if (!hasActiveFilters) return false;
+
+    // Check if current filters are unique
+    const isDuplicate = savedFilters.some(savedFilter => {
+      const { name, id, ...filterData } = savedFilter;
+      return areFiltersEqual(localFilters, filterData);
+    });
+
+    // Also check against latest search
+    const latestSearch = localStorage.getItem('spiritualFiltersLatest');
+    let isDuplicateOfLatest = false;
+    if (latestSearch) {
+      try {
+        const parsedLatest = JSON.parse(latestSearch);
+        isDuplicateOfLatest = areFiltersEqual(localFilters, parsedLatest);
+      } catch (error) {
+        console.error('Failed to parse latest search:', error);
+      }
+    }
+
+    return !isDuplicate && !isDuplicateOfLatest;
+  };
+
+  // Check if current filters can be updated to an existing saved filter
+  const canUpdateCurrentFilter = () => {
+    if (!currentLoadedFilterId || currentLoadedFilterId === 'latest') return false;
+    
+    const currentSavedFilter = savedFilters.find(f => f.id === currentLoadedFilterId);
+    if (!currentSavedFilter) return false;
+    
+    const { name, id, ...savedFilterData } = currentSavedFilter;
+    return !areFiltersEqual(localFilters, savedFilterData);
+  };
 
   return (
-    <Sidebar className="border-r bg-white" collapsible="none" side="left">
-      <SidebarHeader className="border-b bg-gradient-to-r from-sage/5 to-lotus/5 p-4">
-        <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-sage/10">
-            <Filter className="h-4 w-4 text-sage" />
+    <aside className="w-80 bg-white border-r border-gray-200 overflow-y-auto hidden lg:block">
+      <div className="p-4">
+        {/* Header */}
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
           </div>
-          <div>
-            <h2 className="font-semibold text-gray-900">Refine Matches</h2>
-            <p className="text-xs text-gray-500">
-              {activeCount > 0 ? `${activeCount} filters active` : "No filters applied"}
-            </p>
-          </div>
-        </div>
-
-        {/* Quick Actions */}
-        <div className="mt-4 flex gap-2">
-          <Button 
-            onClick={handleSearch}
-            size="sm" 
-            className="flex-1 bg-saffron hover:bg-saffron/90 text-white"
-          >
-            <Search className="mr-2 h-3 w-3" />
-            Search
-          </Button>
-          {activeCount > 0 && (
+          
+          {/* Action Buttons */}
+          <div className={`grid gap-2 mb-4 ${hasFiltersToSave() ? 'grid-cols-3' : 'grid-cols-2'}`}>
             <Button 
-              onClick={clearFilters}
               variant="outline" 
               size="sm"
-              className="text-red-600 border-red-200 hover:bg-red-50"
+              onClick={collapseAllSections}
+              className="flex items-center justify-center gap-2 text-slate-600 text-xs font-medium hover:bg-slate-50 hover:text-slate-800 border-slate-200 px-3 py-2 h-8 rounded-lg bg-white shadow-sm transition-all duration-200 hover:shadow-md"
+              title="Collapse All Sections"
             >
-              <X className="h-3 w-3" />
+              <ChevronDown className="w-3.5 h-3.5" />
+              <span>Collapse</span>
             </Button>
-          )}
+            
+            {hasFiltersToSave() && (
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={saveCurrentFilters}
+                className="flex items-center justify-center gap-2 text-blue-600 text-xs font-medium hover:bg-blue-50 hover:text-blue-700 border-blue-200 px-3 py-2 h-8 rounded-lg bg-white shadow-sm transition-all duration-200 hover:shadow-md"
+                title="Save Current Filters"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                </svg>
+                <span>Save</span>
+              </Button>
+            )}
+            
+            {activeFilters.length > 0 ? (
+              <Button 
+                variant="outline"
+                size="sm"
+                onClick={clearFilters}
+                className="flex items-center justify-center gap-2 text-red-600 text-xs font-medium hover:bg-red-50 hover:text-red-700 border-red-200 px-3 py-2 h-8 rounded-lg bg-white shadow-sm transition-all duration-200 hover:shadow-md"
+                title="Clear All Filters"
+              >
+                <X className="w-3.5 h-3.5" />
+                <span>Clear</span>
+              </Button>
+            ) : (
+              <div className="flex items-center justify-center px-3 py-2 h-8 bg-gray-50 border border-gray-100 rounded-lg">
+                <span className="text-xs text-gray-400">No filters</span>
+              </div>
+            )}
+          </div>
         </div>
-      </SidebarHeader>
 
-      <SidebarContent className="px-2">
-        {/* Basic Details Section */}
-        <SidebarGroup>
-          <Collapsible open={openSections.basic} onOpenChange={() => toggleSection('basic')}>
+        {/* Saved Filters - Collapsible */}
+        {(savedFilters.length > 0 || localStorage.getItem('spiritualFiltersLatest')) && (
+          <Collapsible 
+            open={savedFiltersOpen} 
+            onOpenChange={setSavedFiltersOpen}
+            className="mb-4"
+          >
             <CollapsibleTrigger asChild>
-              <SidebarGroupLabel className="group/label flex w-full items-center justify-between p-2 hover:bg-gray-50 rounded-md cursor-pointer">
-                <span className="font-medium text-gray-900">Basic Details</span>
-                {openSections.basic ? 
-                  <ChevronDown className="h-4 w-4 text-gray-500" /> : 
-                  <ChevronRight className="h-4 w-4 text-gray-500" />
-                }
-              </SidebarGroupLabel>
+              <Button
+                variant="outline"
+                className="flex items-center justify-between w-full p-2 h-auto text-sm font-medium text-gray-700 border border-gray-200 hover:bg-gray-100 hover:border-gray-300 hover:text-gray-800"
+              >
+                <span>Saved Filters ({savedFilters.length + (localStorage.getItem('spiritualFiltersLatest') ? 1 : 0)})</span>
+                {savedFiltersOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+              </Button>
             </CollapsibleTrigger>
-            <CollapsibleContent>
-              <SidebarGroupContent className="px-2 space-y-4">
-                {/* Age Range */}
-                <Card className="border-gray-100">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-gray-700">Age Range</CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0 space-y-3">
-                    <div className="grid grid-cols-2 gap-2">
-                      <Select
-                        value={localFilters.ageMin?.toString() || ""}
-                        onValueChange={(value) => {
-                          const newMin = value ? parseInt(value) : undefined;
-                          setLocalFilters(prev => ({ ...prev, ageMin: newMin }));
+            <CollapsibleContent className="mt-2">
+              <div className="space-y-2">
+                {/* Latest Search Option */}
+                {localStorage.getItem('spiritualFiltersLatest') && (
+                  <div className={`border rounded-md transition-all ${
+                    currentLoadedFilterId === 'latest' 
+                      ? 'bg-green-50 border-green-200' 
+                      : 'bg-purple-50 border-purple-200'
+                  }`}>
+                    <div className="flex items-center justify-between p-2">
+                      <button
+                        onClick={() => {
+                          try {
+                            const latestSearch = localStorage.getItem('spiritualFiltersLatest');
+                            if (latestSearch) {
+                              const parsedLatest = JSON.parse(latestSearch);
+                              setLocalFilters(parsedLatest);
+                              setCurrentLoadedFilterId('latest');
+                            }
+                          } catch (error) {
+                            console.error('Failed to load latest search:', error);
+                          }
                         }}
+                        className={`text-sm hover:text-purple-900 flex-1 text-left font-medium ${
+                          currentLoadedFilterId === 'latest' 
+                            ? 'text-green-700' 
+                            : 'text-purple-700'
+                        }`}
+                        title="Load your most recent search"
                       >
-                        <SelectTrigger className="h-8 text-xs">
-                          <SelectValue placeholder="Min" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {ageOptions.slice(0, 15).map((age) => (
-                            <SelectItem key={age} value={age.toString()}>
-                              {age}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Select
-                        value={localFilters.ageMax?.toString() || ""}
-                        onValueChange={(value) => {
-                          const newMax = value ? parseInt(value) : undefined;
-                          setLocalFilters(prev => ({ ...prev, ageMax: newMax }));
-                        }}
-                      >
-                        <SelectTrigger className="h-8 text-xs">
-                          <SelectValue placeholder="Max" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {ageOptions.slice(10).map((age) => (
-                            <SelectItem key={age} value={age.toString()}>
-                              {age}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                        📅 Latest Search
+                        {currentLoadedFilterId === 'latest' && (
+                          <span className="ml-2 text-xs text-green-600 font-normal">(Active)</span>
+                        )}
+                      </button>
+                      <div className="flex items-center gap-1">
+                        {currentLoadedFilterId === 'latest' && (
+                          <button
+                            onClick={() => {
+                              // Update latest search with current filters
+                              localStorage.setItem('spiritualFiltersLatest', JSON.stringify(localFilters));
+                            }}
+                            className="text-orange-600 hover:text-orange-700 text-sm px-1"
+                            title="Update latest search with current filters"
+                          >
+                            🔄
+                          </button>
+                        )}
+                        <button
+                          onClick={() => {
+                            localStorage.removeItem('spiritualFiltersLatest');
+                            if (currentLoadedFilterId === 'latest') {
+                              setCurrentLoadedFilterId(null);
+                            }
+                            // Force re-render by updating a state that affects the render
+                            setSavedFiltersOpen(prev => !prev);
+                            setSavedFiltersOpen(prev => !prev);
+                          }}
+                          className="text-red-500 hover:text-red-700 text-sm px-1"
+                          title="Clear latest search"
+                        >
+                          ✕
+                        </button>
+                      </div>
                     </div>
-                  </CardContent>
-                </Card>
-
-                {/* Height Range */}
-                <Card className="border-gray-100">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-gray-700">Height</CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0 space-y-3">
-                    <div className="grid grid-cols-2 gap-2">
-                      <Select
-                        value={localFilters.heightMin || ""}
-                        onValueChange={(value) => {
-                          setLocalFilters(prev => ({ ...prev, heightMin: value || undefined }));
-                        }}
-                      >
-                        <SelectTrigger className="h-8 text-xs">
-                          <SelectValue placeholder="Min" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {heightOptions.slice(0, 15).map((height) => (
-                            <SelectItem key={height} value={height}>
-                              {height.split(' (')[0]}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Select
-                        value={localFilters.heightMax || ""}
-                        onValueChange={(value) => {
-                          setLocalFilters(prev => ({ ...prev, heightMax: value || undefined }));
-                        }}
-                      >
-                        <SelectTrigger className="h-8 text-xs">
-                          <SelectValue placeholder="Max" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {heightOptions.slice(10).map((height) => (
-                            <SelectItem key={height} value={height}>
-                              {height.split(' (')[0]}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                  </div>
+                )}
+                
+                {savedFilters.map((savedFilter) => (
+                  <div key={savedFilter.id} className={`border rounded-md transition-all ${
+                    currentLoadedFilterId === savedFilter.id 
+                      ? 'bg-green-50 border-green-200' 
+                      : 'bg-blue-50 border-blue-200'
+                  }`}>
+                    <div className="flex items-center justify-between p-2">
+                      {renamingFilterId === savedFilter.id ? (
+                        <div className="flex items-center gap-1 flex-1">
+                          <Input
+                            value={editingFilterName}
+                            onChange={(e) => setEditingFilterName(e.target.value)}
+                            className="h-7 text-xs flex-1"
+                            onKeyPress={(e) => {
+                              if (e.key === 'Enter') saveRename(savedFilter.id);
+                              if (e.key === 'Escape') cancelRename();
+                            }}
+                            autoFocus
+                          />
+                          <button
+                            onClick={() => saveRename(savedFilter.id)}
+                            className="text-green-600 hover:text-green-700 text-sm px-1"
+                            title="Save name"
+                          >
+                            ✓
+                          </button>
+                          <button
+                            onClick={cancelRename}
+                            className="text-red-500 hover:text-red-700 text-sm px-1"
+                            title="Cancel"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ) : (
+                        <>
+                          <button
+                            onClick={() => loadSavedFilter(savedFilter)}
+                            className={`text-sm hover:text-blue-900 flex-1 text-left font-medium ${
+                              currentLoadedFilterId === savedFilter.id 
+                                ? 'text-green-700' 
+                                : 'text-blue-700'
+                            }`}
+                            title="Activate this filter"
+                          >
+                            {savedFilter.name}
+                            {currentLoadedFilterId === savedFilter.id && (
+                              <span className="ml-2 text-xs text-green-600 font-normal">(Active)</span>
+                            )}
+                          </button>
+                          <div className="flex items-center gap-1">
+                            <button
+                              onClick={() => startRenaming(savedFilter.id, savedFilter.name)}
+                              className="text-gray-500 hover:text-gray-700 text-sm px-1"
+                              title="Rename filter"
+                            >
+                              ✏️
+                            </button>
+                            {currentLoadedFilterId === savedFilter.id && canUpdateCurrentFilter() && (
+                              <button
+                                onClick={() => updateExistingFilter(savedFilter.id)}
+                                className="text-orange-600 hover:text-orange-700 text-sm px-1"
+                                title="Update with current filters"
+                              >
+                                🔄
+                              </button>
+                            )}
+                            <button
+                              onClick={() => deleteSavedFilter(savedFilter.id)}
+                              className="text-red-500 hover:text-red-700 text-sm px-1"
+                              title="Delete saved filter"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        </>
+                      )}
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                ))}
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+        )}
 
-                {/* Marital Status */}
-                <Card className="border-gray-100">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-gray-700">Marital Status</CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0">
+        {/* Active Filters */}
+        {activeFilters.length > 0 && (
+          <div className="mb-6 relative z-0">
+            <div className="flex flex-wrap gap-2">
+              {activeFilters.map((filter) => (
+                <div 
+                  key={filter.key}
+                  className="inline-flex items-center bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-full hover:bg-gray-200 transition-colors"
+                >
+                  <X 
+                    className="w-3 h-3 mr-1 cursor-pointer hover:text-gray-900 transition-colors" 
+                    onClick={filter.onRemove}
+                  />
+                  <span className="select-none">{filter.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="space-y-6">
+          {/* Age Section */}
+          <div className="border-b border-gray-200 pb-4">
+            <div 
+              className="flex items-center justify-between cursor-pointer py-2"
+              onClick={() => toggleSection('age')}
+            >
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">AGE</h3>
+              {openSections.age ? 
+                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
+                <ChevronRight className="w-4 h-4 text-gray-500" />
+              }
+            </div>
+
+            {openSections.age && (
+              <div className="mt-3 space-y-3">
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
                     <Select
-                      value={localFilters.maritalStatus || ""}
-                      onValueChange={(value) =>
-                        setLocalFilters(prev => ({ ...prev, maritalStatus: value || undefined }))
-                      }
+                      value={localFilters.ageMin?.toString() || ""}
+                      onValueChange={(value) => {
+                        const newMin = value ? parseInt(value) : undefined;
+                        setLocalFilters(prev => ({
+                          ...prev,
+                          ageMin: newMin,
+                          // Reset max age if it becomes less than min age
+                          ageMax: prev.ageMax && newMin && prev.ageMax < newMin ? undefined : prev.ageMax
+                        }));
+                      }}
                     >
-                      <SelectTrigger className="h-8 text-xs">
-                        <SelectValue placeholder="Select Status" />
+                      <SelectTrigger className="h-9 text-sm">
+                        <SelectValue placeholder="Min years" />
                       </SelectTrigger>
                       <SelectContent>
-                        {maritalStatusOptions.map((status: string) => (
-                          <SelectItem key={status} value={status}>
-                            {status}
+                        {ageOptions
+                          .filter(age => !localFilters.ageMax || age <= localFilters.ageMax)
+                          .map((age) => (
+                          <SelectItem key={age} value={age.toString()}>
+                            {age} years
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
-                  </CardContent>
-                </Card>
-              </SidebarGroupContent>
-            </CollapsibleContent>
-          </Collapsible>
-        </SidebarGroup>
+                  </div>
+                  <div>
+                    <Select
+                      value={localFilters.ageMax?.toString() || ""}
+                      onValueChange={(value) => {
+                        const newMax = value ? parseInt(value) : undefined;
+                        setLocalFilters(prev => ({
+                          ...prev,
+                          ageMax: newMax,
+                          // Reset min age if it becomes greater than max age
+                          ageMin: prev.ageMin && newMax && prev.ageMin > newMax ? undefined : prev.ageMin
+                        }));
+                      }}
+                    >
+                      <SelectTrigger className="h-9 text-sm">
+                        <SelectValue placeholder="Max years" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {ageOptions
+                          .filter(age => !localFilters.ageMin || age >= localFilters.ageMin)
+                          .map((age) => (
+                          <SelectItem key={age} value={age.toString()}>
+                            {age} years
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                {/* Age validation message */}
+                {localFilters.ageMin && localFilters.ageMax && localFilters.ageMin > localFilters.ageMax && (
+                  <div className="text-xs text-red-600 bg-red-50 px-2 py-1 rounded">
+                    Minimum age cannot be greater than maximum age
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
 
-        <SidebarSeparator />
+          {/* Height Section */}
+          <div className="border-b border-gray-200 pb-4">
+            <div 
+              className="flex items-center justify-between cursor-pointer py-2"
+              onClick={() => toggleSection('height')}
+            >
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">HEIGHT</h3>
+              {openSections.height ? 
+                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
+                <ChevronRight className="w-4 h-4 text-gray-500" />
+              }
+            </div>
 
-        {/* Location Section */}
-        <SidebarGroup>
-          <Collapsible open={openSections.location} onOpenChange={() => toggleSection('location')}>
-            <CollapsibleTrigger asChild>
-              <SidebarGroupLabel className="group/label flex w-full items-center justify-between p-2 hover:bg-gray-50 rounded-md cursor-pointer">
-                <span className="font-medium text-gray-900">Location</span>
-                {openSections.location ? 
-                  <ChevronDown className="h-4 w-4 text-gray-500" /> : 
-                  <ChevronRight className="h-4 w-4 text-gray-500" />
-                }
-              </SidebarGroupLabel>
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-              <SidebarGroupContent className="px-2 space-y-3">
-                <Card className="border-gray-100">
-                  <CardContent className="p-3 space-y-3">
+            {openSections.height && (
+              <div className="mt-3 space-y-3">
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <Select
+                      value={localFilters.heightMin || ""}
+                      onValueChange={(value) => {
+                        const newMinHeight = value || undefined;
+                        setLocalFilters(prev => ({
+                          ...prev,
+                          heightMin: newMinHeight,
+                          // Reset max height if it becomes less than min height
+                          heightMax: prev.heightMax && newMinHeight && 
+                            heightOptions.indexOf(prev.heightMax) < heightOptions.indexOf(newMinHeight) 
+                            ? undefined : prev.heightMax
+                        }));
+                      }}
+                    >
+                      <SelectTrigger className="h-9 text-sm">
+                        <SelectValue placeholder="Min" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {heightOptions
+                          .filter(height => !localFilters.heightMax || 
+                            heightOptions.indexOf(height) <= heightOptions.indexOf(localFilters.heightMax))
+                          .map((height) => (
+                          <SelectItem key={height} value={height}>
+                            {height}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Select
+                      value={localFilters.heightMax || ""}
+                      onValueChange={(value) => {
+                        const newMaxHeight = value || undefined;
+                        setLocalFilters(prev => ({
+                          ...prev,
+                          heightMax: newMaxHeight,
+                          // Reset min height if it becomes greater than max height
+                          heightMin: prev.heightMin && newMaxHeight && 
+                            heightOptions.indexOf(prev.heightMin) > heightOptions.indexOf(newMaxHeight) 
+                            ? undefined : prev.heightMin
+                        }));
+                      }}
+                    >
+                      <SelectTrigger className="h-9 text-sm">
+                        <SelectValue placeholder="Max" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {heightOptions
+                          .filter(height => !localFilters.heightMin || 
+                            heightOptions.indexOf(height) >= heightOptions.indexOf(localFilters.heightMin))
+                          .map((height) => (
+                          <SelectItem key={height} value={height}>
+                            {height}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                {/* Height validation message */}
+                {localFilters.heightMin && localFilters.heightMax && 
+                 heightOptions.indexOf(localFilters.heightMin) > heightOptions.indexOf(localFilters.heightMax) && (
+                  <div className="text-xs text-red-600 bg-red-50 px-2 py-1 rounded">
+                    Minimum height cannot be greater than maximum height
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Location Section */}
+          <div className="border-b border-gray-200 pb-4">
+            <div 
+              className="flex items-center justify-between cursor-pointer py-2"
+              onClick={() => toggleSection('location')}
+            >
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">LOCATION</h3>
+              {openSections.location ? 
+                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
+                <ChevronRight className="w-4 h-4 text-gray-500" />
+              }
+            </div>
+
+            {openSections.location && (
+              <div className="mt-3 space-y-3">
+                {/* Country Selection */}
+                <div>
+                  <Combobox
+                    options={countries}
+                    value={localFilters.country || ""}
+                    onSelect={(value) => {
+                      setLocalFilters(prev => ({
+                        ...prev,
+                        country: value || undefined,
+                        state: undefined,
+                        city: undefined
+                      }));
+                    }}
+                    placeholder="Select Country"
+                    searchPlaceholder="Search countries..."
+                    emptyMessage="No country found."
+                    className="h-9 text-sm bg-amber-50 border-amber-200"
+                  />
+                </div>
+
+                {/* State Selection - only show if country is selected */}
+                {localFilters.country && (
+                  <div>
                     <Combobox
-                      options={countries}
-                      value={localFilters.country || ""}
+                      options={(statesByCountry[localFilters.country] || []).map(state => ({ value: state, label: state }))}
+                      value={localFilters.state || ""}
                       onSelect={(value) => {
                         setLocalFilters(prev => ({
                           ...prev,
-                          country: value || undefined,
-                          state: undefined,
+                          state: value || undefined,
                           city: undefined
                         }));
                       }}
-                      placeholder="Select Country"
-                      searchPlaceholder="Search countries..."
-                      emptyMessage="No country found."
-                      className="h-8 text-xs"
+                      placeholder="Select State"
+                      searchPlaceholder="Search states..."
+                      emptyMessage="No state found."
+                      className="h-9 text-sm bg-amber-50 border-amber-200"
                     />
+                  </div>
+                )}
 
-                    {localFilters.country && (
-                      <Combobox
-                        options={(statesByCountry[localFilters.country] || []).map(state => ({ value: state, label: state }))}
-                        value={localFilters.state || ""}
-                        onSelect={(value) => {
-                          setLocalFilters(prev => ({
-                            ...prev,
-                            state: value || undefined,
-                            city: undefined
-                          }));
-                        }}
-                        placeholder="Select State"
-                        searchPlaceholder="Search states..."
-                        emptyMessage="No state found."
-                        className="h-8 text-xs"
-                      />
-                    )}
-
-                    {localFilters.state && (
-                      <Combobox
-                        options={(citiesByState[localFilters.state] || []).map(city => ({ value: city, label: city }))}
-                        value={localFilters.city || ""}
-                        onSelect={(value) => {
-                          setLocalFilters(prev => ({
-                            ...prev,
-                            city: value || undefined
-                          }));
-                        }}
-                        placeholder="Select City"
-                        searchPlaceholder="Search cities..."
-                        emptyMessage="No city found."
-                        className="h-8 text-xs"
-                      />
-                    )}
-                  </CardContent>
-                </Card>
-              </SidebarGroupContent>
-            </CollapsibleContent>
-          </Collapsible>
-        </SidebarGroup>
-
-        <SidebarSeparator />
-
-        {/* Spiritual Preferences Section */}
-        <SidebarGroup>
-          <Collapsible open={openSections.spiritual} onOpenChange={() => toggleSection('spiritual')}>
-            <CollapsibleTrigger asChild>
-              <SidebarGroupLabel className="group/label flex w-full items-center justify-between p-2 hover:bg-gray-50 rounded-md cursor-pointer">
-                <span className="font-medium text-gray-900">Spiritual Preferences</span>
-                {openSections.spiritual ? 
-                  <ChevronDown className="h-4 w-4 text-gray-500" /> : 
-                  <ChevronRight className="h-4 w-4 text-gray-500" />
-                }
-              </SidebarGroupLabel>
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-              <SidebarGroupContent className="px-2 space-y-3">
-                <Card className="border-gray-100">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-gray-700">Religion</CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <Select
-                      value={localFilters.religion || ""}
-                      onValueChange={(value) =>
-                        setLocalFilters(prev => ({ ...prev, religion: value || undefined }))
-                      }
-                    >
-                      <SelectTrigger className="h-8 text-xs">
-                        <SelectValue placeholder="Select Religion" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {religionOptions.slice(0, 8).map((religion) => (
-                          <SelectItem key={religion} value={religion}>
-                            {religion}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </CardContent>
-                </Card>
-
-                <Card className="border-gray-100">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-gray-700">Dietary Preference</CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <Select
-                      value={localFilters.eatingHabits || ""}
-                      onValueChange={(value) =>
-                        setLocalFilters(prev => ({ ...prev, eatingHabits: value || undefined }))
-                      }
-                    >
-                      <SelectTrigger className="h-8 text-xs">
-                        <SelectValue placeholder="Select Preference" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {eatingHabitsOptions.map((habit: string) => (
-                          <SelectItem key={habit} value={habit}>
-                            {habit}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </CardContent>
-                </Card>
-              </SidebarGroupContent>
-            </CollapsibleContent>
-          </Collapsible>
-        </SidebarGroup>
-
-        <SidebarSeparator />
-
-        {/* Professional Details Section */}
-        <SidebarGroup>
-          <Collapsible open={openSections.professional} onOpenChange={() => toggleSection('professional')}>
-            <CollapsibleTrigger asChild>
-              <SidebarGroupLabel className="group/label flex w-full items-center justify-between p-2 hover:bg-gray-50 rounded-md cursor-pointer">
-                <span className="font-medium text-gray-900">Professional Details</span>
-                {openSections.professional ? 
-                  <ChevronDown className="h-4 w-4 text-gray-500" /> : 
-                  <ChevronRight className="h-4 w-4 text-gray-500" />
-                }
-              </SidebarGroupLabel>
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-              <SidebarGroupContent className="px-2 space-y-3">
-                <Card className="border-gray-100">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-gray-700">Education</CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <Select
-                      value={localFilters.education || ""}
-                      onValueChange={(value) =>
-                        setLocalFilters(prev => ({ ...prev, education: value || undefined }))
-                      }
-                    >
-                      <SelectTrigger className="h-8 text-xs">
-                        <SelectValue placeholder="Select Education" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {educationOptions.slice(0, 10).map((education) => (
-                          <SelectItem key={education} value={education}>
-                            {education}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </CardContent>
-                </Card>
-
-                <Card className="border-gray-100">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-gray-700">Profession</CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <Select
-                      value={localFilters.profession || ""}
-                      onValueChange={(value) =>
-                        setLocalFilters(prev => ({ ...prev, profession: value || undefined }))
-                      }
-                    >
-                      <SelectTrigger className="h-8 text-xs">
-                        <SelectValue placeholder="Select Profession" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {professionOptions.slice(0, 10).map((profession) => (
-                          <SelectItem key={profession} value={profession}>
-                            {profession}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </CardContent>
-                </Card>
-
-                <Card className="border-gray-100">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-gray-700">Annual Income</CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <Select
-                      value={localFilters.annualIncome || ""}
-                      onValueChange={(value) =>
-                        setLocalFilters(prev => ({ ...prev, annualIncome: value || undefined }))
-                      }
-                    >
-                      <SelectTrigger className="h-8 text-xs">
-                        <SelectValue placeholder="Select Range" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {annualIncomeOptions.slice(0, 8).map((income) => (
-                          <SelectItem key={income} value={income}>
-                            {income}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </CardContent>
-                </Card>
-              </SidebarGroupContent>
-            </CollapsibleContent>
-          </Collapsible>
-        </SidebarGroup>
-
-        <SidebarSeparator />
-
-        {/* Additional Preferences */}
-        <SidebarGroup>
-          <SidebarGroupContent className="px-2">
-            <div className="space-y-3">
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="verified"
-                  checked={localFilters.verified || false}
-                  onCheckedChange={(checked) => 
-                    setLocalFilters(prev => ({ ...prev, verified: checked === true }))
-                  }
-                />
-                <Label htmlFor="verified" className="text-sm text-gray-700 cursor-pointer">
-                  Verified Profiles Only
-                </Label>
+                {/* City Selection - only show if state is selected */}
+                {localFilters.state && (
+                  <div>
+                    <Combobox
+                      options={(citiesByState[localFilters.state] || []).map(city => ({ value: city, label: city }))}
+                      value={localFilters.city || ""}
+                      onSelect={(value) => {
+                        setLocalFilters(prev => ({
+                          ...prev,
+                          city: value || undefined
+                        }));
+                      }}
+                      placeholder="Select City"
+                      searchPlaceholder="Search cities..."
+                      emptyMessage="No city found."
+                      className="h-9 text-sm bg-amber-50 border-amber-200"
+                    />
+                  </div>
+                )}
               </div>
+            )}
+          </div>
 
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="withPhoto"
-                  checked={localFilters.withPhoto || false}
-                  onCheckedChange={(checked) => 
-                    setLocalFilters(prev => ({ ...prev, withPhoto: checked === true }))
-                  }
-                />
-                <Label htmlFor="withPhoto" className="text-sm text-gray-700 cursor-pointer">
-                  With Photo Only
-                </Label>
-              </div>
+          {/* Mother Tongue */}
+          <div className="border-b border-gray-200 pb-4">
+            <div 
+              className="flex items-center justify-between cursor-pointer py-2"
+              onClick={() => toggleSection('motherTongue')}
+            >
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">MOTHER TONGUE</h3>
+              {openSections.motherTongue ? 
+                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
+                <ChevronRight className="w-4 h-4 text-gray-500" />
+              }
             </div>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-    </Sidebar>
+
+            {openSections.motherTongue && (
+              <div className="mt-3">
+                <Input 
+                  placeholder="Search Languages" 
+                  className="mb-3 h-9 text-sm"
+                  value={searchStates.motherTongue || ""}
+                  onChange={(e) => updateSearch('motherTongue', e.target.value)}
+                />
+                <div className="max-h-48 overflow-y-auto space-y-2">
+                  {getFilteredOptions(motherTongues, searchStates.motherTongue || "").map((language) => (
+                    <div key={language} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`mother-${language}`}
+                        checked={localFilters.motherTongue === language}
+                        onCheckedChange={(checked) => {
+                          setLocalFilters(prev => ({
+                            ...prev,
+                            motherTongue: checked ? language : undefined
+                          }));
+                        }}
+                      />
+                      <Label htmlFor={`mother-${language}`} className="text-sm text-gray-700 cursor-pointer">
+                        {language}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Other Languages */}
+          <div className="border-b border-gray-200 pb-4">
+            <div 
+              className="flex items-center justify-between cursor-pointer py-2"
+              onClick={() => toggleSection('otherLanguages')}
+            >
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">OTHER LANGUAGES</h3>
+              {openSections.otherLanguages ? 
+                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
+                <ChevronRight className="w-4 h-4 text-gray-500" />
+              }
+            </div>
+
+            {openSections.otherLanguages && (
+              <div className="mt-3">
+                <Input 
+                  placeholder="Search Languages" 
+                  className="mb-3 h-9 text-sm"
+                  value={searchStates.otherLanguages || ""}
+                  onChange={(e) => updateSearch('otherLanguages', e.target.value)}
+                />
+                <div className="max-h-48 overflow-y-auto space-y-2">
+                  {getFilteredOptions(
+                    motherTongues.filter(language => language !== localFilters.motherTongue), 
+                    searchStates.otherLanguages || ""
+                  ).map((language) => (
+                    <div key={language} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`other-${language}`}
+                        checked={localFilters.otherLanguages?.includes(language) || false}
+                        onCheckedChange={(checked) => {
+                          const current = localFilters.otherLanguages || [];
+                          if (checked) {
+                            setLocalFilters(prev => ({
+                              ...prev,
+                              otherLanguages: [...current, language]
+                            }));
+                          } else {
+                            setLocalFilters(prev => ({
+                              ...prev,
+                              otherLanguages: current.filter(l => l !== language)
+                            }));
+                          }
+                        }}
+                      />
+                      <Label htmlFor={`other-${language}`} className="text-sm text-gray-700 cursor-pointer">
+                        {language}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Education */}
+          <div className="border-b border-gray-200 pb-4">
+            <div 
+              className="flex items-center justify-between cursor-pointer py-2"
+              onClick={() => toggleSection('education')}
+            >
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">EDUCATION</h3>
+              {openSections.education ? 
+                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
+                <ChevronRight className="w-4 h-4 text-gray-500" />
+              }
+            </div>
+
+            {openSections.education && (
+              <div className="mt-3">
+                <Input 
+                  placeholder="Search Education" 
+                  className="mb-3 h-9 text-sm"
+                  value={searchStates.education}
+                  onChange={(e) => updateSearch('education', e.target.value)}
+                />
+                <div className="max-h-48 overflow-y-auto space-y-2">
+                  {getVisibleOptions(educationOptions, 'education').map((education) => (
+                    <div key={education} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={education}
+                        checked={localFilters.education === education}
+                        onCheckedChange={(checked) => {
+                          setLocalFilters(prev => ({
+                            ...prev,
+                            education: checked ? education : undefined
+                          }));
+                        }}
+                      />
+                      <Label htmlFor={education} className="text-sm text-gray-700 cursor-pointer">
+                        {education}
+                      </Label>
+                    </div>
+                  ))}
+                  {getRemainingCount(educationOptions, 'education') > 0 && (
+                    <Button
+                      variant="ghost"
+                      className="mt-2 text-xs text-blue-600"
+                      onClick={() => toggleExpanded('education')}
+                    >
+                      {expandedSections.education ? 'Show Less' : `+${getRemainingCount(educationOptions, 'education')} More`}
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Profession */}
+          <div className="border-b border-gray-200 pb-4">
+            <div 
+              className="flex items-center justify-between cursor-pointer py-2"
+              onClick={() => toggleSection('profession')}
+            >
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">PROFESSION</h3>
+              {openSections.profession ? 
+                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
+                <ChevronRight className="w-4 h-4 text-gray-500" />
+              }
+            </div>
+
+            {openSections.profession && (
+              <div className="mt-3">
+                <Input 
+                  placeholder="Search Profession" 
+                  className="mb-3 h-9 text-sm"
+                  value={searchStates.profession}
+                  onChange={(e) => updateSearch('profession', e.target.value)}
+                />
+                <div className="max-h-48 overflow-y-auto space-y-2">
+                  {getVisibleOptions(professionOptions, 'profession').map((profession) => (
+                    <div key={profession} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={profession}
+                        checked={localFilters.profession === profession}
+                        onCheckedChange={(checked) => {
+                          setLocalFilters(prev => ({
+                            ...prev,
+                            profession: checked ? profession : undefined
+                          }));
+                        }}
+                      />
+                      <Label htmlFor={profession} className="text-sm text-gray-700 cursor-pointer">
+                        {profession}
+                      </Label>
+                    </div>
+                  ))}
+                  {getRemainingCount(professionOptions, 'profession') > 0 && (
+                    <Button
+                      variant="ghost"
+                      className="mt-2 text-xs text-blue-600"
+                      onClick={() => toggleExpanded('profession')}
+                    >
+                      {expandedSections.profession ? 'Show Less' : `+${getRemainingCount(professionOptions, 'profession')} More`}
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Caste Group */}
+          <div className="border-b border-gray-200 pb-4">
+            <div 
+              className="flex items-center justify-between cursor-pointer py-2"
+              onClick={() => toggleSection('casteGroup')}
+            >
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">CASTE GROUP</h3>
+              {openSections.casteGroup ? 
+                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
+                <ChevronRight className="w-4 h-4 text-gray-500" />
+              }
+            </div>
+
+            {openSections.casteGroup && (
+              <div className="mt-3">
+                <Input 
+                  placeholder="Search Caste Group" 
+                  className="mb-3 h-9 text-sm"
+                  value={searchStates.casteGroup}
+                  onChange={(e) => updateSearch('casteGroup', e.target.value)}
+                />
+                <div className="max-h-48 overflow-y-auto space-y-2">
+                  {getVisibleOptions(casteGroupOptions, 'casteGroup').map((casteGroup) => {
+                    // Get count of subcastes for this group
+                    const getSubcasteCount = (group: string) => {
+                      if (group === "All") {
+                        // Count all subcastes across all groups
+                        return Object.values(casteSubcasteOptions).flat().length;
+                      }
+                      return casteSubcasteOptions[group as keyof typeof casteSubcasteOptions]?.length || 0;
+                    };
+
+                    const subcasteCount = getSubcasteCount(casteGroup);
+
+                    return (
+                      <div key={casteGroup} className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2 flex-1">
+                          <Checkbox
+                            id={`group-${casteGroup}`}
+                            checked={
+                              casteGroup === "All" 
+                                ? (!localFilters.casteGroups || localFilters.casteGroups.length === 0 || localFilters.casteGroups.includes("All"))
+                                : localFilters.casteGroups?.includes(casteGroup) || false
+                            }
+                            onCheckedChange={(checked) => {
+                              const current = localFilters.casteGroups || [];
+
+                              if (casteGroup === "All") {
+                                if (checked) {
+                                  // Select all
+                                  setLocalFilters(prev => ({
+                                    ...prev,
+                                    casteGroups: ["All"],
+                                    casteSubcastes: undefined // Reset subcastes when selecting all
+                                  }));
+                                } else {
+                                  // Deselect all
+                                  setLocalFilters(prev => ({
+                                    ...prev,
+                                    casteGroups: [],
+                                    casteSubcastes: undefined
+                                  }));
+                                }
+                              } else {
+                                if (checked) {
+                                  // Remove "All" if selecting specific option
+                                  const newGroups = current.filter(g => g !== "All");
+                                  setLocalFilters(prev => ({
+                                    ...prev,
+                                    casteGroups: [...newGroups, casteGroup],
+                                    casteSubcastes: undefined // Reset subcastes when groups change
+                                  }));
+                                } else {
+                                  setLocalFilters(prev => ({
+                                    ...prev,
+                                    casteGroups: current.filter(g => g !== casteGroup),
+                                    casteSubcastes: undefined
+                                  }));
+                                }
+                              }
+                            }}
+                          />
+                          <Label htmlFor={`group-${casteGroup}`} className="text-sm text-gray-700 cursor-pointer flex-1">
+                            {casteGroup}
+                          </Label>
+                        </div>
+                        <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full min-w-[30px] text-center">
+                          {subcasteCount}
+                        </span>
+                      </div>
+                    );
+                  })}
+                  {getRemainingCount(casteGroupOptions, 'casteGroup') > 0 && (
+                    <Button
+                      variant="ghost"
+                      className="mt-2 text-xs text-blue-600"
+                      onClick={() => toggleExpanded('casteGroup')}
+                    >
+                      {expandedSections.casteGroup ? 'Show Less' : `+${getRemainingCount(casteGroupOptions, 'casteGroup')} More`}
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Caste Subcaste */}
+          <div className="border-b border-gray-200 pb-4">
+            <div 
+              className="flex items-center justify-between cursor-pointer py-2"
+              onClick={() => toggleSection('casteSubcaste')}
+            >
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">CASTE SUBCASTE</h3>
+              {openSections.casteSubcaste ? 
+                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
+                <ChevronRight className="w-4 h-4 text-gray-500" />
+              }
+            </div>
+
+            {openSections.casteSubcaste && (
+              <div className="mt-3">
+                {(() => {
+                  // Get all available subcastes based on selected caste groups
+                  const selectedGroups = localFilters.casteGroups || [];
+                  const hasAllSelected = selectedGroups.includes("All") || selectedGroups.length === 0;
+
+                  let availableSubcastes: string[] = [];
+
+                  if (hasAllSelected) {
+                    // If "All" is selected, show subcastes from all groups
+                    availableSubcastes = ["All", ...Object.values(casteSubcasteOptions).flat()];
+                  } else {
+                    // Show subcastes only for selected groups
+                    const groupSubcastes: string[] = [];
+                    selectedGroups.forEach(group => {
+                      if (casteSubcasteOptions[group as keyof typeof casteSubcasteOptions]) {
+                        groupSubcastes.push(...casteSubcasteOptions[group as keyof typeof casteSubcasteOptions]);
+                      }
+                    });
+                    availableSubcastes = ["All", ...groupSubcastes];
+                  }
+
+                  // Remove duplicates (except for "All" which should be first)
+                  const uniqueSubcastes = [...new Set(availableSubcastes.slice(1))];
+                  availableSubcastes = ["All", ...uniqueSubcastes];
+
+                  if (availableSubcastes.length > 0) {
+                    return (
+                      <>
+                        <Input 
+                          placeholder="Search Subcaste" 
+                          className="mb-3 h-9 text-sm"
+                          value={searchStates.casteSubcaste}
+                          onChange={(e) => updateSearch('casteSubcaste', e.target.value)}
+                        />
+                        <div className="max-h-48 overflow-y-auto space-y-2">
+                          {getVisibleOptions(availableSubcastes, 'casteSubcaste').map((subcaste) => (
+                            <div key={subcaste} className="flex items-center space-x-2">
+                              <Checkbox
+                                id={`subcaste-${subcaste}`}
+                                checked={
+                                  subcaste === "All" 
+                                    ? (!localFilters.casteSubcastes || localFilters.casteSubcastes.length === 0 || localFilters.casteSubcastes.includes("All"))
+                                    : localFilters.casteSubcastes?.includes(subcaste) || false
+                                }
+                                onCheckedChange={(checked) => {
+                                  const current = localFilters.casteSubcastes || [];
+                                  
+                                  if (subcaste === "All") {
+                                    if (checked) {
+                                      // Select all subcastes
+                                      setLocalFilters(prev => ({
+                                        ...prev,
+                                        casteSubcastes: ["All"]
+                                      }));
+                                    } else {
+                                      // Deselect all subcastes
+                                      setLocalFilters(prev => ({
+                                        ...prev,
+                                        casteSubcastes: []
+                                      }));
+                                    }
+                                  } else {
+                                    if (checked) {
+                                      // Remove "All" if selecting specific subcaste
+                                      const newSubcastes = current.filter(s => s !== "All");
+                                      setLocalFilters(prev => ({
+                                        ...prev,
+                                        casteSubcastes: [...newSubcastes, subcaste]
+                                      }));
+                                    } else {
+                                      setLocalFilters(prev => ({
+                                        ...prev,
+                                        casteSubcastes: current.filter(s => s !== subcaste)
+                                      }));
+                                    }
+                                  }
+                                }}
+                              />
+                              <Label htmlFor={`subcaste-${subcaste}`} className="text-sm text-gray-700 cursor-pointer">
+                                {subcaste}
+                              </Label>
+                            </div>
+                          ))}
+                          {getRemainingCount(availableSubcastes, 'casteSubcaste') > 0 && (
+                            <Button
+                              variant="ghost"
+                              className="mt-2 text-xs text-blue-600"
+                              onClick={() => toggleExpanded('casteSubcaste')}
+                            >
+                              {expandedSections.casteSubcaste ? 'Show Less' : `+${getRemainingCount(availableSubcastes, 'casteSubcaste')} More`}
+                            </Button>
+                          )}
+                        </div>
+                      </>
+                    );
+                  } else {
+                    return (
+                      <div className="text-sm text-gray-500 italic">
+                        {selectedGroups.length === 0 ? "Please select a Caste Group first to see subcaste options" : "No subcastes available for selected caste groups"}
+                      </div>
+                    );
+                  }
+                })()}
+              </div>
+            )}
+          </div>
+
+          {/* Spiritual Practices */}
+          <div className="border-b border-gray-200 pb-4">
+            <div 
+              className="flex items-center justify-between cursor-pointer py-2"
+              onClick={() => toggleSection('spiritualPractices')}
+            >
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">SPIRITUAL PRACTICES</h3>
+              {openSections.spiritualPractices ? 
+                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
+                <ChevronRight className="w-4 h-4 text-gray-500" />
+              }
+            </div>
+
+            {openSections.spiritualPractices && (
+              <div className="mt-3">
+                <Input 
+                  placeholder="Search Practices" 
+                  className="mb-3 h-9 text-sm"
+                  value={searchStates.spiritualPractices}
+                  onChange={(e) => updateSearch('spiritualPractices', e.target.value)}
+                />
+                <div className="max-h-48 overflow-y-auto space-y-2">
+                  {getVisibleOptions(spiritualPractices, 'spiritualPractices').map((practice) => (
+                    <div key={practice} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={practice}
+                        checked={localFilters.spiritualPractices?.includes(practice) || false}
+                        onCheckedChange={(checked) => {
+                          const current = localFilters.spiritualPractices || [];
+                          if (checked) {
+                            setLocalFilters(prev => ({
+                              ...prev,
+                              spiritualPractices: [...current, practice]
+                            }));
+                          } else {
+                            setLocalFilters(prev => ({
+                              ...prev,
+                              spiritualPractices: current.filter(p => p !== practice)
+                            }));
+                          }
+                        }}
+                      />
+                      <Label htmlFor={practice} className="text-sm text-gray-700 cursor-pointer">
+                        {practice}
+                      </Label>
+                    </div>
+                  ))}
+                  {getRemainingCount(spiritualPractices, 'spiritualPractices') > 0 && (
+                    <Button
+                      variant="ghost"
+                      className="mt-2 text-xs text-blue-600"
+                      onClick={() => toggleExpanded('spiritualPractices')}
+                    >
+                      {expandedSections.spiritualPractices ? 'Show Less' : `+${getRemainingCount(spiritualPractices, 'spiritualPractices')} More`}
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Religion */}
+          <div className="border-b border-gray-200 pb-4">
+            <div 
+              className="flex items-center justify-between cursor-pointer py-2"
+              onClick={() => toggleSection('religion')}
+            >
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">RELIGION</h3>
+              {openSections.religion ? 
+                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
+                <ChevronRight className="w-4 h-4 text-gray-500" />
+              }
+            </div>
+
+            {openSections.religion && (
+              <div className="mt-3">
+                <Input 
+                  placeholder="Search Religion" 
+                  className="mb-3 h-9 text-sm"
+                  value={searchStates.religion}
+                  onChange={(e) => updateSearch('religion', e.target.value)}
+                />
+                <div className="max-h-48 overflow-y-auto space-y-2">
+                  {getVisibleOptions(religionOptions, 'religion').map((religion) => (
+                    <div key={religion} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={religion}
+                        checked={localFilters.religion === religion}
+                        onCheckedChange={(checked) => {
+                          setLocalFilters(prev => ({
+                            ...prev,
+                            religion: checked ? religion : undefined
+                          }));
+                        }}
+                      />
+                      <label htmlFor={religion} className="text-sm text-gray-700 cursor-pointer">
+                        {religion}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+                {getRemainingCount(religionOptions, 'religion') > 0 && (
+                  <Button
+                    variant="ghost"
+                    className="mt-2 text-xs text-blue-600"
+                    onClick={() => toggleExpanded('religion')}
+                  >
+                    {expandedSections.religion ? 'Show Less' : `+${getRemainingCount(religionOptions, 'religion')} More`}
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Ethnicity */}
+          <div className="border-b border-gray-200 pb-4">
+            <div 
+              className="flex items-center justify-between cursor-pointer py-2"
+              onClick={() => toggleSection('ethnicity')}
+            >
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">ETHNICITY</h3>
+              {openSections.ethnicity ? 
+                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
+                <ChevronRight className="w-4 h-4 text-gray-500" />
+              }
+            </div>
+
+            {openSections.ethnicity && (
+              <div className="mt-3">
+                <Input 
+                  placeholder="Search Ethnicity" 
+                  className="mb-3 h-9 text-sm"
+                  value={searchStates.ethnicity}
+                  onChange={(e) => updateSearch('ethnicity', e.target.value)}
+                />
+                <div className="max-h-48 overflow-y-auto space-y-2">
+                  {getVisibleOptions(ethnicityOptions, 'ethnicity').map((ethnicity) => (
+                    <div key={ethnicity} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={ethnicity}
+                        checked={localFilters.ethnicity === ethnicity}
+                        onCheckedChange={(checked) => {
+                          setLocalFilters(prev => ({
+                            ...prev,
+                            ethnicity: checked ? ethnicity : undefined
+                          }));
+                        }}
+                      />
+                      <label htmlFor={ethnicity} className="text-sm text-gray-700 cursor-pointer">
+                        {ethnicity}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+                {getRemainingCount(ethnicityOptions, 'ethnicity') > 0 && (
+                  <Button
+                    variant="ghost"
+                    className="mt-2 text-xs text-blue-600"
+                    onClick={() => toggleExpanded('ethnicity')}
+                  >
+                    {expandedSections.ethnicity ? 'Show Less' : `+${getRemainingCount(ethnicityOptions, 'ethnicity')} More`}
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Annual Income */}
+          <div className="border-b border-gray-200 pb-4">
+            <div 
+              className="flex items-center justify-between cursor-pointer py-2"
+              onClick={() => toggleSection('annualIncome')}
+            >
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">ANNUAL INCOME</h3>
+              {openSections.annualIncome ? 
+                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
+                <ChevronRight className="w-4 h-4 text-gray-500" />
+              }
+            </div>
+
+            {openSections.annualIncome && (
+              <div className="mt-3">
+                <Input 
+                  placeholder="Search Income Range" 
+                  className="mb-3 h-9 text-sm"
+                  value={searchStates.annualIncome}
+                  onChange={(e) => updateSearch('annualIncome', e.target.value)}
+                />
+                <div className="max-h-48 overflow-y-auto space-y-2">
+                  {getVisibleOptions(annualIncomeOptions, 'annualIncome').map((income) => (
+                    <div key={income} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={income}
+                        checked={localFilters.annualIncome === income}
+                        onCheckedChange={(checked) => {
+                          setLocalFilters(prev => ({
+                            ...prev,
+                            annualIncome: checked ? income : undefined
+                          }));
+                        }}
+                      />
+                      <label htmlFor={income} className="text-sm text-gray-700 cursor-pointer">
+                        {income}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+                {getRemainingCount(annualIncomeOptions, 'annualIncome') > 0 && (
+                  <Button
+                    variant="ghost"
+                    className="mt-2 text-xs text-blue-600"
+                    onClick={() => toggleExpanded('annualIncome')}
+                  >
+                    {expandedSections.annualIncome ? 'Show Less' : `+${getRemainingCount(annualIncomeOptions, 'annualIncome')} More`}
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Marital Status Section */}
+          <div className="border-b border-gray-200 pb-4">
+            <div 
+              className="flex items-center justify-between cursor-pointer py-2"
+              onClick={() => toggleSection('maritalStatus')}
+            >
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">MARITAL STATUS</h3>
+              {openSections.maritalStatus ? 
+                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
+                <ChevronRight className="w-4 h-4 text-gray-500" />
+              }
+            </div>
+
+            {openSections.maritalStatus && (
+              <div className="mt-3">
+                <Select
+                  value={localFilters.maritalStatus || ""}
+                  onValueChange={(value) =>
+                    setLocalFilters(prev => ({
+                      ...prev,
+                      maritalStatus: value || undefined
+                    }))
+                  }
+                >
+                  <SelectTrigger className="h-9 text-sm">
+                    <SelectValue placeholder="Select Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {maritalStatusOptions.map((status: string) => (
+                      <SelectItem key={status} value={status}>
+                        {status}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+          </div>
+
+          {/* Lifestyle & Habits Section */}
+          <div className="border-b border-gray-200 pb-4">
+            <div 
+              className="flex items-center justify-between cursor-pointer py-2"
+              onClick={() => toggleSection('lifestyleHabits')}
+            >
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">LIFESTYLE & HABITS</h3>
+              {openSections.lifestyleHabits ? 
+                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
+                <ChevronRight className="w-4 h-4 text-gray-500" />
+              }
+            </div>
+
+            {openSections.lifestyleHabits && (
+              <div className="mt-3 space-y-4">
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Dietary Preference</Label>
+                  <Select
+                    value={localFilters.eatingHabits || ""}
+                    onValueChange={(value) =>
+                      setLocalFilters(prev => ({
+                        ...prev,
+                        eatingHabits: value || undefined
+                      }))
+                    }
+                  >
+                    <SelectTrigger className="h-9 text-sm">
+                      <SelectValue placeholder="Select Preference" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {eatingHabitsOptions.map((habit: string) => (
+                        <SelectItem key={habit} value={habit}>
+                          {habit}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Drinking Habits</Label>
+                  <Select
+                    value={localFilters.drinkingHabits || ""}
+                    onValueChange={(value) =>
+                      setLocalFilters(prev => ({
+                        ...prev,
+                        drinkingHabits: value || undefined
+                      }))
+                    }
+                  >
+                    <SelectTrigger className="h-9 text-sm">
+                      <SelectValue placeholder="Select Habit" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {drinkingHabitsOptions.map((habit: string) => (
+                        <SelectItem key={habit} value={habit}>
+                          {habit}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Smoking Habits</Label>
+                  <Select
+                    value={localFilters.smokingHabits || ""}
+                    onValueChange={(value) =>
+                      setLocalFilters(prev => ({
+                        ...prev,
+                        smokingHabits: value || undefined
+                      }))
+                    }
+                  >
+                    <SelectTrigger className="h-9 text-sm">
+                      <SelectValue placeholder="Select Habit" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {smokingHabitsOptions.map((habit: string) => (
+                        <SelectItem key={habit} value={habit}>
+                          {habit}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Other Preferences Section */}
+          <div className="border-b border-gray-200 pb-4">
+            <div 
+              className="flex items-center justify-between cursor-pointer py-2"
+              onClick={() => toggleSection('lifestyle')}
+            >
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide">OTHER PREFERENCES</h3>
+              {openSections.lifestyle ? 
+                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
+                <ChevronRight className="w-4 h-4 text-gray-500" />
+              }
+            </div>
+
+            {openSections.lifestyle && (
+              <div className="mt-3 space-y-4">
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Have Children</Label>
+                  <Select
+                    value={localFilters.hasChildren || ""}
+                    onValueChange={(value) =>
+                      setLocalFilters(prev => ({
+                        ...prev,
+                        hasChildren: value || undefined
+                      }))
+                    }
+                  >
+                    <SelectTrigger className="h-9 text-sm">
+                      <SelectValue placeholder="Select Option" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {hasChildrenOptions.map((option: string) => (
+                        <SelectItem key={option} value={option}>
+                          {option}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Horoscope</Label>
+                  <Select
+                    value={localFilters.horoscope || ""}
+                    onValueChange={(value) =>
+                      setLocalFilters(prev => ({
+                        ...prev,
+                        horoscope: value || undefined
+                      }))
+                    }
+                  >
+                    <SelectTrigger className="h-9 text-sm">
+                      <SelectValue placeholder="Select Sign" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {horoscopeOptions.map((sign: string) => (
+                        <SelectItem key={sign} value={sign}>
+                          {sign}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Mangalik</Label>
+                  <Select
+                    value={localFilters.mangalik || ""}
+                    onValueChange={(value) =>
+                      setLocalFilters(prev => ({
+                        ...prev,
+                        mangalik: value || undefined
+                      }))
+                    }
+                  >
+                    <SelectTrigger className="h-9 text-sm">
+                      <SelectValue placeholder="Select Option" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {mangalikOptions.map((option: string) => (
+                        <SelectItem key={option} value={option}>
+                          {option}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Residential Status</Label>
+                  <Select
+                    value={localFilters.residentialStatus || ""}
+                    onValueChange={(value) =>
+                      setLocalFilters(prev => ({
+                        ...prev,
+                        residentialStatus: value || undefined
+                      }))
+                    }
+                  >
+                    <SelectTrigger className="h-9 text-sm">
+                      <SelectValue placeholder="Select Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {residentialStatusOptions.map((status: string) => (
+                        <SelectItem key={status} value={status}>
+                          {status}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Additional Options */}
+          <div className="space-y-3">
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="verified"
+                checked={localFilters.verified || false}
+                onCheckedChange={(checked) => 
+                  setLocalFilters(prev => ({ ...prev, verified: checked === true }))
+                }
+              />
+              <Label htmlFor="verified" className="text-sm text-gray-700 cursor-pointer">
+                🛡️ Verified Profiles Only
+              </Label>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="withPhoto"
+                checked={localFilters.withPhoto || false}
+                onCheckedChange={(checked) => 
+                  setLocalFilters(prev => ({ ...prev, withPhoto: checked === true }))
+                }
+              />
+              <Label htmlFor="withPhoto" className="text-sm text-gray-700 cursor-pointer">
+                📷 With Photo Only
+              </Label>
+            </div>
+          </div>
+        </div>
+
+        {/* Search Button */}
+        <div className="mt-6 pt-4 border-t border-gray-200">
+          <Button 
+            onClick={handleSearch} 
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white h-10"
+          >
+            Apply Filters
+          </Button>
+        </div>
+      </div>
+    </aside>
   );
 });
 
