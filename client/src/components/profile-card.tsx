@@ -229,7 +229,7 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
             >
               <span>{formatHeight(profile.height)}</span>
               <span style={{ margin: "0 8px", color: "#667085" }}>•</span>
-              <span>{profile.state}</span>
+              <span>{profile.location || profile.state}</span>
               <span style={{ margin: "0 8px", color: "#667085" }}>•</span>
               <span>{profile.caste || "Chandravanshi Kahar"}</span>
             </div>
