@@ -1,6 +1,7 @@
 
 import { createContext, useContext, useState, useCallback, ReactNode, useMemo } from "react";
 import type { ProfileFilter, UserProfile } from "@shared/schema";
+import { mockProfiles } from "@/data/mock-profiles";
 
 interface SpiritualContextValue {
   filters: ProfileFilter;
@@ -13,146 +14,154 @@ interface SpiritualContextValue {
 
 const SpiritualContext = createContext<SpiritualContextValue | undefined>(undefined);
 
-// Mock data for demonstration
-const mockProfiles: UserProfile[] = [
-  {
-    id: "1",
-    name: "Priyanka Sharma",
-    age: 29,
-    gender: "Female",
-    height: "5'5\"",
-    location: "Mumbai, Maharashtra",
-    profession: "Software Engineer",
-    education: "B.Tech Computer Science",
-    religion: "Hindu",
-    motherTongue: "Hindi",
-    verified: true,
-    profileImage: "https://images.unsplash.com/photo-1494790108755-2616c4d99e26?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80",
-    bio: "Looking for a life partner who shares similar values and spiritual beliefs."
-  },
-  {
-    id: "2",
-    name: "Divya Singh",
-    age: 27,
-    gender: "Female",
-    height: "5'3\"",
-    location: "Delhi, India",
-    profession: "Doctor",
-    education: "MBBS",
-    religion: "Hindu",
-    motherTongue: "Hindi",
-    verified: true,
-    profileImage: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400",
-    bio: "Seeking a caring and understanding partner for a blessed journey together."
-  },
-  {
-    id: "3",
-    name: "Anita Patel",
-    age: 26,
-    gender: "Female",
-    height: "5'4\"",
-    location: "Ahmedabad, Gujarat",
-    profession: "Teacher",
-    education: "M.Ed",
-    religion: "Hindu",
-    motherTongue: "Gujarati",
-    verified: false,
-    profileImage: "https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=400",
-    bio: "Traditional values with modern outlook, looking for my soulmate."
-  },
-  {
-    id: "4",
-    name: "Rahul Kumar",
-    age: 31,
-    gender: "Male",
-    height: "5'9\"",
-    location: "Bangalore, Karnataka",
-    profession: "Business Analyst",
-    education: "MBA",
-    religion: "Hindu",
-    motherTongue: "Telugu",
-    verified: true,
-    profileImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400",
-    bio: "Family-oriented person looking for a life partner to share spiritual journey."
-  },
-  {
-    id: "5",
-    name: "Deepika Reddy",
-    age: 28,
-    gender: "Female",
-    height: "5'6\"",
-    location: "Hyderabad, Telangana",
-    profession: "Marketing Manager",
-    education: "MBA Marketing",
-    religion: "Hindu",
-    motherTongue: "Telugu",
-    verified: true,
-    profileImage: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=400",
-    bio: "Spiritual, ambitious, and family-oriented seeking meaningful connection."
-  },
-  {
-    id: "6",
-    name: "Arjun Nair",
-    age: 30,
-    gender: "Male",
-    height: "5'8\"",
-    location: "Kochi, Kerala",
-    profession: "Architect",
-    education: "B.Arch",
-    religion: "Hindu",
-    motherTongue: "Malayalam",
-    verified: false,
-    profileImage: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400",
-    bio: "Creative professional seeking a understanding and supportive life partner."
+// Helper function to parse height for comparison
+const parseHeight = (height: string): number => {
+  if (!height) return 0;
+  
+  // Extract feet and inches from format like "5'6\" (168 cm)"
+  const match = height.match(/(\d+)'(\d+)"/);
+  if (match) {
+    const feet = parseInt(match[1]);
+    const inches = parseInt(match[2]);
+    return feet * 12 + inches; // Convert to total inches
   }
-];
+  
+  // Fallback for other formats
+  const cmMatch = height.match(/(\d+)\s*cm/);
+  if (cmMatch) {
+    const cm = parseInt(cmMatch[1]);
+    return Math.round(cm / 2.54); // Convert cm to inches
+  }
+  
+  return 0;
+};
 
-export const SpiritualContextProvider = ({ children }: { children: ReactNode }) => {
-  const [filters, setFilters] = useState<ProfileFilter>({});
-  const [searchResults, setSearchResults] = useState<UserProfile[]>(mockProfiles);
+// Helper function to check if arrays have any common elements
+const hasCommonElements = (arr1: string[], arr2: string[]): boolean => {
+  return arr1.some(item => arr2.includes(item));
+};
+
+// Filter profiles based on the given filters
+const filterProfiles = (profiles: UserProfile[], filters: ProfileFilter): UserProfile[] => {
+  return profiles.filter(profile => {
+    // Age filters
+    if (filters.ageMin && profile.age < filters.ageMin) return false;
+    if (filters.ageMax && profile.age > filters.ageMax) return false;
+
+    // Height filters
+    if (filters.heightMin || filters.heightMax) {
+      const profileHeight = parseHeight(profile.height);
+      const minHeight = filters.heightMin ? parseHeight(filters.heightMin) : 0;
+      const maxHeight = filters.heightMax ? parseHeight(filters.heightMax) : 999;
+      
+      if (profileHeight < minHeight || profileHeight > maxHeight) return false;
+    }
+
+    // Location filters
+    if (filters.country && profile.country !== filters.country) return false;
+    if (filters.state && profile.state !== filters.state) return false;
+    if (filters.city && profile.city !== filters.city) return false;
+
+    // Language filters
+    if (filters.motherTongue && profile.motherTongue !== filters.motherTongue) return false;
+    if (filters.otherLanguages?.length && profile.otherLanguages?.length) {
+      if (!hasCommonElements(filters.otherLanguages, profile.otherLanguages)) return false;
+    }
+
+    // Education and profession
+    if (filters.education && profile.education !== filters.education) return false;
+    if (filters.profession && profile.profession !== filters.profession) return false;
+
+    // Caste filters
+    if (filters.caste && profile.caste !== filters.caste) return false;
+    
+    // Caste group filters
+    if (filters.casteGroups?.length && !filters.casteGroups.includes("All")) {
+      if (!profile.casteGroup || !filters.casteGroups.includes(profile.casteGroup)) return false;
+    }
+    
+    // Caste subcaste filters
+    if (filters.casteSubcastes?.length && !filters.casteSubcastes.includes("All")) {
+      if (!profile.casteSubcaste || !filters.casteSubcastes.includes(profile.casteSubcaste)) return false;
+    }
+
+    // Spiritual practices
+    if (filters.spiritualPractices?.length && profile.spiritualPractices?.length) {
+      if (!hasCommonElements(filters.spiritualPractices, profile.spiritualPractices)) return false;
+    }
+
+    // Sacred texts
+    if (filters.sacredTexts?.length && profile.sacredTexts?.length) {
+      if (!hasCommonElements(filters.sacredTexts, profile.sacredTexts)) return false;
+    }
+
+    // Guru lineage
+    if (filters.guruLineage && profile.guruLineage !== filters.guruLineage) return false;
+
+    // Personal attributes
+    if (filters.maritalStatus && profile.maritalStatus !== filters.maritalStatus) return false;
+    if (filters.religion && profile.religion !== filters.religion) return false;
+    if (filters.ethnicity && profile.ethnicity !== filters.ethnicity) return false;
+    if (filters.annualIncome && profile.annualIncome !== filters.annualIncome) return false;
+
+    // Lifestyle filters
+    if (filters.smokingHabits && profile.smokingHabits !== filters.smokingHabits) return false;
+    if (filters.drinkingHabits && profile.drinkingHabits !== filters.drinkingHabits) return false;
+    if (filters.eatingHabits && profile.eatingHabits !== filters.eatingHabits) return false;
+    if (filters.physicalStatus && profile.physicalStatus !== filters.physicalStatus) return false;
+    if (filters.bloodGroup && profile.bloodGroup !== filters.bloodGroup) return false;
+    if (filters.healthConditions && profile.healthConditions !== filters.healthConditions) return false;
+    if (filters.dietaryLifestyle && profile.dietaryLifestyle !== filters.dietaryLifestyle) return false;
+
+    // Other preferences
+    if (filters.hasChildren && profile.hasChildren !== filters.hasChildren) return false;
+    if (filters.horoscope && filters.horoscope !== "Doesn't Matter" && profile.horoscope !== filters.horoscope) return false;
+    if (filters.mangalik && filters.mangalik !== "Doesn't Matter" && profile.mangalik !== filters.mangalik) return false;
+    if (filters.residentialStatus && filters.residentialStatus !== "Doesn't Matter" && profile.residentialStatus !== filters.residentialStatus) return false;
+
+    // Verification and photo filters
+    if (filters.verified && !profile.verified) return false;
+    if (filters.withPhoto && !profile.withPhoto) return false;
+
+    return true;
+  });
+};
+
+export function SpiritualProvider({ children }: { children: ReactNode }) {
+  const [filters, setFiltersState] = useState<ProfileFilter>({
+    casteGroups: [],
+    casteSubcastes: []
+  });
+  const [searchResults, setSearchResults] = useState<UserProfile[]>(mockProfiles.slice(0, 10)); // Show first 10 by default
   const [isSearching, setIsSearching] = useState(false);
 
-  const searchProfiles = useCallback(async (newFilters: ProfileFilter) => {
+  const searchProfiles = useCallback(async (searchFilters: ProfileFilter) => {
     setIsSearching(true);
     
     // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 500));
     
-    // Simple filtering logic for demo
-    let filtered = mockProfiles;
-    
-    if (newFilters.ageMin || newFilters.ageMax) {
-      filtered = filtered.filter(profile => {
-        const age = profile.age;
-        const minAge = newFilters.ageMin || 18;
-        const maxAge = newFilters.ageMax || 70;
-        return age >= minAge && age <= maxAge;
-      });
+    try {
+      const filteredProfiles = filterProfiles(mockProfiles, searchFilters);
+      setSearchResults(filteredProfiles);
+    } catch (error) {
+      console.error('Error searching profiles:', error);
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
     }
-    
-    if (newFilters.religion) {
-      filtered = filtered.filter(profile => 
-        profile.religion?.toLowerCase().includes(newFilters.religion!.toLowerCase())
-      );
-    }
-    
-    if (newFilters.motherTongue) {
-      filtered = filtered.filter(profile => 
-        profile.motherTongue?.toLowerCase().includes(newFilters.motherTongue!.toLowerCase())
-      );
-    }
-    
-    if (newFilters.verified) {
-      filtered = filtered.filter(profile => profile.verified);
-    }
-    
-    setSearchResults(filtered);
-    setIsSearching(false);
+  }, []);
+
+  const setFilters = useCallback((newFilters: ProfileFilter) => {
+    setFiltersState(newFilters);
   }, []);
 
   const clearSearch = useCallback(() => {
-    setFilters({});
-    setSearchResults(mockProfiles);
+    setFiltersState({
+      casteGroups: [],
+      casteSubcastes: []
+    });
+    setSearchResults(mockProfiles.slice(0, 10)); // Reset to first 10
   }, []);
 
   const value = useMemo(() => ({
@@ -161,20 +170,20 @@ export const SpiritualContextProvider = ({ children }: { children: ReactNode }) 
     isSearching,
     setFilters,
     searchProfiles,
-    clearSearch
-  }), [filters, searchResults, isSearching, searchProfiles, clearSearch]);
+    clearSearch,
+  }), [filters, searchResults, isSearching, setFilters, searchProfiles, clearSearch]);
 
   return (
     <SpiritualContext.Provider value={value}>
       {children}
     </SpiritualContext.Provider>
   );
-};
+}
 
-export const useSpiritualContext = () => {
+export function useSpiritualContext() {
   const context = useContext(SpiritualContext);
-  if (!context) {
-    throw new Error("useSpiritualContext must be used within SpiritualContextProvider");
+  if (context === undefined) {
+    throw new Error('useSpiritualContext must be used within a SpiritualProvider');
   }
   return context;
-};
+}

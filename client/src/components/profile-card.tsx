@@ -229,9 +229,13 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
             >
               <span>{formatHeight(profile.height)}</span>
               <span style={{ margin: "0 8px", color: "#667085" }}>•</span>
-              <span>{profile.location || profile.state}</span>
-              <span style={{ margin: "0 8px", color: "#667085" }}>•</span>
-              <span>{profile.caste || "Chandravanshi Kahar"}</span>
+              <span>{profile.location || `${profile.city}, ${profile.state}`}</span>
+              {profile.caste && (
+                <>
+                  <span style={{ margin: "0 8px", color: "#667085" }}>•</span>
+                  <span>{profile.caste}</span>
+                </>
+              )}
             </div>
 
             {/* Professional Info */}
@@ -257,9 +261,13 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
                     color: "#667085",
                   }}
                 />
-                <span>{profile.profession || "Accounting Professional"}</span>
-                <span style={{ margin: "0 16px", color: "#667085" }}>•</span>
-                <span>{profile.annualIncome || "Rs. 5 - 7.5 Lakh p.a"}</span>
+                <span>{profile.profession}</span>
+                {profile.annualIncome && (
+                  <>
+                    <span style={{ margin: "0 16px", color: "#667085" }}>•</span>
+                    <span>{profile.annualIncome}</span>
+                  </>
+                )}
               </div>
               <div
                 className="flex items-center"
@@ -281,7 +289,7 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
                     color: "#667085",
                   }}
                 />
-                <span>{profile.education || "MBA/PGDM, B.Com"}</span>
+                <span>{profile.education}</span>
                 <span style={{ margin: "0 16px", color: "#667085" }}>•</span>
                 <GiBigDiamondRing
                   style={{
@@ -291,18 +299,14 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
                     color: "#667085",
                   }}
                 />
-                <span>{profile.maritalStatus || "Never Married"}</span>
+                <span>{profile.maritalStatus}</span>
               </div>
             </div>
 
             {/* One-liner About Section */}
-            {(profile.bio || profile.oneLiner) && (
+            {profile.bio && (
               <div className="mb-3 text-sm text-gray-700 italic pr-4">
-                "
-                {profile.bio ||
-                  profile.oneLiner ||
-                  "Looking for a life partner who shares similar values and dreams for a beautiful future together."}
-                "
+                "{profile.bio}"
               </div>
             )}
 

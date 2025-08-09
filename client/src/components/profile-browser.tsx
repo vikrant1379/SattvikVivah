@@ -1,4 +1,3 @@
-
 import { memo, useState } from "react";
 import { useSpiritualContext } from "@/contexts/spiritual-context";
 import SpiritualFilterSidebar from "@/components/spiritual-filter-sidebar";
