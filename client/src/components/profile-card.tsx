@@ -59,16 +59,28 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
   };
 
   const formatHeight = (height: string) => {
-    if (height.includes("cm")) {
-      const cm = parseInt(height.replace("cm", ""));
-      const totalInches = cm / 2.54;
-      const feet = Math.floor(totalInches / 12);
-      const inches = Math.round(totalInches % 12);
+    if (!height) return 'Not specified';
+    
+    // Handle format like "5'6\" (168 cm)" - extract just the feet/inches part
+    const feetInchesMatch = height.match(/(\d+)'(\d+)"/);
+    if (feetInchesMatch) {
+      const feet = feetInchesMatch[1];
+      const inches = feetInchesMatch[2];
       return `${feet}ft ${inches}in`;
     }
-    if (height.includes("'") && height.includes('"')) {
-      return height.replace("'", "ft ").replace('"', "in");
+    
+    // Handle pure cm format like "168 cm"
+    if (height.includes("cm") && !height.includes("'")) {
+      const cmMatch = height.match(/(\d+)\s*cm/);
+      if (cmMatch) {
+        const cm = parseInt(cmMatch[1]);
+        const totalInches = cm / 2.54;
+        const feet = Math.floor(totalInches / 12);
+        const inches = Math.round(totalInches % 12);
+        return `${feet}ft ${inches}in`;
+      }
     }
+    
     return height;
   };
 

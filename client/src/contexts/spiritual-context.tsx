@@ -17,7 +17,7 @@ const SpiritualContext = createContext<SpiritualContextValue | undefined>(undefi
 const parseHeight = (height: string): number => {
   if (!height) return 0;
 
-  // Extract feet and inches from format like "5'6\" (168 cm)"
+  // Extract feet and inches from format like "5'6\" (168 cm)" or "5'6""
   const match = height.match(/(\d+)'(\d+)"/);
   if (match) {
     const feet = parseInt(match[1]);
@@ -25,10 +25,10 @@ const parseHeight = (height: string): number => {
     return feet * 12 + inches; // Convert to total inches
   }
 
-  // Fallback for other formats
-  const cmMatch = height.match(/(\d+)\s*cm/);
+  // Fallback for cm format like "(168 cm)" or "168 cm"
+  const cmMatch = height.match(/\((\d+)\s*cm\)|(\d+)\s*cm/);
   if (cmMatch) {
-    const cm = parseInt(cmMatch[1]);
+    const cm = parseInt(cmMatch[1] || cmMatch[2]);
     return Math.round(cm / 2.54); // Convert cm to inches
   }
 
