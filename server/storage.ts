@@ -339,7 +339,7 @@ export class MemStorage implements IStorage {
         userId: randomUUID(),
         name: "Arjun Sharma",
         age: 28,
-        height: "5ft 8in",
+        height: "5'8\"",
         motherTongue: "Hindi",
         state: "Delhi",
         city: "New Delhi",

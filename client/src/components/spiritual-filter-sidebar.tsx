@@ -423,11 +423,11 @@ const SpiritualFilterSidebar = memo(() => {
       // Extract just the feet/inches part without cm
       const formatHeight = (height: string) => {
         if (!height) return '';
-        return height.split(' (')[0]; // Takes "5ft 4in (163 cm)" and returns "5ft 4in"
+        return height.split(' (')[0]; // Takes "5'4" (163 cm)" and returns "5'4""
       };
       
-      const minHeight = formatHeight(localFilters.heightMin || '4ft 0in');
-      const maxHeight = formatHeight(localFilters.heightMax || '6ft 7in');
+      const minHeight = formatHeight(localFilters.heightMin || '4\'0"');
+      const maxHeight = formatHeight(localFilters.heightMax || '6\'7"');
       
       active.push({
         key: 'height',
