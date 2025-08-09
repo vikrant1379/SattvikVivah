@@ -37,21 +37,20 @@ import { GiBigDiamondRing } from "react-icons/gi";
 import { formatAnnualIncome } from "../data/annual-income";
 import { mockProfiles } from "../data/mock-profiles";
 import type { UserProfile } from "@shared/schema";
-import { useRouter } from "@/lib/router";
 
 
 const ProfileDetailPage = memo(() => {
-  const { profileId } = useParams();
+  const params = useParams<{ profileId?: string }>();
   const [location, setLocation] = useLocation();
-  const router = useRouter();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [activeTab, setActiveTab] = useState("about");
 
   const handleBackToHome = () => {
     setLocation('/');
   };
 
   // Extract profileId
-  let profileId = useParams<{ profileId?: string }>().profileId;
+  let profileId = params.profileId;
   if (!profileId) {
     const pathMatch = location.match(/\/profile\/([^\/]+)/);
     if (pathMatch) {
