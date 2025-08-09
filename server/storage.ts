@@ -11,6 +11,17 @@ import {
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
+// Function to generate random alphanumeric profile IDs
+function generateProfileId(): string {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let result = '';
+  for (let i = 0; i < 8; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
+
 export interface IStorage {
   // User operations
   getUser(id: string): Promise<User | undefined>;
@@ -86,7 +97,7 @@ export class MemStorage implements IStorage {
   }
 
   async createSpiritualProfile(insertProfile: InsertSpiritualProfile): Promise<SpiritualProfile> {
-    const id = randomUUID();
+    const id = generateProfileId();
     const profile: SpiritualProfile = {
       ...insertProfile,
       id,
@@ -406,7 +417,7 @@ export class MemStorage implements IStorage {
     ];
 
     sampleProfiles.forEach(profile => {
-      const id = randomUUID();
+      const id = generateProfileId();
       this.spiritualProfiles.set(id, {
         ...profile,
         id,

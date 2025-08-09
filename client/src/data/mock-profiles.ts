@@ -2,7 +2,7 @@ import type { UserProfile } from "@shared/schema";
 
 export const mockProfiles: UserProfile[] = [
   {
-    id: "1",
+    id: "UUWX7375",
     name: "Priyanka Sharma",
     age: 29,
     gender: "Female",
@@ -41,7 +41,7 @@ export const mockProfiles: UserProfile[] = [
     residentialStatus: "Citizen"
   },
   {
-    id: "2",
+    id: "KMPQ9823",
     name: "Divya Singh",
     age: 27,
     gender: "Female",
@@ -79,7 +79,7 @@ export const mockProfiles: UserProfile[] = [
     residentialStatus: "Citizen"
   },
   {
-    id: "3",
+    id: "RVNG4561",
     name: "Anita Patel",
     age: 26,
     gender: "Female",
@@ -117,7 +117,7 @@ export const mockProfiles: UserProfile[] = [
     residentialStatus: "Citizen"
   },
   {
-    id: "4",
+    id: "HJLP2847",
     name: "Rahul Kumar",
     age: 31,
     gender: "Male",
@@ -155,7 +155,7 @@ export const mockProfiles: UserProfile[] = [
     residentialStatus: "Citizen"
   },
   {
-    id: "5",
+    id: "DMFK6192",
     name: "Deepika Reddy",
     age: 28,
     gender: "Female",
@@ -193,7 +193,7 @@ export const mockProfiles: UserProfile[] = [
     residentialStatus: "Citizen"
   },
   {
-    id: "6",
+    id: "ZTBW5038",
     name: "Arjun Nair",
     age: 30,
     gender: "Male",
