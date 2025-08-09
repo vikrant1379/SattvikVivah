@@ -40,7 +40,7 @@ export const annualIncomeMaxOptions = [
   "Rs. 50 Lakh",
   "Rs. 75 Lakh",
   "Rs. 1 Crore",
-  "Above Rs. 1 Crore"
+  "and above"
 ];
 
 // Legacy options for backward compatibility (used by existing profiles)
