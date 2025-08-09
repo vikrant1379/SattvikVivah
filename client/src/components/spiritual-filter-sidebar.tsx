@@ -249,7 +249,7 @@ const SpiritualFilterSidebar = memo(() => {
     const { name, id, ...filterData } = savedFilter;
     setLocalFilters(filterData);
     setCurrentLoadedFilterId(id);
-    setEditingFilterId(null);
+    setRenamingFilterId(null);
   };
 
   const deleteSavedFilter = (filterId: string) => {
