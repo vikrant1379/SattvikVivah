@@ -1,4 +1,3 @@
-
 import { createApiUrl, handleApiError } from '@/utils';
 import { ApiResponse } from '@/types';
 
@@ -122,12 +121,12 @@ async function retryRequest<T>(
       if (attempt === retries) {
         throw error;
       }
-      
+
       // Don't retry on 4xx errors (client errors)
       if (error instanceof Error && error.message.includes('4')) {
         throw error;
       }
-      
+
       // Exponential backoff with jitter
       const delay = baseDelay * Math.pow(2, attempt) + Math.random() * 1000;
       await new Promise(resolve => setTimeout(resolve, delay));
@@ -199,7 +198,7 @@ export async function cachedApiRequest<T>(
   config: RequestConfig = { method: 'GET', cache: true }
 ): Promise<T> {
   const { method, cache = true, cacheTTL, etag = true, ...requestConfig } = config;
-  
+
   // Only cache GET requests
   if (method === 'GET' && cache) {
     const cacheKey = `${method}:${url}`;
@@ -241,13 +240,13 @@ export async function batchRequests<T>(
   concurrency: number = 5
 ): Promise<T[]> {
   const results: T[] = [];
-  
+
   for (let i = 0; i < requests.length; i += concurrency) {
     const batch = requests.slice(i, i + concurrency);
     const batchResults = await Promise.all(batch.map(request => request()));
     results.push(...batchResults);
   }
-  
+
   return results;
 }
 
