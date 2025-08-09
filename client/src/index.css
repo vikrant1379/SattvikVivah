@@ -320,51 +320,13 @@
 }
 
 /* Responsive Design Tokens */
-@media (max-width: 640px) {
-  :root {
-    --radius: 0.375rem;
-    --spacing-unit: 0.75rem;
-  }
-  
-  .sacred-pattern {
-    background-size: 20px 20px;
-    opacity: 0.02;
-  }
-  
-  /* Mobile optimizations */
-  .container {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-}
-
-@media (min-width: 641px) and (max-width: 768px) {
+@media (max-width: 768px) {
   :root {
     --radius: 0.5rem;
-    --spacing-unit: 1rem;
   }
   
   .sacred-pattern {
     background-size: 25px 25px;
     opacity: 0.03;
-  }
-}
-
-@media (min-width: 769px) and (max-width: 1024px) {
-  :root {
-    --radius: 0.625rem;
-    --spacing-unit: 1.25rem;
-  }
-  
-  .sacred-pattern {
-    background-size: 30px 30px;
-    opacity: 0.04;
-  }
-}
-
-@media (min-width: 1025px) {
-  :root {
-    --radius: 0.75rem;
-    --spacing-unit: 1.5rem;
   }
 }

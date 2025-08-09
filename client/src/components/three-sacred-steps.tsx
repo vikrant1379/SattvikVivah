@@ -47,11 +47,11 @@ const ThreeSacredSteps = memo(() => {
             To Find Your Divine Companion
           </p>
         </div>
-
+        
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {steps.map((step) => {
             const IconComponent = step.icon;
-
+            
             return (
               <div key={step.number} className="text-center group">
                 <div className={`w-24 h-24 ${step.bgColor} rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300`}>
@@ -71,7 +71,7 @@ const ThreeSacredSteps = memo(() => {
             );
           })}
         </div>
-
+        
         <div className="text-center mt-12">
           <Button className="bg-saffron text-primary-foreground hover:bg-saffron/90 px-8 py-3 text-lg shadow-lg hover-elevate">
             Get Started
