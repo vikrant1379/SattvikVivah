@@ -38,7 +38,11 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
       const totalInches = cm / 2.54;
       const feet = Math.floor(totalInches / 12);
       const inches = Math.round(totalInches % 12);
-      return `${feet}'${inches}"`;
+      return `${feet}ft ${inches}in`;
+    }
+    // Convert from 5'3" format to 5ft 3in format
+    if (height.includes("'") && height.includes('"')) {
+      return height.replace("'", "ft ").replace('"', "in");
     }
     return height;
   };
