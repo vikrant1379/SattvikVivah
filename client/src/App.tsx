@@ -46,12 +46,19 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SpiritualContextProvider>
-        <TooltipProvider>
+      <TooltipProvider>
+        <SpiritualContextProvider>
+          <Router>
+            <div className="min-h-screen bg-gray-50">
+              <Switch>
+                <Route path="/" component={Home} />
+                <Route component={NotFound} />
+              </Switch>
+            </div>
+          </Router>
           <Toaster />
-          <Router />
-        </TooltipProvider>
-      </SpiritualContextProvider>
+        </SpiritualContextProvider>
+      </TooltipProvider>
     </QueryClientProvider>
   );
 }
