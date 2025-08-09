@@ -17,14 +17,29 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
   };
 
   const formatLastSeen = () => {
-    const lastSeenOptions = [
-      "Last seen on 09-Aug-25",
-      "Last seen on 08-Aug-25", 
-      "Last seen on 07-Aug-25",
-      "Online now",
-      "Last seen yesterday"
-    ];
-    return lastSeenOptions[Math.floor(Math.random() * lastSeenOptions.length)];
+    // For demo purposes, randomly decide if user was seen today
+    const wasSeenToday = Math.random() > 0.3;
+    
+    if (wasSeenToday) {
+      // Generate a random time for today
+      const hours = Math.floor(Math.random() * 24);
+      const minutes = Math.floor(Math.random() * 60);
+      const period = hours >= 12 ? 'PM' : 'AM';
+      const displayHours = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours;
+      const displayMinutes = minutes.toString().padStart(2, '0');
+      
+      return `Last seen at ${displayHours}:${displayMinutes} ${period}`;
+    } else {
+      // Show other options for non-today activity
+      const lastSeenOptions = [
+        "Last seen on 09-Aug-25",
+        "Last seen on 08-Aug-25", 
+        "Last seen on 07-Aug-25",
+        "Online now",
+        "Last seen yesterday"
+      ];
+      return lastSeenOptions[Math.floor(Math.random() * lastSeenOptions.length)];
+    }
   };
 
   const formatHeight = (height: string) => {
