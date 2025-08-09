@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useCallback, ReactNode, useMemo, useEffect } from "react";
-import type { ProfileFilter, UserProfile } from "@shared/schema";
 import { mockProfiles } from "@/data/mock-profiles";
+import { annualIncomeOptions } from "@/data/annual-income";
+import type { UserProfile, ProfileFilter } from "@shared/schema";
 
 interface SpiritualContextValue {
   filters: ProfileFilter;
@@ -105,7 +106,20 @@ const filterProfiles = (profiles: UserProfile[], filters: ProfileFilter): UserPr
     if (filters.maritalStatus && profile.maritalStatus !== filters.maritalStatus) return false;
     if (filters.religion && profile.religion !== filters.religion) return false;
     if (filters.ethnicity && profile.ethnicity !== filters.ethnicity) return false;
-    if (filters.annualIncome && profile.annualIncome !== filters.annualIncome) return false;
+    // Handle both legacy single income filter and new min/max range
+    if (filters.annualIncome) {
+      return profile.annualIncome === filters.annualIncome;
+    } else if (filters.annualIncomeMin || filters.annualIncomeMax) {
+      if (!profile.annualIncome) return false;
+
+      const profileIncomeIndex = annualIncomeOptions.indexOf(profile.annualIncome);
+      if (profileIncomeIndex === -1) return false;
+
+      const minIndex = filters.annualIncomeMin ? annualIncomeOptions.indexOf(filters.annualIncomeMin) : 0;
+      const maxIndex = filters.annualIncomeMax ? annualIncomeOptions.indexOf(filters.annualIncomeMax) : annualIncomeOptions.length - 1;
+
+      return profileIncomeIndex >= minIndex && profileIncomeIndex <= maxIndex;
+    }
 
     // Lifestyle filters
     if (filters.smokingHabits && profile.smokingHabits !== filters.smokingHabits) return false;
@@ -133,7 +147,9 @@ const filterProfiles = (profiles: UserProfile[], filters: ProfileFilter): UserPr
 export function SpiritualProvider({ children }: { children: ReactNode }) {
   const [filters, setFiltersState] = useState<ProfileFilter>({
     casteGroups: [],
-    casteSubcastes: []
+    casteSubcastes: [],
+    annualIncomeMin: undefined, // Initialize min income
+    annualIncomeMax: undefined, // Initialize max income
   });
   const [searchResults, setSearchResults] = useState<UserProfile[]>(() => {
     // Initialize with first 10 profiles immediately
@@ -165,7 +181,9 @@ export function SpiritualProvider({ children }: { children: ReactNode }) {
   const clearSearch = useCallback(() => {
     setFiltersState({
       casteGroups: [],
-      casteSubcastes: []
+      casteSubcastes: [],
+      annualIncomeMin: undefined,
+      annualIncomeMax: undefined,
     });
     setSearchResults(mockProfiles.slice(0, 10)); // Reset to first 10
   }, []);
@@ -175,7 +193,9 @@ export function SpiritualProvider({ children }: { children: ReactNode }) {
     // Perform initial search with empty filters to show all profiles
     searchProfiles({
       casteGroups: [],
-      casteSubcastes: []
+      casteSubcastes: [],
+      annualIncomeMin: undefined,
+      annualIncomeMax: undefined,
     });
   }, []); // Run only once on mount
 
