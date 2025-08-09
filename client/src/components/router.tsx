@@ -1,4 +1,3 @@
-
 import { Routes, Route } from "react-router-dom";
 import Home from "@/pages/home";
 import NotFound from "@/pages/not-found";
@@ -9,6 +8,7 @@ export default function AppRouter() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/browse" element={<ProfileBrowser />} />
+      <Route path="/profile/:profileId" element={<ProfileDetailPage />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

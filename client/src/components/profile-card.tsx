@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -24,6 +25,8 @@ interface ProfileCardProps {
 }
 
 const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
+  const navigate = useNavigate();
+
   const getInitials = (name: string) => {
     return name
       .split(" ")
@@ -62,7 +65,7 @@ const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
 
   const formatHeight = (height: string) => {
     if (!height) return 'Not specified';
-    
+
     // Handle format like "5'6\" (168 cm)" - extract just the feet/inches part
     const feetInchesMatch = height.match(/(\d+)'(\d+)"/);
     if (feetInchesMatch) {
@@ -70,7 +73,7 @@ const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
       const inches = feetInchesMatch[2];
       return `${feet}ft ${inches}in`;
     }
-    
+
     // Handle pure cm format like "168 cm"
     if (height.includes("cm") && !height.includes("'")) {
       const cmMatch = height.match(/(\d+)\s*cm/);
@@ -82,14 +85,18 @@ const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
         return `${feet}ft ${inches}in`;
       }
     }
-    
+
     return height;
   };
 
+  const handleProfileClick = () => {
+    navigate(`/profiles/${profile.id}`);
+  };
+
   return (
-    <Card 
+    <Card
       className="w-full max-w-3xl bg-white border border-gray-200 mb-4 overflow-hidden cursor-pointer"
-      onClick={() => onProfileClick?.(profile)}
+      onClick={handleProfileClick}
     >
       <CardContent className="p-0 relative">
         <div className="flex">
