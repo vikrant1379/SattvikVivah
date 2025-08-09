@@ -27,7 +27,7 @@ const mockProfiles: UserProfile[] = [
     religion: "Hindu",
     motherTongue: "Hindi",
     verified: true,
-    profileImage: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400",
+    profileImage: "https://images.unsplash.com/photo-1494790108755-2616c4d99e26?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80",
     bio: "Looking for a life partner who shares similar values and spiritual beliefs."
   },
   {
