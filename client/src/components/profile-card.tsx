@@ -32,13 +32,17 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
   };
 
   const formatHeight = (height: string) => {
-    // Convert height to ft and inches format
-    if (height.includes('cm')) {
+    // Convert height to ft and inches format or return existing format
+    if (height.includes('cm') && !height.includes('ft')) {
       const cm = parseInt(height.replace('cm', ''));
       const totalInches = cm / 2.54;
       const feet = Math.floor(totalInches / 12);
       const inches = Math.round(totalInches % 12);
-      return `${feet}'${inches}"`;
+      return `${feet}ft ${inches}in`;
+    }
+    // If already in ft/in format, return as is, otherwise extract the ft/in part
+    if (height.includes('(')) {
+      return height.split(' (')[0];
     }
     return height;
   };
