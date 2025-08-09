@@ -12,6 +12,12 @@ const AppRouter = () => {
     console.log("=== Router Debug ===");
     console.log("Current location:", location);
     console.log("Window pathname:", window.location.pathname);
+    console.log("Location type:", typeof location);
+    console.log("Is profile route?", location.startsWith('/profile/'));
+    if (location.startsWith('/profile/')) {
+      const profileId = location.split('/')[2];
+      console.log("Extracted profile ID from router:", profileId);
+    }
   }, [location]);
 
   return (

@@ -40,8 +40,10 @@ const ProfileDetailPage = memo(() => {
 
   // Debug logging - comprehensive debugging
   console.log("=== ProfileDetailPage Debug ===");
+  console.log("Component mounted/rendered");
   console.log("Raw params object:", params);
   console.log("Params keys:", Object.keys(params));
+  console.log("Params values:", Object.values(params));
   console.log("Current location path:", location);
   console.log("Window pathname:", window.location.pathname);
   console.log("Window href:", window.location.href);
