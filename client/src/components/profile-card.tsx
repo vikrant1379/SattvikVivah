@@ -3,7 +3,7 @@ import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Heart, MessageCircle, Star, MapPin, Briefcase, GraduationCap, User, Eye } from "lucide-react";
+import { Heart, MessageCircle, Star, MapPin, Briefcase, GraduationCap, User, Eye, CircleCheck } from "lucide-react";
 import type { UserProfile } from "@shared/schema";
 
 interface ProfileCardProps {
@@ -122,26 +122,35 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
             <div className="flex items-center text-gray-700 mb-2 text-sm font-medium">
               <span>{formatHeight(profile.height)}</span>
               <span className="mx-2 text-gray-400">•</span>
+              <MapPin className="w-3 h-3 mr-1 text-gray-500" />
               <span>{profile.city}</span>
               <span className="mx-2 text-gray-400">•</span>
-              <span>{profile.caste || 'Rajput-Lodhi Rajput'}</span>
+              <span>{profile.caste || 'Chandravanshi Kahar'}</span>
             </div>
 
             {/* Professional Info */}
             <div className="space-y-1 mb-3">
               <div className="flex items-center text-gray-700 text-sm">
                 <Briefcase className="w-4 h-4 mr-2 text-gray-500" />
-                <span className="font-medium">{profile.profession || 'Software Professional'}</span>
+                <span className="font-medium">{profile.profession || 'Accounting Professional'}</span>
                 <span className="mx-2 text-gray-400">•</span>
-                <span>{profile.annualIncome || 'Rs. 20 - 25 Lakh p.a'}</span>
+                <span>{profile.annualIncome || 'Rs. 5 - 7.5 Lakh p.a'}</span>
               </div>
               <div className="flex items-center text-gray-700 text-sm">
                 <GraduationCap className="w-4 h-4 mr-2 text-gray-500" />
-                <span className="font-medium">{profile.education || 'M.E/M.Tech, B.E/B.Tech'}</span>
+                <span className="font-medium">{profile.education || 'MBA/PGDM, B.Com'}</span>
                 <span className="mx-2 text-gray-400">•</span>
+                <CircleCheck className="w-4 h-4 mr-1 text-gray-500" />
                 <span>{profile.maritalStatus || 'Never Married'}</span>
               </div>
             </div>
+
+            {/* One-liner About Section */}
+            {(profile.bio || profile.oneLiner) && (
+              <div className="mb-3 text-sm text-gray-700 italic">
+                "{profile.bio || profile.oneLiner || 'Looking for a life partner who shares similar values and dreams for a beautiful future together.'}"
+              </div>
+            )}
 
             {/* Action Buttons */}
             <div className="flex items-center space-x-3">
