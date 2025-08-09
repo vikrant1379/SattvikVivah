@@ -11,18 +11,9 @@ import type { ProfileFilter } from "@/types/profile";
 
 
 const ProfileBrowser = memo(() => {
-  let spiritualPractices: string[] = [];
-  let sacredTexts: string[] = [];
-
-  try {
-    const context = useSpiritualContext();
-    spiritualPractices = context.spiritualPractices;
-    sacredTexts = context.sacredTexts;
-  } catch (error) {
-    console.warn('Spiritual context not available:', error);
-  }
-
   const [filters, setFilters] = useState<ProfileFilter>({});
+  
+  // Safely get spiritual context
   const { searchResults, isSearching } = useSpiritualContext();
 
 
