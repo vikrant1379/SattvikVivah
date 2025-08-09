@@ -472,44 +472,54 @@ const SpiritualFilterSidebar = memo(() => {
     <aside className="w-80 bg-white border-r border-gray-200 overflow-y-auto hidden lg:block">
       <div className="p-4">
         {/* Header */}
-        <div className="mb-4">
-          <div className="flex items-center justify-between mb-2">
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
           </div>
-          <div className="flex flex-wrap gap-1 justify-end">
+          
+          {/* Action Buttons */}
+          <div className="grid grid-cols-3 gap-2 mb-4">
             <Button 
               variant="outline" 
               size="sm"
               onClick={collapseAllSections}
-              className="text-gray-700 text-xs font-medium hover:bg-gray-100 hover:text-gray-900 border-gray-300 px-3 py-1.5 h-7 rounded-md bg-white"
+              className="flex items-center justify-center gap-2 text-slate-600 text-xs font-medium hover:bg-slate-50 hover:text-slate-800 border-slate-200 px-3 py-2 h-8 rounded-lg bg-white shadow-sm transition-all duration-200 hover:shadow-md"
               title="Collapse All Sections"
             >
-              <ChevronDown className="w-3 h-3 mr-1" />
-              Collapse
+              <ChevronDown className="w-3.5 h-3.5" />
+              <span>Collapse</span>
             </Button>
+            
             <Button 
               variant="outline" 
               size="sm"
               onClick={() => setShowSaveDialog(true)}
-              className="text-emerald-700 text-xs font-medium hover:bg-emerald-100 hover:text-emerald-800 border-emerald-300 px-3 py-1.5 h-7 rounded-md bg-white"
+              className="flex items-center justify-center gap-2 text-blue-600 text-xs font-medium hover:bg-blue-50 hover:text-blue-700 border-blue-200 px-3 py-2 h-8 rounded-lg bg-white shadow-sm transition-all duration-200 hover:shadow-md"
               title="Save Current Filters"
             >
-              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3-3m0 0l-3 3m3-3v12" />
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
-              Save
+              <span>Save</span>
             </Button>
+            
             {activeFilters.length > 0 && (
               <Button 
                 variant="outline"
                 size="sm"
                 onClick={clearFilters}
-                className="text-red-700 text-xs font-medium hover:bg-red-100 hover:text-red-800 border-red-300 px-3 py-1.5 h-7 rounded-md bg-white"
+                className="flex items-center justify-center gap-2 text-red-600 text-xs font-medium hover:bg-red-50 hover:text-red-700 border-red-200 px-3 py-2 h-8 rounded-lg bg-white shadow-sm transition-all duration-200 hover:shadow-md"
                 title="Clear All Filters"
               >
-                <X className="w-3 h-3 mr-1" />
-                Clear All
+                <X className="w-3.5 h-3.5" />
+                <span>Clear</span>
               </Button>
+            )}
+            
+            {activeFilters.length === 0 && (
+              <div className="flex items-center justify-center px-3 py-2 h-8 bg-gray-50 border border-gray-100 rounded-lg">
+                <span className="text-xs text-gray-400">No filters</span>
+              </div>
             )}
           </div>
         </div>
