@@ -22,9 +22,9 @@ const AppRouter = () => {
 
   return (
     <Switch>
-      <Route path="/" component={ProfileBrowser} />
+      <Route path="/" component={Home} />
       <Route path="/home" component={Home} />
-      <Route path="/browse" component={ProfileBrowser} />
+      <Route path="/browse" component={Home} />
       <Route path="/profile/:profileId" component={ProfileDetailPage} />
       <Route component={NotFound} />
     </Switch>
