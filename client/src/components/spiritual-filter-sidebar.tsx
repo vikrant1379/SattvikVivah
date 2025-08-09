@@ -314,6 +314,8 @@ const SpiritualFilterSidebar = memo(() => {
     setLocalFilters(filterData);
     setCurrentLoadedFilterId(id);
     setRenamingFilterId(null);
+    // Update latest search when a saved filter is loaded
+    localStorage.setItem('spiritualFiltersLatest', JSON.stringify(filterData));
   };
 
   const deleteSavedFilter = (filterId: string) => {
@@ -615,12 +617,27 @@ const SpiritualFilterSidebar = memo(() => {
     
     // Save as latest search to localStorage
     localStorage.setItem('spiritualFiltersLatest', JSON.stringify(localFilters));
-    setCurrentLoadedFilterId('latest');
-  }, [localFilters, setFilters, searchProfiles]);
+    
+    // Only set to 'latest' if no saved filter is currently active
+    if (!currentLoadedFilterId || currentLoadedFilterId === 'latest') {
+      setCurrentLoadedFilterId('latest');
+    }
+  }, [localFilters, setFilters, searchProfiles, currentLoadedFilterId]);
 
   // Auto-apply filters when localFilters change (with debouncing)
   useEffect(() => {
     const timeoutId = setTimeout(() => {
+      // Check if current filters match any saved filter
+      const matchingSavedFilterId = getMatchingSavedFilterId();
+      
+      if (matchingSavedFilterId) {
+        // If filters match a saved filter, set that as active
+        setCurrentLoadedFilterId(matchingSavedFilterId);
+      } else if (currentLoadedFilterId && currentLoadedFilterId !== 'latest') {
+        // If we had a saved filter active but filters changed, switch to latest
+        setCurrentLoadedFilterId('latest');
+      }
+      
       handleSearch();
     }, 300); // 300ms debounce
 
@@ -672,6 +689,15 @@ const SpiritualFilterSidebar = memo(() => {
     
     const { name, id, ...savedFilterData } = currentSavedFilter;
     return !areFiltersEqual(localFilters, savedFilterData);
+  };
+
+  // Check if current filters match any saved filter exactly
+  const getMatchingSavedFilterId = () => {
+    const matchingFilter = savedFilters.find(savedFilter => {
+      const { name, id, ...filterData } = savedFilter;
+      return areFiltersEqual(localFilters, filterData);
+    });
+    return matchingFilter?.id || null;
   };
 
   return (
