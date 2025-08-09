@@ -41,7 +41,7 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
   };
 
   return (
-    <Card className="w-full max-w-3xl hover:shadow-md transition-all duration-300 bg-white border border-gray-200 mb-4 overflow-hidden">
+    <Card className="w-full max-w-3xl bg-white border border-gray-200 mb-4 overflow-hidden cursor-pointer">
       <CardContent className="p-0">
         <div className="flex">
           {/* Profile Image Section */}
