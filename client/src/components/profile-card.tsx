@@ -76,13 +76,27 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
             <div className="flex justify-between items-start mb-2">
               <div className="flex-1">
                 {/* Last Seen */}
-                <div className="text-xs text-gray-500 mb-2 font-medium">
+                <div className="mb-1" style={{
+                  fontSize: '12px',
+                  fontWeight: 500,
+                  lineHeight: '16px',
+                  letterSpacing: '0',
+                  color: '#667085',
+                  fontFamily: 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+                }}>
                   {formatLastSeen()}
                 </div>
 
                 {/* Name, Age and Verification */}
-                <div className="flex items-center mb-1">
-                  <h2 className="text-2xl font-bold text-gray-900 mr-2" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
+                <div className="flex items-center mb-1.5" style={{ marginBottom: '6px' }}>
+                  <h2 className="mr-2" style={{
+                    fontSize: '28px',
+                    fontWeight: 700,
+                    lineHeight: '34px',
+                    letterSpacing: '0',
+                    color: '#101828',
+                    fontFamily: 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+                  }}>
                     {profile.name}, {profile.age}
                   </h2>
                   {profile.verified && (
@@ -105,13 +119,32 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
               {/* Right side badges */}
               <div className="flex flex-col items-end space-y-2">
                 {profile.verified && (
-                  <Badge className="bg-red-500 text-white text-xs px-3 py-1 font-semibold rounded-md">
+                  <Badge className="bg-red-500 text-white rounded-md" style={{
+                    fontSize: '12px',
+                    fontWeight: 600,
+                    lineHeight: '16px',
+                    color: '#FFFFFF',
+                    background: '#D12C4A',
+                    padding: '2px 8px',
+                    borderRadius: '999px',
+                    fontFamily: 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+                  }}>
                     Pro
                   </Badge>
                 )}
                 {Math.random() > 0.5 && (
-                  <Badge className="bg-pink-50 text-pink-600 text-xs px-3 py-1 border border-pink-200 font-medium rounded-full flex items-center">
-                    <span className="mr-1">👍</span>
+                  <Badge className="border border-pink-200 rounded-full flex items-center" style={{
+                    fontSize: '12px',
+                    fontWeight: 600,
+                    lineHeight: '16px',
+                    color: '#175CD3',
+                    background: '#EFF8FF',
+                    padding: '2px 8px',
+                    borderRadius: '999px',
+                    fontFamily: 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                    gap: '8px'
+                  }}>
+                    <span>👍</span>
                     Most Compatible
                   </Badge>
                 )}
@@ -119,28 +152,51 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
             </div>
 
             {/* Basic Info Row */}
-            <div className="flex items-center text-gray-700 mb-2 text-sm font-medium">
+            <div className="flex items-center mb-2" style={{
+              fontSize: '14px',
+              fontWeight: 600,
+              lineHeight: '20px',
+              letterSpacing: '0.1px',
+              color: '#344054',
+              fontFamily: 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+              marginBottom: '8px'
+            }}>
               <span>{formatHeight(profile.height)}</span>
-              <span className="mx-2 text-gray-400">•</span>
-              <MapPin className="w-3 h-3 mr-1 text-gray-500" />
+              <span style={{ margin: '0 8px', color: '#667085' }}>-</span>
+              <MapPin className="w-4 h-4 mr-1.5" style={{ width: '16px', height: '16px', marginRight: '6px', color: '#667085' }} />
               <span>{profile.city}</span>
-              <span className="mx-2 text-gray-400">•</span>
+              <span style={{ margin: '0 8px', color: '#667085' }}>-</span>
               <span>{profile.caste || 'Chandravanshi Kahar'}</span>
             </div>
 
             {/* Professional Info */}
-            <div className="space-y-1 mb-3">
-              <div className="flex items-center text-gray-700 text-sm">
-                <Briefcase className="w-4 h-4 mr-2 text-gray-500" />
-                <span className="font-medium">{profile.profession || 'Accounting Professional'}</span>
-                <span className="mx-2 text-gray-400">•</span>
+            <div style={{ marginBottom: '12px' }}>
+              <div className="flex items-center mb-1" style={{
+                fontSize: '14px',
+                fontWeight: 500,
+                lineHeight: '20px',
+                letterSpacing: '0',
+                color: '#344054',
+                fontFamily: 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                marginBottom: '4px'
+              }}>
+                <Briefcase style={{ width: '16px', height: '16px', marginRight: '6px', color: '#667085' }} />
+                <span>{profile.profession || 'Accounting Professional'}</span>
+                <span style={{ margin: '0 16px', color: '#667085' }}>-</span>
                 <span>{profile.annualIncome || 'Rs. 5 - 7.5 Lakh p.a'}</span>
               </div>
-              <div className="flex items-center text-gray-700 text-sm">
-                <GraduationCap className="w-4 h-4 mr-2 text-gray-500" />
-                <span className="font-medium">{profile.education || 'MBA/PGDM, B.Com'}</span>
-                <span className="mx-2 text-gray-400">•</span>
-                <CircleCheck className="w-4 h-4 mr-1 text-gray-500" />
+              <div className="flex items-center" style={{
+                fontSize: '14px',
+                fontWeight: 500,
+                lineHeight: '20px',
+                letterSpacing: '0',
+                color: '#344054',
+                fontFamily: 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+              }}>
+                <GraduationCap style={{ width: '16px', height: '16px', marginRight: '6px', color: '#667085' }} />
+                <span>{profile.education || 'MBA/PGDM, B.Com'}</span>
+                <span style={{ margin: '0 16px', color: '#667085' }}>-</span>
+                <CircleCheck style={{ width: '16px', height: '16px', marginRight: '6px', color: '#667085' }} />
                 <span>{profile.maritalStatus || 'Never Married'}</span>
               </div>
             </div>
@@ -153,37 +209,73 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
             )}
 
             {/* Action Buttons */}
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center" style={{ gap: '20px' }}>
               <Button 
                 variant="outline" 
                 size="sm"
-                className="text-red-500 border-red-300 hover:bg-red-50 hover:border-red-400 flex items-center space-x-1 rounded-full px-4 py-1.5 font-medium text-sm"
+                className="border-red-300 hover:bg-red-50 hover:border-red-400 flex items-center rounded-full px-4 py-1.5"
+                style={{
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  lineHeight: '18px',
+                  letterSpacing: '0',
+                  color: '#D12C4A',
+                  fontFamily: 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                  gap: '6px'
+                }}
               >
-                <Heart className="w-4 h-4" />
+                <Heart style={{ width: '18px', height: '18px' }} />
                 <span>Interest</span>
               </Button>
               <Button 
                 variant="outline" 
                 size="sm"
-                className="text-pink-500 border-pink-300 hover:bg-pink-50 hover:border-pink-400 flex items-center space-x-1 rounded-full px-4 py-1.5 font-medium text-sm"
+                className="border-pink-300 hover:bg-pink-50 hover:border-pink-400 flex items-center rounded-full px-4 py-1.5"
+                style={{
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  lineHeight: '18px',
+                  letterSpacing: '0',
+                  color: '#475467',
+                  fontFamily: 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                  gap: '6px'
+                }}
               >
-                <Heart className="w-4 h-4 fill-current" />
+                <Heart style={{ width: '18px', height: '18px' }} className="fill-current" />
                 <span>Super Interest</span>
               </Button>
               <Button 
                 variant="outline" 
                 size="sm"
-                className="text-orange-500 border-orange-300 hover:bg-orange-50 hover:border-orange-400 flex items-center space-x-1 rounded-full px-4 py-1.5 font-medium text-sm"
+                className="border-orange-300 hover:bg-orange-50 hover:border-orange-400 flex items-center rounded-full px-4 py-1.5"
+                style={{
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  lineHeight: '18px',
+                  letterSpacing: '0',
+                  color: '#475467',
+                  fontFamily: 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                  gap: '6px'
+                }}
               >
-                <Star className="w-4 h-4" />
+                <Star style={{ width: '18px', height: '18px' }} />
                 <span>Shortlist</span>
               </Button>
               <Button 
                 variant="outline" 
                 size="sm"
-                className="text-gray-600 border-gray-300 hover:bg-gray-50 hover:border-gray-400 flex items-center space-x-1 rounded-full px-4 py-1.5 font-medium text-sm"
+                className="border-gray-300 hover:bg-gray-50 hover:border-gray-400 flex items-center rounded-full px-4 py-1.5"
+                style={{
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  lineHeight: '18px',
+                  letterSpacing: '0',
+                  color: '#475467',
+                  fontFamily: 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                  gap: '6px'
+                }}
               >
-                <MessageCircle className="w-4 h-4" />
+                <MessageCircle style={{ width: '18px', height: '18px' }} />
                 <span>Chat</span>
               </Button>
             </div>
