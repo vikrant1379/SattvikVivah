@@ -43,8 +43,8 @@ const ProfileCard = memo(({ profile }: ProfileCardProps) => {
 
   return (
     <Card className="w-full max-w-3xl bg-white border border-gray-200 mb-4 overflow-hidden cursor-pointer">
-      <CardContent className="p-0 relative">
-        <div className="flex mr-6">
+      <CardContent className="p-0 pr-6 relative">
+        <div className="flex">
           {/* Profile Image Section */}
           <div className="relative w-56 flex-shrink-0">
             {profile.profileImage ? (
