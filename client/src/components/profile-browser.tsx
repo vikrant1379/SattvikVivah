@@ -20,46 +20,52 @@ interface QuickFilter {
 
 const ProfileBrowser = memo(() => {
   const [searchQuery, setSearchQuery] = useState("");
-  
+  const [activeQuickFilters, setActiveQuickFilters] = useState<Set<string>>(new Set()); // State to manage active quick filters locally for the "no matches" message
+
   // Safely get spiritual context
-  const { searchResults, isSearching, clearSearch, filters: contextFilters, setFilters } = useSpiritualContext();
+  const { searchResults, isSearching, clearSearch, filters: contextFilters, setFilters, allProfiles } = useSpiritualContext(); // Added allProfiles here
 
   // Quick filter definitions
-  const quickFilters: QuickFilter[] = useMemo(() => [
-    {
-      id: "verified",
-      label: "Verified",
-      icon: <CheckCircle className="w-3 h-3" />,
-      count: searchResults.filter(p => p.verified).length,
-      active: contextFilters.verified || false
-    },
-    {
-      id: "recent",
-      label: "Just Joined",
-      icon: <Clock className="w-3 h-3" />,
-      count: searchResults.filter(p => {
-        const joinDate = new Date(p.createdAt || Date.now());
-        const now = new Date();
-        const daysDiff = (now.getTime() - joinDate.getTime()) / (1000 * 3600 * 24);
-        return daysDiff <= 30;
-      }).length,
-      active: contextFilters.recentlyJoined || false
-    },
-    {
-      id: "nearby",
-      label: "Nearby",
-      icon: <MapPin className="w-3 h-3" />,
-      count: searchResults.filter(p => p.city === "Mumbai" || p.city === "Delhi").length, // Example logic
-      active: contextFilters.nearby || false
-    },
-    {
-      id: "withPhoto",
-      label: "With Photo",
-      icon: <Users className="w-3 h-3" />,
-      count: searchResults.filter(p => p.profilePicture).length,
-      active: contextFilters.withPhoto || false
-    }
-  ], [searchResults, contextFilters]);
+  const quickFilters: QuickFilter[] = useMemo(() => {
+    // Determine the source for counts: allProfiles if no search query, otherwise searchResults
+    const countSource = searchQuery ? searchResults : allProfiles;
+
+    return [
+      {
+        id: "verified",
+        label: "Verified",
+        icon: <CheckCircle className="w-3 h-3" />,
+        count: countSource.filter(p => p.verified).length,
+        active: contextFilters.verified || false
+      },
+      {
+        id: "recent",
+        label: "Just Joined",
+        icon: <Clock className="w-3 h-3" />,
+        count: countSource.filter(p => {
+          const joinDate = new Date(p.createdAt || Date.now());
+          const now = new Date();
+          const daysDiff = (now.getTime() - joinDate.getTime()) / (1000 * 3600 * 24);
+          return daysDiff <= 30;
+        }).length,
+        active: contextFilters.recentlyJoined || false
+      },
+      {
+        id: "nearby",
+        label: "Nearby",
+        icon: <MapPin className="w-3 h-3" />,
+        count: countSource.filter(p => p.city === "Mumbai" || p.city === "Delhi").length, // Example logic
+        active: contextFilters.nearby || false
+      },
+      {
+        id: "withPhoto",
+        label: "With Photo",
+        icon: <Users className="w-3 h-3" />,
+        count: countSource.filter(p => p.profilePicture).length,
+        active: contextFilters.withPhoto || false
+      }
+    ];
+  }, [searchResults, contextFilters, searchQuery, allProfiles]); // Added allProfiles to dependencies
 
   // Filter profiles based on search query only (quick filters are handled by spiritual context)
   const filteredProfiles = useMemo(() => {
@@ -94,11 +100,23 @@ const ProfileBrowser = memo(() => {
         ...contextFilters,
         [contextKey]: !contextFilters[contextKey as keyof typeof contextFilters]
       });
+      
+      // Update local state for quick filter active status
+      if (contextFilters[contextKey as keyof typeof contextFilters]) {
+        setActiveQuickFilters(prev => {
+          const next = new Set(prev);
+          next.delete(filterId);
+          return next;
+        });
+      } else {
+        setActiveQuickFilters(prev => new Set(prev).add(filterId));
+      }
     }
   }, [contextFilters, setFilters]);
 
   const clearQuickFilters = useCallback(() => {
     setSearchQuery("");
+    setActiveQuickFilters(new Set()); // Clear local state
     // Clear all quick filters from spiritual context
     setFilters({
       ...contextFilters,
@@ -111,7 +129,7 @@ const ProfileBrowser = memo(() => {
 
   const clearAllFilters = useCallback(() => {
     setSearchQuery("");
-    setActiveQuickFilters(new Set());
+    setActiveQuickFilters(new Set()); // Clear local state
     clearSearch();
     // Also trigger the spiritual context clear to ensure all filters are reset
     window.dispatchEvent(new CustomEvent('clearAllSpiritualFilters'));
@@ -120,13 +138,13 @@ const ProfileBrowser = memo(() => {
   const hasActiveFilters = useMemo(() => {
     // Check search query
     if (searchQuery.trim()) return true;
-    
+
     // Check context filters comprehensively
     return Object.entries(contextFilters).some(([key, value]) => {
       if (Array.isArray(value)) {
         return value.length > 0;
       }
-      
+
       return value !== undefined && value !== null && value !== "" && value !== false;
     });
   }, [searchQuery, contextFilters]);
@@ -155,8 +173,8 @@ const ProfileBrowser = memo(() => {
                       "Searching..."
                     ) : (
                       <>
-                        {filteredProfiles.length > 0 
-                          ? `${filteredProfiles.length} profile${filteredProfiles.length === 1 ? '' : 's'} found` 
+                        {filteredProfiles.length > 0
+                          ? `${filteredProfiles.length} profile${filteredProfiles.length === 1 ? '' : 's'} found`
                           : "No profiles match your criteria"
                         }
                         {searchResults.length !== filteredProfiles.length && (
@@ -198,14 +216,14 @@ const ProfileBrowser = memo(() => {
                   <Filter className="w-4 h-4" />
                   Quick Filters:
                 </div>
-                
+
                 {quickFilters.map((filter) => (
                   <Badge
                     key={filter.id}
                     variant={filter.active ? "default" : "outline"}
                     className={`cursor-pointer transition-all duration-200 hover:scale-105 ${
-                      filter.active 
-                        ? "bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white border-0" 
+                      filter.active
+                        ? "bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white border-0"
                         : "border-orange-200 text-gray-700 hover:border-orange-300 hover:bg-orange-50"
                     }`}
                     onClick={() => toggleQuickFilter(filter.id)}
@@ -248,12 +266,12 @@ const ProfileBrowser = memo(() => {
                   <ProfileCard profile={profile} />
                 </div>
               ))}
-              
+
               {/* Load More Button (if needed) */}
               {filteredProfiles.length >= 10 && (
                 <div className="text-center py-8">
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     size="lg"
                     className="border-orange-200 text-orange-700 hover:bg-orange-50 hover:border-orange-300"
                   >
@@ -266,21 +284,20 @@ const ProfileBrowser = memo(() => {
             <div className="text-center py-20">
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-12 shadow-sm border border-orange-100/50 max-w-md mx-auto">
                 <div className="text-6xl mb-6">
-                  {searchQuery || activeQuickFilters.size > 0 ? "🔍" : "💝"}
+                  {searchQuery || hasActiveFilters ? "🔍" : "💝"}
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                  {searchQuery || activeQuickFilters.size > 0 
-                    ? "No matches found" 
+                  {searchQuery || hasActiveFilters
+                    ? "No matches found"
                     : "No profiles found"
-                  }
-                </h3>
+                  }</h3>
                 <p className="text-gray-600 mb-6 leading-relaxed">
-                  {searchQuery || activeQuickFilters.size > 0
+                  {searchQuery || hasActiveFilters
                     ? "Try adjusting your search terms or filters to find more matches"
                     : "Try adjusting your filters to discover more spiritual partners"
                   }
                 </p>
-                <Button 
+                <Button
                   onClick={clearAllFilters}
                   className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 font-semibold px-6 py-3 text-base"
                 >

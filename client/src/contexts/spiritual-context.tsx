@@ -6,6 +6,7 @@ import type { UserProfile, ProfileFilter } from "@shared/schema";
 interface SpiritualContextValue {
   filters: ProfileFilter;
   searchResults: UserProfile[];
+  allProfiles: UserProfile[];
   isSearching: boolean;
   setFilters: (filters: ProfileFilter) => void;
   searchProfiles: (filters: ProfileFilter) => Promise<void>;
@@ -206,6 +207,7 @@ export function SpiritualProvider({ children }: { children: ReactNode }) {
     mangalik: undefined,
     residentialStatus: undefined
   });
+  const [allProfiles] = useState<UserProfile[]>(mockProfiles); // All profiles for counting
   const [searchResults, setSearchResults] = useState<UserProfile[]>(() => {
     // Initialize with first 10 profiles immediately
     return mockProfiles.slice(0, 10);
@@ -297,11 +299,12 @@ export function SpiritualProvider({ children }: { children: ReactNode }) {
   const value = useMemo(() => ({
     filters,
     searchResults,
+    allProfiles,
     isSearching,
     setFilters,
     searchProfiles,
     clearSearch,
-  }), [filters, searchResults, isSearching, setFilters, searchProfiles, clearSearch]);
+  }), [filters, searchResults, allProfiles, isSearching, setFilters, searchProfiles, clearSearch]);
 
   return (
     <SpiritualContext.Provider value={value}>
@@ -317,6 +320,7 @@ export const useSpiritualContext = () => {
     return {
       filters: { casteGroups: [], casteSubcastes: [], annualIncomeMin: undefined, annualIncomeMax: undefined, recentlyJoined: false, nearby: false },
       searchResults: [],
+      allProfiles: [],
       isSearching: false,
       setFilters: () => {},
       searchProfiles: () => Promise.resolve(),
