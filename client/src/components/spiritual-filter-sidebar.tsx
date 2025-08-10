@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Combobox } from "@/components/ui/combobox";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Slider } from "@/components/ui/slider";
-import { ChevronDown, ChevronRight, X, Loader2 } from "lucide-react";
+import { ChevronDown, ChevronRight, X, Loader2, Filter } from "lucide-react";
 import { useSpiritualContext } from "@/contexts/spiritual-context";
 import { countries, statesByCountry, citiesByState, motherTongues } from "@/data/locations";
 import { casteGroupOptions, casteSubcasteOptions } from "../data/caste";
@@ -659,7 +659,7 @@ const SpiritualFilterSidebar = memo(() => {
     // Only save to latest search if there are meaningful filter selections
     if (hasActiveFilterSelections(localFilters)) {
       localStorage.setItem('spiritualFiltersLatest', JSON.stringify(localFilters));
-      
+
       // Only set to 'latest' if no saved filter is currently active
       if (!currentLoadedFilterId || currentLoadedFilterId === 'latest') {
         setCurrentLoadedFilterId('latest');
@@ -738,10 +738,10 @@ const SpiritualFilterSidebar = memo(() => {
     setLocalFilters(clearedFilters);
     setFilters(clearedFilters);
     setCurrentLoadedFilterId(null);
-    
+
     // Clear latest search from localStorage
     localStorage.removeItem('spiritualFiltersLatest');
-    
+
     // Reset all search states
     setSearchStates({
       education: "",
@@ -774,7 +774,7 @@ const SpiritualFilterSidebar = memo(() => {
       ethnicity: false,
       annualIncome: false
     });
-    
+
     // Force re-render of saved filters section to hide it if no saved filters
     if (savedFilters.length === 0) {
       setSavedFiltersOpen(false);
@@ -848,8 +848,11 @@ const SpiritualFilterSidebar = memo(() => {
       <div className="p-6">
         {/* Header */}
         <div className="mb-6 border-b border-gray-100 pb-4">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold text-gray-900">🔍 Filters</h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+              <Filter className="w-5 h-5 text-orange-500" />
+              🔍 Filters
+            </h2>
           </div>
 
           {/* Action Buttons */}
@@ -903,29 +906,29 @@ const SpiritualFilterSidebar = memo(() => {
         {((() => {
           // Always show if there are saved filters
           if (savedFilters.length > 0) return true;
-          
+
           // For latest search, only show if:
           // 1. No saved filter is currently active, OR
           // 2. A saved filter is active but current filters have been modified
           const latestSearch = localStorage.getItem('spiritualFiltersLatest');
           if (!latestSearch) return false;
-          
+
           try {
             const parsedLatest = JSON.parse(latestSearch);
             if (!hasActiveFilterSelections(parsedLatest)) return false;
-            
+
             // If no saved filter is active, show latest search
             if (!currentLoadedFilterId || currentLoadedFilterId === 'latest') {
               return true;
             }
-            
+
             // If a saved filter is active, only show latest search if current filters differ from the saved filter
             const currentSavedFilter = savedFilters.find(f => f.id === currentLoadedFilterId);
             if (currentSavedFilter) {
               const { name, id, ...savedFilterData } = currentSavedFilter;
               return !areFiltersEqual(localFilters, savedFilterData);
             }
-            
+
             return true;
           } catch {
             return false;
@@ -944,7 +947,7 @@ const SpiritualFilterSidebar = memo(() => {
                 <span>Saved Filters ({savedFilters.length + ((() => {
                   const latestSearch = localStorage.getItem('spiritualFiltersLatest');
                   if (!latestSearch) return 0;
-                  
+
                   try {
                     const parsedLatest = JSON.parse(latestSearch);
                     return hasActiveFilterSelections(parsedLatest) ? 1 : 0;
@@ -961,23 +964,23 @@ const SpiritualFilterSidebar = memo(() => {
                 {(() => {
                   const latestSearch = localStorage.getItem('spiritualFiltersLatest');
                   if (!latestSearch) return false;
-                  
+
                   try {
                     const parsedLatest = JSON.parse(latestSearch);
                     if (!hasActiveFilterSelections(parsedLatest)) return false;
-                    
+
                     // If no saved filter is active, show latest search
                     if (!currentLoadedFilterId || currentLoadedFilterId === 'latest') {
                       return true;
                     }
-                    
+
                     // If a saved filter is active, only show latest search if current filters differ from the saved filter
                     const currentSavedFilter = savedFilters.find(f => f.id === currentLoadedFilterId);
                     if (currentSavedFilter) {
                       const { name, id, ...savedFilterData } = currentSavedFilter;
                       return !areFiltersEqual(localFilters, savedFilterData);
                     }
-                    
+
                     return true;
                   } catch {
                     return false;
@@ -1022,7 +1025,7 @@ const SpiritualFilterSidebar = memo(() => {
                               const latestSearch = localStorage.getItem('spiritualFiltersLatest');
                               if (latestSearch) {
                                 const parsedLatest = JSON.parse(latestSearch);
-                                
+
                                 // Check if current filters are unique among saved filters
                                 const isDuplicate = savedFilters.some(savedFilter => {
                                   const { name, id, ...filterData } = savedFilter;
