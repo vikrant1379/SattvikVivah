@@ -84,8 +84,6 @@ const Header = memo(() => {
           <div className="flex items-center space-x-4">
             {isAuthenticated() && user ? ( // Changed to function call
               <div className="flex items-center space-x-3">
-                <span className="text-sm text-gray-600 hidden md:block">Welcome, {user.firstName}</span>
-
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="p-0 h-auto hover:bg-gray-50">
@@ -94,7 +92,7 @@ const Header = memo(() => {
                           <User className="w-4 h-4 text-saffron" />
                         </div>
                         <div className="hidden md:flex flex-col items-start">
-                          <span className="text-xs text-gray-500">My Profile</span>
+                          <span className="text-sm font-medium text-gray-900">{user.firstName}</span>
                           {membershipType && (
                             <Badge className={`text-xs px-2 py-0 h-4 text-white ${membershipBadgeColor}`}>
                               {membershipType}
@@ -113,15 +111,15 @@ const Header = memo(() => {
                         <div className="w-12 h-12 rounded-full bg-gradient-to-br from-saffron/20 to-temple-gold/20 flex items-center justify-center">
                           <User className="w-6 h-6 text-saffron" />
                         </div>
-                        <div>
+                        <div className="flex-1">
                           <p className="font-semibold text-gray-900">{user.firstName} {user.lastName}</p>
                           <p className="text-xs text-gray-500">ID - SV{user.id?.slice(-6)?.toUpperCase()}</p>
-                          {membershipType && (
-                            <Badge className={`text-xs mt-1 px-2 py-0 h-5 text-white ${membershipBadgeColor}`}>
-                              {membershipType} Member
-                            </Badge>
-                          )}
                         </div>
+                        {membershipType && (
+                          <Badge className={`text-xs px-2 py-1 text-white ${membershipBadgeColor}`}>
+                            {membershipType}
+                          </Badge>
+                        )}
                       </div>
 
                       {/* Upgrade Membership Button */}
