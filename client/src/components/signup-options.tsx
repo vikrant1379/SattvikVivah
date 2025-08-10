@@ -11,6 +11,7 @@ import { Eye, EyeOff, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
+import { SmartDateSelector } from "./smart-date-selector";
 
 // Import centralized data
 import { 
@@ -364,97 +365,33 @@ function SignupOptions() {
               />
 
                 {/* Date of Birth */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                  Date of Birth
-                </label>
-                <div className="grid grid-cols-3 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="dobDay"
-                    render={({ field }) => (
-                      <FormItem>
-                        <Select onValueChange={field.onChange} value={field.value || ""}>
-                          <FormControl>
-                            <SelectTrigger className="bg-background">
-                              <SelectValue placeholder="Day" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
-                              <SelectItem key={day} value={day.toString()}>
-                                {day}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="dobMonth"
-                    render={({ field }) => (
-                      <FormItem>
-                        <Select onValueChange={field.onChange} value={field.value || ""}>
-                          <FormControl>
-                            <SelectTrigger className="bg-background">
-                              <SelectValue placeholder="Month" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {[
-                              { value: "1", label: "January" },
-                              { value: "2", label: "February" },
-                              { value: "3", label: "March" },
-                              { value: "4", label: "April" },
-                              { value: "5", label: "May" },
-                              { value: "6", label: "June" },
-                              { value: "7", label: "July" },
-                              { value: "8", label: "August" },
-                              { value: "9", label: "September" },
-                              { value: "10", label: "October" },
-                              { value: "11", label: "November" },
-                              { value: "12", label: "December" }
-                            ].map((month) => (
-                              <SelectItem key={month.value} value={month.value}>
-                                {month.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="dobYear"
-                    render={({ field }) => (
-                      <FormItem>
-                        <Select onValueChange={field.onChange} value={field.value || ""}>
-                          <FormControl>
-                            <SelectTrigger className="bg-background">
-                              <SelectValue placeholder="Year" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {Array.from({ length: 60 }, (_, i) => new Date().getFullYear() - 18 - i).map((year) => (
-                              <SelectItem key={year} value={year.toString()}>
-                                {year}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </div>
+              <SmartDateSelector
+                label="Date of Birth"
+                value={{
+                  year: form.watch("dobYear"),
+                  month: form.watch("dobMonth"),
+                  day: form.watch("dobDay")
+                }}
+                onChange={(dateValue) => {
+                  if (dateValue.year !== form.getValues("dobYear")) {
+                    form.setValue("dobYear", dateValue.year || "");
+                    form.trigger("dobYear");
+                  }
+                  if (dateValue.month !== form.getValues("dobMonth")) {
+                    form.setValue("dobMonth", dateValue.month || "");
+                    form.trigger("dobMonth");
+                  }
+                  if (dateValue.day !== form.getValues("dobDay")) {
+                    form.setValue("dobDay", dateValue.day || "");
+                    form.trigger("dobDay");
+                  }
+                }}
+                errors={{
+                  year: form.formState.errors.dobYear?.message,
+                  month: form.formState.errors.dobMonth?.message,
+                  day: form.formState.errors.dobDay?.message
+                }}
+              />
 
               {/* Gender and Looking For */}
               <div className="grid grid-cols-2 gap-4">
