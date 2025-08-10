@@ -14,7 +14,7 @@ import { useLocation } from "wouter";
 
 // Import centralized data
 import { religionOptions, ethnicityOptions, annualIncomeOptions } from "@/data/religion-ethnicity";
-import { casteGroupOptions } from "@/data/caste";
+import { casteGroupOptions, casteSubcasteOptions } from "@/data/caste";
 import { motherTongueOptions } from "@/data/mother-tongue";
 import { countryOptions, statesByCountry, citiesByState } from "@/data/locations";
 import { 
@@ -173,14 +173,18 @@ function SignupOptions() {
   const selectedState = form.watch('state');
 
   // Get available states for selected country
-  const availableStates = selectedCountry && statesByCountry[selectedCountry] 
-    ? statesByCountry[selectedCountry] 
-    : [];
+  const availableStates = React.useMemo(() => {
+    if (!selectedCountry) return [];
+    const states = statesByCountry[selectedCountry] || [];
+    return [...states, "Other"];
+  }, [selectedCountry]);
 
   // Get available cities for selected state
-  const availableCities = selectedState && citiesByState[selectedState] 
-    ? citiesByState[selectedState] 
-    : [];
+  const availableCities = React.useMemo(() => {
+    if (!selectedState || selectedState === "Other") return ["Other"];
+    const cities = citiesByState[selectedState] || [];
+    return [...cities, "Other"];
+  }, [selectedState]);
 
   // Reset state when country changes
   React.useEffect(() => {
@@ -467,26 +471,38 @@ function SignupOptions() {
                 <FormField
                   control={form.control}
                   name="community"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Community</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {casteGroupOptions.map((community) => (
-                            <SelectItem key={community} value={community}>
-                              {community}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  render={({ field }) => {
+                    // Get all subcaste options from all caste groups
+                    const getAllSubcasteOptions = () => {
+                      const allSubcastes: string[] = [];
+                      Object.values(casteSubcasteOptions).forEach(subcastes => {
+                        allSubcastes.push(...subcastes);
+                      });
+                      // Remove duplicates and sort
+                      return [...new Set(allSubcastes)].sort();
+                    };
+
+                    return (
+                      <FormItem>
+                        <FormLabel>Community</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {getAllSubcasteOptions().map((community) => (
+                              <SelectItem key={community} value={community}>
+                                {community}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
                 />
               </div>
 
@@ -556,11 +572,15 @@ function SignupOptions() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {availableStates.map((state) => (
-                            <SelectItem key={state} value={state}>
-                              {state}
-                            </SelectItem>
-                          ))}
+                          {availableStates.length > 0 ? (
+                            availableStates.map((state) => (
+                              <SelectItem key={state} value={state}>
+                                {state}
+                              </SelectItem>
+                            ))
+                          ) : (
+                            <SelectItem value="Other">Other</SelectItem>
+                          )}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -577,15 +597,19 @@ function SignupOptions() {
                       <Select onValueChange={field.onChange} value={field.value || ""}>
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder={selectedState ? "Select City" : "Select State First"} />
+                            <SelectValue placeholder={selectedState && selectedState !== "Other" ? "Select City" : "Select State First"} />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {availableCities.map((city) => (
-                            <SelectItem key={city} value={city}>
-                              {city}
-                            </SelectItem>
-                          ))}
+                          {availableCities.length > 0 ? (
+                            availableCities.map((city) => (
+                              <SelectItem key={city} value={city}>
+                                {city}
+                              </SelectItem>
+                            ))
+                          ) : (
+                            <SelectItem value="Other">Other</SelectItem>
+                          )}
                         </SelectContent>
                       </Select>
                       <FormMessage />
