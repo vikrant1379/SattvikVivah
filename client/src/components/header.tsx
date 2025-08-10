@@ -1,6 +1,6 @@
 import { memo, useState } from "react";
 import { Link, useLocation } from "wouter";
-import { User, Clover, ChevronDown, Settings, Heart, Star, Phone, HelpCircle, Shield, LogOut, Edit, Users, Gift } from "lucide-react";
+import { User, Clover, ChevronDown, ChevronRight, Edit, Heart, Star, Phone, HelpCircle, Shield, LogOut, Gift } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
@@ -173,7 +173,7 @@ const Header = memo(() => {
                       </DropdownMenuItem>
 
                       <DropdownMenuItem className="flex items-center space-x-3 px-3 py-2 cursor-pointer">
-                        <Users className="w-4 h-4 text-gray-500" />
+                        <User className="w-4 h-4 text-gray-500" />
                         <span>Success Stories</span>
                       </DropdownMenuItem>
 
@@ -190,6 +190,107 @@ const Header = memo(() => {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
+            ) : (
+              <>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      className="flex items-center space-x-3 px-4 py-2 rounded-full bg-saffron hover:bg-saffron/90 text-white font-medium"
+                    >
+                      <div className="w-8 h-8 rounded-full overflow-hidden">
+                        <img 
+                          src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face" 
+                          alt="Profile" 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span>Vikrant Chaudhary</span>
+                        <ChevronDown className="w-4 h-4" />
+                      </div>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-80 p-0 rounded-2xl shadow-xl border-0">
+                    <div className="p-6 bg-white rounded-t-2xl">
+                      <div className="flex items-center space-x-4 mb-6">
+                        <div className="w-16 h-16 rounded-full overflow-hidden ring-2 ring-gray-100">
+                          <img 
+                            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face" 
+                            alt="Vikrant Chaudhary" 
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-semibold text-gray-900">Vikrant Chaudhary</h3>
+                          <p className="text-sm text-gray-500 font-medium">ID - TYZA6743</p>
+                        </div>
+                      </div>
+
+                      <Button className="w-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white rounded-xl py-3 font-semibold text-base mb-3">
+                        Upgrade Membership
+                      </Button>
+                      <p className="text-sm text-gray-500 text-center font-medium">Flat 54% OFF till 13 Aug</p>
+                    </div>
+
+                    <div className="py-1 bg-white">
+                      <DropdownMenuItem className="px-6 py-4 hover:bg-gray-50 cursor-pointer">
+                        <Edit className="w-5 h-5 mr-4 text-gray-500" />
+                        <span className="text-base font-medium text-gray-700">Edit Profile</span>
+                        <ChevronRight className="w-4 h-4 ml-auto text-gray-400" />
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="px-6 py-4 hover:bg-gray-50 cursor-pointer">
+                        <Heart className="w-5 h-5 mr-4 text-gray-500" />
+                        <span className="text-base font-medium text-gray-700">Partner Preferences</span>
+                        <ChevronRight className="w-4 h-4 ml-auto text-gray-400" />
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="px-6 py-4 hover:bg-gray-50 cursor-pointer">
+                        <Star className="w-5 h-5 mr-4 text-gray-500" />
+                        <span className="text-base font-medium text-gray-700">Astrology Services</span>
+                        <ChevronRight className="w-4 h-4 ml-auto text-gray-400" />
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="px-6 py-4 hover:bg-gray-50 cursor-pointer">
+                        <Phone className="w-5 h-5 mr-4 text-gray-500" />
+                        <span className="text-base font-medium text-gray-700">Phonebook</span>
+                        <ChevronRight className="w-4 h-4 ml-auto text-gray-400" />
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="px-6 py-4 hover:bg-gray-50 cursor-pointer">
+                        <Settings className="w-5 h-5 mr-4 text-gray-500" />
+                        <span className="text-base font-medium text-gray-700">Account & Settings</span>
+                        <ChevronRight className="w-4 h-4 ml-auto text-gray-400" />
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="px-6 py-4 hover:bg-gray-50 cursor-pointer">
+                        <Shield className="w-5 h-5 mr-4 text-gray-500" />
+                        <span className="text-base font-medium text-gray-700">Safety Centre</span>
+                        <ChevronRight className="w-4 h-4 ml-auto text-gray-400" />
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="px-6 py-4 hover:bg-gray-50 cursor-pointer">
+                        <HelpCircle className="w-5 h-5 mr-4 text-gray-500" />
+                        <span className="text-base font-medium text-gray-700">Help & Support</span>
+                        <ChevronRight className="w-4 h-4 ml-auto text-gray-400" />
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="px-6 py-4 hover:bg-gray-50 cursor-pointer rounded-b-2xl">
+                        <User className="w-5 h-5 mr-4 text-gray-500" />
+                        <span className="text-base font-medium text-gray-700">Success Stories</span>
+                        <ChevronRight className="w-4 h-4 ml-auto text-gray-400" />
+                      </DropdownMenuItem>
+                    </div>
+
+                    <div className="border-t border-gray-100 bg-white rounded-b-2xl">
+                      <DropdownMenuItem 
+                        className="px-6 py-4 hover:bg-red-50 text-red-600 cursor-pointer rounded-b-2xl"
+                        onClick={() => {
+                          authService.logout();
+                          setIsLoggedIn(false);
+                        }}
+                      >
+                        <LogOut className="w-5 h-5 mr-4" />
+                        <span className="text-base font-medium">Sign Out</span>
+                      </DropdownMenuItem>
+                    </div>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
             ) : (
               <div className="flex items-center space-x-3">
                 <Button
