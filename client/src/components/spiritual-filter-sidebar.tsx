@@ -14,7 +14,7 @@ import { ChevronDown, ChevronRight, X, Loader2, Filter } from "lucide-react";
 import { useSpiritualContext } from "@/contexts/spiritual-context";
 import { countries, statesByCountry, citiesByState, motherTongues } from "@/data/locations";
 import { casteGroupOptions, casteSubcasteOptions } from "../data/caste";
-import { educationOptions } from "../data/education";
+import { educationQualificationOptions as educationOptions } from "../data/education";
 import { professionOptions } from "../data/profession";
 import { 
   maritalStatusOptions,
