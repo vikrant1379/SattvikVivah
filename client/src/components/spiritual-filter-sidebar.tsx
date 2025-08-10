@@ -796,14 +796,34 @@ const SpiritualFilterSidebar = memo(() => {
 
         {/* Saved Filters - Collapsible */}
         {((() => {
+          // Always show if there are saved filters
+          if (savedFilters.length > 0) return true;
+          
+          // For latest search, only show if:
+          // 1. No saved filter is currently active, OR
+          // 2. A saved filter is active but current filters have been modified
           const latestSearch = localStorage.getItem('spiritualFiltersLatest');
-          if (!latestSearch) return savedFilters.length > 0;
+          if (!latestSearch) return false;
           
           try {
             const parsedLatest = JSON.parse(latestSearch);
-            return hasActiveFilterSelections(parsedLatest) || savedFilters.length > 0;
+            if (!hasActiveFilterSelections(parsedLatest)) return false;
+            
+            // If no saved filter is active, show latest search
+            if (!currentLoadedFilterId || currentLoadedFilterId === 'latest') {
+              return true;
+            }
+            
+            // If a saved filter is active, only show latest search if current filters differ from the saved filter
+            const currentSavedFilter = savedFilters.find(f => f.id === currentLoadedFilterId);
+            if (currentSavedFilter) {
+              const { name, id, ...savedFilterData } = currentSavedFilter;
+              return !areFiltersEqual(localFilters, savedFilterData);
+            }
+            
+            return true;
           } catch {
-            return savedFilters.length > 0;
+            return false;
           }
         })()) && (
           <Collapsible 
@@ -839,7 +859,21 @@ const SpiritualFilterSidebar = memo(() => {
                   
                   try {
                     const parsedLatest = JSON.parse(latestSearch);
-                    return hasActiveFilterSelections(parsedLatest);
+                    if (!hasActiveFilterSelections(parsedLatest)) return false;
+                    
+                    // If no saved filter is active, show latest search
+                    if (!currentLoadedFilterId || currentLoadedFilterId === 'latest') {
+                      return true;
+                    }
+                    
+                    // If a saved filter is active, only show latest search if current filters differ from the saved filter
+                    const currentSavedFilter = savedFilters.find(f => f.id === currentLoadedFilterId);
+                    if (currentSavedFilter) {
+                      const { name, id, ...savedFilterData } = currentSavedFilter;
+                      return !areFiltersEqual(localFilters, savedFilterData);
+                    }
+                    
+                    return true;
                   } catch {
                     return false;
                   }
