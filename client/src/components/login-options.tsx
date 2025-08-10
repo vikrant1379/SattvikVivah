@@ -39,7 +39,7 @@ const mobileLoginSchema = z.object({
 type EmailLoginForm = z.infer<typeof emailLoginSchema>;
 type MobileLoginForm = z.infer<typeof mobileLoginSchema>;
 
-export function LoginOptions() {
+function LoginOptions() {
   const [showPassword, setShowPassword] = useState(false);
   const [activeTab, setActiveTab] = useState("email");
   const { toast } = useToast();
@@ -273,3 +273,6 @@ export function LoginOptions() {
     </Card>
   );
 }
+
+export { LoginOptions };
+export default LoginOptions;
