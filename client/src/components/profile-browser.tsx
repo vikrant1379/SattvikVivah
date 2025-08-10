@@ -23,7 +23,7 @@ const ProfileBrowser = memo(() => {
   const [activeQuickFilters, setActiveQuickFilters] = useState<Set<string>>(new Set());
   
   // Safely get spiritual context
-  const { searchResults, isSearching, clearSearch, filters: contextFilters } = useSpiritualContext();
+  const { searchResults, isSearching, clearSearch, filters: contextFilters, setFilters } = useSpiritualContext();
 
   // Quick filter definitions
   const quickFilters: QuickFilter[] = useMemo(() => [
@@ -32,7 +32,7 @@ const ProfileBrowser = memo(() => {
       label: "Verified",
       icon: <CheckCircle className="w-3 h-3" />,
       count: searchResults.filter(p => p.verified).length,
-      active: activeQuickFilters.has("verified")
+      active: contextFilters.verified || false
     },
     {
       id: "recent",
@@ -58,9 +58,9 @@ const ProfileBrowser = memo(() => {
       label: "With Photo",
       icon: <Users className="w-3 h-3" />,
       count: searchResults.filter(p => p.profilePicture).length,
-      active: activeQuickFilters.has("withPhoto")
+      active: contextFilters.withPhoto || false
     }
-  ], [searchResults, activeQuickFilters]);
+  ], [searchResults, activeQuickFilters, contextFilters]);
 
   // Filter profiles based on search query and quick filters
   const filteredProfiles = useMemo(() => {
@@ -77,10 +77,7 @@ const ProfileBrowser = memo(() => {
       });
     }
 
-    // Apply quick filters
-    if (activeQuickFilters.has("verified")) {
-      filtered = filtered.filter(p => p.verified);
-    }
+    // Apply quick filters (verified and withPhoto are handled by spiritual context)
     if (activeQuickFilters.has("recent")) {
       filtered = filtered.filter(p => {
         const joinDate = new Date(p.createdAt || Date.now());
@@ -92,29 +89,42 @@ const ProfileBrowser = memo(() => {
     if (activeQuickFilters.has("nearby")) {
       filtered = filtered.filter(p => p.city === "Mumbai" || p.city === "Delhi");
     }
-    if (activeQuickFilters.has("withPhoto")) {
-      filtered = filtered.filter(p => p.profilePicture);
-    }
 
     return filtered;
   }, [searchResults, searchQuery, activeQuickFilters]);
 
   const toggleQuickFilter = useCallback((filterId: string) => {
-    setActiveQuickFilters(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(filterId)) {
-        newSet.delete(filterId);
-      } else {
-        newSet.add(filterId);
-      }
-      return newSet;
-    });
-  }, []);
+    if (filterId === "verified" || filterId === "withPhoto") {
+      // For verified and withPhoto, update the spiritual context instead
+      const { setFilters } = useSpiritualContext();
+      setFilters({
+        ...contextFilters,
+        [filterId]: filterId === "verified" ? !contextFilters.verified : !contextFilters.withPhoto
+      });
+    } else {
+      // For other quick filters, use local state
+      setActiveQuickFilters(prev => {
+        const newSet = new Set(prev);
+        if (newSet.has(filterId)) {
+          newSet.delete(filterId);
+        } else {
+          newSet.add(filterId);
+        }
+        return newSet;
+      });
+    }
+  }, [contextFilters]);
 
   const clearQuickFilters = useCallback(() => {
     setSearchQuery("");
     setActiveQuickFilters(new Set());
-  }, []);
+    // Also clear verified and withPhoto from spiritual context
+    setFilters({
+      ...contextFilters,
+      verified: false,
+      withPhoto: false
+    });
+  }, [contextFilters, setFilters]);
 
   const clearAllFilters = useCallback(() => {
     setSearchQuery("");
@@ -128,16 +138,11 @@ const ProfileBrowser = memo(() => {
     // Check search query
     if (searchQuery.trim()) return true;
     
-    // Check quick filters
+    // Check quick filters (excluding verified and withPhoto since they're in context)
     if (activeQuickFilters.size > 0) return true;
     
     // Check context filters comprehensively
     return Object.entries(contextFilters).some(([key, value]) => {
-      // Skip these keys as they don't represent meaningful selections
-      if (key === 'verified' || key === 'withPhoto') {
-        return value === true;
-      }
-      
       if (Array.isArray(value)) {
         return value.length > 0;
       }
