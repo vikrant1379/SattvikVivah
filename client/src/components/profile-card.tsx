@@ -157,11 +157,7 @@ const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
                 </div>
               </div>
             )}
-            {/* Spiritual Level Badge */}
-            <div className={`absolute top-2 left-2 px-2 py-1 rounded-full text-xs font-medium ${spiritualLevel.color}`}>
-              <span className="mr-1">{spiritualLevel.indicator}</span>
-              {spiritualLevel.level}
-            </div>
+            
           </div>
 
 
@@ -355,6 +351,14 @@ const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
               </div>
             </div>
 
+            {/* Spiritual Level Indicator */}
+            <div className="mb-3 pr-4">
+              <div className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium ${spiritualLevel.color}`}>
+                <span className="mr-1.5">{spiritualLevel.indicator}</span>
+                {spiritualLevel.level}
+              </div>
+            </div>
+
             {/* One-liner About Section */}
             {profile.bio && (
               <div className="mb-3 text-sm text-gray-700 italic pr-4">
@@ -367,7 +371,7 @@ const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
               <Button
                 variant="outline"
                 size="sm"
-                className="border-red-300 flex items-center rounded-full px-4 py-1.5"
+                className="border-red-300 flex items-center rounded-full px-4 py-1.5 hover:bg-red-50 hover:border-red-400 hover:shadow-sm transition-all duration-200"
                 style={{
                   fontSize: "14px",
                   fontWeight: 600,
@@ -385,13 +389,13 @@ const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
               <Button
                 variant="outline"
                 size="sm"
-                className="border-pink-300 flex items-center rounded-full px-4 py-1.5"
+                className="border-purple-300 flex items-center rounded-full px-4 py-1.5 hover:bg-purple-50 hover:border-purple-400 hover:shadow-sm transition-all duration-200"
                 style={{
                   fontSize: "14px",
                   fontWeight: 600,
                   lineHeight: "18px",
                   letterSpacing: "0",
-                  color: "#475467",
+                  color: "#7C3AED",
                   fontFamily:
                     'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                   gap: "6px",
@@ -406,13 +410,13 @@ const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
               <Button
                 variant="outline"
                 size="sm"
-                className="border-orange-300 flex items-center rounded-full px-4 py-1.5"
+                className="border-amber-300 flex items-center rounded-full px-4 py-1.5 hover:bg-amber-50 hover:border-amber-400 hover:shadow-sm transition-all duration-200"
                 style={{
                   fontSize: "14px",
                   fontWeight: 600,
                   lineHeight: "18px",
                   letterSpacing: "0",
-                  color: "#475467",
+                  color: "#D97706",
                   fontFamily:
                     'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                   gap: "6px",
@@ -424,13 +428,13 @@ const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
               <Button
                 variant="outline"
                 size="sm"
-                className="border-gray-300 flex items-center rounded-full px-4 py-1.5"
+                className="border-blue-300 flex items-center rounded-full px-4 py-1.5 hover:bg-blue-50 hover:border-blue-400 hover:shadow-sm transition-all duration-200"
                 style={{
                   fontSize: "14px",
                   fontWeight: 600,
                   lineHeight: "18px",
                   letterSpacing: "0",
-                  color: "#475467",
+                  color: "#2563EB",
                   fontFamily:
                     'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                   gap: "6px",
