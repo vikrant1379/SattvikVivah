@@ -237,27 +237,13 @@ const ProfileBrowser = memo(() => {
                   </Badge>
                 ))}
 
-                {/* Quick Filters Clear Button */}
-                {(searchQuery || activeQuickFilters.size > 0) && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={clearQuickFilters}
-                    className="text-orange-600 hover:text-orange-700 hover:bg-orange-50 ml-1 text-xs font-medium transition-all duration-200"
-                    title="Clear quick filters only"
-                  >
-                    <X className="w-3.5 h-3.5 mr-1" />
-                    Clear Quick
-                  </Button>
-                )}
-
                 {/* Clear All Filters Button */}
                 {hasActiveFilters && (
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={clearAllFilters}
-                    className="text-red-600 hover:text-white hover:bg-red-600 border-red-300 hover:border-red-600 ml-2 font-medium transition-all duration-200 shadow-sm hover:shadow-md"
+                    className="text-red-600 hover:text-white hover:bg-red-600 border-red-300 hover:border-red-600 font-medium transition-all duration-200 shadow-sm hover:shadow-md"
                     title="Clear all filters including sidebar filters"
                   >
                     <X className="w-4 h-4 mr-1.5" />
