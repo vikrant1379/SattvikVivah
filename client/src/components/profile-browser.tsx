@@ -259,7 +259,7 @@ const ProfileBrowser = memo(() => {
               {filteredProfiles.map((profile, index) => (
                 <div
                   key={profile.id}
-                  className="transform transition-all duration-300 hover:scale-[1.01]"
+                  className="transition-opacity duration-300"
                   style={{
                     animationDelay: `${index * 100}ms`,
                   }}

@@ -100,7 +100,7 @@ const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
 
   return (
     <Card
-      className="w-full max-w-3xl bg-white border border-gray-200 mb-4 overflow-hidden cursor-pointer"
+      className="w-full max-w-3xl bg-white border border-gray-200 mb-4 overflow-hidden cursor-pointer shadow-sm"
       onClick={handleProfileClick}
     >
       <CardContent className="p-0 relative">
@@ -344,7 +344,7 @@ const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
               <Button
                 variant="outline"
                 size="sm"
-                className="border-red-300 hover:bg-red-50 hover:border-red-400 flex items-center rounded-full px-4 py-1.5"
+                className="border-red-300 flex items-center rounded-full px-4 py-1.5"
                 style={{
                   fontSize: "14px",
                   fontWeight: 600,
@@ -362,7 +362,7 @@ const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
               <Button
                 variant="outline"
                 size="sm"
-                className="border-pink-300 hover:bg-pink-50 hover:border-pink-400 flex items-center rounded-full px-4 py-1.5"
+                className="border-pink-300 flex items-center rounded-full px-4 py-1.5"
                 style={{
                   fontSize: "14px",
                   fontWeight: 600,
@@ -383,7 +383,7 @@ const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
               <Button
                 variant="outline"
                 size="sm"
-                className="border-orange-300 hover:bg-orange-50 hover:border-orange-400 flex items-center rounded-full px-4 py-1.5"
+                className="border-orange-300 flex items-center rounded-full px-4 py-1.5"
                 style={{
                   fontSize: "14px",
                   fontWeight: 600,
@@ -401,7 +401,7 @@ const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
               <Button
                 variant="outline"
                 size="sm"
-                className="border-gray-300 hover:bg-gray-50 hover:border-gray-400 flex items-center rounded-full px-4 py-1.5"
+                className="border-gray-300 flex items-center rounded-full px-4 py-1.5"
                 style={{
                   fontSize: "14px",
                   fontWeight: 600,
