@@ -29,10 +29,14 @@ export const useAuth = () => {
   useEffect(() => {
     const loadUser = async () => {
       try {
-        const currentUser = await AuthService.getCurrentUser();
-        setUser(currentUser);
+        if (AuthService.isAuthenticated()) {
+          const currentUser = await AuthService.getCurrentUser();
+          setUser(currentUser);
+        }
       } catch (err) {
         console.error('Failed to load user:', err);
+        // If user data is corrupted, clear auth
+        await AuthService.logout();
       } finally {
         setIsLoading(false);
       }
