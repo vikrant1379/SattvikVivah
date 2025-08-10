@@ -176,19 +176,7 @@ export function SmartDateSelector({ value, onChange, label = "Date", errors }: S
         </FormItem>
       </div>
       
-      {/* Show selected date information */}
-      {value.year && value.month && (
-        <div className="text-xs text-muted-foreground">
-          {value.month === "2" && isLeapYear(parseInt(value.year)) && (
-            <span className="text-blue-600">Leap year - February has 29 days</span>
-          )}
-          {value.year && value.month && !value.day && (
-            <span>
-              {monthOptions.find(m => m.value === value.month)?.label} {value.year} has {getDaysInMonth(parseInt(value.year), parseInt(value.month))} days
-            </span>
-          )}
-        </div>
-      )}
+      
     </div>
   );
 }
