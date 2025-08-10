@@ -851,7 +851,7 @@ const SpiritualFilterSidebar = memo(() => {
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
               <Filter className="w-5 h-5 text-orange-500" />
-              🔍 Filters
+              Filters
             </h2>
           </div>
 
