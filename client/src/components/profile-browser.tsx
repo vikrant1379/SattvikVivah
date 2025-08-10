@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useCallback } from "react";
 import { useSpiritualContext } from "@/contexts/spiritual-context";
 import SpiritualFilterSidebar from "@/components/spiritual-filter-sidebar";
 import ProfileCard from "@/components/profile-card";
@@ -12,9 +12,14 @@ import type { ProfileFilter } from "@/types/profile";
 
 const ProfileBrowser = memo(() => {
   const [filters, setFilters] = useState<ProfileFilter>({});
-  
+
   // Safely get spiritual context
   const { searchResults, isSearching } = useSpiritualContext();
+
+  const handleFilterChange = useCallback((filters: any) => {
+    setFilters(filters);
+    // In a real app, this would trigger a new search
+  }, []);
 
 
   return (
@@ -62,9 +67,9 @@ const ProfileBrowser = memo(() => {
           ) : searchResults.length > 0 ? (
             <div className="space-y-4">
               {searchResults.map((profile) => (
-                <ProfileCard 
-                  key={profile.id} 
-                  profile={profile} 
+                <ProfileCard
+                  key={profile.id}
+                  profile={profile}
                 />
               ))}
             </div>
@@ -90,6 +95,6 @@ const ProfileBrowser = memo(() => {
   );
 });
 
-ProfileBrowser.displayName = "ProfileBrowser";
+ProfileBrowser.displayName = 'ProfileBrowser';
 
 export default ProfileBrowser;

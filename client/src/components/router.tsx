@@ -1,5 +1,5 @@
 import { Route, Switch, useLocation } from "wouter";
-import { Suspense, lazy, useEffect, memo } from "react";
+import { Suspense, lazy, useEffect, memo, useMemo, useRef } from "react";
 import Home from "@/pages/home";
 import NotFound from "@/pages/not-found";
 import ProfileDetailPage from "@/components/profile-detail-page";
@@ -9,6 +9,15 @@ const ProfileDetailModal = lazy(() => import("@/components/profile-detail-modal"
 
 const AppRouter = memo(() => {
   const [location] = useLocation();
+  const homeInstanceRef = useRef<JSX.Element | null>(null);
+
+  // Keep home page in memory by creating it once and reusing
+  const homeInstance = useMemo(() => {
+    if (!homeInstanceRef.current) {
+      homeInstanceRef.current = <Home />;
+    }
+    return homeInstanceRef.current;
+  }, []);
 
   // Remove debug logging in production-like environment
   useEffect(() => {
@@ -27,13 +36,22 @@ const AppRouter = memo(() => {
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     }>
-      <Switch>
-        <Route path="/" component={Home} />
-        <Route path="/profile/:id">
-          {(params) => <ProfileDetailPage profileId={params.id} />}
-        </Route>
-        <Route component={NotFound} />
-      </Switch>
+      <div className="router-container">
+        {/* Always render home but control visibility */}
+        <div style={{ display: location === '/' ? 'block' : 'none' }}>
+          {homeInstance}
+        </div>
+        
+        {/* Other routes */}
+        {location !== '/' && (
+          <Switch>
+            <Route path="/profile/:id">
+              {(params) => <ProfileDetailPage profileId={params.id} />}
+            </Route>
+            <Route component={NotFound} />
+          </Switch>
+        )}
+      </div>
     </Suspense>
   );
 });
