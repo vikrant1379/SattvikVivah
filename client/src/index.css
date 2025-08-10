@@ -31,31 +31,28 @@ input:focus {
   background-color: hsl(var(--background)) !important;
 }
 
-/* Form validation error messages styling */
-[data-form-message] {
-  color: #dc2626 !important; /* Red color for errors */
+/* Form validation error messages styling - only target error messages, not labels */
+[data-form-message="true"] {
+  color: #b91c1c !important; /* Subtle red color for errors */
   font-style: italic !important;
-  font-size: 0.875rem !important; /* 14px */
+  font-size: 0.8125rem !important; /* 13px - smaller than labels */
   font-weight: 400 !important;
-  margin-top: 0.25rem !important;
-  line-height: 1.25 !important;
+  font-family: 'Inter', system-ui, sans-serif !important; /* Clean, professional font */
+  margin-top: 0.375rem !important;
+  line-height: 1.3 !important;
+  opacity: 0.85 !important; /* Slightly transparent for subtlety */
 }
 
-/* Alternative selector for form error messages */
-.text-destructive {
-  color: #dc2626 !important;
+/* Specific targeting for form message components with role="alert" */
+p[role="alert"][data-form-message="true"] {
+  color: #b91c1c !important;
   font-style: italic !important;
-  font-size: 0.875rem !important;
+  font-size: 0.8125rem !important; /* 13px */
   font-weight: 400 !important;
-}
-
-/* Ensure form message components have proper styling */
-[role="alert"] {
-  color: #dc2626 !important;
-  font-style: italic !important;
-  font-size: 0.875rem !important;
-  font-weight: 400 !important;
-  margin-top: 0.25rem !important;
+  font-family: 'Inter', system-ui, sans-serif !important;
+  margin-top: 0.375rem !important;
+  line-height: 1.3 !important;
+  opacity: 0.85 !important;
 }
 
 /* Fix select trigger styling to prevent blue background */
