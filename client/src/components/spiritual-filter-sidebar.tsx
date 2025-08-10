@@ -815,47 +815,7 @@ const SpiritualFilterSidebar = memo(() => {
                       </button>
                       <div className="flex items-center gap-1">
                         <button
-                          onClick={(e) => {
-                            // Save current filters as latest search
-                            localStorage.setItem('spiritualFiltersLatest', JSON.stringify(localFilters));
-                            
-                            // Enhanced visual feedback
-                            const button = e.currentTarget;
-                            const originalContent = button.innerHTML;
-                            button.innerHTML = '✓';
-                            button.style.color = '#10b981';
-                            button.style.transform = 'scale(1.1)';
-                            button.disabled = true;
-                            
-                            // Create a small success message
-                            const successMsg = document.createElement('div');
-                            successMsg.textContent = 'Updated!';
-                            successMsg.className = 'absolute -top-8 left-0 bg-green-100 text-green-800 text-xs px-2 py-1 rounded shadow-sm';
-                            button.parentElement?.appendChild(successMsg);
-                            
-                            setTimeout(() => {
-                              button.innerHTML = originalContent;
-                              button.style.color = '';
-                              button.style.transform = '';
-                              button.disabled = false;
-                              successMsg.remove();
-                            }, 1500);
-                          }}
-                          className="text-orange-600 hover:text-orange-700 text-sm px-1 transition-all duration-200 hover:bg-orange-50 rounded relative"
-                          title="Update latest search with current filters"
-                          disabled={false}
-                        >
-                          🔄
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            // Confirm before clearing if there are active filters
-                            const hasActiveFiltersInLatest = localStorage.getItem('spiritualFiltersLatest');
-                            if (hasActiveFiltersInLatest) {
-                              const confirmed = window.confirm('Are you sure you want to clear your latest search? This action cannot be undone.');
-                              if (!confirmed) return;
-                            }
-                            
+                          onClick={() => {
                             localStorage.removeItem('spiritualFiltersLatest');
                             if (currentLoadedFilterId === 'latest') {
                               setCurrentLoadedFilterId(null);
@@ -869,21 +829,12 @@ const SpiritualFilterSidebar = memo(() => {
                               setLocalFilters(emptyFilters);
                             }
                             
-                            // Enhanced visual feedback
-                            const button = e.currentTarget;
-                            const originalContent = button.innerHTML;
-                            button.innerHTML = '✓';
-                            button.style.color = '#10b981';
-                            button.disabled = true;
-                            
-                            setTimeout(() => {
-                              // Force component re-render to hide the latest search option
-                              setSavedFiltersOpen(false);
-                              setTimeout(() => setSavedFiltersOpen(true), 50);
-                            }, 800);
+                            // Force component re-render to hide the latest search option
+                            setSavedFiltersOpen(false);
+                            setTimeout(() => setSavedFiltersOpen(true), 50);
                           }}
                           className="text-red-500 hover:text-red-700 text-sm px-1 transition-all duration-200 hover:bg-red-50 rounded"
-                          title="Clear latest search (cannot be undone)"
+                          title="Clear latest search"
                         >
                           ✕
                         </button>
