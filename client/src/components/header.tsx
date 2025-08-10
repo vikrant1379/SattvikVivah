@@ -223,6 +223,7 @@ const Header = memo(() => {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </>
+            )
             ) : (
               <div className="flex items-center space-x-3">
                 <Button
