@@ -41,29 +41,29 @@ const Home = memo(() => {
               <div className="space-y-8">
                 <div>
                   <div className="flex items-center justify-center lg:justify-start mb-4">
-                    <span className="text-saffron font-devanagari text-4xl animate-om-pulse">ॐ</span>
+                    <span className="text-saffron text-4xl animate-om-pulse">🕉️</span>
                   </div>
-                  <h1 className="text-5xl lg:text-6xl font-bold mb-6 text-deep-maroon font-devanagari">
-                    खोजें अपना{" "}
+                  <h1 className="text-5xl lg:text-6xl font-bold mb-6 text-deep-maroon">
+                    Find Your{" "}
                     <span className="bg-gradient-to-r from-saffron to-temple-gold bg-clip-text text-transparent block">
-                      धर्मिक जीवनसाथी
+                      Sacred Companion
                     </span>
                   </h1>
                   <h2 className="text-3xl lg:text-4xl font-semibold mb-4 text-indigo-night">
-                    Find Your Sacred Companion
+                    Spiritual Matrimony for Dharmic Living
                   </h2>
                   <p className="text-xl text-gray-700 mb-2 font-serif">
-                    गृहस्थाश्रम की पवित्र यात्रा के लिए
+                    Begin your sacred journey of Grihastha Ashram
                   </p>
                   <p className="text-xl text-gray-700 mb-8 font-serif">
-                    आध्यात्मिक मिलन, न कि भौतिक खोज
+                    Spiritual union, not material pursuit
                   </p>
                   <div className="bg-gradient-to-r from-saffron/10 to-temple-gold/10 p-4 rounded-lg border-l-4 border-saffron">
-                    <p className="text-base text-deep-maroon italic font-serif font-devanagari">
-                      "विवाह केवल दो शरीरों का मिलन नहीं, बल्कि दो आत्माओं का पवित्र संयोग है"
+                    <p className="text-base text-deep-maroon italic font-serif">
+                      "Marriage is not just union of bodies, but sacred communion of souls"
                     </p>
                     <p className="text-sm text-gray-600 mt-2 font-serif">
-                      "Marriage is not just union of bodies, but sacred communion of souls"
+                      - Ancient Vedic Wisdom
                     </p>
                   </div>
                 </div>
@@ -72,26 +72,26 @@ const Home = memo(() => {
                 <Card className="bg-card-cream/90 backdrop-blur-sm border-temple-gold/30 shadow-xl">
                   <CardContent className="p-6">
                     <div className="text-center mb-4">
-                      <h3 className="text-lg font-semibold text-deep-maroon font-devanagari mb-2">
-                        🕉️ पवित्र यात्रा प्रारंभ करें 🕉️
+                      <h3 className="text-lg font-semibold text-deep-maroon mb-2">
+                        🕉️ Begin Your Sacred Journey 🕉️
                       </h3>
-                      <p className="text-sm text-indigo-night font-serif">Begin Your Sacred Journey</p>
+                      <p className="text-sm text-indigo-night font-serif">Find your spiritual life partner</p>
                     </div>
                     
                     <div className="space-y-4">
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <label className="block text-sm font-medium text-deep-maroon mb-1 font-serif">
-                            खोज रहे हैं / Looking for
+                            Looking for
                           </label>
                           <select className="w-full p-3 border border-temple-gold/50 rounded-lg focus:ring-saffron focus:border-saffron bg-white/80">
-                            <option>कन्या / Bride</option>
-                            <option>वर / Groom</option>
+                            <option>Bride</option>
+                            <option>Groom</option>
                           </select>
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-deep-maroon mb-1 font-serif">
-                            आयु / Age
+                            Age
                           </label>
                           <select className="w-full p-3 border border-temple-gold/50 rounded-lg focus:ring-saffron focus:border-saffron bg-white/80">
                             <option>21 to 30</option>
@@ -103,24 +103,24 @@ const Home = memo(() => {
                       
                       <div>
                         <label className="block text-sm font-medium text-deep-maroon mb-1 font-serif">
-                          वर्ण / Community
+                          Community
                         </label>
                         <select className="w-full p-3 border border-temple-gold/50 rounded-lg focus:ring-saffron focus:border-saffron bg-white/80">
-                          <option>कोई भी / Any Community</option>
-                          <option>ब्राह्मण / Brahmin</option>
-                          <option>क्षत्रिय / Kshatriya</option>
-                          <option>वैश्य / Vaishya</option>
-                          <option>शूद्र / Shudra</option>
+                          <option>Any Community</option>
+                          <option>Brahmin</option>
+                          <option>Kshatriya</option>
+                          <option>Vaishya</option>
+                          <option>Shudra</option>
                         </select>
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-deep-maroon mb-1 font-serif">
-                          स्थान / Location
+                          Location
                         </label>
                         <input 
                           type="text"
-                          placeholder="अपना पसंदीदा स्थान दर्ज करें / Enter preferred location"
+                          placeholder="Enter preferred location"
                           className="w-full p-3 border border-temple-gold/50 rounded-lg focus:ring-saffron focus:border-saffron bg-white/80"
                         />
                       </div>
@@ -130,11 +130,11 @@ const Home = memo(() => {
                         className="w-full bg-gradient-to-r from-saffron to-temple-gold hover:from-saffron/90 hover:to-temple-gold/90 text-white py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 font-serif"
                       >
                         <Search className="w-5 h-5 mr-2" />
-                        पवित्र यात्रा शुरू करें / Start Sacred Journey
+                        Start Sacred Journey
                       </Button>
 
                       <p className="text-xs text-center text-deep-maroon/70 font-serif">
-                        आगे बढ़कर, आप हमारी <a href="#" className="text-saffron hover:underline font-semibold">शर्तों</a> और <a href="#" className="text-saffron hover:underline font-semibold">गोपनीयता नीति</a> से सहमत हैं
+                        By proceeding, you agree to our <a href="#" className="text-saffron hover:underline font-semibold">Terms</a> and <a href="#" className="text-saffron hover:underline font-semibold">Privacy Policy</a>
                       </p>
                     </div>
                   </CardContent>
@@ -160,7 +160,7 @@ const Home = memo(() => {
                               <span className="text-lg">👑</span>
                             </div>
                           </div>
-                          <h4 className="font-bold text-orange-800 mb-1 font-devanagari text-sm">राम-सीता विवाह</h4>
+                          <h4 className="font-bold text-orange-800 mb-1 text-sm">Ram-Sita Wedding</h4>
                           <p className="text-xs text-orange-700 font-serif italic">Divine Union of Dharma</p>
                           <div className="mt-2 flex justify-center space-x-1">
                             <span className="text-xs">🌺</span>
@@ -188,7 +188,7 @@ const Home = memo(() => {
                               <span className="text-lg">🌟</span>
                             </div>
                           </div>
-                          <h4 className="font-bold text-blue-800 mb-1 font-devanagari text-sm">शिव-पार्वती विवाह</h4>
+                          <h4 className="font-bold text-blue-800 mb-1 text-sm">Shiva-Parvati Wedding</h4>
                           <p className="text-xs text-blue-700 font-serif italic">Eternal Cosmic Union</p>
                           <div className="mt-2 flex justify-center space-x-1">
                             <span className="text-xs">🕉️</span>
@@ -216,7 +216,7 @@ const Home = memo(() => {
                               <span className="text-lg">🌸</span>
                             </div>
                           </div>
-                          <h4 className="font-bold text-yellow-800 mb-1 font-devanagari text-sm">कृष्ण-रुक्मिणी विवाह</h4>
+                          <h4 className="font-bold text-yellow-800 mb-1 text-sm">Krishna-Rukmini Wedding</h4>
                           <p className="text-xs text-yellow-700 font-serif italic">Divine Love & Devotion</p>
                           <div className="mt-2 flex justify-center space-x-1">
                             <span className="text-xs">🪶</span>
@@ -244,7 +244,7 @@ const Home = memo(() => {
                               <span className="text-lg">✨</span>
                             </div>
                           </div>
-                          <h4 className="font-bold text-green-800 mb-1 font-devanagari text-sm">आपका पवित्र विवाह</h4>
+                          <h4 className="font-bold text-green-800 mb-1 text-sm">Your Sacred Wedding</h4>
                           <p className="text-xs text-green-700 font-serif italic">Your Sacred Journey</p>
                           <div className="mt-2 flex justify-center space-x-1">
                             <span className="text-xs">🌟</span>
@@ -258,11 +258,11 @@ const Home = memo(() => {
                 </div>
 
                 <div className="text-center bg-gradient-to-r from-saffron/10 to-temple-gold/10 p-4 rounded-lg border border-temple-gold/20">
-                  <p className="text-sm text-deep-maroon italic font-devanagari mb-1">
-                    "जब परमात्मा की कृपा हो, तो मिलन अवश्य होता है"
+                  <p className="text-sm text-deep-maroon italic font-serif mb-1">
+                    "When the Divine blesses, union becomes inevitable"
                   </p>
                   <p className="text-xs text-indigo-night font-serif">
-                    "When the Divine blesses, union becomes inevitable"
+                    - Ancient Vedic Wisdom
                   </p>
                 </div>
               </div>

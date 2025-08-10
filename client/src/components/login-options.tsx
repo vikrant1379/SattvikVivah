@@ -145,12 +145,12 @@ export function LoginOptions() {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-deep-maroon font-serif">पासवर्ड / Password</FormLabel>
+                      <FormLabel className="text-deep-maroon font-serif">Password</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Input
                             type={showPassword ? "text" : "password"}
-                            placeholder="अपना पासवर्ड दर्ज करें / Enter your password"
+                            placeholder="Enter your password"
                             className="border-temple-gold/50 focus:border-saffron bg-white/80"
                             {...field}
                           />
@@ -221,12 +221,12 @@ export function LoginOptions() {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-deep-maroon font-serif">पासवर्ड / Password</FormLabel>
+                      <FormLabel className="text-deep-maroon font-serif">Password</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Input
                             type={showPassword ? "text" : "password"}
-                            placeholder="अपना पासवर्ड दर्ज करें / Enter your password"
+                            placeholder="Enter your password"
                             className="border-temple-gold/50 focus:border-saffron bg-white/80"
                             {...field}
                           />
