@@ -195,7 +195,7 @@ function LoginOptions() {
                       <FormLabel>Mobile Number</FormLabel>
                       <FormControl>
                         <div className="flex border border-input rounded-md overflow-hidden focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 bg-background">
-                          <span className="inline-flex items-center px-3 bg-muted text-muted-foreground text-sm border-r border-input">
+                          <span className="inline-flex items-center px-3 bg-background text-muted-foreground text-sm border-r border-input">
                             +91
                           </span>
                           <Input
