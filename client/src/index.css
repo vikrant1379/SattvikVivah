@@ -42,7 +42,7 @@
   --font-serif: 'Crimson Text', Georgia, serif;
   --font-devanagari: 'Noto Serif Devanagari', serif;
   --radius: 0.75rem;
-
+  
   /* Vedic Spiritual Colors */
   --saffron: hsl(33 100% 60%); /* #FF9933 */
   --temple-gold: hsl(42 83% 59%); /* #C9A227 */
@@ -138,61 +138,61 @@
   .font-devanagari {
     font-family: var(--font-devanagari);
   }
-
+  
   /* Vedic Color Utilities */
   .text-saffron {
     color: var(--saffron);
   }
-
+  
   .text-temple-gold {
     color: var(--temple-gold);
   }
-
+  
   .text-deep-maroon {
     color: var(--deep-maroon);
   }
-
+  
   .text-indigo-night {
     color: var(--indigo-night);
   }
-
+  
   .bg-saffron {
     background-color: var(--saffron);
   }
-
+  
   .bg-temple-gold {
     background-color: var(--temple-gold);
   }
-
+  
   .bg-deep-maroon {
     background-color: var(--deep-maroon);
   }
-
+  
   .bg-indigo-night {
     background-color: var(--indigo-night);
   }
-
+  
   .bg-sandalwood {
     background-color: var(--sandalwood);
   }
-
+  
   .bg-card-cream {
     background-color: var(--card-cream);
   }
-
+  
   .border-saffron {
     border-color: var(--saffron);
   }
-
+  
   .border-temple-gold {
     border-color: var(--temple-gold);
   }
-
+  
   /* Sacred Geometry Patterns */
   .sacred-pattern {
     position: relative;
   }
-
+  
   .sacred-pattern::before {
     content: '';
     position: absolute;
@@ -207,12 +207,12 @@
     pointer-events: none;
     z-index: 0;
   }
-
+  
   .sacred-pattern > * {
     position: relative;
     z-index: 1;
   }
-
+  
   .vedic-gradient {
     background: linear-gradient(135deg, 
       hsla(33, 100%, 60%, 0.03) 0%, 
@@ -220,12 +220,12 @@
       hsla(42, 87%, 94%, 0.08) 60%,
       hsla(213, 43%, 20%, 0.03) 100%);
   }
-
+  
   .mandala-divider {
     position: relative;
     text-align: center;
   }
-
+  
   .mandala-divider::before,
   .mandala-divider::after {
     content: '';
@@ -236,37 +236,37 @@
     background: linear-gradient(to right, transparent, var(--temple-gold), transparent);
     opacity: 0.4;
   }
-
+  
   .mandala-divider::before {
     left: 0;
   }
-
+  
   .mandala-divider::after {
     right: 0;
   }
-
+  
   /* Enhanced Animations */
   .animate-lotus-bloom {
     animation: lotus-bloom 4s ease-in-out infinite;
   }
-
+  
   .animate-om-pulse {
     animation: om-pulse 3s ease-in-out infinite;
   }
-
+  
   .animate-float {
     animation: float 8s ease-in-out infinite;
   }
-
+  
   .animate-gentle-fade {
     animation: gentle-fade 0.6s ease-out forwards;
   }
-
+  
   /* Hover Effects */
   .hover-elevate {
     transition: all 0.3s ease;
   }
-
+  
   .hover-elevate:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
@@ -324,7 +324,7 @@
   :root {
     --radius: 0.5rem;
   }
-
+  
   .sacred-pattern {
     background-size: 25px 25px;
     opacity: 0.03;
