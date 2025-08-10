@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import {
   MapPin,
   Briefcase,
@@ -20,7 +19,11 @@ import {
   Mail,
   AlertCircle,
   Home,
-  Clock
+  Clock,
+  UserPlus,
+  Share2,
+  MoreHorizontal,
+  CheckCircle2
 } from "lucide-react";
 import { GiBigDiamondRing } from "react-icons/gi";
 import { formatAnnualIncome } from "../data/annual-income";
@@ -49,7 +52,7 @@ const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <Card className="w-full max-w-md text-center">
           <CardContent className="p-8">
             <AlertCircle className="h-16 w-16 text-orange-500 mx-auto mb-4" />
@@ -86,11 +89,6 @@ const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
     return height;
   };
 
-  // Mock profile images for carousel
-  const profileImages = [
-    profile.profileImage || profile.profilePicture
-  ].filter(Boolean);
-
   // Generate last seen time
   const getLastSeenTime = () => {
     const options = [
@@ -105,9 +103,9 @@ const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Clean Header */}
+      {/* Header */}
       <div className="bg-white shadow-sm border-b">
-        <div className="max-w-5xl mx-auto px-4 py-3">
+        <div className="max-w-7xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-6">
               <Button
@@ -136,183 +134,232 @@ const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-5xl mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-5 gap-8">
-          {/* Left Column - Image and Actions */}
-          <div className="lg:col-span-2">
-            <div className="sticky top-8">
-              {/* Profile Image */}
-              <div className="mb-6">
-                {profileImages.length > 0 ? (
-                  <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-xl">
-                    <img
-                      src={profileImages[0]}
-                      alt={profile.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                ) : (
-                  <div className="aspect-[4/5] bg-gradient-to-br from-orange-100 via-rose-100 to-pink-100 rounded-2xl flex items-center justify-center shadow-xl">
-                    <div className="text-center p-6">
-                      <div className="w-24 h-24 rounded-full bg-white/80 flex items-center justify-center mb-4 mx-auto shadow-sm">
-                        <span className="text-3xl font-bold text-orange-600">
-                          {profile.name.split(" ").map(n => n[0]).join("").toUpperCase()}
-                        </span>
-                      </div>
-                      <div className="bg-white/90 backdrop-blur-sm rounded-lg p-4 border">
-                        <p className="text-sm text-orange-700 font-semibold">📸 Photo Protected</p>
-                        <p className="text-xs text-orange-600 mt-1">Visible after interest acceptance</p>
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        <div className="grid lg:grid-cols-12 gap-6">
+          {/* Left Sidebar - Profile Image & Actions */}
+          <div className="lg:col-span-3">
+            <div className="sticky top-6 space-y-4">
+              {/* Profile Image Card */}
+              <Card className="overflow-hidden">
+                <div className="relative">
+                  {profile.profileImage || profile.profilePicture ? (
+                    <div className="aspect-[3/4] w-full">
+                      <img
+                        src={profile.profileImage || profile.profilePicture}
+                        alt={profile.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="aspect-[3/4] bg-gradient-to-br from-orange-100 via-rose-100 to-pink-100 flex items-center justify-center">
+                      <div className="text-center p-6">
+                        <div className="w-20 h-20 rounded-full bg-white/80 flex items-center justify-center mb-4 mx-auto shadow-sm">
+                          <span className="text-2xl font-bold text-orange-600">
+                            {profile.name.split(" ").map(n => n[0]).join("").toUpperCase()}
+                          </span>
+                        </div>
+                        <div className="bg-white/90 backdrop-blur-sm rounded-lg p-3 border">
+                          <p className="text-sm text-orange-700 font-semibold">📸 Photo Protected</p>
+                          <p className="text-xs text-orange-600 mt-1">Available after connection</p>
+                        </div>
                       </div>
                     </div>
+                  )}
+                  
+                  {/* Online Status */}
+                  <div className="absolute top-3 left-3">
+                    <div className="bg-white/90 backdrop-blur-sm rounded-full px-2 py-1 flex items-center text-xs font-medium text-gray-700">
+                      <div className="w-2 h-2 bg-green-500 rounded-full mr-1"></div>
+                      Online
+                    </div>
                   </div>
-                )}
-              </div>
+                </div>
+                
+                {/* Action Buttons */}
+                <CardContent className="p-4 space-y-3">
+                  <Button className="w-full bg-red-500 hover:bg-red-600 text-white font-semibold">
+                    <Heart className="w-4 h-4 mr-2" />
+                    Express Interest
+                  </Button>
+                  <Button variant="outline" className="w-full border-purple-300 text-purple-700 hover:bg-purple-50">
+                    <Star className="w-4 h-4 mr-2" />
+                    Add to Shortlist
+                  </Button>
+                  <Button variant="outline" className="w-full border-blue-300 text-blue-700 hover:bg-blue-50">
+                    <MessageCircle className="w-4 h-4 mr-2" />
+                    Send Message
+                  </Button>
+                  
+                  <div className="flex gap-2 pt-2">
+                    <Button variant="ghost" size="sm" className="flex-1">
+                      <Share2 className="w-4 h-4 mr-1" />
+                      Share
+                    </Button>
+                    <Button variant="ghost" size="sm" className="flex-1">
+                      <MoreHorizontal className="w-4 h-4" />
+                      More
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
 
-              {/* Action Buttons */}
-              <div className="space-y-3">
-                <Button className="w-full h-12 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 shadow-lg font-semibold text-base rounded-xl">
-                  <Heart className="w-5 h-5 mr-2" />
-                  Express Interest
-                </Button>
-                <Button variant="outline" className="w-full h-12 border-2 border-purple-300 text-purple-700 hover:bg-purple-50 font-semibold text-base rounded-xl">
-                  <Heart className="w-5 h-5 mr-2 fill-current" />
-                  Super Interest
-                </Button>
-                <Button variant="outline" className="w-full h-12 border-2 border-blue-300 text-blue-700 hover:bg-blue-50 font-semibold text-base rounded-xl">
-                  <MessageCircle className="w-5 h-5 mr-2" />
-                  Send Message
-                </Button>
-                <Button variant="outline" className="w-full h-12 border-2 border-amber-300 text-amber-700 hover:bg-amber-50 font-semibold text-base rounded-xl">
-                  <Star className="w-5 h-5 mr-2" />
-                  Add to Shortlist
-                </Button>
-              </div>
+              {/* Quick Info Card */}
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm font-semibold text-gray-700">Quick Info</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Height</span>
+                    <span className="font-medium">{formatHeight(profile.height)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Age</span>
+                    <span className="font-medium">{profile.age} years</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Religion</span>
+                    <span className="font-medium">{profile.religion || 'Hindu'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Caste</span>
+                    <span className="font-medium">{profile.caste}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Location</span>
+                    <span className="font-medium">{profile.city}</span>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
 
-          {/* Right Column - Profile Information */}
-          <div className="lg:col-span-3 space-y-8">
-            {/* Header Section */}
-            <div className="bg-white rounded-2xl shadow-sm border p-8">
-              {/* Last Seen */}
-              <div className="flex items-center text-sm text-gray-500 mb-4">
-                <Clock className="w-4 h-4 mr-2" />
-                {getLastSeenTime()}
-              </div>
-
-              {/* Name and Verification */}
-              <div className="mb-6">
-                <div className="flex items-center gap-3 mb-3">
-                  <h1 className="text-4xl font-bold text-gray-900 leading-tight">
-                    {profile.name}, {profile.age}
-                  </h1>
-                  {profile.verified && (
-                    <svg className="w-8 h-8 flex-shrink-0" viewBox="0 0 24 24" aria-label="Verified">
-                      <path
-                        d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s2.52 1.26 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26 4.8-5.23 1.47 1.36-6.2 6.77z"
-                        fill="#1d9bf0"
-                      />
-                    </svg>
-                  )}
-                </div>
-
-                {/* Location & Basic Info */}
-                <div className="flex items-center gap-4 text-base text-gray-600 mb-4">
-                  <div className="flex items-center">
-                    <MapPin className="w-5 h-5 mr-2 text-orange-500" />
-                    <span className="font-medium">{profile.location || `${profile.city}, ${profile.state}`}</span>
+          {/* Main Content Area */}
+          <div className="lg:col-span-6 space-y-6">
+            {/* Profile Header */}
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <div className="flex items-center gap-3 mb-2">
+                      <h1 className="text-2xl font-bold text-gray-900">
+                        {profile.name}
+                      </h1>
+                      {profile.verified && (
+                        <CheckCircle2 className="w-6 h-6 text-blue-500" />
+                      )}
+                    </div>
+                    <div className="flex items-center text-sm text-gray-600 gap-4 mb-3">
+                      <span>{profile.age} years</span>
+                      <span>•</span>
+                      <span className="flex items-center">
+                        <MapPin className="w-4 h-4 mr-1" />
+                        {profile.city}, {profile.state}
+                      </span>
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      {getLastSeenTime()}
+                    </div>
                   </div>
-                  <span className="text-gray-400">•</span>
-                  <span className="font-medium">{formatHeight(profile.height)}</span>
-                  {profile.caste && (
-                    <>
-                      <span className="text-gray-400">•</span>
-                      <span className="font-medium">{profile.caste}</span>
-                    </>
-                  )}
                 </div>
 
-                {/* Bio */}
                 {profile.bio && (
-                  <p className="text-gray-700 text-lg leading-relaxed italic mb-6">
-                    "{profile.bio}"
-                  </p>
+                  <div className="mb-4">
+                    <p className="text-gray-700 italic">"{profile.bio}"</p>
+                  </div>
                 )}
 
-                {/* Professional Info Cards */}
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div className="bg-blue-50 p-4 rounded-xl border border-blue-100">
-                    <div className="flex items-center">
-                      <Briefcase className="w-5 h-5 mr-3 text-blue-600" />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-blue-50 p-3 rounded-lg">
+                    <div className="flex items-center text-blue-700">
+                      <Briefcase className="w-4 h-4 mr-2" />
                       <div>
-                        <p className="font-semibold text-gray-900">{profile.profession}</p>
+                        <p className="font-medium text-sm">{profile.profession}</p>
                         {profile.annualIncome && (
-                          <p className="text-sm text-green-600 font-medium">{formatAnnualIncome(profile.annualIncome)}</p>
+                          <p className="text-xs text-green-600">{formatAnnualIncome(profile.annualIncome)}</p>
                         )}
                       </div>
                     </div>
                   </div>
-
-                  <div className="bg-purple-50 p-4 rounded-xl border border-purple-100">
-                    <div className="flex items-center">
-                      <GraduationCap className="w-5 h-5 mr-3 text-purple-600" />
+                  <div className="bg-purple-50 p-3 rounded-lg">
+                    <div className="flex items-center text-purple-700">
+                      <GraduationCap className="w-4 h-4 mr-2" />
                       <div>
-                        <p className="font-semibold text-gray-900">{profile.education}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-pink-50 p-4 rounded-xl border border-pink-100">
-                    <div className="flex items-center">
-                      <GiBigDiamondRing className="w-5 h-5 mr-3 text-pink-600" />
-                      <div>
-                        <p className="font-semibold text-gray-900">{profile.maritalStatus}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-orange-50 p-4 rounded-xl border border-orange-100">
-                    <div className="flex items-center">
-                      <Calendar className="w-5 h-5 mr-3 text-orange-600" />
-                      <div>
-                        <p className="font-semibold text-gray-900">{profile.age} years old</p>
+                        <p className="font-medium text-sm">{profile.education}</p>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
 
-            {/* Contact Information */}
-            <div className="bg-white rounded-2xl shadow-sm border p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Contact Information</h2>
-              <div className="space-y-3">
-                <div className="flex items-center p-4 bg-gray-50 rounded-lg">
-                  <Phone className="w-5 h-5 mr-3 text-gray-400" />
-                  <span className="text-gray-600">Phone number visible after connection</span>
+            {/* About Section */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold">About {profile.name.split(' ')[0]}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="text-gray-600">Marital Status:</span>
+                    <span className="ml-2 font-medium">{profile.maritalStatus}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-600">Mother Tongue:</span>
+                    <span className="ml-2 font-medium">{profile.motherTongue}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-600">Height:</span>
+                    <span className="ml-2 font-medium">{formatHeight(profile.height)}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-600">Age:</span>
+                    <span className="ml-2 font-medium">{profile.age} years</span>
+                  </div>
                 </div>
-                <div className="flex items-center p-4 bg-gray-50 rounded-lg">
-                  <Mail className="w-5 h-5 mr-3 text-gray-400" />
-                  <span className="text-gray-600">Email visible after connection</span>
+              </CardContent>
+            </Card>
+
+            {/* Education & Career */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold">Education & Career</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <h4 className="font-medium text-gray-900 mb-2">Education</h4>
+                  <div className="bg-gray-50 p-3 rounded-lg">
+                    <p className="font-medium">{profile.education}</p>
+                  </div>
                 </div>
-              </div>
-            </div>
+                <div>
+                  <h4 className="font-medium text-gray-900 mb-2">Career</h4>
+                  <div className="bg-gray-50 p-3 rounded-lg">
+                    <p className="font-medium">{profile.profession}</p>
+                    {profile.annualIncome && (
+                      <p className="text-sm text-green-600 mt-1">{formatAnnualIncome(profile.annualIncome)}</p>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Spiritual Journey */}
             {(profile.spiritualPractices || profile.sacredTexts || profile.spiritualGoals) && (
-              <div className="bg-gradient-to-br from-orange-50 to-rose-50 rounded-2xl border p-6">
-                <h2 className="text-xl font-semibold text-orange-800 mb-4 flex items-center">
-                  <span className="mr-2">🕉️</span>
-                  Spiritual Journey
-                </h2>
-
-                <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold flex items-center">
+                    <span className="mr-2">🕉️</span>
+                    Spiritual Journey
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
                   {profile.spiritualPractices && profile.spiritualPractices.length > 0 && (
                     <div>
-                      <h3 className="font-medium mb-3 text-gray-700">Spiritual Practices</h3>
+                      <h4 className="font-medium text-gray-900 mb-2">Spiritual Practices</h4>
                       <div className="flex flex-wrap gap-2">
                         {profile.spiritualPractices.map((practice, index) => (
-                          <Badge key={index} variant="outline" className="bg-orange-50 border-orange-200 text-sm py-1">
+                          <Badge key={index} variant="outline" className="bg-orange-50 border-orange-200">
                             {practice}
                           </Badge>
                         ))}
@@ -322,10 +369,10 @@ const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
 
                   {profile.sacredTexts && profile.sacredTexts.length > 0 && (
                     <div>
-                      <h3 className="font-medium mb-3 text-gray-700">Sacred Texts</h3>
+                      <h4 className="font-medium text-gray-900 mb-2">Sacred Texts</h4>
                       <div className="flex flex-wrap gap-2">
                         {profile.sacredTexts.map((text, index) => (
-                          <Badge key={index} variant="outline" className="bg-blue-50 border-blue-200 text-sm py-1">
+                          <Badge key={index} variant="outline" className="bg-blue-50 border-blue-200">
                             {text}
                           </Badge>
                         ))}
@@ -335,27 +382,92 @@ const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
 
                   {profile.spiritualGoals && profile.spiritualGoals.length > 0 && (
                     <div>
-                      <h3 className="font-medium mb-3 text-gray-700">Spiritual Goals</h3>
+                      <h4 className="font-medium text-gray-900 mb-2">Spiritual Goals</h4>
                       <div className="flex flex-wrap gap-2">
                         {profile.spiritualGoals.map((goal, index) => (
-                          <Badge key={index} variant="outline" className="bg-green-50 border-green-200 text-sm py-1">
+                          <Badge key={index} variant="outline" className="bg-green-50 border-green-200">
                             {goal}
                           </Badge>
                         ))}
                       </div>
                     </div>
                   )}
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             )}
 
-            {/* Family Information */}
-            <div className="bg-white rounded-2xl shadow-sm border p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Family Information</h2>
-              <div className="flex items-center p-4 bg-gray-50 rounded-lg">
-                <Users className="w-5 h-5 mr-3 text-gray-400" />
-                <span className="text-gray-600">Family details available after connection</span>
-              </div>
+            {/* Lifestyle */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold">Lifestyle</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-sm text-gray-600">
+                  <p>Lifestyle information will be shared after connection</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Family Details */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold">Family Details</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-sm text-gray-600">
+                  <p>Family information will be shared after connection</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Contact Details */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold">Contact Details</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex items-center p-3 bg-gray-50 rounded-lg">
+                  <Phone className="w-4 h-4 mr-3 text-gray-400" />
+                  <span className="text-gray-600 text-sm">Phone number visible after connection</span>
+                </div>
+                <div className="flex items-center p-3 bg-gray-50 rounded-lg">
+                  <Mail className="w-4 h-4 mr-3 text-gray-400" />
+                  <span className="text-gray-600 text-sm">Email visible after connection</span>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Right Sidebar - Similar Profiles */}
+          <div className="lg:col-span-3">
+            <div className="sticky top-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold">Similar Profiles</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {allProfiles.slice(0, 3).filter(p => p.id !== profile.id).map((similarProfile) => (
+                    <div key={similarProfile.id} className="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-100 to-pink-100 flex items-center justify-center">
+                        <span className="text-sm font-bold text-orange-600">
+                          {similarProfile.name.split(" ").map(n => n[0]).join("").toUpperCase()}
+                        </span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm text-gray-900 truncate">
+                          {similarProfile.name}
+                        </p>
+                        <p className="text-xs text-gray-600">
+                          {similarProfile.age}yrs, {similarProfile.city}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                  <Button variant="outline" size="sm" className="w-full mt-3">
+                    View More Profiles
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
