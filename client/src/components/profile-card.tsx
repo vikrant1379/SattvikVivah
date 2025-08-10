@@ -27,6 +27,23 @@ interface ProfileCardProps {
 const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
   const [, setLocation] = useLocation();
 
+  // Calculate spiritual level indicator
+  const getSpiritualLevel = (profile: UserProfile): { level: string; color: string; indicator: string } => {
+    const practicesCount = (profile.spiritualPractices || []).length;
+    const textsCount = (profile.sacredTexts || []).length;
+    const hasLineage = !!profile.discipleLineage;
+    const goalsCount = (profile.spiritualGoals || []).length;
+
+    const score = practicesCount + textsCount + (hasLineage ? 2 : 0) + Math.floor(goalsCount / 2);
+
+    if (score >= 8) return { level: 'Advanced Sadhaka', color: 'bg-saffron text-white', indicator: '🕉️' };
+    if (score >= 5) return { level: 'Regular Practitioner', color: 'bg-temple-gold text-gray-800', indicator: '🙏' };
+    if (score >= 2) return { level: 'Spiritual Seeker', color: 'bg-sandalwood text-gray-700', indicator: '📿' };
+    return { level: 'Beginning Journey', color: 'bg-gray-100 text-gray-600', indicator: '🌱' };
+  };
+
+  const spiritualLevel = getSpiritualLevel(profile);
+
   const getInitials = (name: string) => {
     return name
       .split(" ")
@@ -106,41 +123,47 @@ const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
       <CardContent className="p-0 relative">
         <div className="flex">
           {/* Profile Image Section */}
-          <div className="relative w-56 flex-shrink-0">
-            {profile.profileImage ? (
-              <div className="relative w-full h-full">
+          <div className="w-56 flex-shrink-0 relative">
+            <div className="h-64 bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+              {profile.profileImage ? (
                 <img
                   src={profile.profileImage}
                   alt={profile.name}
                   className="w-full h-full object-cover"
                 />
-                {/* Image gallery icon */}
-                <div className="absolute top-3 right-3 bg-black/60 rounded-md px-2 py-1 flex items-center text-white text-sm">
-                  <Images className="w-4 h-4 mr-1" />
-                  <span>5</span>
-                </div>
-              </div>
-            ) : (
-              <div className="w-full h-full bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center relative">
+              ) : (
                 <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center">
                   <span className="text-xl font-semibold text-blue-600">
                     {getInitials(profile.name)}
                   </span>
                 </div>
-                {/* Photo visible on acceptance overlay */}
-                <div className="absolute inset-0 flex items-center justify-center bg-black/60 text-white text-center px-3">
-                  <div className="text-sm font-medium leading-tight">
-                    <Eye className="w-6 h-6 mx-auto mb-2 opacity-80" />
-                    Photo visible on
-                    <br />
-                    acceptance of
-                    <br />
-                    interest
-                  </div>
+              )}
+            </div>
+            {/* Image gallery icon */}
+            <div className="absolute top-3 right-3 bg-black/60 rounded-md px-2 py-1 flex items-center text-white text-sm">
+              <Images className="w-4 h-4 mr-1" />
+              <span>5</span>
+            </div>
+            {/* Photo visible on acceptance overlay */}
+            {!profile.profileImage && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/60 text-white text-center px-3">
+                <div className="text-sm font-medium leading-tight">
+                  <Eye className="w-6 h-6 mx-auto mb-2 opacity-80" />
+                  Photo visible on
+                  <br />
+                  acceptance of
+                  <br />
+                  interest
                 </div>
               </div>
             )}
+            {/* Spiritual Level Badge */}
+            <div className={`absolute top-2 left-2 px-2 py-1 rounded-full text-xs font-medium ${spiritualLevel.color}`}>
+              <span className="mr-1">{spiritualLevel.indicator}</span>
+              {spiritualLevel.level}
+            </div>
           </div>
+
 
           {/* Profile Information Section */}
           <div className="flex-1 pl-4 pr-0 py-4">
