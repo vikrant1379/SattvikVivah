@@ -912,6 +912,50 @@ const SpiritualFilterSidebar = memo(() => {
                       <div className="flex items-center gap-1">
                         <button
                           onClick={() => {
+                            // Save the latest search as a named filter
+                            try {
+                              const latestSearch = localStorage.getItem('spiritualFiltersLatest');
+                              if (latestSearch) {
+                                const parsedLatest = JSON.parse(latestSearch);
+                                
+                                // Check if current filters are unique among saved filters
+                                const isDuplicate = savedFilters.some(savedFilter => {
+                                  const { name, id, ...filterData } = savedFilter;
+                                  return areFiltersEqual(parsedLatest, filterData);
+                                });
+
+                                if (isDuplicate) {
+                                  alert("These filters have already been saved. Please modify the filters to save a new combination.");
+                                  return;
+                                }
+
+                                const name = generateFilterName();
+                                const newSavedFilter = {
+                                  ...parsedLatest,
+                                  name,
+                                  id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
+                                };
+                                setSavedFilters(prev => {
+                                  const updated = [...prev, newSavedFilter];
+                                  const renumbered = renumberSavedFilters(updated);
+                                  localStorage.setItem('spiritualFiltersSaved', JSON.stringify(renumbered));
+                                  return renumbered;
+                                });
+                                setCurrentLoadedFilterId(newSavedFilter.id);
+                              }
+                            } catch (error) {
+                              console.error('Failed to save latest search:', error);
+                            }
+                          }}
+                          className="text-blue-600 hover:text-blue-700 text-sm px-1 transition-all duration-200 hover:bg-blue-50 rounded"
+                          title="Save latest search as named filter"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                          </svg>
+                        </button>
+                        <button
+                          onClick={() => {
                             localStorage.removeItem('spiritualFiltersLatest');
                             if (currentLoadedFilterId === 'latest') {
                               setCurrentLoadedFilterId(null);
