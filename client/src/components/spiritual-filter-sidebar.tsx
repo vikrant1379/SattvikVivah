@@ -28,14 +28,14 @@ import {
   heightOptions,
   religionOptions,
   ethnicityOptions
-} from "../data/personal-attributes";
+} from "../data/static-options";
 import { 
   spiritualPractices,
   sacredTexts,
   guruLineages,
   dietaryLifestyles
 } from "../data/spiritual-practices";
-import { annualIncomeMinOptions, annualIncomeMaxOptions, annualIncomeOptions } from "../data/annual-income";
+import { annualIncomeMinOptions, annualIncomeMaxOptions, annualIncomeOptions } from "../data/static-options";
 import type { ProfileFilter } from "@shared/schema";
 
 // Placeholder options - replace with actual data imports
