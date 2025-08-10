@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,10 +11,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Eye, EyeOff, Mail, Phone, KeyRound, Smartphone } from "lucide-react";
+import { Eye, EyeOff, Mail, Phone, Smartphone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-// Email validation schema
+// Login validation schemas
 const emailLoginSchema = z.object({
   email: z.string()
     .min(1, "Email is required")
@@ -24,7 +23,6 @@ const emailLoginSchema = z.object({
   stayLoggedIn: z.boolean().optional(),
 });
 
-// Mobile validation schema
 const mobileLoginSchema = z.object({
   mobile: z.string()
     .min(1, "Mobile number is required")
@@ -36,27 +34,24 @@ const mobileLoginSchema = z.object({
   stayLoggedIn: z.boolean().optional(),
 });
 
-// OTP login schemas
-const emailOtpSchema = z.object({
-  email: z.string()
-    .min(1, "Email is required")
-    .email("Please enter a valid email address"),
-  otp: z.string().min(6, "Please enter the 6-digit OTP"),
-  stayLoggedIn: z.boolean().optional(),
-});
-
-const mobileOtpSchema = z.object({
-  mobile: z.string()
-    .min(1, "Mobile number is required")
-    .refine((mobile) => {
+// OTP modal schemas
+const otpRequestSchema = z.object({
+  contactMethod: z.string()
+    .min(1, "Please enter email or mobile number")
+    .refine((value) => {
+      // Check if it's either valid email or valid mobile
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const mobileRegex = /^[6-9]\d{9}$/;
-      return mobileRegex.test(mobile.replace(/\D/g, ''));
-    }, "Please enter a valid 10-digit mobile number"),
+      return emailRegex.test(value) || mobileRegex.test(value.replace(/\D/g, ''));
+    }, "Please enter a valid email or mobile number"),
+});
+
+const otpVerifySchema = z.object({
   otp: z.string().min(6, "Please enter the 6-digit OTP"),
   stayLoggedIn: z.boolean().optional(),
 });
 
-// Forgot password schemas
+// Forgot password schema
 const forgotPasswordSchema = z.object({
   contactMethod: z.string().min(1, "Please enter email or mobile number"),
   otp: z.string().optional(),
@@ -74,67 +69,49 @@ const forgotPasswordSchema = z.object({
 
 type EmailLoginForm = z.infer<typeof emailLoginSchema>;
 type MobileLoginForm = z.infer<typeof mobileLoginSchema>;
-type EmailOtpForm = z.infer<typeof emailOtpSchema>;
-type MobileOtpForm = z.infer<typeof mobileOtpSchema>;
+type OtpRequestForm = z.infer<typeof otpRequestSchema>;
+type OtpVerifyForm = z.infer<typeof otpVerifySchema>;
 type ForgotPasswordForm = z.infer<typeof forgotPasswordSchema>;
 
 function LoginOptions() {
   const [showPassword, setShowPassword] = useState(false);
   const [activeTab, setActiveTab] = useState("email");
-  const [loginMethod, setLoginMethod] = useState<"password" | "otp">("password");
+  const [otpModalOpen, setOtpModalOpen] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpContactMethod, setOtpContactMethod] = useState("");
   const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
   const [forgotPasswordStep, setForgotPasswordStep] = useState<"contact" | "otp" | "reset">("contact");
-  const [otpSent, setOtpSent] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { toast } = useToast();
 
+  // Forms
   const emailForm = useForm<EmailLoginForm>({
     resolver: zodResolver(emailLoginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-      stayLoggedIn: false,
-    },
+    defaultValues: { email: "", password: "", stayLoggedIn: false },
   });
 
   const mobileForm = useForm<MobileLoginForm>({
     resolver: zodResolver(mobileLoginSchema),
-    defaultValues: {
-      mobile: "",
-      password: "",
-      stayLoggedIn: false,
-    },
+    defaultValues: { mobile: "", password: "", stayLoggedIn: false },
   });
 
-  const emailOtpForm = useForm<EmailOtpForm>({
-    resolver: zodResolver(emailOtpSchema),
-    defaultValues: {
-      email: "",
-      otp: "",
-      stayLoggedIn: false,
-    },
+  const otpRequestForm = useForm<OtpRequestForm>({
+    resolver: zodResolver(otpRequestSchema),
+    defaultValues: { contactMethod: "" },
   });
 
-  const mobileOtpForm = useForm<MobileOtpForm>({
-    resolver: zodResolver(mobileOtpSchema),
-    defaultValues: {
-      mobile: "",
-      otp: "",
-      stayLoggedIn: false,
-    },
+  const otpVerifyForm = useForm<OtpVerifyForm>({
+    resolver: zodResolver(otpVerifySchema),
+    defaultValues: { otp: "", stayLoggedIn: false },
   });
 
   const forgotPasswordForm = useForm<ForgotPasswordForm>({
     resolver: zodResolver(forgotPasswordSchema),
-    defaultValues: {
-      contactMethod: "",
-      otp: "",
-      newPassword: "",
-      confirmPassword: "",
-    },
+    defaultValues: { contactMethod: "",otp: "", newPassword: "", confirmPassword: "" },
   });
 
+  // Handlers
   const handleEmailLogin = async (data: EmailLoginForm) => {
     try {
       console.log("Email login:", data);
@@ -167,24 +144,14 @@ function LoginOptions() {
     }
   };
 
-  const sendEmailOtp = async () => {
-    const email = emailOtpForm.getValues("email");
-    if (!email || !z.string().email().safeParse(email).success) {
-      toast({
-        title: "Invalid Email",
-        description: "Please enter a valid email address.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
+  const handleOtpRequest = async (data: OtpRequestForm) => {
     try {
-      // API call to send OTP
-      console.log("Sending OTP to email:", email);
+      console.log("Sending OTP to:", data.contactMethod);
+      setOtpContactMethod(data.contactMethod);
       setOtpSent(true);
       toast({
         title: "OTP Sent",
-        description: "Please check your email for the OTP.",
+        description: "Please check your email/mobile for the OTP.",
       });
     } catch (error) {
       toast({
@@ -195,53 +162,13 @@ function LoginOptions() {
     }
   };
 
-  const sendMobileOtp = async () => {
-    const mobile = mobileOtpForm.getValues("mobile");
-    if (!mobile || mobile.length !== 10) {
-      toast({
-        title: "Invalid Mobile",
-        description: "Please enter a valid 10-digit mobile number.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
+  const handleOtpVerify = async (data: OtpVerifyForm) => {
     try {
-      // API call to send OTP
-      console.log("Sending OTP to mobile:", mobile);
-      setOtpSent(true);
-      toast({
-        title: "OTP Sent",
-        description: "Please check your mobile for the OTP.",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to send OTP. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleEmailOtpLogin = async (data: EmailOtpForm) => {
-    try {
-      console.log("Email OTP login:", data);
-      toast({
-        title: "Login Successful",
-        description: "Welcome back to SattvikVivah!",
-      });
-    } catch (error) {
-      toast({
-        title: "Login Failed",
-        description: "Invalid OTP. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleMobileOtpLogin = async (data: MobileOtpForm) => {
-    try {
-      console.log("Mobile OTP login:", data);
+      console.log("OTP login:", { contactMethod: otpContactMethod, ...data });
+      setOtpModalOpen(false);
+      setOtpSent(false);
+      otpRequestForm.reset();
+      otpVerifyForm.reset();
       toast({
         title: "Login Successful",
         description: "Welcome back to SattvikVivah!",
@@ -257,7 +184,6 @@ function LoginOptions() {
 
   const handleForgotPasswordSubmit = async (data: ForgotPasswordForm) => {
     if (forgotPasswordStep === "contact") {
-      // Send OTP for password reset
       try {
         console.log("Sending reset OTP to:", data.contactMethod);
         setForgotPasswordStep("otp");
@@ -273,7 +199,6 @@ function LoginOptions() {
         });
       }
     } else if (forgotPasswordStep === "otp") {
-      // Verify OTP
       try {
         console.log("Verifying OTP:", data.otp);
         setForgotPasswordStep("reset");
@@ -289,7 +214,6 @@ function LoginOptions() {
         });
       }
     } else if (forgotPasswordStep === "reset") {
-      // Reset password
       try {
         console.log("Resetting password");
         setForgotPasswordOpen(false);
@@ -314,10 +238,11 @@ function LoginOptions() {
     return digits.slice(0, 10);
   };
 
-  const resetOtpState = () => {
+  const resetOtpModal = () => {
+    setOtpModalOpen(false);
     setOtpSent(false);
-    emailOtpForm.setValue("otp", "");
-    mobileOtpForm.setValue("otp", "");
+    otpRequestForm.reset();
+    otpVerifyForm.reset();
   };
 
   return (
@@ -327,11 +252,7 @@ function LoginOptions() {
         <p className="text-muted-foreground">Sign in to your spiritual journey</p>
       </CardHeader>
       <CardContent>
-        <Tabs value={activeTab} onValueChange={(value) => {
-          setActiveTab(value);
-          setLoginMethod("password");
-          resetOtpState();
-        }} className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="email" className="flex items-center space-x-2">
               <Mail className="w-4 h-4" />
@@ -343,93 +264,61 @@ function LoginOptions() {
             </TabsTrigger>
           </TabsList>
 
-          {/* Login Method Toggle */}
-          <div className="flex justify-center my-4">
-            <div className="flex bg-muted rounded-lg p-1">
-              <Button
-                type="button"
-                variant={loginMethod === "password" ? "default" : "ghost"}
-                size="sm"
-                onClick={() => {
-                  setLoginMethod("password");
-                  resetOtpState();
-                }}
-                className="flex items-center space-x-1"
-              >
-                <KeyRound className="w-3 h-3" />
-                <span>Password</span>
-              </Button>
-              <Button
-                type="button"
-                variant={loginMethod === "otp" ? "default" : "ghost"}
-                size="sm"
-                onClick={() => {
-                  setLoginMethod("otp");
-                  resetOtpState();
-                }}
-                className="flex items-center space-x-1"
-              >
-                <Smartphone className="w-3 h-3" />
-                <span>OTP</span>
-              </Button>
-            </div>
-          </div>
-
           <TabsContent value="email" className="space-y-4">
-            {loginMethod === "password" ? (
-              <Form {...emailForm}>
-                <form onSubmit={emailForm.handleSubmit(handleEmailLogin)} className="space-y-4">
-                  <FormField
-                    control={emailForm.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email Address</FormLabel>
-                        <FormControl>
+            <Form {...emailForm}>
+              <form onSubmit={emailForm.handleSubmit(handleEmailLogin)} className="space-y-4">
+                <FormField
+                  control={emailForm.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email Address</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="email"
+                          placeholder="your.email@example.com"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={emailForm.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <div className="relative">
                           <Input
-                            type="email"
-                            placeholder="your.email@example.com"
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Enter your password"
                             {...field}
                           />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent focus:ring-0 focus:ring-offset-0 focus:outline-none"
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            {showPassword ? (
+                              <EyeOff className="h-4 w-4 text-gray-600" />
+                            ) : (
+                              <Eye className="h-4 w-4 text-gray-600" />
+                            )}
+                          </Button>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                  <FormField
-                    control={emailForm.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Input
-                              type={showPassword ? "text" : "password"}
-                              placeholder="Enter your password"
-                              {...field}
-                            />
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="sm"
-                              className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent focus:ring-0 focus:ring-offset-0 focus:outline-none"
-                              onClick={() => setShowPassword(!showPassword)}
-                            >
-                              {showPassword ? (
-                                <EyeOff className="h-4 w-4 text-gray-600" />
-                              ) : (
-                                <Eye className="h-4 w-4 text-gray-600" />
-                              )}
-                            </Button>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
+                <div className="flex items-center justify-between">
                   <FormField
                     control={emailForm.control}
                     name="stayLoggedIn"
@@ -448,264 +337,359 @@ function LoginOptions() {
                     )}
                   />
 
-                  <Button
-                    type="submit"
-                    className="w-full bg-saffron hover:bg-saffron/90"
-                    disabled={emailForm.formState.isSubmitting}
-                  >
-                    {emailForm.formState.isSubmitting ? "Signing in..." : "Sign in with Email"}
-                  </Button>
-                </form>
-              </Form>
-            ) : (
-              <Form {...emailOtpForm}>
-                <form onSubmit={emailOtpForm.handleSubmit(handleEmailOtpLogin)} className="space-y-4">
-                  <FormField
-                    control={emailOtpForm.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email Address</FormLabel>
-                        <FormControl>
-                          <div className="flex gap-2">
-                            <Input
-                              type="email"
-                              placeholder="your.email@example.com"
-                              {...field}
-                              className="flex-1"
+                  <Dialog open={forgotPasswordOpen} onOpenChange={setForgotPasswordOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="link" className="text-saffron hover:text-saffron/80 text-sm p-0">
+                        Forgot Password?
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-md">
+                      <DialogHeader>
+                        <DialogTitle>
+                          {forgotPasswordStep === "contact" ? "Reset Password" :
+                           forgotPasswordStep === "otp" ? "Verify OTP" : "Set New Password"}
+                        </DialogTitle>
+                        <DialogDescription>
+                          {forgotPasswordStep === "contact" ? "Enter your email or mobile number to receive a reset code" :
+                           forgotPasswordStep === "otp" ? "Enter the OTP sent to your email/mobile" : "Create a new password for your account"}
+                        </DialogDescription>
+                      </DialogHeader>
+                      <Form {...forgotPasswordForm}>
+                        <form onSubmit={forgotPasswordForm.handleSubmit(handleForgotPasswordSubmit)} className="space-y-4">
+                          {forgotPasswordStep === "contact" && (
+                            <FormField
+                              control={forgotPasswordForm.control}
+                              name="contactMethod"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Email or Mobile Number</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      placeholder="Enter email or mobile number"
+                                      {...field}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
                             />
+                          )}
+
+                          {forgotPasswordStep === "otp" && (
+                            <FormField
+                              control={forgotPasswordForm.control}
+                              name="otp"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Enter OTP</FormLabel>
+                                  <FormControl>
+                                    <InputOTP maxLength={6} {...field} className="w-full justify-center">
+                                      <InputOTPGroup>
+                                        <InputOTPSlot index={0} />
+                                        <InputOTPSlot index={1} />
+                                        <InputOTPSlot index={2} />
+                                        <InputOTPSlot index={3} />
+                                        <InputOTPSlot index={4} />
+                                        <InputOTPSlot index={5} />
+                                      </InputOTPGroup>
+                                    </InputOTP>
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          )}
+
+                          {forgotPasswordStep === "reset" && (
+                            <>
+                              <FormField
+                                control={forgotPasswordForm.control}
+                                name="newPassword"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>New Password</FormLabel>
+                                    <FormControl>
+                                      <div className="relative">
+                                        <Input
+                                          type={showNewPassword ? "text" : "password"}
+                                          placeholder="Enter new password"
+                                          {...field}
+                                        />
+                                        <Button
+                                          type="button"
+                                          variant="ghost"
+                                          size="sm"
+                                          className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent focus:ring-0 focus:ring-offset-0 focus:outline-none"
+                                          onClick={() => setShowNewPassword(!showNewPassword)}
+                                        >
+                                          {showNewPassword ? (
+                                            <EyeOff className="h-4 w-4 text-gray-600" />
+                                          ) : (
+                                            <Eye className="h-4 w-4 text-gray-600" />
+                                          )}
+                                        </Button>
+                                      </div>
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+
+                              <FormField
+                                control={forgotPasswordForm.control}
+                                name="confirmPassword"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Confirm Password</FormLabel>
+                                    <FormControl>
+                                      <div className="relative">
+                                        <Input
+                                          type={showConfirmPassword ? "text" : "password"}
+                                          placeholder="Confirm new password"
+                                          {...field}
+                                        />
+                                        <Button
+                                          type="button"
+                                          variant="ghost"
+                                          size="sm"
+                                          className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent focus:ring-0 focus:ring-offset-0 focus:outline-none"
+                                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                        >
+                                          {showConfirmPassword ? (
+                                            <EyeOff className="h-4 w-4 text-gray-600" />
+                                          ) : (
+                                            <Eye className="h-4 w-4 text-gray-600" />
+                                          )}
+                                        </Button>
+                                      </div>
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </>
+                          )}
+
+                          <Button
+                            type="submit"
+                            className="w-full bg-saffron hover:bg-saffron/90"
+                            disabled={forgotPasswordForm.formState.isSubmitting}
+                          >
+                            {forgotPasswordForm.formState.isSubmitting ? "Processing..." :
+                             forgotPasswordStep === "contact" ? "Send OTP" :
+                             forgotPasswordStep === "otp" ? "Verify OTP" : "Reset Password"}
+                          </Button>
+                        </form>
+                      </Form>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+
+                <Button
+                  type="submit"
+                  className="w-full bg-saffron hover:bg-saffron/90"
+                  disabled={emailForm.formState.isSubmitting}
+                >
+                  {emailForm.formState.isSubmitting ? "Signing in..." : "Login"}
+                </Button>
+
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">or</span>
+                  </div>
+                </div>
+
+                <Dialog open={otpModalOpen} onOpenChange={setOtpModalOpen}>
+                  <DialogTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full"
+                    >
+                      <Smartphone className="w-4 h-4 mr-2" />
+                      Login with OTP
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md" onPointerDownOutside={resetOtpModal}>
+                    <DialogHeader>
+                      <DialogTitle>Login with OTP</DialogTitle>
+                      <DialogDescription>
+                        {otpSent ? "Enter the OTP sent to your contact method" : "Enter your email or mobile number to receive OTP"}
+                      </DialogDescription>
+                    </DialogHeader>
+
+                    {!otpSent ? (
+                      <Form {...otpRequestForm}>
+                        <form onSubmit={otpRequestForm.handleSubmit(handleOtpRequest)} className="space-y-4">
+                          <FormField
+                            control={otpRequestForm.control}
+                            name="contactMethod"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Email or Mobile Number</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    placeholder="Enter email or mobile number"
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <Button
+                            type="submit"
+                            className="w-full bg-saffron hover:bg-saffron/90"
+                            disabled={otpRequestForm.formState.isSubmitting}
+                          >
+                            {otpRequestForm.formState.isSubmitting ? "Sending..." : "Send OTP"}
+                          </Button>
+                        </form>
+                      </Form>
+                    ) : (
+                      <Form {...otpVerifyForm}>
+                        <form onSubmit={otpVerifyForm.handleSubmit(handleOtpVerify)} className="space-y-4">
+                          <div className="text-sm text-muted-foreground text-center">
+                            OTP sent to: <span className="font-medium">{otpContactMethod}</span>
+                          </div>
+
+                          <FormField
+                            control={otpVerifyForm.control}
+                            name="otp"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Enter OTP</FormLabel>
+                                <FormControl>
+                                  <InputOTP maxLength={6} {...field} className="w-full justify-center">
+                                    <InputOTPGroup>
+                                      <InputOTPSlot index={0} />
+                                      <InputOTPSlot index={1} />
+                                      <InputOTPSlot index={2} />
+                                      <InputOTPSlot index={3} />
+                                      <InputOTPSlot index={4} />
+                                      <InputOTPSlot index={5} />
+                                    </InputOTPGroup>
+                                  </InputOTP>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={otpVerifyForm.control}
+                            name="stayLoggedIn"
+                            render={({ field }) => (
+                              <FormItem className="flex items-center space-x-2">
+                                <FormControl>
+                                  <Checkbox
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                  />
+                                </FormControl>
+                                <FormLabel className="text-sm font-normal cursor-pointer">
+                                  Stay logged in
+                                </FormLabel>
+                              </FormItem>
+                            )}
+                          />
+
+                          <div className="flex gap-2">
                             <Button
                               type="button"
                               variant="outline"
-                              onClick={sendEmailOtp}
-                              disabled={otpSent}
-                              className="whitespace-nowrap"
+                              className="flex-1"
+                              onClick={() => setOtpSent(false)}
                             >
-                              {otpSent ? "Sent" : "Send OTP"}
+                              Change Number
+                            </Button>
+                            <Button
+                              type="submit"
+                              className="flex-1 bg-saffron hover:bg-saffron/90"
+                              disabled={otpVerifyForm.formState.isSubmitting}
+                            >
+                              {otpVerifyForm.formState.isSubmitting ? "Verifying..." : "Verify & Login"}
                             </Button>
                           </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
+                        </form>
+                      </Form>
                     )}
-                  />
-
-                  {otpSent && (
-                    <FormField
-                      control={emailOtpForm.control}
-                      name="otp"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Enter OTP</FormLabel>
-                          <FormControl>
-                            <InputOTP maxLength={6} {...field} className="w-full justify-center">
-                              <InputOTPGroup>
-                                <InputOTPSlot index={0} />
-                                <InputOTPSlot index={1} />
-                                <InputOTPSlot index={2} />
-                                <InputOTPSlot index={3} />
-                                <InputOTPSlot index={4} />
-                                <InputOTPSlot index={5} />
-                              </InputOTPGroup>
-                            </InputOTP>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  )}
-
-                  <FormField
-                    control={emailOtpForm.control}
-                    name="stayLoggedIn"
-                    render={({ field }) => (
-                      <FormItem className="flex items-center space-x-2">
-                        <FormControl>
-                          <Checkbox
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
-                        <FormLabel className="text-sm font-normal cursor-pointer">
-                          Stay logged in
-                        </FormLabel>
-                      </FormItem>
-                    )}
-                  />
-
-                  <Button
-                    type="submit"
-                    className="w-full bg-saffron hover:bg-saffron/90"
-                    disabled={emailOtpForm.formState.isSubmitting || !otpSent}
-                  >
-                    {emailOtpForm.formState.isSubmitting ? "Verifying..." : "Verify OTP & Login"}
-                  </Button>
-                </form>
-              </Form>
-            )}
+                  </DialogContent>
+                </Dialog>
+              </form>
+            </Form>
           </TabsContent>
 
           <TabsContent value="mobile" className="space-y-4">
-            {loginMethod === "password" ? (
-              <Form {...mobileForm}>
-                <form onSubmit={mobileForm.handleSubmit(handleMobileLogin)} className="space-y-4">
-                  <FormField
-                    control={mobileForm.control}
-                    name="mobile"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Mobile Number</FormLabel>
-                        <FormControl>
-                          <div className="flex border border-input rounded-md overflow-hidden focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 bg-background">
-                            <span className="inline-flex items-center px-3 bg-background text-foreground text-sm border-r border-input">
-                              +91
-                            </span>
-                            <Input
-                              type="tel"
-                              placeholder="9876543210"
-                              className="border-0 rounded-none focus:ring-0 focus:ring-offset-0"
-                              {...field}
-                              onChange={(e) => {
-                                const formatted = formatMobileNumber(e.target.value);
-                                field.onChange(formatted);
-                              }}
-                            />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={mobileForm.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Input
-                              type={showPassword ? "text" : "password"}
-                              placeholder="Enter your password"
-                              {...field}
-                            />
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="sm"
-                              className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent focus:ring-0 focus:ring-offset-0 focus:outline-none"
-                              onClick={() => setShowPassword(!showPassword)}
-                            >
-                              {showPassword ? (
-                                <EyeOff className="h-4 w-4 text-gray-600" />
-                              ) : (
-                                <Eye className="h-4 w-4 text-gray-600" />
-                              )}
-                            </Button>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={mobileForm.control}
-                    name="stayLoggedIn"
-                    render={({ field }) => (
-                      <FormItem className="flex items-center space-x-2">
-                        <FormControl>
-                          <Checkbox
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
+            <Form {...mobileForm}>
+              <form onSubmit={mobileForm.handleSubmit(handleMobileLogin)} className="space-y-4">
+                <FormField
+                  control={mobileForm.control}
+                  name="mobile"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Mobile Number</FormLabel>
+                      <FormControl>
+                        <div className="flex border border-input rounded-md overflow-hidden focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 bg-background">
+                          <span className="inline-flex items-center px-3 bg-background text-foreground text-sm border-r border-input">
+                            +91
+                          </span>
+                          <Input
+                            type="tel"
+                            placeholder="9876543210"
+                            className="border-0 rounded-none focus:ring-0 focus:ring-offset-0"
+                            {...field}
+                            onChange={(e) => {
+                              const formatted = formatMobileNumber(e.target.value);
+                              field.onChange(formatted);
+                            }}
                           />
-                        </FormControl>
-                        <FormLabel className="text-sm font-normal cursor-pointer">
-                          Stay logged in
-                        </FormLabel>
-                      </FormItem>
-                    )}
-                  />
-
-                  <Button
-                    type="submit"
-                    className="w-full bg-saffron hover:bg-saffron/90"
-                    disabled={mobileForm.formState.isSubmitting}
-                  >
-                    {mobileForm.formState.isSubmitting ? "Signing in..." : "Sign in with Mobile"}
-                  </Button>
-                </form>
-              </Form>
-            ) : (
-              <Form {...mobileOtpForm}>
-                <form onSubmit={mobileOtpForm.handleSubmit(handleMobileOtpLogin)} className="space-y-4">
-                  <FormField
-                    control={mobileOtpForm.control}
-                    name="mobile"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Mobile Number</FormLabel>
-                        <FormControl>
-                          <div className="flex gap-2">
-                            <div className="flex border border-input rounded-md overflow-hidden focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 bg-background flex-1">
-                              <span className="inline-flex items-center px-3 bg-background text-foreground text-sm border-r border-input">
-                                +91
-                              </span>
-                              <Input
-                                type="tel"
-                                placeholder="9876543210"
-                                className="border-0 rounded-none focus:ring-0 focus:ring-offset-0"
-                                {...field}
-                                onChange={(e) => {
-                                  const formatted = formatMobileNumber(e.target.value);
-                                  field.onChange(formatted);
-                                }}
-                              />
-                            </div>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              onClick={sendMobileOtp}
-                              disabled={otpSent}
-                              className="whitespace-nowrap"
-                            >
-                              {otpSent ? "Sent" : "Send OTP"}
-                            </Button>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  {otpSent && (
-                    <FormField
-                      control={mobileOtpForm.control}
-                      name="otp"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Enter OTP</FormLabel>
-                          <FormControl>
-                            <InputOTP maxLength={6} {...field} className="w-full justify-center">
-                              <InputOTPGroup>
-                                <InputOTPSlot index={0} />
-                                <InputOTPSlot index={1} />
-                                <InputOTPSlot index={2} />
-                                <InputOTPSlot index={3} />
-                                <InputOTPSlot index={4} />
-                                <InputOTPSlot index={5} />
-                              </InputOTPGroup>
-                            </InputOTP>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )}
+                />
 
+                <FormField
+                  control={mobileForm.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Enter your password"
+                            {...field}
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent focus:ring-0 focus:ring-offset-0 focus:outline-none"
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            {showPassword ? (
+                              <EyeOff className="h-4 w-4 text-gray-600" />
+                            ) : (
+                              <Eye className="h-4 w-4 text-gray-600" />
+                            )}
+                          </Button>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="flex items-center justify-between">
                   <FormField
-                    control={mobileOtpForm.control}
+                    control={mobileForm.control}
                     name="stayLoggedIn"
                     render={({ field }) => (
                       <FormItem className="flex items-center space-x-2">
@@ -722,168 +706,48 @@ function LoginOptions() {
                     )}
                   />
 
-                  <Button
-                    type="submit"
-                    className="w-full bg-saffron hover:bg-saffron/90"
-                    disabled={mobileOtpForm.formState.isSubmitting || !otpSent}
-                  >
-                    {mobileOtpForm.formState.isSubmitting ? "Verifying..." : "Verify OTP & Login"}
-                  </Button>
-                </form>
-              </Form>
-            )}
+                  <Dialog open={forgotPasswordOpen} onOpenChange={setForgotPasswordOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="link" className="text-saffron hover:text-saffron/80 text-sm p-0">
+                        Forgot Password?
+                      </Button>
+                    </DialogTrigger>
+                  </Dialog>
+                </div>
+
+                <Button
+                  type="submit"
+                  className="w-full bg-saffron hover:bg-saffron/90"
+                  disabled={mobileForm.formState.isSubmitting}
+                >
+                  {mobileForm.formState.isSubmitting ? "Signing in..." : "Login"}
+                </Button>
+
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">or</span>
+                  </div>
+                </div>
+
+                <Dialog open={otpModalOpen} onOpenChange={setOtpModalOpen}>
+                  <DialogTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full"
+                    >
+                      <Smartphone className="w-4 h-4 mr-2" />
+                      Login with OTP
+                    </Button>
+                  </DialogTrigger>
+                </Dialog>
+              </form>
+            </Form>
           </TabsContent>
         </Tabs>
-
-        {/* Forgot Password Link */}
-        <div className="text-center mt-4">
-          <Dialog open={forgotPasswordOpen} onOpenChange={setForgotPasswordOpen}>
-            <DialogTrigger asChild>
-              <Button variant="link" className="text-saffron hover:text-saffron/80 text-sm">
-                Forgot Password?
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <DialogTitle>
-                  {forgotPasswordStep === "contact" ? "Reset Password" :
-                   forgotPasswordStep === "otp" ? "Verify OTP" : "Set New Password"}
-                </DialogTitle>
-                <DialogDescription>
-                  {forgotPasswordStep === "contact" ? "Enter your email or mobile number to receive a reset code" :
-                   forgotPasswordStep === "otp" ? "Enter the OTP sent to your email/mobile" : "Create a new password for your account"}
-                </DialogDescription>
-              </DialogHeader>
-              <Form {...forgotPasswordForm}>
-                <form onSubmit={forgotPasswordForm.handleSubmit(handleForgotPasswordSubmit)} className="space-y-4">
-                  {forgotPasswordStep === "contact" && (
-                    <FormField
-                      control={forgotPasswordForm.control}
-                      name="contactMethod"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email or Mobile Number</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Enter email or mobile number"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  )}
-
-                  {forgotPasswordStep === "otp" && (
-                    <FormField
-                      control={forgotPasswordForm.control}
-                      name="otp"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Enter OTP</FormLabel>
-                          <FormControl>
-                            <InputOTP maxLength={6} {...field} className="w-full justify-center">
-                              <InputOTPGroup>
-                                <InputOTPSlot index={0} />
-                                <InputOTPSlot index={1} />
-                                <InputOTPSlot index={2} />
-                                <InputOTPSlot index={3} />
-                                <InputOTPSlot index={4} />
-                                <InputOTPSlot index={5} />
-                              </InputOTPGroup>
-                            </InputOTP>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  )}
-
-                  {forgotPasswordStep === "reset" && (
-                    <>
-                      <FormField
-                        control={forgotPasswordForm.control}
-                        name="newPassword"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>New Password</FormLabel>
-                            <FormControl>
-                              <div className="relative">
-                                <Input
-                                  type={showNewPassword ? "text" : "password"}
-                                  placeholder="Enter new password"
-                                  {...field}
-                                />
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="sm"
-                                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent focus:ring-0 focus:ring-offset-0 focus:outline-none"
-                                  onClick={() => setShowNewPassword(!showNewPassword)}
-                                >
-                                  {showNewPassword ? (
-                                    <EyeOff className="h-4 w-4 text-gray-600" />
-                                  ) : (
-                                    <Eye className="h-4 w-4 text-gray-600" />
-                                  )}
-                                </Button>
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={forgotPasswordForm.control}
-                        name="confirmPassword"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Confirm Password</FormLabel>
-                            <FormControl>
-                              <div className="relative">
-                                <Input
-                                  type={showConfirmPassword ? "text" : "password"}
-                                  placeholder="Confirm new password"
-                                  {...field}
-                                />
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="sm"
-                                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent focus:ring-0 focus:ring-offset-0 focus:outline-none"
-                                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                >
-                                  {showConfirmPassword ? (
-                                    <EyeOff className="h-4 w-4 text-gray-600" />
-                                  ) : (
-                                    <Eye className="h-4 w-4 text-gray-600" />
-                                  )}
-                                </Button>
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </>
-                  )}
-
-                  <Button
-                    type="submit"
-                    className="w-full bg-saffron hover:bg-saffron/90"
-                    disabled={forgotPasswordForm.formState.isSubmitting}
-                  >
-                    {forgotPasswordForm.formState.isSubmitting ? "Processing..." :
-                     forgotPasswordStep === "contact" ? "Send OTP" :
-                     forgotPasswordStep === "otp" ? "Verify OTP" : "Reset Password"}
-                  </Button>
-                </form>
-              </Form>
-            </DialogContent>
-          </Dialog>
-        </div>
       </CardContent>
     </Card>
   );
