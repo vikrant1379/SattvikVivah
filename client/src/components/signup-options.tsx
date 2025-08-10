@@ -34,6 +34,17 @@ const emailSignupSchema = z.object({
   gender: z.string().min(1, "Please select your gender"),
   lookingFor: z.string().min(1, "Please select what you're looking for"),
   profileFor: z.string().min(1, "Please select who this profile is for"),
+  religion: z.string().min(1, "Please select your religion"),
+  community: z.string().min(1, "Please select your community"),
+  motherTongue: z.string().min(1, "Please select your mother tongue"),
+  country: z.string().min(1, "Please select your country"),
+  state: z.string().min(1, "Please select your state"),
+  city: z.string().min(1, "Please select your city"),
+  height: z.string().min(1, "Please select your height"),
+  maritalStatus: z.string().min(1, "Please select your marital status"),
+  education: z.string().min(1, "Please select your education"),
+  profession: z.string().min(1, "Please select your profession"),
+  annualIncome: z.string().min(1, "Please select your annual income"),
 });
 
 // Mobile signup validation schema
@@ -57,6 +68,17 @@ const mobileSignupSchema = z.object({
   gender: z.string().min(1, "Please select your gender"),
   lookingFor: z.string().min(1, "Please select what you're looking for"),
   profileFor: z.string().min(1, "Please select who this profile is for"),
+  religion: z.string().min(1, "Please select your religion"),
+  community: z.string().min(1, "Please select your community"),
+  motherTongue: z.string().min(1, "Please select your mother tongue"),
+  country: z.string().min(1, "Please select your country"),
+  state: z.string().min(1, "Please select your state"),
+  city: z.string().min(1, "Please select your city"),
+  height: z.string().min(1, "Please select your height"),
+  maritalStatus: z.string().min(1, "Please select your marital status"),
+  education: z.string().min(1, "Please select your education"),
+  profession: z.string().min(1, "Please select your profession"),
+  annualIncome: z.string().min(1, "Please select your annual income"),
 });
 
 type EmailSignupForm = z.infer<typeof emailSignupSchema>;
@@ -78,6 +100,17 @@ function SignupOptions() {
       gender: "",
       lookingFor: "",
       profileFor: "",
+      religion: "",
+      community: "",
+      motherTongue: "",
+      country: "",
+      state: "",
+      city: "",
+      height: "",
+      maritalStatus: "",
+      education: "",
+      profession: "",
+      annualIncome: "",
     },
   });
 
@@ -92,6 +125,17 @@ function SignupOptions() {
       gender: "",
       lookingFor: "",
       profileFor: "",
+      religion: "",
+      community: "",
+      motherTongue: "",
+      country: "",
+      state: "",
+      city: "",
+      height: "",
+      maritalStatus: "",
+      education: "",
+      profession: "",
+      annualIncome: "",
     },
   });
 
@@ -341,6 +385,316 @@ function SignupOptions() {
                   )}
                 />
 
+                {/* Religion and Community */}
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={emailForm.control}
+                    name="religion"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Religion</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="Hinduism">Hinduism</SelectItem>
+                            <SelectItem value="Buddhism">Buddhism</SelectItem>
+                            <SelectItem value="Jainism">Jainism</SelectItem>
+                            <SelectItem value="Sikhism">Sikhism</SelectItem>
+                            <SelectItem value="Christianity">Christianity</SelectItem>
+                            <SelectItem value="Islam">Islam</SelectItem>
+                            <SelectItem value="Judaism">Judaism</SelectItem>
+                            <SelectItem value="Other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={emailForm.control}
+                    name="community"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Community</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="Brahmin">Brahmin</SelectItem>
+                            <SelectItem value="Kshatriya">Kshatriya</SelectItem>
+                            <SelectItem value="Vaishya">Vaishya</SelectItem>
+                            <SelectItem value="Shudra">Shudra</SelectItem>
+                            <SelectItem value="Other">Other</SelectItem>
+                            <SelectItem value="No Preference">No Preference</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Mother Tongue */}
+                <FormField
+                  control={emailForm.control}
+                  name="motherTongue"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Mother Tongue</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Hindi">Hindi</SelectItem>
+                          <SelectItem value="Bengali">Bengali</SelectItem>
+                          <SelectItem value="Telugu">Telugu</SelectItem>
+                          <SelectItem value="Tamil">Tamil</SelectItem>
+                          <SelectItem value="Gujarati">Gujarati</SelectItem>
+                          <SelectItem value="Marathi">Marathi</SelectItem>
+                          <SelectItem value="Punjabi">Punjabi</SelectItem>
+                          <SelectItem value="Malayalam">Malayalam</SelectItem>
+                          <SelectItem value="Kannada">Kannada</SelectItem>
+                          <SelectItem value="English">English</SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Location */}
+                <div className="grid grid-cols-3 gap-4">
+                  <FormField
+                    control={emailForm.control}
+                    name="country"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Country</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="India">India</SelectItem>
+                            <SelectItem value="USA">USA</SelectItem>
+                            <SelectItem value="UK">UK</SelectItem>
+                            <SelectItem value="Canada">Canada</SelectItem>
+                            <SelectItem value="Australia">Australia</SelectItem>
+                            <SelectItem value="Other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={emailForm.control}
+                    name="state"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>State</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Enter state"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={emailForm.control}
+                    name="city"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>City</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Enter city"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Height and Marital Status */}
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={emailForm.control}
+                    name="height"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Height</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="4'6\"">4'6"</SelectItem>
+                            <SelectItem value="4'7\"">4'7"</SelectItem>
+                            <SelectItem value="4'8\"">4'8"</SelectItem>
+                            <SelectItem value="4'9\"">4'9"</SelectItem>
+                            <SelectItem value="4'10\"">4'10"</SelectItem>
+                            <SelectItem value="4'11\"">4'11"</SelectItem>
+                            <SelectItem value="5'0\"">5'0"</SelectItem>
+                            <SelectItem value="5'1\"">5'1"</SelectItem>
+                            <SelectItem value="5'2\"">5'2"</SelectItem>
+                            <SelectItem value="5'3\"">5'3"</SelectItem>
+                            <SelectItem value="5'4\"">5'4"</SelectItem>
+                            <SelectItem value="5'5\"">5'5"</SelectItem>
+                            <SelectItem value="5'6\"">5'6"</SelectItem>
+                            <SelectItem value="5'7\"">5'7"</SelectItem>
+                            <SelectItem value="5'8\"">5'8"</SelectItem>
+                            <SelectItem value="5'9\"">5'9"</SelectItem>
+                            <SelectItem value="5'10\"">5'10"</SelectItem>
+                            <SelectItem value="5'11\"">5'11"</SelectItem>
+                            <SelectItem value="6'0\"">6'0"</SelectItem>
+                            <SelectItem value="6'1\"">6'1"</SelectItem>
+                            <SelectItem value="6'2\"">6'2"</SelectItem>
+                            <SelectItem value="6'3\"">6'3"</SelectItem>
+                            <SelectItem value="Above 6'3\"">Above 6'3"</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={emailForm.control}
+                    name="maritalStatus"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Marital Status</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="Never Married">Never Married</SelectItem>
+                            <SelectItem value="Divorced">Divorced</SelectItem>
+                            <SelectItem value="Widowed">Widowed</SelectItem>
+                            <SelectItem value="Separated">Separated</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Education and Profession */}
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={emailForm.control}
+                    name="education"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Education</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="High School">High School</SelectItem>
+                            <SelectItem value="Bachelor's">Bachelor's</SelectItem>
+                            <SelectItem value="Master's">Master's</SelectItem>
+                            <SelectItem value="Doctorate">Doctorate</SelectItem>
+                            <SelectItem value="Diploma">Diploma</SelectItem>
+                            <SelectItem value="Professional">Professional</SelectItem>
+                            <SelectItem value="Other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={emailForm.control}
+                    name="profession"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Profession</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="Software Engineer">Software Engineer</SelectItem>
+                            <SelectItem value="Doctor">Doctor</SelectItem>
+                            <SelectItem value="Teacher">Teacher</SelectItem>
+                            <SelectItem value="Business Owner">Business Owner</SelectItem>
+                            <SelectItem value="Government Employee">Government Employee</SelectItem>
+                            <SelectItem value="Private Employee">Private Employee</SelectItem>
+                            <SelectItem value="Student">Student</SelectItem>
+                            <SelectItem value="Other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Annual Income */}
+                <FormField
+                  control={emailForm.control}
+                  name="annualIncome"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Annual Income</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Below ₹2 Lakh">Below ₹2 Lakh</SelectItem>
+                          <SelectItem value="₹2-5 Lakh">₹2-5 Lakh</SelectItem>
+                          <SelectItem value="₹5-10 Lakh">₹5-10 Lakh</SelectItem>
+                          <SelectItem value="₹10-15 Lakh">₹10-15 Lakh</SelectItem>
+                          <SelectItem value="₹15-25 Lakh">₹15-25 Lakh</SelectItem>
+                          <SelectItem value="₹25-50 Lakh">₹25-50 Lakh</SelectItem>
+                          <SelectItem value="₹50 Lakh - ₹1 Crore">₹50 Lakh - ₹1 Crore</SelectItem>
+                          <SelectItem value="Above ₹1 Crore">Above ₹1 Crore</SelectItem>
+                          <SelectItem value="Prefer not to disclose">Prefer not to disclose</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <Button
                   type="submit"
                   className="w-full bg-saffron hover:bg-saffron/90"
@@ -541,6 +895,316 @@ function SignupOptions() {
                           <SelectItem value="Sister">Sister</SelectItem>
                           <SelectItem value="Friend">Friend</SelectItem>
                           <SelectItem value="Relative">Relative</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Religion and Community */}
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={mobileForm.control}
+                    name="religion"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Religion</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="Hinduism">Hinduism</SelectItem>
+                            <SelectItem value="Buddhism">Buddhism</SelectItem>
+                            <SelectItem value="Jainism">Jainism</SelectItem>
+                            <SelectItem value="Sikhism">Sikhism</SelectItem>
+                            <SelectItem value="Christianity">Christianity</SelectItem>
+                            <SelectItem value="Islam">Islam</SelectItem>
+                            <SelectItem value="Judaism">Judaism</SelectItem>
+                            <SelectItem value="Other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={mobileForm.control}
+                    name="community"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Community</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="Brahmin">Brahmin</SelectItem>
+                            <SelectItem value="Kshatriya">Kshatriya</SelectItem>
+                            <SelectItem value="Vaishya">Vaishya</SelectItem>
+                            <SelectItem value="Shudra">Shudra</SelectItem>
+                            <SelectItem value="Other">Other</SelectItem>
+                            <SelectItem value="No Preference">No Preference</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Mother Tongue */}
+                <FormField
+                  control={mobileForm.control}
+                  name="motherTongue"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Mother Tongue</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Hindi">Hindi</SelectItem>
+                          <SelectItem value="Bengali">Bengali</SelectItem>
+                          <SelectItem value="Telugu">Telugu</SelectItem>
+                          <SelectItem value="Tamil">Tamil</SelectItem>
+                          <SelectItem value="Gujarati">Gujarati</SelectItem>
+                          <SelectItem value="Marathi">Marathi</SelectItem>
+                          <SelectItem value="Punjabi">Punjabi</SelectItem>
+                          <SelectItem value="Malayalam">Malayalam</SelectItem>
+                          <SelectItem value="Kannada">Kannada</SelectItem>
+                          <SelectItem value="English">English</SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Location */}
+                <div className="grid grid-cols-3 gap-4">
+                  <FormField
+                    control={mobileForm.control}
+                    name="country"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Country</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="India">India</SelectItem>
+                            <SelectItem value="USA">USA</SelectItem>
+                            <SelectItem value="UK">UK</SelectItem>
+                            <SelectItem value="Canada">Canada</SelectItem>
+                            <SelectItem value="Australia">Australia</SelectItem>
+                            <SelectItem value="Other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={mobileForm.control}
+                    name="state"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>State</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Enter state"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={mobileForm.control}
+                    name="city"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>City</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Enter city"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Height and Marital Status */}
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={mobileForm.control}
+                    name="height"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Height</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="4'6\"">4'6"</SelectItem>
+                            <SelectItem value="4'7\"">4'7"</SelectItem>
+                            <SelectItem value="4'8\"">4'8"</SelectItem>
+                            <SelectItem value="4'9\"">4'9"</SelectItem>
+                            <SelectItem value="4'10\"">4'10"</SelectItem>
+                            <SelectItem value="4'11\"">4'11"</SelectItem>
+                            <SelectItem value="5'0\"">5'0"</SelectItem>
+                            <SelectItem value="5'1\"">5'1"</SelectItem>
+                            <SelectItem value="5'2\"">5'2"</SelectItem>
+                            <SelectItem value="5'3\"">5'3"</SelectItem>
+                            <SelectItem value="5'4\"">5'4"</SelectItem>
+                            <SelectItem value="5'5\"">5'5"</SelectItem>
+                            <SelectItem value="5'6\"">5'6"</SelectItem>
+                            <SelectItem value="5'7\"">5'7"</SelectItem>
+                            <SelectItem value="5'8\"">5'8"</SelectItem>
+                            <SelectItem value="5'9\"">5'9"</SelectItem>
+                            <SelectItem value="5'10\"">5'10"</SelectItem>
+                            <SelectItem value="5'11\"">5'11"</SelectItem>
+                            <SelectItem value="6'0\"">6'0"</SelectItem>
+                            <SelectItem value="6'1\"">6'1"</SelectItem>
+                            <SelectItem value="6'2\"">6'2"</SelectItem>
+                            <SelectItem value="6'3\"">6'3"</SelectItem>
+                            <SelectItem value="Above 6'3\"">Above 6'3"</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={mobileForm.control}
+                    name="maritalStatus"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Marital Status</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="Never Married">Never Married</SelectItem>
+                            <SelectItem value="Divorced">Divorced</SelectItem>
+                            <SelectItem value="Widowed">Widowed</SelectItem>
+                            <SelectItem value="Separated">Separated</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Education and Profession */}
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={mobileForm.control}
+                    name="education"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Education</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="High School">High School</SelectItem>
+                            <SelectItem value="Bachelor's">Bachelor's</SelectItem>
+                            <SelectItem value="Master's">Master's</SelectItem>
+                            <SelectItem value="Doctorate">Doctorate</SelectItem>
+                            <SelectItem value="Diploma">Diploma</SelectItem>
+                            <SelectItem value="Professional">Professional</SelectItem>
+                            <SelectItem value="Other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={mobileForm.control}
+                    name="profession"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Profession</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="Software Engineer">Software Engineer</SelectItem>
+                            <SelectItem value="Doctor">Doctor</SelectItem>
+                            <SelectItem value="Teacher">Teacher</SelectItem>
+                            <SelectItem value="Business Owner">Business Owner</SelectItem>
+                            <SelectItem value="Government Employee">Government Employee</SelectItem>
+                            <SelectItem value="Private Employee">Private Employee</SelectItem>
+                            <SelectItem value="Student">Student</SelectItem>
+                            <SelectItem value="Other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Annual Income */}
+                <FormField
+                  control={mobileForm.control}
+                  name="annualIncome"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Annual Income</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Below ₹2 Lakh">Below ₹2 Lakh</SelectItem>
+                          <SelectItem value="₹2-5 Lakh">₹2-5 Lakh</SelectItem>
+                          <SelectItem value="₹5-10 Lakh">₹5-10 Lakh</SelectItem>
+                          <SelectItem value="₹10-15 Lakh">₹10-15 Lakh</SelectItem>
+                          <SelectItem value="₹15-25 Lakh">₹15-25 Lakh</SelectItem>
+                          <SelectItem value="₹25-50 Lakh">₹25-50 Lakh</SelectItem>
+                          <SelectItem value="₹50 Lakh - ₹1 Crore">₹50 Lakh - ₹1 Crore</SelectItem>
+                          <SelectItem value="Above ₹1 Crore">Above ₹1 Crore</SelectItem>
+                          <SelectItem value="Prefer not to disclose">Prefer not to disclose</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />

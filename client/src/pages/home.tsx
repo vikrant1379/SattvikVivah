@@ -365,7 +365,7 @@ const Home = memo(() => {
 
       {/* Signup Modal */}
       <Dialog open={isSignupModalOpen} onOpenChange={setIsSignupModalOpen}>
-        <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-4xl max-h-[95vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-center text-2xl font-bold text-orange-800">
               Create Your Sacred Profile
