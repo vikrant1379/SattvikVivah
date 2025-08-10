@@ -129,12 +129,17 @@ const SpiritualFilterSidebar = memo(() => {
         setSavedFilters(parsedSaved);
       }
 
-      // Load and apply latest search
+      // Load and apply latest search only if it has meaningful selections
       const latestSearch = localStorage.getItem('spiritualFiltersLatest');
       if (latestSearch) {
         const parsedLatest = JSON.parse(latestSearch);
-        setLocalFilters(parsedLatest);
-        setCurrentLoadedFilterId('latest');
+        if (hasActiveFilterSelections(parsedLatest)) {
+          setLocalFilters(parsedLatest);
+          setCurrentLoadedFilterId('latest');
+        } else {
+          // Remove invalid latest search
+          localStorage.removeItem('spiritualFiltersLatest');
+        }
       }
     } catch (error) {
       console.error('Failed to load saved filters:', error);
@@ -617,12 +622,20 @@ const SpiritualFilterSidebar = memo(() => {
     setFilters(localFilters);
     searchProfiles(localFilters);
 
-    // Save as latest search to localStorage
-    localStorage.setItem('spiritualFiltersLatest', JSON.stringify(localFilters));
-
-    // Only set to 'latest' if no saved filter is currently active
-    if (!currentLoadedFilterId || currentLoadedFilterId === 'latest') {
-      setCurrentLoadedFilterId('latest');
+    // Only save to latest search if there are meaningful filter selections
+    if (hasActiveFilterSelections(localFilters)) {
+      localStorage.setItem('spiritualFiltersLatest', JSON.stringify(localFilters));
+      
+      // Only set to 'latest' if no saved filter is currently active
+      if (!currentLoadedFilterId || currentLoadedFilterId === 'latest') {
+        setCurrentLoadedFilterId('latest');
+      }
+    } else {
+      // Remove latest search if no meaningful selections
+      localStorage.removeItem('spiritualFiltersLatest');
+      if (currentLoadedFilterId === 'latest') {
+        setCurrentLoadedFilterId(null);
+      }
     }
   }, [localFilters, setFilters, searchProfiles, currentLoadedFilterId]);
 
@@ -656,7 +669,12 @@ const SpiritualFilterSidebar = memo(() => {
     setCurrentLoadedFilterId(null);
     // Clear latest search from localStorage as well
     localStorage.removeItem('spiritualFiltersLatest');
-  }, [setFilters]);
+    
+    // Force re-render of saved filters section to hide it if no saved filters
+    if (savedFilters.length === 0) {
+      setSavedFiltersOpen(false);
+    }
+  }, [setFilters, savedFilters.length]);
 
   const activeFilters = getActiveFilters();
 
@@ -700,6 +718,20 @@ const SpiritualFilterSidebar = memo(() => {
       return areFiltersEqual(localFilters, filterData);
     });
     return matchingFilter?.id || null;
+  };
+
+  // Check if there are any meaningful filter selections
+  const hasActiveFilterSelections = (filters: ProfileFilter) => {
+    return Object.entries(filters).some(([key, value]) => {
+      // Skip these keys as they don't represent meaningful selections
+      if (key === 'casteGroups' || key === 'casteSubcastes') {
+        return Array.isArray(value) && value.length > 0;
+      }
+      if (Array.isArray(value)) {
+        return value.length > 0;
+      }
+      return value !== undefined && value !== "" && value !== false && value !== null;
+    });
   };
 
   const getShowMoreText = (options: string[], section: string) => {
@@ -763,7 +795,17 @@ const SpiritualFilterSidebar = memo(() => {
         </div>
 
         {/* Saved Filters - Collapsible */}
-        {(localStorage.getItem('spiritualFiltersLatest') || savedFilters.length > 0) && (
+        {((() => {
+          const latestSearch = localStorage.getItem('spiritualFiltersLatest');
+          if (!latestSearch) return savedFilters.length > 0;
+          
+          try {
+            const parsedLatest = JSON.parse(latestSearch);
+            return hasActiveFilterSelections(parsedLatest) || savedFilters.length > 0;
+          } catch {
+            return savedFilters.length > 0;
+          }
+        })()) && (
           <Collapsible 
             open={savedFiltersOpen} 
             onOpenChange={setSavedFiltersOpen}
@@ -774,14 +816,34 @@ const SpiritualFilterSidebar = memo(() => {
                 variant="outline"
                 className="flex items-center justify-between w-full p-2 h-auto text-sm font-medium text-gray-700 border border-gray-200 hover:bg-gray-100 hover:border-gray-300 hover:text-gray-800"
               >
-                <span>Saved Filters ({savedFilters.length + (localStorage.getItem('spiritualFiltersLatest') ? 1 : 0)})</span>
+                <span>Saved Filters ({savedFilters.length + ((() => {
+                  const latestSearch = localStorage.getItem('spiritualFiltersLatest');
+                  if (!latestSearch) return 0;
+                  
+                  try {
+                    const parsedLatest = JSON.parse(latestSearch);
+                    return hasActiveFilterSelections(parsedLatest) ? 1 : 0;
+                  } catch {
+                    return 0;
+                  }
+                })())})</span>
                 {savedFiltersOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
               </Button>
             </CollapsibleTrigger>
             <CollapsibleContent className="mt-2">
               <div className="space-y-2">
                 {/* Latest Search Option */}
-                {localStorage.getItem('spiritualFiltersLatest') && (
+                {(() => {
+                  const latestSearch = localStorage.getItem('spiritualFiltersLatest');
+                  if (!latestSearch) return false;
+                  
+                  try {
+                    const parsedLatest = JSON.parse(latestSearch);
+                    return hasActiveFilterSelections(parsedLatest);
+                  } catch {
+                    return false;
+                  }
+                })() && (
                   <div className={`border rounded-md transition-all ${
                     currentLoadedFilterId === 'latest' 
                       ? 'bg-green-50 border-green-200' 
