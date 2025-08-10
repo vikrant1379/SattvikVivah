@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -158,7 +157,7 @@ function LoginOptions() {
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent focus:ring-0 focus:ring-offset-0 focus:outline-none"
                             onClick={() => setShowPassword(!showPassword)}
                           >
                             {showPassword ? (
@@ -233,7 +232,7 @@ function LoginOptions() {
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent focus:ring-0 focus:ring-offset-0 focus:outline-none"
                             onClick={() => setShowPassword(!showPassword)}
                           >
                             {showPassword ? (
@@ -261,7 +260,7 @@ function LoginOptions() {
           </TabsContent>
         </Tabs>
 
-        
+
       </CardContent>
     </Card>
   );
