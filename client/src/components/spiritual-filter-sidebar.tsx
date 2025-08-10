@@ -885,11 +885,11 @@ const SpiritualFilterSidebar = memo(() => {
                 variant="outline"
                 size="sm"
                 onClick={clearFilters}
-                className="flex items-center justify-center gap-2 text-red-600 text-xs font-medium hover:bg-red-50 hover:text-red-700 border-red-200 px-3 py-2 h-8 rounded-lg bg-white shadow-sm transition-all duration-200 hover:shadow-md"
+                className="flex items-center justify-center gap-2 text-red-600 text-xs font-medium hover:bg-red-600 hover:text-white border-red-300 hover:border-red-600 px-3 py-2 h-8 rounded-lg bg-white shadow-sm transition-all duration-200 hover:shadow-md"
                 title="Clear All Filters"
               >
                 <X className="w-3.5 h-3.5" />
-                <span>Clear</span>
+                <span>Clear All</span>
               </Button>
             ) : (
               <div className="flex items-center justify-center px-3 py-2 h-8 bg-gray-50 border border-gray-100 rounded-lg">

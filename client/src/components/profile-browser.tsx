@@ -111,6 +111,11 @@ const ProfileBrowser = memo(() => {
     });
   }, []);
 
+  const clearQuickFilters = useCallback(() => {
+    setSearchQuery("");
+    setActiveQuickFilters(new Set());
+  }, []);
+
   const clearAllFilters = useCallback(() => {
     setSearchQuery("");
     setActiveQuickFilters(new Set());
@@ -232,14 +237,30 @@ const ProfileBrowser = memo(() => {
                   </Badge>
                 ))}
 
-                {hasActiveFilters && (
+                {/* Quick Filters Clear Button */}
+                {(searchQuery || activeQuickFilters.size > 0) && (
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={clearAllFilters}
-                    className="text-gray-500 hover:text-red-600 hover:bg-red-50 ml-2"
+                    onClick={clearQuickFilters}
+                    className="text-orange-600 hover:text-orange-700 hover:bg-orange-50 ml-1 text-xs font-medium transition-all duration-200"
+                    title="Clear quick filters only"
                   >
-                    <X className="w-4 h-4 mr-1" />
+                    <X className="w-3.5 h-3.5 mr-1" />
+                    Clear Quick
+                  </Button>
+                )}
+
+                {/* Clear All Filters Button */}
+                {hasActiveFilters && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={clearAllFilters}
+                    className="text-red-600 hover:text-white hover:bg-red-600 border-red-300 hover:border-red-600 ml-2 font-medium transition-all duration-200 shadow-sm hover:shadow-md"
+                    title="Clear all filters including sidebar filters"
+                  >
+                    <X className="w-4 h-4 mr-1.5" />
                     Clear All
                   </Button>
                 )}
@@ -337,9 +358,10 @@ const ProfileBrowser = memo(() => {
                 </p>
                 <Button 
                   onClick={clearAllFilters}
-                  className="bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300"
+                  className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 font-semibold px-6 py-3 text-base"
                 >
-                  {hasActiveFilters ? "Clear All Filters" : "Reset Search"}
+                  <X className="w-5 h-5 mr-2" />
+                  {hasActiveFilters ? "🔄 Clear All Filters" : "🔍 Reset Search"}
                 </Button>
               </div>
             </div>
