@@ -8,11 +8,13 @@ import { Badge } from "@/components/ui/badge";
 import LoginOptions from "./login-options";
 import SignupOptions from "./signup-options";
 import { useAuth } from "@/hooks/use-auth";
+import { authService } from "@/services/auth-service"; // Assuming authService is imported from here
 
 const Header = memo(() => {
   const [location] = useLocation();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isSignupOpen, setIsSignupOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Added for logout functionality
 
   const { isAuthenticated, user, logout } = useAuth();
 
@@ -28,6 +30,7 @@ const Header = memo(() => {
 
   const handleLogout = async () => {
     await logout();
+    setIsLoggedIn(false); // Update local state after logout
   };
 
   // Mock membership data - in real app this would come from user profile
