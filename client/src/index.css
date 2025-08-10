@@ -31,6 +31,33 @@ input:focus {
   background-color: hsl(var(--background)) !important;
 }
 
+/* Form validation error messages styling */
+[data-form-message] {
+  color: #dc2626 !important; /* Red color for errors */
+  font-style: italic !important;
+  font-size: 0.875rem !important; /* 14px */
+  font-weight: 400 !important;
+  margin-top: 0.25rem !important;
+  line-height: 1.25 !important;
+}
+
+/* Alternative selector for form error messages */
+.text-destructive {
+  color: #dc2626 !important;
+  font-style: italic !important;
+  font-size: 0.875rem !important;
+  font-weight: 400 !important;
+}
+
+/* Ensure form message components have proper styling */
+[role="alert"] {
+  color: #dc2626 !important;
+  font-style: italic !important;
+  font-size: 0.875rem !important;
+  font-weight: 400 !important;
+  margin-top: 0.25rem !important;
+}
+
 /* Fix select trigger styling to prevent blue background */
 [data-radix-select-trigger] > span {
   background-color: transparent !important;
