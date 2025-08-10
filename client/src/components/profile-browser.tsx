@@ -25,6 +25,24 @@ const ProfileBrowser = memo(() => {
   // Safely get spiritual context
   const { searchResults, isSearching, clearSearch, filters: contextFilters, setFilters, allProfiles } = useSpiritualContext(); // Added allProfiles here
 
+  // Filter profiles based on search query only (quick filters are handled by spiritual context)
+  const filteredProfiles = useMemo(() => {
+    let filtered = [...searchResults];
+
+    // Apply search query filter (name or ID)
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      filtered = filtered.filter(profile => {
+        const matchesId = profile.id.toLowerCase().includes(query);
+        const matchesName = profile.name?.toLowerCase().includes(query) || false;
+        const matchesUsername = profile.username?.toLowerCase().includes(query) || false;
+        return matchesId || matchesName || matchesUsername;
+      });
+    }
+
+    return filtered;
+  }, [searchResults, searchQuery]);
+
   // Quick filter definitions
   const quickFilters: QuickFilter[] = useMemo(() => {
     // Always use filteredProfiles for accurate counts based on current view
@@ -65,25 +83,7 @@ const ProfileBrowser = memo(() => {
         active: contextFilters.withPhoto || false
       }
     ];
-  }, [filteredProfiles, contextFilters])
-
-  // Filter profiles based on search query only (quick filters are handled by spiritual context)
-  const filteredProfiles = useMemo(() => {
-    let filtered = [...searchResults];
-
-    // Apply search query filter (name or ID)
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase().trim();
-      filtered = filtered.filter(profile => {
-        const matchesId = profile.id.toLowerCase().includes(query);
-        const matchesName = profile.name?.toLowerCase().includes(query) || false;
-        const matchesUsername = profile.username?.toLowerCase().includes(query) || false;
-        return matchesId || matchesName || matchesUsername;
-      });
-    }
-
-    return filtered;
-  }, [searchResults, searchQuery]);
+  }, [filteredProfiles, contextFilters]);
 
   const toggleQuickFilter = useCallback((filterId: string) => {
     // All quick filters are handled through the spiritual context
