@@ -102,23 +102,23 @@ const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
               variant="ghost"
               size="sm"
               onClick={handleBackToProfiles}
-              className="flex items-center space-x-2 text-gray-600 hover:text-orange-600 hover:bg-orange-50 px-4 py-2 rounded-lg transition-all duration-200"
+              className="flex items-center space-x-2 text-gray-600 hover:text-orange-600 hover:bg-orange-50 px-3 py-2 rounded-lg transition-all duration-200"
             >
-              <span>← Back to Profiles</span>
+              <span>Back to Profiles</span>
             </Button>
-            <div className="h-6 border-l border-gray-300"></div>
+            <div className="hidden sm:block h-6 border-l border-gray-300"></div>
             <Button
               variant="ghost"
               size="sm"
               onClick={handleBackToHome}
-              className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-lg transition-all duration-200"
+              className="hidden sm:flex items-center space-x-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-lg transition-all duration-200"
             >
               <Home className="w-4 h-4" />
               <span>Home</span>
             </Button>
           </div>
-          <div className="text-sm text-gray-600">
-            Profile ID: {profile.id.toUpperCase()}
+          <div className="text-xs sm:text-sm text-gray-600 font-medium">
+            ID: {profile.id.toUpperCase()}
           </div>
         </div>
       </div>
@@ -171,22 +171,22 @@ const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
               </div>
 
               {/* Action Buttons */}
-              <div className="space-y-4">
-                <Button className="w-full h-12 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 shadow-lg hover:shadow-xl transition-all duration-300 font-semibold text-base">
-                  <Heart className="w-5 h-5 mr-2" />
-                  💕 Express Interest
+              <div className="space-y-3">
+                <Button className="w-full h-11 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 shadow-md hover:shadow-lg transition-all duration-300 font-semibold text-sm">
+                  <Heart className="w-4 h-4 mr-2" />
+                  Express Interest
                 </Button>
-                <Button variant="outline" className="w-full h-12 border-2 border-purple-300 text-purple-700 hover:bg-purple-50 hover:border-purple-400 shadow-md hover:shadow-lg transition-all duration-300 font-semibold">
-                  <Heart className="w-5 h-5 mr-2 fill-current" />
-                  ⭐ Super Interest
+                <Button variant="outline" className="w-full h-11 border border-purple-300 text-purple-700 hover:bg-purple-50 hover:border-purple-400 shadow-sm hover:shadow-md transition-all duration-300 font-semibold text-sm">
+                  <Heart className="w-4 h-4 mr-2 fill-current" />
+                  Super Interest
                 </Button>
-                <Button variant="outline" className="w-full h-12 border-2 border-blue-300 text-blue-700 hover:bg-blue-50 hover:border-blue-400 shadow-md hover:shadow-lg transition-all duration-300 font-semibold">
-                  <MessageCircle className="w-5 h-5 mr-2" />
-                  💬 Send Message
+                <Button variant="outline" className="w-full h-11 border border-blue-300 text-blue-700 hover:bg-blue-50 hover:border-blue-400 shadow-sm hover:shadow-md transition-all duration-300 font-semibold text-sm">
+                  <MessageCircle className="w-4 h-4 mr-2" />
+                  Send Message
                 </Button>
-                <Button variant="outline" className="w-full h-12 border-2 border-amber-300 text-amber-700 hover:bg-amber-50 hover:border-amber-400 shadow-md hover:shadow-lg transition-all duration-300 font-semibold">
-                  <Star className="w-5 h-5 mr-2" />
-                  🌟 Add to Shortlist
+                <Button variant="outline" className="w-full h-11 border border-amber-300 text-amber-700 hover:bg-amber-50 hover:border-amber-400 shadow-sm hover:shadow-md transition-all duration-300 font-semibold text-sm">
+                  <Star className="w-4 h-4 mr-2" />
+                  Add to Shortlist
                 </Button>
               </div>
             </div>
@@ -199,27 +199,38 @@ const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
               <CardHeader className="pb-4">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-3">
-                      <CardTitle className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                        {profile.name}, {profile.age}
-                      </CardTitle>
-                      {profile.verified && (
-                        <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-3 py-1 text-sm font-semibold shadow-md">
-                          ✓ Verified Profile
-                        </Badge>
-                      )}
+                    <div className="flex items-center gap-3 mb-3 flex-wrap">
+                      <div className="flex items-center gap-2">
+                        <CardTitle className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent break-words">
+                          {profile.name}, {profile.age}
+                        </CardTitle>
+                        {profile.verified && (
+                          <svg
+                            className="w-6 h-6 flex-shrink-0"
+                            viewBox="0 0 24 24"
+                            aria-label="Verified account"
+                          >
+                            <g>
+                              <path
+                                d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s2.52 1.26 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26 4.8-5.23 1.47 1.36-6.2 6.77z"
+                                fill="#1d9bf0"
+                              />
+                            </g>
+                          </svg>
+                        )}
+                      </div>
                     </div>
-                    <div className="flex items-center space-x-3 text-gray-600 bg-white/60 backdrop-blur-sm rounded-lg px-4 py-2 border border-gray-100">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-gray-600 bg-white/60 backdrop-blur-sm rounded-lg px-4 py-3 border border-gray-100">
                       <div className="flex items-center">
                         <MapPin className="w-4 h-4 mr-2 text-orange-500" />
-                        <span className="font-medium">{profile.location || `${profile.city}, ${profile.state}`}</span>
+                        <span className="font-medium text-sm sm:text-base">{profile.location || `${profile.city}, ${profile.state}`}</span>
                       </div>
-                      <span className="text-gray-400">•</span>
-                      <span className="font-medium">{formatHeight(profile.height)}</span>
+                      <span className="hidden sm:inline text-gray-400">•</span>
+                      <span className="font-medium text-sm sm:text-base">{formatHeight(profile.height)}</span>
                       {profile.caste && (
                         <>
-                          <span className="text-gray-400">•</span>
-                          <span className="font-medium">{profile.caste}</span>
+                          <span className="hidden sm:inline text-gray-400">•</span>
+                          <span className="font-medium text-sm sm:text-base">{profile.caste}</span>
                         </>
                       )}
                     </div>
@@ -231,35 +242,35 @@ const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
                   <p className="text-gray-700 italic mb-4">"{profile.bio}"</p>
                 )}
                 
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="flex items-center p-3 bg-white/80 rounded-lg border border-gray-100">
-                    <Briefcase className="w-6 h-6 mr-3 text-blue-500" />
-                    <div>
-                      <p className="font-semibold text-gray-900">{profile.profession}</p>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="flex items-center p-4 bg-white/80 rounded-lg border border-gray-100 shadow-sm">
+                    <Briefcase className="w-5 h-5 mr-3 text-blue-500 flex-shrink-0" />
+                    <div className="min-w-0">
+                      <p className="font-semibold text-gray-900 text-sm leading-tight truncate">{profile.profession}</p>
                       {profile.annualIncome && (
-                        <p className="text-sm text-green-600 font-medium">{formatAnnualIncome(profile.annualIncome)}</p>
+                        <p className="text-xs text-green-600 font-medium mt-1">{formatAnnualIncome(profile.annualIncome)}</p>
                       )}
                     </div>
                   </div>
                   
-                  <div className="flex items-center p-3 bg-white/80 rounded-lg border border-gray-100">
-                    <GraduationCap className="w-6 h-6 mr-3 text-purple-500" />
-                    <div>
-                      <p className="font-semibold text-gray-900">{profile.education}</p>
+                  <div className="flex items-center p-4 bg-white/80 rounded-lg border border-gray-100 shadow-sm">
+                    <GraduationCap className="w-5 h-5 mr-3 text-purple-500 flex-shrink-0" />
+                    <div className="min-w-0">
+                      <p className="font-semibold text-gray-900 text-sm leading-tight truncate">{profile.education}</p>
                     </div>
                   </div>
                   
-                  <div className="flex items-center p-3 bg-white/80 rounded-lg border border-gray-100">
-                    <GiBigDiamondRing className="w-6 h-6 mr-3 text-pink-500" />
-                    <div>
-                      <p className="font-semibold text-gray-900">{profile.maritalStatus}</p>
+                  <div className="flex items-center p-4 bg-white/80 rounded-lg border border-gray-100 shadow-sm">
+                    <GiBigDiamondRing className="w-5 h-5 mr-3 text-pink-500 flex-shrink-0" />
+                    <div className="min-w-0">
+                      <p className="font-semibold text-gray-900 text-sm leading-tight">{profile.maritalStatus}</p>
                     </div>
                   </div>
                   
-                  <div className="flex items-center p-3 bg-white/80 rounded-lg border border-gray-100">
-                    <Calendar className="w-6 h-6 mr-3 text-orange-500" />
-                    <div>
-                      <p className="font-semibold text-gray-900">{profile.age} years old</p>
+                  <div className="flex items-center p-4 bg-white/80 rounded-lg border border-gray-100 shadow-sm">
+                    <Calendar className="w-5 h-5 mr-3 text-orange-500 flex-shrink-0" />
+                    <div className="min-w-0">
+                      <p className="font-semibold text-gray-900 text-sm leading-tight">{profile.age} years old</p>
                     </div>
                   </div>
                 </div>
@@ -267,19 +278,19 @@ const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
             </Card>
 
             {/* Contact Information */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Contact Information</CardTitle>
+            <Card className="shadow-sm border border-gray-100">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg font-semibold text-gray-900">Contact Information</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="flex items-center">
-                    <Phone className="w-5 h-5 mr-3 text-gray-400" />
-                    <span className="text-gray-600">Phone number visible after connection</span>
+                  <div className="flex items-center p-3 bg-gray-50 rounded-lg">
+                    <Phone className="w-4 h-4 mr-3 text-gray-400" />
+                    <span className="text-gray-600 text-sm">Phone number visible after connection</span>
                   </div>
-                  <div className="flex items-center">
-                    <Mail className="w-5 h-5 mr-3 text-gray-400" />
-                    <span className="text-gray-600">Email visible after connection</span>
+                  <div className="flex items-center p-3 bg-gray-50 rounded-lg">
+                    <Mail className="w-4 h-4 mr-3 text-gray-400" />
+                    <span className="text-gray-600 text-sm">Email visible after connection</span>
                   </div>
                 </div>
               </CardContent>
@@ -287,9 +298,9 @@ const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
 
             {/* Spiritual Information */}
             {(profile.spiritualPractices || profile.sacredTexts || profile.spiritualGoals) && (
-              <Card className="shadow-lg border-0 bg-gradient-to-br from-orange-50 to-rose-50">
-                <CardHeader>
-                  <CardTitle className="text-2xl font-bold text-orange-800 flex items-center">
+              <Card className="shadow-sm border-0 bg-gradient-to-br from-orange-50 to-rose-50">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg font-semibold text-orange-800 flex items-center">
                     <span className="mr-2">🕉️</span>
                     Spiritual Journey
                   </CardTitle>
@@ -297,10 +308,10 @@ const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
                 <CardContent className="space-y-4">
                   {profile.spiritualPractices && profile.spiritualPractices.length > 0 && (
                     <div>
-                      <h4 className="font-semibold mb-2">Spiritual Practices</h4>
+                      <h4 className="font-medium mb-2 text-sm text-gray-700">Spiritual Practices</h4>
                       <div className="flex flex-wrap gap-2">
                         {profile.spiritualPractices.map((practice, index) => (
-                          <Badge key={index} variant="outline" className="bg-orange-50 border-orange-200">
+                          <Badge key={index} variant="outline" className="bg-orange-50 border-orange-200 text-xs">
                             {practice}
                           </Badge>
                         ))}
@@ -310,10 +321,10 @@ const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
 
                   {profile.sacredTexts && profile.sacredTexts.length > 0 && (
                     <div>
-                      <h4 className="font-semibold mb-2">Sacred Texts</h4>
+                      <h4 className="font-medium mb-2 text-sm text-gray-700">Sacred Texts</h4>
                       <div className="flex flex-wrap gap-2">
                         {profile.sacredTexts.map((text, index) => (
-                          <Badge key={index} variant="outline" className="bg-blue-50 border-blue-200">
+                          <Badge key={index} variant="outline" className="bg-blue-50 border-blue-200 text-xs">
                             {text}
                           </Badge>
                         ))}
@@ -323,10 +334,10 @@ const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
 
                   {profile.spiritualGoals && profile.spiritualGoals.length > 0 && (
                     <div>
-                      <h4 className="font-semibold mb-2">Spiritual Goals</h4>
+                      <h4 className="font-medium mb-2 text-sm text-gray-700">Spiritual Goals</h4>
                       <div className="flex flex-wrap gap-2">
                         {profile.spiritualGoals.map((goal, index) => (
-                          <Badge key={index} variant="outline" className="bg-green-50 border-green-200">
+                          <Badge key={index} variant="outline" className="bg-green-50 border-green-200 text-xs">
                             {goal}
                           </Badge>
                         ))}
@@ -338,12 +349,15 @@ const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
             )}
 
             {/* Family Information */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Family Information</CardTitle>
+            <Card className="shadow-sm border border-gray-100">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg font-semibold text-gray-900">Family Information</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600">Family details available after connection</p>
+                <div className="flex items-center p-3 bg-gray-50 rounded-lg">
+                  <Users className="w-4 h-4 mr-3 text-gray-400" />
+                  <span className="text-gray-600 text-sm">Family details available after connection</span>
+                </div>
               </CardContent>
             </Card>
           </div>
