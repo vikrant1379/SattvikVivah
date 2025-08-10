@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -137,9 +136,8 @@ function SignupOptions() {
         <p className="text-muted-foreground">Create your sacred profile to find your dharmic partner</p>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
-            <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSignup)} className="space-y-4">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSignup)} className="space-y-6">
                 {/* Name Fields */}
                 {/* Name Fields */}
               <div className="grid grid-cols-2 gap-4">
@@ -628,15 +626,14 @@ function SignupOptions() {
               />
 
               <Button
-                type="submit"
-                className="w-full bg-saffron hover:bg-saffron/90"
-                disabled={form.formState.isSubmitting}
-              >
-                {form.formState.isSubmitting ? "Creating Account..." : "Create Account"}
-              </Button>
-              </form>
-          </Form>
-        </div>
+              type="submit"
+              className="w-full bg-saffron hover:bg-saffron/90"
+              disabled={form.formState.isSubmitting}
+            >
+              {form.formState.isSubmitting ? "Creating Account..." : "Create Account"}
+            </Button>
+          </form>
+        </Form>
       </CardContent>
     </Card>
   );
