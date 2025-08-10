@@ -14,11 +14,11 @@ import { useLocation } from "wouter";
 import { SmartDateSelector } from "./smart-date-selector";
 
 // Import centralized data
-import { 
-  religionOptions, 
-  ethnicityOptions, 
+import {
+  religionOptions,
+  ethnicityOptions,
   annualIncomeOptions,
-  maritalStatusOptions, 
+  maritalStatusOptions,
   heightOptions,
   residentialStatusOptions,
   physicalStatusOptions,
@@ -150,16 +150,16 @@ function SignupOptions() {
 
   const handleSignup = async (data: SignupForm) => {
     clearError();
-    
+
     // Combine separate date fields into dateOfBirth
     const { dobDay, dobMonth, dobYear, ...restData } = data;
     const dateOfBirth = `${dobYear}-${dobMonth.padStart(2, '0')}-${dobDay.padStart(2, '0')}`;
-    
+
     const signupData = {
       ...restData,
       dateOfBirth
     };
-    
+
     const success = await signup(signupData);
 
     if (success) {
@@ -185,38 +185,45 @@ function SignupOptions() {
     return digits.slice(0, 10);
   };
 
-  // Watch for country changes to update available states
-  const selectedCountry = form.watch('country');
-  const selectedState = form.watch('state');
+  // Watch for country and state changes
+  const selectedCountry = form.watch("country");
+  const selectedState = form.watch("state");
 
-  // Get available states for selected country
+  // Get available states based on selected country
   const availableStates = React.useMemo(() => {
-    if (!selectedCountry) return [];
-    const states = statesByCountry[selectedCountry] || [];
-    return [...states, "Other"];
+    if (!selectedCountry || selectedCountry === "Other") return [];
+    // Map from country display name to country code for data lookup
+    const countryCodeMap: Record<string, string> = {
+      "India": "IN",
+      "USA": "US",
+      "UK": "GB",
+      "Canada": "CA",
+      "Australia": "AU"
+    };
+    const countryCode = countryCodeMap[selectedCountry] || selectedCountry;
+    return statesByCountry[countryCode] || [];
   }, [selectedCountry]);
 
-  // Get available cities for selected state
+  // Get available cities based on selected state
   const availableCities = React.useMemo(() => {
-    if (!selectedState || selectedState === "Other") return ["Other"];
-    const cities = citiesByState[selectedState] || [];
-    return [...cities, "Other"];
+    if (!selectedState || selectedState === "Other") return [];
+    return citiesByState[selectedState] || [];
   }, [selectedState]);
 
-  // Reset state when country changes
+  // Reset dependent fields when parent changes
   React.useEffect(() => {
     if (selectedCountry) {
-      form.setValue('state', '');
-      form.setValue('city', '');
+      form.setValue("state", "");
+      form.setValue("city", "");
     }
   }, [selectedCountry, form]);
 
-  // Reset city when state changes
   React.useEffect(() => {
     if (selectedState) {
-      form.setValue('city', '');
+      form.setValue("city", "");
     }
   }, [selectedState, form]);
+
 
   return (
     <Card className="w-full max-w-2xl mx-auto">
@@ -567,10 +574,10 @@ function SignupOptions() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Country</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value || ""}>
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select" />
+                            <SelectValue placeholder="Select Country" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -594,7 +601,7 @@ function SignupOptions() {
                       <FormLabel>State</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value || ""}>
                         <FormControl>
-                          <SelectTrigger>
+                          <SelectTrigger disabled={!selectedCountry}>
                             <SelectValue placeholder={selectedCountry ? "Select State" : "Select Country First"} />
                           </SelectTrigger>
                         </FormControl>
@@ -623,8 +630,8 @@ function SignupOptions() {
                       <FormLabel>City</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value || ""}>
                         <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder={selectedState && selectedState !== "Other" ? "Select City" : "Select State First"} />
+                          <SelectTrigger disabled={!selectedState}>
+                            <SelectValue placeholder={selectedState ? "Select City" : "Select State First"} />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
