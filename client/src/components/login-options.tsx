@@ -201,7 +201,7 @@ function LoginOptions() {
                           <Input
                             type="tel"
                             placeholder="9876543210"
-                            className="border-0 rounded-none focus:ring-0 focus:ring-offset-0 bg-background"
+                            className="border-0 rounded-none focus:ring-0 focus:ring-offset-0"
                             {...field}
                             onChange={(e) => {
                               const formatted = formatMobileNumber(e.target.value);
