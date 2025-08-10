@@ -9,6 +9,8 @@ import SuccessStoriesCarousel from "@/components/success-stories-carousel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import LoginOptions from "@/components/login-options";
 import { Heart, Search, Users, Star, Shield, CheckCircle, Award, Lock, Crown, Phone } from "lucide-react";
 
 const Home = memo(() => {
@@ -25,8 +27,17 @@ const Home = memo(() => {
     }
   }, []);
 
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
   const handleFindMatches = () => {
-    setLocation('/profiles');
+    // Check if user is authenticated (replace with actual auth check)
+    const isAuthenticated = false; // This should come from auth context
+    
+    if (isAuthenticated) {
+      setLocation('/profiles');
+    } else {
+      setIsLoginModalOpen(true);
+    }
   };
 
   const trustIndicators = [
@@ -169,7 +180,7 @@ const Home = memo(() => {
                   <Button 
                     variant="outline"
                     size="lg"
-                    className="border-orange-300 text-orange-700 hover:bg-orange-50 px-8 py-4 text-lg font-semibold"
+                    className="border-orange-300 text-orange-700 hover:bg-orange-50 hover:border-orange-400 px-8 py-4 text-lg font-semibold transition-all duration-300"
                   >
                     <Phone className="w-5 h-5 mr-2" />
                     Speak to Expert
@@ -283,13 +294,7 @@ const Home = memo(() => {
                     </div>
                   </div>
 
-                  <Button 
-                    onClick={handleFindMatches}
-                    className="w-full bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
-                  >
-                    <Search className="w-5 h-5 mr-2" />
-                    Find Compatible Matches
-                  </Button>
+                  
                 </CardContent>
               </Card>
             </div>
@@ -400,6 +405,18 @@ const Home = memo(() => {
       </main>
       
       <Footer />
+
+      {/* Login Modal */}
+      <Dialog open={isLoginModalOpen} onOpenChange={setIsLoginModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center text-2xl font-bold text-orange-800">
+              Begin Your Sacred Journey
+            </DialogTitle>
+          </DialogHeader>
+          <LoginOptions />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 });
