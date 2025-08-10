@@ -199,11 +199,10 @@ const ProfileBrowser = memo(() => {
                 variant="ghost"
                 size="sm"
                 onClick={handleBackToHome}
-                className="flex items-center space-x-2 text-gray-600 hover:text-orange-600"
+                className="flex items-center space-x-2 text-gray-600 hover:text-orange-600 hover:bg-orange-50 px-4 py-2 rounded-lg transition-all duration-200"
               >
-                <ChevronLeft className="w-4 h-4" />
                 <Home className="w-4 h-4" />
-                <span>Back to Home</span>
+                <span>← Back to Home</span>
               </Button>
               <div className="h-6 border-l border-gray-300"></div>
               <h1 className="text-xl font-semibold text-gray-800">Profile Browser</h1>
