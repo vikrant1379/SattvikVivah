@@ -43,10 +43,10 @@ const ProfileBrowser = memo(() => {
     return filtered;
   }, [searchResults, searchQuery]);
 
-  // Quick filter definitions
+  // Quick filter definitions - counts based on searchResults (after main filters, before search query)
   const quickFilters: QuickFilter[] = useMemo(() => {
-    // Always use filteredProfiles for accurate counts based on current view
-    const countSource = filteredProfiles;
+    // Use searchResults for counts (these are results after main spiritual context filters)
+    const countSource = searchResults;
 
     return [
       {
@@ -83,7 +83,7 @@ const ProfileBrowser = memo(() => {
         active: contextFilters.withPhoto || false
       }
     ];
-  }, [filteredProfiles, contextFilters]);
+  }, [searchResults, contextFilters]);
 
   const toggleQuickFilter = useCallback((filterId: string) => {
     // All quick filters are handled through the spiritual context
@@ -117,7 +117,7 @@ const ProfileBrowser = memo(() => {
   const clearQuickFilters = useCallback(() => {
     setSearchQuery("");
     setActiveQuickFilters(new Set()); // Clear local state
-    // Clear all quick filters from spiritual context
+    // Clear all quick filters from spiritual context while preserving other filters
     setFilters({
       ...contextFilters,
       verified: false,
@@ -240,6 +240,18 @@ const ProfileBrowser = memo(() => {
                   </Badge>
                 ))}
 
+                {/* Clear Quick Filters button if any are active */}
+                {quickFilters.some(f => f.active) && (
+                  <Button
+                    variant="ghost" 
+                    size="sm"
+                    onClick={clearQuickFilters}
+                    className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 ml-2"
+                  >
+                    <X className="w-4 h-4 mr-1" />
+                    Clear Quick Filters
+                  </Button>
+                )}
                 </div>
             </div>
           </div>

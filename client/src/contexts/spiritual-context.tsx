@@ -153,7 +153,7 @@ const filterProfiles = (profiles: UserProfile[], filters: ProfileFilter): UserPr
     if (filters.mangalik && filters.mangalik !== "Doesn't Matter" && profile.mangalik !== filters.mangalik) return false;
     if (filters.residentialStatus && filters.residentialStatus !== "Doesn't Matter" && profile.residentialStatus !== filters.residentialStatus) return false;
 
-    // Verification and photo filters
+    // Quick Filter verification and photo filters
     if (filters.verified && !profile.verified) return false;
     if (filters.withPhoto && !(profile.withPhoto || profile.profilePicture || profile.profileImage)) return false;
     if (filters.recentlyJoined) {
