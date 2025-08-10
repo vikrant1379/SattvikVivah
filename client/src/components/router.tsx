@@ -1,8 +1,10 @@
+
 import { Route, Switch, useLocation } from "wouter";
 import { Suspense, lazy, useEffect, memo, useMemo, useRef } from "react";
 import Home from "@/pages/home";
 import NotFound from "@/pages/not-found";
 import ProfileDetailPage from "@/components/profile-detail-page";
+import ProfileBrowser from "@/components/profile-browser";
 
 // Lazy load heavy components
 const ProfileDetailModal = lazy(() => import("@/components/profile-detail-modal"));
@@ -37,20 +39,23 @@ const AppRouter = memo(() => {
       </div>
     }>
       <div className="router-container">
-        {/* Always render home but control visibility */}
-        <div style={{ display: location === '/' ? 'block' : 'none' }}>
-          {homeInstance}
-        </div>
-        
-        {/* Other routes */}
-        {location !== '/' && (
-          <Switch>
-            <Route path="/profile/:id">
-              {(params) => <ProfileDetailPage profileId={params.id} />}
-            </Route>
-            <Route component={NotFound} />
-          </Switch>
-        )}
+        <Switch>
+          <Route path="/" exact>
+            {homeInstance}
+          </Route>
+          
+          <Route path="/profiles" exact>
+            <div className="min-h-screen flex flex-col">
+              <ProfileBrowser />
+            </div>
+          </Route>
+          
+          <Route path="/profile/:id">
+            {(params) => <ProfileDetailPage profileId={params.id} />}
+          </Route>
+          
+          <Route component={NotFound} />
+        </Switch>
       </div>
     </Suspense>
   );

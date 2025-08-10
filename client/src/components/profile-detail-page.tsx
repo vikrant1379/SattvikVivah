@@ -1,71 +1,52 @@
-import { memo, useState } from "react";
-import { useParams, useLocation } from "wouter";
+
+import { memo, useCallback, useMemo } from "react";
+import { useLocation } from "wouter";
+import { useSpiritualContext } from "@/contexts/spiritual-context";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import {
-  Heart,
-  MessageCircle,
-  Star,
+  ChevronLeft,
   MapPin,
   Briefcase,
   GraduationCap,
-  User,
-  ChevronLeft,
-  Globe,
-  BookOpen,
-  Banknote,
-  Home,
+  Heart,
+  MessageCircle,
+  Star,
   Users,
   Calendar,
-  Award,
+  Phone,
+  Mail,
   AlertCircle,
-  Verified,
-  Shield,
-  Camera
+  Home,
+  ArrowLeft
 } from "lucide-react";
 import { GiBigDiamondRing } from "react-icons/gi";
 import { formatAnnualIncome } from "../data/annual-income";
-import { mockProfiles } from "../data/mock-profiles";
 import type { UserProfile } from "@shared/schema";
 
+interface ProfileDetailPageProps {
+  profileId: string;
+}
 
-const ProfileDetailPage = memo(() => {
-  const params = useParams<{ profileId?: string }>();
-  const [location, setLocation] = useLocation();
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [activeTab, setActiveTab] = useState("about");
+const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
+  const [, setLocation] = useLocation();
+  const { allProfiles } = useSpiritualContext();
 
-  const handleBackToHome = () => {
-    setLocation('/');
-  };
+  // Find the specific profile
+  const profile = useMemo(() => {
+    return allProfiles.find(p => p.id === profileId);
+  }, [allProfiles, profileId]);
 
-  // Extract profileId
-  let profileId = params.profileId;
-  if (!profileId) {
-    const pathMatch = location.match(/\/profile\/([^\/]+)/);
-    if (pathMatch) {
-      profileId = pathMatch[1];
-    } else {
-      const pathSegments = location.split('/');
-      const profileIndex = pathSegments.indexOf('profile');
-      if (profileIndex >= 0 && pathSegments[profileIndex + 1]) {
-        profileId = pathSegments[profileIndex + 1];
-      }
-    }
-  }
+  const handleBackToProfiles = useCallback(() => {
+    setLocation("/profiles");
+  }, [setLocation]);
 
-  const searchId = profileId ? String(profileId).trim() : "";
-  const profile = mockProfiles.find(p => String(p.id) === searchId);
+  const handleBackToHome = useCallback(() => {
+    setLocation("/");
+  }, [setLocation]);
 
   if (!profile) {
     return (
@@ -80,9 +61,16 @@ const ProfileDetailPage = memo(() => {
             <p className="text-sm text-gray-500 mb-6">
               Looking for ID: {profileId}
             </p>
-            <Button onClick={() => setLocation("/")} className="w-full">
-              Browse Profiles
-            </Button>
+            <div className="space-y-3">
+              <Button onClick={handleBackToProfiles} className="w-full">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to Profile Browser
+              </Button>
+              <Button onClick={handleBackToHome} variant="outline" className="w-full">
+                <Home className="w-4 h-4 mr-2" />
+                Go to Home
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -100,46 +88,38 @@ const ProfileDetailPage = memo(() => {
     return height;
   };
 
-  const formatLastSeen = () => {
-    const wasSeenToday = Math.random() > 0.3;
-    if (wasSeenToday) {
-      const hours = Math.floor(Math.random() * 24);
-      const minutes = Math.floor(Math.random() * 60);
-      const period = hours >= 12 ? "PM" : "AM";
-      const displayHours = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours;
-      const displayMinutes = minutes.toString().padStart(2, "0");
-      return `Last seen at ${displayHours}:${displayMinutes} ${period}`;
-    } else {
-      const lastSeenOptions = [
-        "Last seen on 09-Aug-25",
-        "Last seen at 12:43 AM", 
-        "Last seen on 07-Aug-25",
-        "Online now",
-        "Last seen yesterday",
-      ];
-      return lastSeenOptions[Math.floor(Math.random() * lastSeenOptions.length)];
-    }
-  };
-
-  // Mock multiple images for carousel
-  const profileImages = profile.profileImage 
-    ? [profile.profileImage, profile.profileImage, profile.profileImage] 
-    : [];
+  // Mock profile images for carousel
+  const profileImages = [
+    profile.profileImage || profile.profilePicture
+  ].filter(Boolean);
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white shadow-sm border-b sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleBackToHome}
-            className="flex items-center space-x-2"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            <span>Back to Home</span>
-          </Button>
+          <div className="flex items-center space-x-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleBackToProfiles}
+              className="flex items-center space-x-2 text-gray-600 hover:text-orange-600"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to Profiles</span>
+            </Button>
+            <div className="h-6 border-l border-gray-300"></div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleBackToHome}
+              className="flex items-center space-x-2 text-gray-600 hover:text-blue-600"
+            >
+              <Home className="w-4 h-4" />
+              <span>Home</span>
+            </Button>
+          </div>
           <div className="text-sm text-gray-600">
             Profile ID: {profile.id.toUpperCase()}
           </div>
@@ -147,305 +127,220 @@ const ProfileDetailPage = memo(() => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column - Profile Image & Basic Info */}
+      <div className="max-w-6xl mx-auto p-6">
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Left Column - Images */}
           <div className="lg:col-span-1">
-            <Card className="sticky top-24">
-              <CardContent className="p-6">
-                {/* Image Carousel */}
-                <div className="relative mb-6">
-                  {profileImages.length > 0 ? (
-                    <Carousel className="w-full">
-                      <CarouselContent>
-                        {profileImages.map((image, index) => (
-                          <CarouselItem key={index}>
-                            <div className="relative aspect-[3/4] rounded-lg overflow-hidden">
-                              <img
-                                src={image}
-                                alt={`${profile.name} - Photo ${index + 1}`}
-                                className="w-full h-full object-cover"
-                              />
-                              <div className="absolute top-3 right-3 bg-black/60 rounded-md px-2 py-1 flex items-center text-white text-sm">
-                                <Camera className="w-4 h-4 mr-1" />
-                                <span>{index + 1}/{profileImages.length}</span>
-                              </div>
-                            </div>
-                          </CarouselItem>
-                        ))}
-                      </CarouselContent>
-                      {profileImages.length > 1 && (
+            <div className="sticky top-24">
+              {/* Profile Image Carousel */}
+              <div className="mb-6">
+                {profileImages.length > 0 ? (
+                  <Carousel className="w-full">
+                    <CarouselContent>
+                      {profileImages.map((image, index) => (
+                        <CarouselItem key={index}>
+                          <div className="aspect-[3/4] rounded-lg overflow-hidden">
+                            <img
+                              src={image}
+                              alt={`${profile.name} - Image ${index + 1}`}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        </CarouselItem>
+                      ))}
+                    </CarouselContent>
+                    {profileImages.length > 1 && (
+                      <>
+                        <CarouselPrevious className="left-2" />
+                        <CarouselNext className="right-2" />
+                      </>
+                    )}
+                  </Carousel>
+                ) : (
+                  <div className="aspect-[3/4] bg-gradient-to-br from-blue-50 to-indigo-100 rounded-lg flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center mb-4 mx-auto">
+                        <span className="text-2xl font-semibold text-blue-600">
+                          {profile.name.split(" ").map(n => n[0]).join("").toUpperCase()}
+                        </span>
+                      </div>
+                      <p className="text-sm text-blue-600 font-medium">Photo visible on acceptance</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-3">
+                <Button className="w-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600">
+                  <Heart className="w-4 h-4 mr-2" />
+                  Express Interest
+                </Button>
+                <Button variant="outline" className="w-full border-purple-300 text-purple-700 hover:bg-purple-50">
+                  <Heart className="w-4 h-4 mr-2 fill-current" />
+                  Super Interest
+                </Button>
+                <Button variant="outline" className="w-full border-blue-300 text-blue-700 hover:bg-blue-50">
+                  <MessageCircle className="w-4 h-4 mr-2" />
+                  Send Message
+                </Button>
+                <Button variant="outline" className="w-full border-amber-300 text-amber-700 hover:bg-amber-50">
+                  <Star className="w-4 h-4 mr-2" />
+                  Add to Shortlist
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column - Profile Details */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Basic Information */}
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="text-3xl font-bold text-gray-900 mb-2">
+                      {profile.name}, {profile.age}
+                    </CardTitle>
+                    <div className="flex items-center space-x-4 text-gray-600">
+                      <div className="flex items-center">
+                        <MapPin className="w-4 h-4 mr-1" />
+                        <span>{profile.location || `${profile.city}, ${profile.state}`}</span>
+                      </div>
+                      <span>•</span>
+                      <span>{formatHeight(profile.height)}</span>
+                      {profile.caste && (
                         <>
-                          <CarouselPrevious className="left-2" />
-                          <CarouselNext className="right-2" />
+                          <span>•</span>
+                          <span>{profile.caste}</span>
                         </>
                       )}
-                    </Carousel>
-                  ) : (
-                    <div className="aspect-[3/4] bg-gradient-to-br from-blue-50 to-indigo-100 rounded-lg flex items-center justify-center">
-                      <div className="text-center">
-                        <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center mb-4 mx-auto">
-                          <span className="text-2xl font-semibold text-blue-600">
-                            {profile.name.split(" ").map(n => n[0]).join("").toUpperCase()}
-                          </span>
-                        </div>
-                        <p className="text-sm text-blue-600 font-medium">Photo visible on acceptance</p>
-                      </div>
                     </div>
-                  )}
-                </div>
-
-                {/* Name and Verification */}
-                <div className="text-center mb-6">
-                  <div className="flex items-center justify-center mb-2">
-                    <h1 className="text-2xl font-bold text-gray-900 mr-2">
-                      {profile.name}, {profile.age}
-                    </h1>
-                    {profile.verified && (
-                      <div className="flex items-center space-x-1">
-                        <Verified className="w-5 h-5 text-blue-500" />
-                        <Shield className="w-4 h-4 text-green-500" />
-                      </div>
-                    )}
                   </div>
-                  <p className="text-sm text-gray-600 mb-3">{formatLastSeen()}</p>
-
-                  {/* Status Badges */}
-                  <div className="flex justify-center space-x-2 mb-4">
-                    {profile.verified && (
-                      <Badge className="bg-red-500 text-white">Premium</Badge>
-                    )}
-                    <Badge variant="outline" className="border-green-200 text-green-700">
+                  {profile.verified && (
+                    <Badge className="bg-green-100 text-green-800">
                       ✓ Verified
                     </Badge>
-                  </div>
+                  )}
                 </div>
-
-                {/* Quick Info */}
-                <div className="space-y-3 mb-6">
-                  <div className="flex items-center space-x-3">
-                    <MapPin className="w-4 h-4 text-gray-500" />
-                    <span className="text-sm">{profile.location || `${profile.city}, ${profile.state}`}</span>
+              </CardHeader>
+              <CardContent>
+                {profile.bio && (
+                  <p className="text-gray-700 italic mb-4">"{profile.bio}"</p>
+                )}
+                
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="flex items-center">
+                    <Briefcase className="w-5 h-5 mr-3 text-gray-400" />
+                    <div>
+                      <p className="font-medium">{profile.profession}</p>
+                      {profile.annualIncome && (
+                        <p className="text-sm text-gray-500">{formatAnnualIncome(profile.annualIncome)}</p>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-3">
-                    <User className="w-4 h-4 text-gray-500" />
-                    <span className="text-sm">{formatHeight(profile.height)}</span>
+                  
+                  <div className="flex items-center">
+                    <GraduationCap className="w-5 h-5 mr-3 text-gray-400" />
+                    <div>
+                      <p className="font-medium">{profile.education}</p>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-3">
-                    <BookOpen className="w-4 h-4 text-gray-500" />
-                    <span className="text-sm">{profile.religion} • {profile.caste}</span>
+                  
+                  <div className="flex items-center">
+                    <GiBigDiamondRing className="w-5 h-5 mr-3 text-gray-400" />
+                    <div>
+                      <p className="font-medium">{profile.maritalStatus}</p>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-3">
-                    <Globe className="w-4 h-4 text-gray-500" />
-                    <span className="text-sm">{profile.motherTongue}</span>
+                  
+                  <div className="flex items-center">
+                    <Calendar className="w-5 h-5 mr-3 text-gray-400" />
+                    <div>
+                      <p className="font-medium">Born {profile.age} years ago</p>
+                    </div>
                   </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="space-y-3">
-                  <Button className="w-full bg-red-600 hover:bg-red-700 text-white">
-                    <Heart className="w-4 h-4 mr-2" />
-                    Send Interest
-                  </Button>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button variant="outline" size="sm">
-                      <Heart className="w-4 h-4 mr-1 fill-current" />
-                      Super
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      <Star className="w-4 h-4 mr-1" />
-                      Shortlist
-                    </Button>
-                  </div>
-                  <Button variant="outline" className="w-full">
-                    <MessageCircle className="w-4 h-4 mr-2" />
-                    Start Chat
-                  </Button>
                 </div>
               </CardContent>
             </Card>
-          </div>
 
-          {/* Right Column - Detailed Information */}
-          <div className="lg:col-span-2">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-3 bg-white mb-6">
-                <TabsTrigger value="about">About Me</TabsTrigger>
-                <TabsTrigger value="family">Family</TabsTrigger>
-                <TabsTrigger value="preferences">Preferences</TabsTrigger>
-              </TabsList>
+            {/* Contact Information */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Contact Information</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="flex items-center">
+                    <Phone className="w-5 h-5 mr-3 text-gray-400" />
+                    <span className="text-gray-600">Phone number visible after connection</span>
+                  </div>
+                  <div className="flex items-center">
+                    <Mail className="w-5 h-5 mr-3 text-gray-400" />
+                    <span className="text-gray-600">Email visible after connection</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
-              <TabsContent value="about" className="space-y-6">
-                {/* Professional Details */}
-                <Card>
-                  <CardContent className="p-6">
-                    <h3 className="font-semibold text-lg mb-4 flex items-center">
-                      <Briefcase className="w-5 h-5 mr-2 text-gray-600" />
-                      Professional Details
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <div className="text-sm text-gray-500 mb-1">Profession</div>
-                        <div className="font-medium">{profile.profession}</div>
-                      </div>
-                      <div>
-                        <div className="text-sm text-gray-500 mb-1">Annual Income</div>
-                        <div className="font-medium">{formatAnnualIncome(profile.annualIncome)}</div>
-                      </div>
-                      <div className="md:col-span-2">
-                        <div className="text-sm text-gray-500 mb-1">Education</div>
-                        <div className="font-medium">{profile.education}</div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Personal Details */}
-                <Card>
-                  <CardContent className="p-6">
-                    <h3 className="font-semibold text-lg mb-4 flex items-center">
-                      <User className="w-5 h-5 mr-2 text-gray-600" />
-                      Personal Details
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <div className="text-sm text-gray-500 mb-1">Marital Status</div>
-                        <div className="font-medium flex items-center">
-                          <GiBigDiamondRing className="w-4 h-4 mr-2 text-gray-500" />
-                          {profile.maritalStatus}
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-sm text-gray-500 mb-1">Mother Tongue</div>
-                        <div className="font-medium">{profile.motherTongue}</div>
-                      </div>
-                      <div>
-                        <div className="text-sm text-gray-500 mb-1">Religion</div>
-                        <div className="font-medium">{profile.religion}</div>
-                      </div>
-                      <div>
-                        <div className="text-sm text-gray-500 mb-1">Caste</div>
-                        <div className="font-medium">{profile.caste} {profile.casteSubcaste}</div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Spiritual Practices */}
-                {profile.spiritualPractices && profile.spiritualPractices.length > 0 && (
-                  <Card>
-                    <CardContent className="p-6">
-                      <h3 className="font-semibold text-lg mb-4">Spiritual Practices</h3>
+            {/* Spiritual Information */}
+            {(profile.spiritualPractices || profile.sacredTexts || profile.spiritualGoals) && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Spiritual Journey</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {profile.spiritualPractices && profile.spiritualPractices.length > 0 && (
+                    <div>
+                      <h4 className="font-semibold mb-2">Spiritual Practices</h4>
                       <div className="flex flex-wrap gap-2">
                         {profile.spiritualPractices.map((practice, index) => (
-                          <Badge key={index} variant="secondary" className="text-sm">
+                          <Badge key={index} variant="outline" className="bg-orange-50 border-orange-200">
                             {practice}
                           </Badge>
                         ))}
                       </div>
-                    </CardContent>
-                  </Card>
-                )}
+                    </div>
+                  )}
 
-                {/* Sacred Texts */}
-                {profile.sacredTexts && profile.sacredTexts.length > 0 && (
-                  <Card>
-                    <CardContent className="p-6">
-                      <h3 className="font-semibold text-lg mb-4">Sacred Texts</h3>
+                  {profile.sacredTexts && profile.sacredTexts.length > 0 && (
+                    <div>
+                      <h4 className="font-semibold mb-2">Sacred Texts</h4>
                       <div className="flex flex-wrap gap-2">
                         {profile.sacredTexts.map((text, index) => (
-                          <Badge key={index} variant="outline" className="text-sm">
+                          <Badge key={index} variant="outline" className="bg-blue-50 border-blue-200">
                             {text}
                           </Badge>
                         ))}
                       </div>
-                    </CardContent>
-                  </Card>
-                )}
+                    </div>
+                  )}
 
-                {/* About Section */}
-                {profile.bio && (
-                  <Card>
-                    <CardContent className="p-6">
-                      <h3 className="font-semibold text-lg mb-4">About Me</h3>
-                      <p className="text-gray-700 leading-relaxed">{profile.bio}</p>
-                    </CardContent>
-                  </Card>
-                )}
-              </TabsContent>
-
-              <TabsContent value="family" className="space-y-6">
-                <Card>
-                  <CardContent className="p-6">
-                    <h3 className="font-semibold text-lg mb-4 flex items-center">
-                      <Users className="w-5 h-5 mr-2 text-gray-600" />
-                      Family Details
-                    </h3>
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <div className="text-sm text-gray-500 mb-1">Family Type</div>
-                          <div className="font-medium">Joint Family</div>
-                        </div>
-                        <div>
-                          <div className="text-sm text-gray-500 mb-1">Family Status</div>
-                          <div className="font-medium">Middle Class</div>
-                        </div>
-                      </div>
-                      <Separator />
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <div className="text-sm text-gray-500 mb-1">Father's Occupation</div>
-                          <div className="font-medium">Business</div>
-                        </div>
-                        <div>
-                          <div className="text-sm text-gray-500 mb-1">Mother's Occupation</div>
-                          <div className="font-medium">Homemaker</div>
-                        </div>
-                      </div>
-                      <Separator />
-                      <div>
-                        <div className="text-sm text-gray-500 mb-1">Siblings</div>
-                        <div className="font-medium">1 Sister (Married)</div>
+                  {profile.spiritualGoals && profile.spiritualGoals.length > 0 && (
+                    <div>
+                      <h4 className="font-semibold mb-2">Spiritual Goals</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {profile.spiritualGoals.map((goal, index) => (
+                          <Badge key={index} variant="outline" className="bg-green-50 border-green-200">
+                            {goal}
+                          </Badge>
+                        ))}
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
+                  )}
+                </CardContent>
+              </Card>
+            )}
 
-              <TabsContent value="preferences" className="space-y-6">
-                <Card>
-                  <CardContent className="p-6">
-                    <h3 className="font-semibold text-lg mb-4 flex items-center">
-                      <Heart className="w-5 h-5 mr-2 text-gray-600" />
-                      Partner Preferences
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <div className="text-sm text-gray-500 mb-1">Age Range</div>
-                        <div className="font-medium">28 - 35 years</div>
-                      </div>
-                      <div>
-                        <div className="text-sm text-gray-500 mb-1">Height Range</div>
-                        <div className="font-medium">5'6" - 6'0"</div>
-                      </div>
-                      <div>
-                        <div className="text-sm text-gray-500 mb-1">Education</div>
-                        <div className="font-medium">Graduate or Post-graduate</div>
-                      </div>
-                      <div>
-                        <div className="text-sm text-gray-500 mb-1">Location</div>
-                        <div className="font-medium">Same city or willing to relocate</div>
-                      </div>
-                      <div className="md:col-span-2">
-                        <div className="text-sm text-gray-500 mb-1">Spiritual Inclination</div>
-                        <div className="font-medium">Should share similar spiritual values and practices</div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-            </Tabs>
+            {/* Family Information */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Family Information</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600">Family details available after connection</p>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
@@ -453,6 +348,6 @@ const ProfileDetailPage = memo(() => {
   );
 });
 
-ProfileDetailPage.displayName = "ProfileDetailPage";
+ProfileDetailPage.displayName = 'ProfileDetailPage';
 
 export default ProfileDetailPage;

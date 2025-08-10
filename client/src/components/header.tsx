@@ -1,11 +1,25 @@
-import { memo } from "react";
-import { Link } from "wouter";
-import { Clover } from "lucide-react";
+
+import { memo, useState } from "react";
+import { Link, useLocation } from "wouter";
+import { Clover, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { LoginOptions } from "@/components/login-options";
 
 const Header = memo(() => {
+  const [location] = useLocation();
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  
+  // Mock authentication state - replace with real auth context
+  const isAuthenticated = false;
+  const user = null;
+
+  const handleProfileClick = () => {
+    if (!isAuthenticated) {
+      setIsLoginOpen(true);
+    }
+  };
+
   return (
     <header className="bg-card border-b border-temple-gold/20 sticky top-0 z-50 shadow-sm">
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-temple-gold to-transparent opacity-60"></div>
@@ -22,7 +36,7 @@ const Header = memo(() => {
           </Link>
 
           <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/search" className="text-foreground hover:text-saffron transition-colors font-medium">
+            <Link href="/profiles" className="text-foreground hover:text-saffron transition-colors font-medium">
               Search Profiles
             </Link>
             <Link href="/success-stories" className="text-foreground hover:text-saffron transition-colors font-medium">
@@ -36,30 +50,34 @@ const Header = memo(() => {
             </Link>
           </nav>
 
+          {/* User Profile Section */}
           <div className="flex items-center space-x-3">
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="ghost" size="sm" className="text-foreground hover:text-saffron">
-                  Login
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px] bg-card border-temple-gold/20">
-                <LoginOptions />
-              </DialogContent>
-            </Dialog>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button size="sm" className="bg-saffron text-primary-foreground hover:bg-saffron/90">
-                  Sign Up
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px] bg-card border-temple-gold/20">
-                <LoginOptions />
-              </DialogContent>
-            </Dialog>
+            {isAuthenticated && user ? (
+              <div className="flex items-center space-x-3">
+                <span className="text-sm text-gray-700">Welcome, {user.name}</span>
+                <div className="w-8 h-8 rounded-full bg-saffron/20 flex items-center justify-center cursor-pointer hover:bg-saffron/30 transition-colors">
+                  <User className="w-4 h-4 text-saffron" />
+                </div>
+              </div>
+            ) : (
+              <div 
+                onClick={handleProfileClick}
+                className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center cursor-pointer hover:bg-gray-300 transition-colors"
+                title="Login to access your profile"
+              >
+                <User className="w-4 h-4 text-gray-600" />
+              </div>
+            )}
           </div>
         </div>
       </div>
+
+      {/* Login Dialog */}
+      <Dialog open={isLoginOpen} onOpenChange={setIsLoginOpen}>
+        <DialogContent className="sm:max-w-[425px] bg-card border-temple-gold/20">
+          <LoginOptions />
+        </DialogContent>
+      </Dialog>
     </header>
   );
 });
