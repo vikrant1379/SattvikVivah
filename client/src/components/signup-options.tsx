@@ -6,10 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Mail, Phone, Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 // Dummy data - replace with actual imports from your data files
@@ -34,8 +33,8 @@ const educationOptions = ["High School", "Bachelor's", "Master's", "Doctorate", 
 const professionOptions = ["Software Engineer", "Doctor", "Teacher", "Business Owner", "Government Employee", "Private Employee", "Student", "Other"];
 const annualIncomeOptions = ["Below ₹2 Lakh", "₹2-5 Lakh", "₹5-10 Lakh", "₹10-15 Lakh", "₹15-25 Lakh", "₹25-50 Lakh", "₹50 Lakh - ₹1 Crore", "Above ₹1 Crore", "Prefer not to disclose"];
 
-// Email signup validation schema
-const emailSignupSchema = z.object({
+// Signup validation schema with both email and mobile mandatory
+const signupSchema = z.object({
   firstName: z.string().min(1, "First name is required").min(2, "First name must be at least 2 characters"),
   lastName: z.string().min(1, "Last name is required").min(2, "Last name must be at least 2 characters"),
   email: z.string()
@@ -45,33 +44,6 @@ const emailSignupSchema = z.object({
       const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
       return emailRegex.test(email);
     }, "Please enter a valid email format"),
-  password: z.string()
-    .min(8, "Password must be at least 8 characters")
-    .refine((password) => /[a-z]/.test(password), "Password must contain at least one lowercase letter")
-    .refine((password) => /[A-Z]/.test(password), "Password must contain at least one uppercase letter")
-    .refine((password) => /\d/.test(password), "Password must contain at least one number")
-    .refine((password) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password), "Password must contain at least one special character"),
-  dateOfBirth: z.string().min(1, "Date of birth is required"),
-  gender: z.string().min(1, "Please select your gender"),
-  lookingFor: z.string().min(1, "Please select what you're looking for"),
-  profileFor: z.string().min(1, "Please select who this profile is for"),
-  religion: z.string().min(1, "Please select your religion"),
-  community: z.string().min(1, "Please select your community"),
-  motherTongue: z.string().min(1, "Please select your mother tongue"),
-  country: z.string().min(1, "Please select your country"),
-  state: z.string().min(1, "Please select your state"),
-  city: z.string().min(1, "Please select your city"),
-  height: z.string().min(1, "Please select your height"),
-  maritalStatus: z.string().min(1, "Please select your marital status"),
-  education: z.string().min(1, "Please select your education"),
-  profession: z.string().min(1, "Please select your profession"),
-  annualIncome: z.string().min(1, "Please select your annual income"),
-});
-
-// Mobile signup validation schema
-const mobileSignupSchema = z.object({
-  firstName: z.string().min(1, "First name is required").min(2, "First name must be at least 2 characters"),
-  lastName: z.string().min(1, "Last name is required").min(2, "Last name must be at least 2 characters"),
   mobile: z.string()
     .min(1, "Mobile number is required")
     .refine((mobile) => {
@@ -102,44 +74,18 @@ const mobileSignupSchema = z.object({
   annualIncome: z.string().min(1, "Please select your annual income"),
 });
 
-type EmailSignupForm = z.infer<typeof emailSignupSchema>;
-type MobileSignupForm = z.infer<typeof mobileSignupSchema>;
+type SignupForm = z.infer<typeof signupSchema>;
 
 function SignupOptions() {
   const [showPassword, setShowPassword] = useState(false);
-  const [activeTab, setActiveTab] = useState("email");
   const { toast } = useToast();
 
-  const emailForm = useForm<EmailSignupForm>({
-    resolver: zodResolver(emailSignupSchema),
+  const form = useForm<SignupForm>({
+    resolver: zodResolver(signupSchema),
     defaultValues: {
       firstName: "",
       lastName: "",
       email: "",
-      password: "",
-      dateOfBirth: "",
-      gender: "",
-      lookingFor: "",
-      profileFor: "",
-      religion: "",
-      community: "",
-      motherTongue: "",
-      country: "",
-      state: "",
-      city: "",
-      height: "",
-      maritalStatus: "",
-      education: "",
-      profession: "",
-      annualIncome: "",
-    },
-  });
-
-  const mobileForm = useForm<MobileSignupForm>({
-    resolver: zodResolver(mobileSignupSchema),
-    defaultValues: {
-      firstName: "",
-      lastName: "",
       mobile: "",
       password: "",
       dateOfBirth: "",
@@ -160,30 +106,13 @@ function SignupOptions() {
     },
   });
 
-  const handleEmailSignup = async (data: EmailSignupForm) => {
+  const handleSignup = async (data: SignupForm) => {
     try {
-      // Add your email signup logic here
-      console.log("Email signup:", data);
+      // Add your signup logic here
+      console.log("Signup data:", data);
       toast({
         title: "Account Created Successfully!",
-        description: "Welcome to SattvikVivah. Your spiritual journey begins now.",
-      });
-    } catch (error) {
-      toast({
-        title: "Signup Failed",
-        description: "Please try again later.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleMobileSignup = async (data: MobileSignupForm) => {
-    try {
-      // Add your mobile signup logic here
-      console.log("Mobile signup:", data);
-      toast({
-        title: "Account Created Successfully!",
-        description: "Welcome to SattvikVivah. Your spiritual journey begins now.",
+        description: "Please verify your email or mobile number to complete your registration.",
       });
     } catch (error) {
       toast({
@@ -208,61 +137,51 @@ function SignupOptions() {
         <p className="text-muted-foreground">Create your sacred profile to find your dharmic partner</p>
       </CardHeader>
       <CardContent>
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="email" className="flex items-center space-x-2">
-              <Mail className="w-4 h-4" />
-              <span>Email</span>
-            </TabsTrigger>
-            <TabsTrigger value="mobile" className="flex items-center space-x-2">
-              <Phone className="w-4 h-4" />
-              <span>Mobile</span>
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="email" className="space-y-4">
-            <Form {...emailForm}>
-              <form onSubmit={emailForm.handleSubmit(handleEmailSignup)} className="space-y-4">
+        <div className="space-y-4">
+            <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleSignup)} className="space-y-4">
                 {/* Name Fields */}
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={emailForm.control}
-                    name="firstName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>First Name</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Enter first name"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={emailForm.control}
-                    name="lastName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Last Name</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Enter last name"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                {/* Email */}
+                {/* Name Fields */}
+              <div className="grid grid-cols-2 gap-4">
                 <FormField
-                  control={emailForm.control}
+                  control={form.control}
+                  name="firstName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>First Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Enter first name"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Last Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Enter last name"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+                {/* Email and Mobile */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
                   name="email"
                   render={({ field }) => (
                     <FormItem>
@@ -279,460 +198,8 @@ function SignupOptions() {
                   )}
                 />
 
-                {/* Password */}
                 <FormField
-                  control={emailForm.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Input
-                            type={showPassword ? "text" : "password"}
-                            placeholder="Create a strong password"
-                            {...field}
-                          />
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent focus:ring-0 focus:ring-offset-0 focus:outline-none"
-                            onClick={() => setShowPassword(!showPassword)}
-                          >
-                            {showPassword ? (
-                              <EyeOff className="h-4 w-4" />
-                            ) : (
-                              <Eye className="h-4 w-4" />
-                            )}
-                          </Button>
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Date of Birth */}
-                <FormField
-                  control={emailForm.control}
-                  name="dateOfBirth"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Date of Birth</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="date"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Gender and Looking For */}
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={emailForm.control}
-                    name="gender"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Gender</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="Male">Male</SelectItem>
-                            <SelectItem value="Female">Female</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={emailForm.control}
-                    name="lookingFor"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Looking For</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="Bride">Bride</SelectItem>
-                            <SelectItem value="Groom">Groom</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                {/* Profile For */}
-                <FormField
-                  control={emailForm.control}
-                  name="profileFor"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>This Profile is for</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="Self">Myself</SelectItem>
-                          <SelectItem value="Son">Son</SelectItem>
-                          <SelectItem value="Daughter">Daughter</SelectItem>
-                          <SelectItem value="Brother">Brother</SelectItem>
-                          <SelectItem value="Sister">Sister</SelectItem>
-                          <SelectItem value="Friend">Friend</SelectItem>
-                          <SelectItem value="Relative">Relative</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Religion and Community */}
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={emailForm.control}
-                    name="religion"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Religion</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {religionOptions.map((religion) => (
-                              <SelectItem key={religion} value={religion}>
-                                {religion}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={emailForm.control}
-                    name="community"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Community</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {casteGroupOptions.map((community) => (
-                              <SelectItem key={community} value={community}>
-                                {community}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                {/* Mother Tongue */}
-                <FormField
-                  control={emailForm.control}
-                  name="motherTongue"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Mother Tongue</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {motherTongues.map((language) => (
-                            <SelectItem key={language} value={language}>
-                              {language}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Location */}
-                <div className="grid grid-cols-3 gap-4">
-                  <FormField
-                    control={emailForm.control}
-                    name="country"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Country</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {countries.map((country) => (
-                              <SelectItem key={country.value} value={country.value}>
-                                {country.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={emailForm.control}
-                    name="state"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>State</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Enter state"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={emailForm.control}
-                    name="city"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>City</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Enter city"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                {/* Height and Marital Status */}
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={emailForm.control}
-                    name="height"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Height</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {heightOptions.map((height) => (
-                              <SelectItem key={height} value={height}>
-                                {height}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={emailForm.control}
-                    name="maritalStatus"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Marital Status</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {maritalStatusOptions.map((status) => (
-                              <SelectItem key={status} value={status}>
-                                {status}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                {/* Education and Profession */}
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={emailForm.control}
-                    name="education"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Education</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {educationOptions.map((education) => (
-                              <SelectItem key={education} value={education}>
-                                {education}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={emailForm.control}
-                    name="profession"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Profession</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {professionOptions.map((profession) => (
-                              <SelectItem key={profession} value={profession}>
-                                {profession}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                {/* Annual Income */}
-                <FormField
-                  control={emailForm.control}
-                  name="annualIncome"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Annual Income</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {annualIncomeOptions.map((income) => (
-                            <SelectItem key={income} value={income}>
-                              {income}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <Button
-                  type="submit"
-                  className="w-full bg-saffron hover:bg-saffron/90"
-                  disabled={emailForm.formState.isSubmitting}
-                >
-                  {emailForm.formState.isSubmitting ? "Creating Account..." : "Create Account with Email"}
-                </Button>
-              </form>
-            </Form>
-          </TabsContent>
-
-          <TabsContent value="mobile" className="space-y-4">
-            <Form {...mobileForm}>
-              <form onSubmit={mobileForm.handleSubmit(handleMobileSignup)} className="space-y-4">
-                {/* Name Fields */}
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={mobileForm.control}
-                    name="firstName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>First Name</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Enter first name"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={mobileForm.control}
-                    name="lastName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Last Name</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Enter last name"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                {/* Mobile */}
-                <FormField
-                  control={mobileForm.control}
+                  control={form.control}
                   name="mobile"
                   render={({ field }) => (
                     <FormItem>
@@ -758,51 +225,250 @@ function SignupOptions() {
                     </FormItem>
                   )}
                 />
+              </div>
 
                 {/* Password */}
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Create a strong password"
+                          {...field}
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent focus:ring-0 focus:ring-offset-0 focus:outline-none"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-4 w-4" />
+                          ) : (
+                            <Eye className="h-4 w-4" />
+                          )}
+                        </Button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+                {/* Date of Birth */}
+              <FormField
+                control={form.control}
+                name="dateOfBirth"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Date of Birth</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="date"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Gender and Looking For */}
+              <div className="grid grid-cols-2 gap-4">
                 <FormField
-                  control={mobileForm.control}
-                  name="password"
+                  control={form.control}
+                  name="gender"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Input
-                            type={showPassword ? "text" : "password"}
-                            placeholder="Create a strong password"
-                            {...field}
-                          />
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent focus:ring-0 focus:ring-offset-0 focus:outline-none"
-                            onClick={() => setShowPassword(!showPassword)}
-                          >
-                            {showPassword ? (
-                              <EyeOff className="h-4 w-4" />
-                            ) : (
-                              <Eye className="h-4 w-4" />
-                            )}
-                          </Button>
-                        </div>
-                      </FormControl>
+                      <FormLabel>Gender</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Male">Male</SelectItem>
+                          <SelectItem value="Female">Female</SelectItem>
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
 
-                {/* Date of Birth */}
                 <FormField
-                  control={mobileForm.control}
-                  name="dateOfBirth"
+                  control={form.control}
+                  name="lookingFor"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Date of Birth</FormLabel>
+                      <FormLabel>Looking For</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Bride">Bride</SelectItem>
+                          <SelectItem value="Groom">Groom</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* Profile For */}
+              <FormField
+                control={form.control}
+                name="profileFor"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>This Profile is for</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Self">Myself</SelectItem>
+                        <SelectItem value="Son">Son</SelectItem>
+                        <SelectItem value="Daughter">Daughter</SelectItem>
+                        <SelectItem value="Brother">Brother</SelectItem>
+                        <SelectItem value="Sister">Sister</SelectItem>
+                        <SelectItem value="Friend">Friend</SelectItem>
+                        <SelectItem value="Relative">Relative</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Religion and Community */}
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="religion"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Religion</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {religionOptions.map((religion) => (
+                            <SelectItem key={religion} value={religion}>
+                              {religion}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="community"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Community</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {casteGroupOptions.map((community) => (
+                            <SelectItem key={community} value={community}>
+                              {community}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* Mother Tongue */}
+              <FormField
+                control={form.control}
+                name="motherTongue"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Mother Tongue</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {motherTongues.map((language) => (
+                          <SelectItem key={language} value={language}>
+                            {language}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Location */}
+              <div className="grid grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name="country"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Country</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {countries.map((country) => (
+                            <SelectItem key={country.value} value={country.value}>
+                              {country.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="state"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>State</FormLabel>
                       <FormControl>
                         <Input
-                          type="date"
+                          placeholder="Enter state"
                           {...field}
                         />
                       </FormControl>
@@ -811,141 +477,32 @@ function SignupOptions() {
                   )}
                 />
 
-                {/* Gender and Looking For */}
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={mobileForm.control}
-                    name="gender"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Gender</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="Male">Male</SelectItem>
-                            <SelectItem value="Female">Female</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={mobileForm.control}
-                    name="lookingFor"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Looking For</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="Bride">Bride</SelectItem>
-                            <SelectItem value="Groom">Groom</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                {/* Profile For */}
                 <FormField
-                  control={mobileForm.control}
-                  name="profileFor"
+                  control={form.control}
+                  name="city"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>This Profile is for</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="Self">Myself</SelectItem>
-                          <SelectItem value="Son">Son</SelectItem>
-                          <SelectItem value="Daughter">Daughter</SelectItem>
-                          <SelectItem value="Brother">Brother</SelectItem>
-                          <SelectItem value="Sister">Sister</SelectItem>
-                          <SelectItem value="Friend">Friend</SelectItem>
-                          <SelectItem value="Relative">Relative</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <FormLabel>City</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Enter city"
+                          {...field}
+                        />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+              </div>
 
-                {/* Religion and Community */}
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={mobileForm.control}
-                    name="religion"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Religion</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {religionOptions.map((religion) => (
-                              <SelectItem key={religion} value={religion}>
-                                {religion}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={mobileForm.control}
-                    name="community"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Community</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {casteGroupOptions.map((community) => (
-                              <SelectItem key={community} value={community}>
-                                {community}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                {/* Mother Tongue */}
+              {/* Height and Marital Status */}
+              <div className="grid grid-cols-2 gap-4">
                 <FormField
-                  control={mobileForm.control}
-                  name="motherTongue"
+                  control={form.control}
+                  name="height"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Mother Tongue</FormLabel>
+                      <FormLabel>Height</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
@@ -953,9 +510,9 @@ function SignupOptions() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {motherTongues.map((language) => (
-                            <SelectItem key={language} value={language}>
-                              {language}
+                          {heightOptions.map((height) => (
+                            <SelectItem key={height} value={height}>
+                              {height}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -965,181 +522,12 @@ function SignupOptions() {
                   )}
                 />
 
-                {/* Location */}
-                <div className="grid grid-cols-3 gap-4">
-                  <FormField
-                    control={mobileForm.control}
-                    name="country"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Country</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {countries.map((country) => (
-                              <SelectItem key={country.value} value={country.value}>
-                                {country.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={mobileForm.control}
-                    name="state"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>State</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Enter state"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={mobileForm.control}
-                    name="city"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>City</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Enter city"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                {/* Height and Marital Status */}
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={mobileForm.control}
-                    name="height"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Height</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {heightOptions.map((height) => (
-                              <SelectItem key={height} value={height}>
-                                {height}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={mobileForm.control}
-                    name="maritalStatus"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Marital Status</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {maritalStatusOptions.map((status) => (
-                              <SelectItem key={status} value={status}>
-                                {status}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                {/* Education and Profession */}
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={mobileForm.control}
-                    name="education"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Education</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {educationOptions.map((education) => (
-                              <SelectItem key={education} value={education}>
-                                {education}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={mobileForm.control}
-                    name="profession"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Profession</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {professionOptions.map((profession) => (
-                              <SelectItem key={profession} value={profession}>
-                                {profession}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                {/* Annual Income */}
                 <FormField
-                  control={mobileForm.control}
-                  name="annualIncome"
+                  control={form.control}
+                  name="maritalStatus"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Annual Income</FormLabel>
+                      <FormLabel>Marital Status</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
@@ -1147,9 +535,37 @@ function SignupOptions() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {annualIncomeOptions.map((income) => (
-                            <SelectItem key={income} value={income}>
-                              {income}
+                          {maritalStatusOptions.map((status) => (
+                            <SelectItem key={status} value={status}>
+                              {status}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* Education and Profession */}
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="education"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Education</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {educationOptions.map((education) => (
+                            <SelectItem key={education} value={education}>
+                              {education}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -1159,17 +575,68 @@ function SignupOptions() {
                   )}
                 />
 
-                <Button
-                  type="submit"
-                  className="w-full bg-saffron hover:bg-saffron/90"
-                  disabled={mobileForm.formState.isSubmitting}
-                >
-                  {mobileForm.formState.isSubmitting ? "Creating Account..." : "Create Account with Mobile"}
-                </Button>
+                <FormField
+                  control={form.control}
+                  name="profession"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Profession</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {professionOptions.map((profession) => (
+                            <SelectItem key={profession} value={profession}>
+                              {profession}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* Annual Income */}
+              <FormField
+                control={form.control}
+                name="annualIncome"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Annual Income</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {annualIncomeOptions.map((income) => (
+                          <SelectItem key={income} value={income}>
+                            {income}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Button
+                type="submit"
+                className="w-full bg-saffron hover:bg-saffron/90"
+                disabled={form.formState.isSubmitting}
+              >
+                {form.formState.isSubmitting ? "Creating Account..." : "Create Account"}
+              </Button>
               </form>
-            </Form>
-          </TabsContent>
-        </Tabs>
+          </Form>
+        </div>
       </CardContent>
     </Card>
   );
