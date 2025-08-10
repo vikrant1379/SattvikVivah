@@ -1,22 +1,48 @@
+export const countryOptions = [
+  { value: "India", label: "India" },
+  { value: "USA", label: "USA" },
+  { value: "UK", label: "UK" },
+  { value: "Canada", label: "Canada" },
+  { value: "Australia", label: "Australia" },
+  { value: "Singapore", label: "Singapore" },
+  { value: "UAE", label: "UAE" },
+  { value: "Germany", label: "Germany" },
+  { value: "France", label: "France" },
+  { value: "Netherlands", label: "Netherlands" },
+  { value: "Switzerland", label: "Switzerland" },
+  { value: "Sweden", label: "Sweden" },
+  { value: "Norway", label: "Norway" },
+  { value: "Denmark", label: "Denmark" },
+  { value: "Finland", label: "Finland" },
+  { value: "New Zealand", label: "New Zealand" },
+  { value: "Japan", label: "Japan" },
+  { value: "Malaysia", label: "Malaysia" },
+  { value: "Thailand", label: "Thailand" },
+  { value: "Other", label: "Other" }
+];
 
+// Keep original for profile browser compatibility
 export const countries = [
   { value: "IN", label: "India" },
-  { value: "US", label: "United States" },
+  { value: "US", label: "USA" },
+  { value: "GB", label: "UK" },
   { value: "CA", label: "Canada" },
-  { value: "GB", label: "United Kingdom" },
   { value: "AU", label: "Australia" },
-  { value: "NZ", label: "New Zealand" },
   { value: "SG", label: "Singapore" },
-  { value: "AE", label: "United Arab Emirates" },
+  { value: "AE", label: "UAE" },
   { value: "DE", label: "Germany" },
   { value: "FR", label: "France" },
   { value: "NL", label: "Netherlands" },
-  { value: "SE", label: "Sweden" },
   { value: "CH", label: "Switzerland" },
+  { value: "SE", label: "Sweden" },
+  { value: "NO", label: "Norway" },
+  { value: "DK", label: "Denmark" },
+  { value: "FI", label: "Finland" },
+  { value: "NZ", label: "New Zealand" },
   { value: "JP", label: "Japan" },
   { value: "MY", label: "Malaysia" },
   { value: "TH", label: "Thailand" },
-  { value: "ZA", label: "South Africa" },
+  { value: "OTHER", label: "Other" }
 ];
 
 export const statesByCountry: Record<string, string[]> = {
@@ -112,7 +138,7 @@ export const citiesByState: Record<string, string[]> = {
   "Uttar Pradesh": ["Lucknow", "Kanpur", "Agra", "Varanasi", "Meerut", "Allahabad", "Bareilly", "Aligarh", "Moradabad", "Saharanpur", "Gorakhpur", "Noida", "Firozabad", "Jhansi", "Muzaffarnagar", "Mathura", "Rampur", "Shahjahanpur", "Farrukhabad", "Mau", "Ghaziabad", "Faizabad", "Mirzapur", "Bulandshahr", "Etawah", "Mainpuri", "Budaun", "Unnao", "Sitapur", "Lakhimpur", "Gonda", "Azamgarh", "Ballia", "Deoria", "Kushinagar", "Maharajganj", "Sant Kabir Nagar", "Siddharthnagar", "Basti", "Ambedkar Nagar"],
   "Uttarakhand": ["Dehradun", "Haridwar", "Roorkee", "Haldwani", "Rudrapur", "Kashipur", "Rishikesh", "Kotdwar", "Ramnagar", "Manglaur", "Laksar", "Tanakpur", "Pithoragarh", "Champawat", "Kichha"],
   "West Bengal": ["Kolkata", "Asansol", "Siliguri", "Durgapur", "Bardhaman", "Malda", "Baharampur", "Habra", "Kharagpur", "Shantipur", "Dankuni", "Dhulian", "Ranaghat", "Haldia", "Raiganj", "Krishnanagar", "Nabadwip", "Medinipur", "Jalpaiguri", "Balurghat"],
-  
+
   // Union Territories
   "Andaman and Nicobar Islands": ["Port Blair", "Diglipur", "Mayabunder", "Rangat", "Car Nicobar", "Nancowry", "Campbell Bay"],
   "Chandigarh": ["Chandigarh"],
@@ -128,19 +154,19 @@ export const citiesByState: Record<string, string[]> = {
   "New York": ["New York City", "Buffalo", "Rochester", "Yonkers", "Syracuse", "Albany", "New Rochelle", "Mount Vernon", "Schenectady", "Utica", "White Plains", "Troy", "Niagara Falls", "Binghamton", "Freeport"],
   "Texas": ["Houston", "San Antonio", "Dallas", "Austin", "Fort Worth", "El Paso", "Arlington", "Corpus Christi", "Plano", "Laredo", "Lubbock", "Garland", "Irving", "Amarillo", "Grand Prairie"],
   "Florida": ["Jacksonville", "Miami", "Tampa", "Orlando", "St. Petersburg", "Hialeah", "Tallahassee", "Fort Lauderdale", "Port St. Lucie", "Cape Coral", "Pembroke Pines", "Hollywood", "Gainesville", "Miramar", "Coral Springs"],
-  
+
   // UK Cities
   "England": ["London", "Birmingham", "Manchester", "Liverpool", "Leeds", "Sheffield", "Bristol", "Newcastle", "Nottingham", "Leicester", "Coventry", "Bradford", "Stoke-on-Trent", "Wolverhampton", "Plymouth"],
   "Scotland": ["Glasgow", "Edinburgh", "Aberdeen", "Dundee", "Stirling", "Perth", "Inverness", "Paisley", "East Kilbride", "Livingston", "Hamilton", "Cumbernauld", "Kirkcaldy", "Dunfermline", "Ayr"],
   "Wales": ["Cardiff", "Swansea", "Newport", "Wrexham", "Barry", "Caerphilly", "Rhondda", "Bridgend", "Neath", "Port Talbot", "Cwmbran", "Llanelli", "Cardiff", "Bangor", "Merthyr Tydfil"],
   "Northern Ireland": ["Belfast", "Derry", "Lisburn", "Newtownabbey", "Bangor", "Craigavon", "Castlereagh", "Ballymena", "Newtownards", "Carrickfergus", "Coleraine", "Omagh", "Larne", "Strabane", "Limavady"],
-  
+
   // Canada Cities
   "Ontario": ["Toronto", "Ottawa", "Mississauga", "Brampton", "Hamilton", "London", "Markham", "Vaughan", "Kitchener", "Windsor", "Richmond Hill", "Oakville", "Burlington", "Oshawa", "Barrie"],
   "British Columbia": ["Vancouver", "Surrey", "Burnaby", "Richmond", "Abbotsford", "Coquitlam", "Kelowna", "Saanich", "Delta", "Kamloops", "Langley", "Victoria", "Nanaimo", "Chilliwack", "Prince George"],
   "Quebec": ["Montreal", "Quebec City", "Laval", "Gatineau", "Longueuil", "Sherbrooke", "Saguenay", "Trois-Rivières", "Terrebonne", "Saint-Jean-sur-Richelieu", "Repentigny", "Brossard", "Drummondville", "Saint-Jérôme", "Granby"],
   "Alberta": ["Calgary", "Edmonton", "Red Deer", "Lethbridge", "St. Albert", "Medicine Hat", "Grande Prairie", "Airdrie", "Spruce Grove", "Okotoks", "Camrose", "Lloydminster", "Fort Saskatchewan", "Leduc", "Beaumont"],
-  
+
   // Australia Cities
   "New South Wales": ["Sydney", "Newcastle", "Wollongong", "Maitland", "Wagga Wagga", "Albury", "Port Macquarie", "Tamworth", "Orange", "Dubbo", "Queanbeyan", "Bathurst", "Nowra", "Warrnambool", "Lismore"],
   "Victoria": ["Melbourne", "Geelong", "Ballarat", "Bendigo", "Melton", "Latrobe", "Frankston", "Casey", "Whittlesea", "Greater Dandenong", "Monash", "Knox", "Boroondara", "Manningham", "Whitehorse"],

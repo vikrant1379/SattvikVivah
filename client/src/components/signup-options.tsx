@@ -15,7 +15,7 @@ import { useLocation } from "wouter";
 // Dummy data - replace with actual imports from your data files
 const religionOptions = ["Hinduism", "Buddhism", "Jainism", "Sikhism", "Christianity", "Islam", "Judaism", "Other"];
 const casteGroupOptions = ["Brahmin", "Kshatriya", "Vaishya", "Shudra", "Other", "No Preference"];
-const motherTongues = ["Hindi", "Bengali", "Telugu", "Tamil", "Gujarati", "Marathi", "Punjabi", "Malayalam", "Kannada", "English", "Other"];
+const motherTongueOptions = ["Hindi", "Bengali", "Telugu", "Tamil", "Gujarati", "Marathi", "Punjabi", "Malayalam", "Kannada", "English", "Other"];
 const countries = [
   { value: "India", label: "India" },
   { value: "USA", label: "USA" },
@@ -475,7 +475,7 @@ function SignupOptions() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {motherTongues.map((language) => (
+                        {motherTongueOptions.map((language) => (
                           <SelectItem key={language} value={language}>
                             {language}
                           </SelectItem>

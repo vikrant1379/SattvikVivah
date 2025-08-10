@@ -15,19 +15,15 @@ export const religionOptions = [
 
 export const ethnicityOptions = [
   "Indian",
-  "Pakistani",
-  "Bangladeshi",
-  "Sri Lankan",
-  "Nepalese",
-  "Bhutanese",
-  "Afghan",
-  "Tibetan",
-  "Indo-Caribbean",
-  "Indo-African",
-  "Mixed/Multi-ethnic",
-  "Other South Asian",
+  "South Asian",
+  "East Asian",
+  "Southeast Asian",
+  "Middle Eastern",
+  "European",
+  "African",
+  "Latin American",
+  "Mixed Heritage",
   "Other",
-  "Prefer not to say",
 ];
 
 export const annualIncomeOptions = [
