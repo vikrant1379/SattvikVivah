@@ -157,7 +157,7 @@ function LoginOptions() {
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-gray-100 focus:ring-0 focus:ring-offset-0 focus:outline-none"
+                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent focus:ring-0 focus:ring-offset-0 focus:outline-none"
                             onClick={() => setShowPassword(!showPassword)}
                           >
                             {showPassword ? (
@@ -232,7 +232,7 @@ function LoginOptions() {
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-gray-100 focus:ring-0 focus:ring-offset-0 focus:outline-none"
+                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent focus:ring-0 focus:ring-offset-0 focus:outline-none"
                             onClick={() => setShowPassword(!showPassword)}
                           >
                             {showPassword ? (
