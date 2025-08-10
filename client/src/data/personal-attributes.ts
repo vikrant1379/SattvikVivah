@@ -6,7 +6,7 @@ export const maritalStatusOptions = [
 ];
 
 export const religionOptions = [
-  "Hinduism",
+  "Hindu",
   "Buddhism",
   "Jainism",
   "Sikhism",
@@ -175,5 +175,5 @@ export const heightOptions = [
   "6'4\" (193 cm)",
   "6'5\" (196 cm)",
   "6'6\" (198 cm)",
-  "6'7\" (201 cm)"
+  "6'7\" (201 cm)",
 ];

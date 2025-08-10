@@ -1,5 +1,5 @@
 export const religionOptions = [
-  "Hinduism",
+  "Hindu",
   "Buddhism",
   "Jainism",
   "Sikhism",
