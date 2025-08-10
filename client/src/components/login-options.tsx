@@ -403,7 +403,7 @@ function LoginOptions() {
                                 <FormItem>
                                   <FormLabel>Enter OTP</FormLabel>
                                   <FormControl>
-                                    <InputOTP maxLength={6} {...field} className="w-full justify-center">
+                                    <InputOTP maxLength={6} pattern="^[0-9]*$" {...field} className="w-full justify-center">
                                       <InputOTPGroup>
                                         <InputOTPSlot index={0} />
                                         <InputOTPSlot index={1} />
@@ -583,7 +583,7 @@ function LoginOptions() {
                               <FormItem>
                                 <FormLabel>Enter OTP</FormLabel>
                                 <FormControl>
-                                  <InputOTP maxLength={6} {...field} className="w-full justify-center">
+                                  <InputOTP maxLength={6} pattern="^[0-9]*$" {...field} className="w-full justify-center">
                                     <InputOTPGroup>
                                       <InputOTPSlot index={0} />
                                       <InputOTPSlot index={1} />
