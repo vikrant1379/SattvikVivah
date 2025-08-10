@@ -230,13 +230,6 @@ const ProfileBrowser = memo(() => {
                   >
                     {filter.icon}
                     <span className="ml-1">{filter.label}</span>
-                    {filter.count !== undefined && (
-                      <span className={`ml-1.5 px-1.5 py-0.5 rounded-full text-xs font-semibold ${
-                        filter.active ? "bg-white/20" : "bg-orange-100 text-orange-800"
-                      }`}>
-                        {filter.count}
-                      </span>
-                    )}
                   </Badge>
                 ))}
 
