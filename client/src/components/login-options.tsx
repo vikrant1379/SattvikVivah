@@ -261,14 +261,7 @@ function LoginOptions() {
           </TabsContent>
         </Tabs>
 
-        <div className="mt-6 text-center">
-          <p className="text-sm text-muted-foreground">
-            Don't have an account?{" "}
-            <Button variant="link" className="p-0 h-auto font-semibold text-saffron">
-              Create one now
-            </Button>
-          </p>
-        </div>
+        
       </CardContent>
     </Card>
   );

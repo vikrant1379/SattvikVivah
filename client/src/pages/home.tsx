@@ -11,6 +11,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import LoginOptions from "@/components/login-options";
+import SignupOptions from "@/components/signup-options";
 import { Heart, Search, Users, Star, Shield, CheckCircle, Award, Lock, Crown, Phone } from "lucide-react";
 
 const Home = memo(() => {
@@ -28,6 +29,7 @@ const Home = memo(() => {
   }, []);
 
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
 
   const handleFindMatches = () => {
     // Check if user is authenticated (replace with actual auth check)
@@ -225,81 +227,7 @@ const Home = memo(() => {
           </div>
         </section>
 
-        {/* Quick Search Section */}
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
-              <div className="text-center mb-10">
-                <h2 className="text-3xl font-bold text-gray-800 mb-4">Begin Your Sacred Search</h2>
-                <div className="text-lg font-bold text-orange-800 mb-2 font-serif">
-                  यत्र नार्यस्तु पूज्यन्ते रमन्ते तत्र देवताः
-                </div>
-                <p className="text-gray-600 italic">
-                  "Where women are honored, there the gods rejoice"
-                </p>
-              </div>
-
-              <Card className="bg-gradient-to-br from-white to-orange-50/30 shadow-xl border-orange-200/50">
-                <CardContent className="p-8">
-                  <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        I'm looking for
-                      </label>
-                      <select className="w-full p-3 border border-orange-200 rounded-lg focus:ring-2 focus:ring-orange-400 focus:border-orange-400 bg-white">
-                        <option>Bride</option>
-                        <option>Groom</option>
-                      </select>
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Age Range
-                      </label>
-                      <select className="w-full p-3 border border-orange-200 rounded-lg focus:ring-2 focus:ring-orange-400 focus:border-orange-400 bg-white">
-                        <option>21 to 30</option>
-                        <option>25 to 35</option>
-                        <option>30 to 40</option>
-                        <option>35 to 45</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Community
-                      </label>
-                      <select className="w-full p-3 border border-orange-200 rounded-lg focus:ring-2 focus:ring-orange-400 focus:border-orange-400 bg-white">
-                        <option>Any Community</option>
-                        <option>Brahmin</option>
-                        <option>Kshatriya</option>
-                        <option>Vaishya</option>
-                        <option>Kayastha</option>
-                        <option>Jain</option>
-                        <option>Sikh</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Location
-                      </label>
-                      <select className="w-full p-3 border border-orange-200 rounded-lg focus:ring-2 focus:ring-orange-400 focus:border-orange-400 bg-white">
-                        <option>Select City</option>
-                        <option>Mumbai</option>
-                        <option>Delhi</option>
-                        <option>Bangalore</option>
-                        <option>Chennai</option>
-                        <option>Kolkata</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </section>
+        
 
         {/* Trust & Security Section */}
         <section className="py-16 bg-gradient-to-br from-orange-50 to-rose-50">
@@ -414,7 +342,53 @@ const Home = memo(() => {
               Begin Your Sacred Journey
             </DialogTitle>
           </DialogHeader>
-          <LoginOptions />
+          <div className="space-y-4">
+            <LoginOptions />
+            <div className="text-center">
+              <p className="text-sm text-muted-foreground">
+                Don't have an account?{" "}
+                <Button 
+                  variant="link" 
+                  className="p-0 h-auto font-semibold text-saffron"
+                  onClick={() => {
+                    setIsLoginModalOpen(false);
+                    setIsSignupModalOpen(true);
+                  }}
+                >
+                  Create one now
+                </Button>
+              </p>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Signup Modal */}
+      <Dialog open={isSignupModalOpen} onOpenChange={setIsSignupModalOpen}>
+        <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-center text-2xl font-bold text-orange-800">
+              Create Your Sacred Profile
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <SignupOptions />
+            <div className="text-center">
+              <p className="text-sm text-muted-foreground">
+                Already have an account?{" "}
+                <Button 
+                  variant="link" 
+                  className="p-0 h-auto font-semibold text-saffron"
+                  onClick={() => {
+                    setIsSignupModalOpen(false);
+                    setIsLoginModalOpen(true);
+                  }}
+                >
+                  Sign in here
+                </Button>
+              </p>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
