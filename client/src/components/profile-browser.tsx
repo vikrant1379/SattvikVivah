@@ -20,7 +20,6 @@ interface QuickFilter {
 
 const ProfileBrowser = memo(() => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeQuickFilters, setActiveQuickFilters] = useState<Set<string>>(new Set());
   
   // Safely get spiritual context
   const { searchResults, isSearching, clearSearch, filters: contextFilters, setFilters } = useSpiritualContext();
@@ -44,14 +43,14 @@ const ProfileBrowser = memo(() => {
         const daysDiff = (now.getTime() - joinDate.getTime()) / (1000 * 3600 * 24);
         return daysDiff <= 30;
       }).length,
-      active: activeQuickFilters.has("recent")
+      active: contextFilters.recentlyJoined || false
     },
     {
       id: "nearby",
       label: "Nearby",
       icon: <MapPin className="w-3 h-3" />,
       count: searchResults.filter(p => p.city === "Mumbai" || p.city === "Delhi").length, // Example logic
-      active: activeQuickFilters.has("nearby")
+      active: contextFilters.nearby || false
     },
     {
       id: "withPhoto",
@@ -60,9 +59,9 @@ const ProfileBrowser = memo(() => {
       count: searchResults.filter(p => p.profilePicture).length,
       active: contextFilters.withPhoto || false
     }
-  ], [searchResults, activeQuickFilters, contextFilters]);
+  ], [searchResults, contextFilters]);
 
-  // Filter profiles based on search query and quick filters
+  // Filter profiles based on search query only (quick filters are handled by spiritual context)
   const filteredProfiles = useMemo(() => {
     let filtered = [...searchResults];
 
@@ -77,51 +76,36 @@ const ProfileBrowser = memo(() => {
       });
     }
 
-    // Apply quick filters (verified and withPhoto are handled by spiritual context)
-    if (activeQuickFilters.has("recent")) {
-      filtered = filtered.filter(p => {
-        const joinDate = new Date(p.createdAt || Date.now());
-        const now = new Date();
-        const daysDiff = (now.getTime() - joinDate.getTime()) / (1000 * 3600 * 24);
-        return daysDiff <= 30;
-      });
-    }
-    if (activeQuickFilters.has("nearby")) {
-      filtered = filtered.filter(p => p.city === "Mumbai" || p.city === "Delhi");
-    }
-
     return filtered;
-  }, [searchResults, searchQuery, activeQuickFilters]);
+  }, [searchResults, searchQuery]);
 
   const toggleQuickFilter = useCallback((filterId: string) => {
-    if (filterId === "verified" || filterId === "withPhoto") {
-      // For verified and withPhoto, update the spiritual context instead
+    // All quick filters are handled through the spiritual context
+    const filterMapping = {
+      verified: 'verified',
+      withPhoto: 'withPhoto',
+      recent: 'recentlyJoined',
+      nearby: 'nearby'
+    };
+
+    const contextKey = filterMapping[filterId as keyof typeof filterMapping];
+    if (contextKey) {
       setFilters({
         ...contextFilters,
-        [filterId]: filterId === "verified" ? !contextFilters.verified : !contextFilters.withPhoto
-      });
-    } else {
-      // For other quick filters, use local state
-      setActiveQuickFilters(prev => {
-        const newSet = new Set(prev);
-        if (newSet.has(filterId)) {
-          newSet.delete(filterId);
-        } else {
-          newSet.add(filterId);
-        }
-        return newSet;
+        [contextKey]: !contextFilters[contextKey as keyof typeof contextFilters]
       });
     }
   }, [contextFilters, setFilters]);
 
   const clearQuickFilters = useCallback(() => {
     setSearchQuery("");
-    setActiveQuickFilters(new Set());
-    // Also clear verified and withPhoto from spiritual context
+    // Clear all quick filters from spiritual context
     setFilters({
       ...contextFilters,
       verified: false,
-      withPhoto: false
+      withPhoto: false,
+      recentlyJoined: false,
+      nearby: false
     });
   }, [contextFilters, setFilters]);
 
@@ -137,9 +121,6 @@ const ProfileBrowser = memo(() => {
     // Check search query
     if (searchQuery.trim()) return true;
     
-    // Check quick filters (excluding verified and withPhoto since they're in context)
-    if (activeQuickFilters.size > 0) return true;
-    
     // Check context filters comprehensively
     return Object.entries(contextFilters).some(([key, value]) => {
       if (Array.isArray(value)) {
@@ -148,7 +129,7 @@ const ProfileBrowser = memo(() => {
       
       return value !== undefined && value !== null && value !== "" && value !== false;
     });
-  }, [searchQuery, activeQuickFilters, contextFilters]);
+  }, [searchQuery, contextFilters]);
 
   return (
     <div className="flex flex-1 bg-gradient-to-br from-orange-50/30 via-white to-rose-50/30 min-h-screen">

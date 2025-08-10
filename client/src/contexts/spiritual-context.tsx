@@ -155,6 +155,9 @@ const filterProfiles = (profiles: UserProfile[], filters: ProfileFilter): UserPr
     // Verification and photo filters
     if (filters.verified && !profile.verified) return false;
     if (filters.withPhoto && !profile.withPhoto) return false;
+    if (filters.recentlyJoined && profile.joinedDate && new Date(profile.joinedDate) < new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)) return false; // Filter for last 7 days
+    if (filters.nearby && profile.distance && profile.distance > 10) return false; // Filter for profiles within 10 units of distance
+
 
     return true;
   });
@@ -162,10 +165,46 @@ const filterProfiles = (profiles: UserProfile[], filters: ProfileFilter): UserPr
 
 export function SpiritualProvider({ children }: { children: ReactNode }) {
   const [filters, setFiltersState] = useState<ProfileFilter>({
+    ageMin: undefined,
+    ageMax: undefined,
+    country: undefined,
+    state: undefined,
+    city: undefined,
+    motherTongue: undefined,
+    otherLanguages: [],
+    spiritualPractices: undefined,
+    sacredTexts: undefined,
+    guruLineage: undefined,
+    education: undefined,
+    profession: undefined,
+    heightMin: undefined,
+    heightMax: undefined,
+    smokingHabits: undefined,
+    drinkingHabits: undefined,
+    eatingHabits: undefined,
+    physicalStatus: undefined,
+    bloodGroup: undefined,
+    healthConditions: undefined,
+    dietaryLifestyle: undefined,
+    maritalStatus: undefined,
+    verified: false,
+    withPhoto: false,
+    recentlyJoined: false,
+    nearby: false,
+    caste: undefined,
+    casteGroup: undefined,
+    casteSubcaste: undefined,
     casteGroups: [],
     casteSubcastes: [],
-    annualIncomeMin: undefined, // Initialize min income
-    annualIncomeMax: undefined, // Initialize max income
+    religion: undefined,
+    ethnicity: undefined,
+    annualIncome: undefined,
+    annualIncomeMin: undefined,
+    annualIncomeMax: undefined,
+    hasChildren: undefined,
+    horoscope: undefined,
+    mangalik: undefined,
+    residentialStatus: undefined
   });
   const [searchResults, setSearchResults] = useState<UserProfile[]>(() => {
     // Initialize with first 10 profiles immediately
@@ -220,6 +259,8 @@ export function SpiritualProvider({ children }: { children: ReactNode }) {
       maritalStatus: undefined,
       verified: false,
       withPhoto: false,
+      recentlyJoined: false,
+      nearby: false,
       caste: undefined,
       casteGroup: undefined,
       casteSubcaste: undefined,
@@ -235,7 +276,7 @@ export function SpiritualProvider({ children }: { children: ReactNode }) {
       mangalik: undefined,
       residentialStatus: undefined
     };
-    
+
     setFiltersState(emptyFilters);
     setSearchResults(mockProfiles.slice(0, 10)); // Reset to first 10
   }, []);
@@ -248,6 +289,8 @@ export function SpiritualProvider({ children }: { children: ReactNode }) {
       casteSubcastes: [],
       annualIncomeMin: undefined,
       annualIncomeMax: undefined,
+      recentlyJoined: false,
+      nearby: false
     });
   }, []); // Run only once on mount
 
@@ -272,7 +315,7 @@ export const useSpiritualContext = () => {
   if (context === undefined) {
     // Return default values instead of throwing error
     return {
-      filters: { casteGroups: [], casteSubcastes: [], annualIncomeMin: undefined, annualIncomeMax: undefined },
+      filters: { casteGroups: [], casteSubcastes: [], annualIncomeMin: undefined, annualIncomeMax: undefined, recentlyJoined: false, nearby: false },
       searchResults: [],
       isSearching: false,
       setFilters: () => {},

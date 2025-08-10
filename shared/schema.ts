@@ -209,6 +209,12 @@ export const profileFilterSchema = z.object({
   festivalCelebrations: z.array(z.string()).optional(),
   preferredDeities: z.array(z.string()).optional(),
   spiritualMentor: z.string().optional(),
+
+  // Quick Filters
+  verified: z.boolean().optional(),
+  withPhoto: z.boolean().optional(),
+  recentlyJoined: z.boolean().optional(),
+  nearby: z.boolean().optional(),
 });
 
 // Types
