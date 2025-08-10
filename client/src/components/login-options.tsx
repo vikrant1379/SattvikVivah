@@ -537,7 +537,7 @@ function LoginOptions() {
                     <DialogHeader>
                       <DialogTitle>Login with OTP</DialogTitle>
                       <DialogDescription>
-                        {otpSent ? "Enter the OTP sent to your contact method" : "Enter your email or mobile number to receive OTP"}
+                        {otpSent ? "Please enter the 6-digit verification code" : "Enter your email or mobile number to receive OTP"}
                       </DialogDescription>
                     </DialogHeader>
 
