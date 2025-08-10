@@ -95,7 +95,7 @@ const Home = memo(() => {
       shloka: "प्रेम भक्ति च युक्तानां जीवनं परमं फलम्",
       meaning: "Life united in love and devotion bears highest fruit",
       gradient: "from-yellow-100 to-orange-100",
-      icon: "🎵"
+      icon: "🪶"
     }
   ];
 
