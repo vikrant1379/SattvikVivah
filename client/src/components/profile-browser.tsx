@@ -27,8 +27,8 @@ const ProfileBrowser = memo(() => {
 
   // Quick filter definitions
   const quickFilters: QuickFilter[] = useMemo(() => {
-    // Determine the source for counts: allProfiles if no search query, otherwise searchResults
-    const countSource = searchQuery ? searchResults : allProfiles;
+    // Always use filteredProfiles for accurate counts based on current view
+    const countSource = filteredProfiles;
 
     return [
       {
@@ -43,7 +43,7 @@ const ProfileBrowser = memo(() => {
         label: "Just Joined",
         icon: <Clock className="w-3 h-3" />,
         count: countSource.filter(p => {
-          const joinDate = new Date(p.createdAt || Date.now());
+          const joinDate = new Date(p.createdAt || p.joinedDate || Date.now());
           const now = new Date();
           const daysDiff = (now.getTime() - joinDate.getTime()) / (1000 * 3600 * 24);
           return daysDiff <= 30;
@@ -54,18 +54,18 @@ const ProfileBrowser = memo(() => {
         id: "nearby",
         label: "Nearby",
         icon: <MapPin className="w-3 h-3" />,
-        count: countSource.filter(p => p.city === "Mumbai" || p.city === "Delhi").length, // Example logic
+        count: countSource.filter(p => p.city === "Mumbai" || p.city === "Delhi" || p.city === "New Delhi").length,
         active: contextFilters.nearby || false
       },
       {
         id: "withPhoto",
         label: "With Photo",
         icon: <Users className="w-3 h-3" />,
-        count: countSource.filter(p => p.profilePicture).length,
+        count: countSource.filter(p => p.profilePicture || p.profileImage || p.withPhoto).length,
         active: contextFilters.withPhoto || false
       }
     ];
-  }, [searchResults, contextFilters, searchQuery, allProfiles]); // Added allProfiles to dependencies
+  }, [filteredProfiles, contextFilters])
 
   // Filter profiles based on search query only (quick filters are handled by spiritual context)
   const filteredProfiles = useMemo(() => {

@@ -155,9 +155,14 @@ const filterProfiles = (profiles: UserProfile[], filters: ProfileFilter): UserPr
 
     // Verification and photo filters
     if (filters.verified && !profile.verified) return false;
-    if (filters.withPhoto && !profile.withPhoto) return false;
-    if (filters.recentlyJoined && profile.joinedDate && new Date(profile.joinedDate) < new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)) return false; // Filter for last 7 days
-    if (filters.nearby && profile.distance && profile.distance > 10) return false; // Filter for profiles within 10 units of distance
+    if (filters.withPhoto && !(profile.withPhoto || profile.profilePicture || profile.profileImage)) return false;
+    if (filters.recentlyJoined) {
+      const joinDate = new Date(profile.joinedDate || profile.createdAt || Date.now());
+      const now = new Date();
+      const daysDiff = (now.getTime() - joinDate.getTime()) / (1000 * 3600 * 24);
+      if (daysDiff > 30) return false; // Filter for last 30 days
+    }
+    if (filters.nearby && !(profile.city === "Mumbai" || profile.city === "Delhi" || profile.city === "New Delhi")) return false;
 
 
     return true;
@@ -233,7 +238,9 @@ export function SpiritualProvider({ children }: { children: ReactNode }) {
 
   const setFilters = useCallback((newFilters: ProfileFilter) => {
     setFiltersState(newFilters);
-  }, []);
+    // Automatically search with new filters
+    searchProfiles(newFilters);
+  }, [searchProfiles]);
 
   const clearSearch = useCallback(() => {
     const emptyFilters: ProfileFilter = {
