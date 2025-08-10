@@ -9,8 +9,30 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Eye, EyeOff, Mail, Phone, User, Calendar, Heart } from "lucide-react";
+import { Mail, Phone, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+
+// Dummy data - replace with actual imports from your data files
+const religionOptions = ["Hinduism", "Buddhism", "Jainism", "Sikhism", "Christianity", "Islam", "Judaism", "Other"];
+const casteGroupOptions = ["Brahmin", "Kshatriya", "Vaishya", "Shudra", "Other", "No Preference"];
+const motherTongues = ["Hindi", "Bengali", "Telugu", "Tamil", "Gujarati", "Marathi", "Punjabi", "Malayalam", "Kannada", "English", "Other"];
+const countries = [
+  { value: "India", label: "India" },
+  { value: "USA", label: "USA" },
+  { value: "UK", label: "UK" },
+  { value: "Canada", label: "Canada" },
+  { value: "Australia", label: "Australia" },
+  { value: "Other", label: "Other" },
+];
+const heightOptions = [
+  "4'6\"", "4'7\"", "4'8\"", "4'9\"", "4'10\"", "4'11\"",
+  "5'0\"", "5'1\"", "5'2\"", "5'3\"", "5'4\"", "5'5\"", "5'6\"", "5'7\"", "5'8\"", "5'9\"", "5'10\"", "5'11\"",
+  "6'0\"", "6'1\"", "6'2\"", "6'3\"", "Above 6'3\""
+];
+const maritalStatusOptions = ["Never Married", "Divorced", "Widowed", "Separated"];
+const educationOptions = ["High School", "Bachelor's", "Master's", "Doctorate", "Diploma", "Professional", "Other"];
+const professionOptions = ["Software Engineer", "Doctor", "Teacher", "Business Owner", "Government Employee", "Private Employee", "Student", "Other"];
+const annualIncomeOptions = ["Below ₹2 Lakh", "₹2-5 Lakh", "₹5-10 Lakh", "₹10-15 Lakh", "₹15-25 Lakh", "₹25-50 Lakh", "₹50 Lakh - ₹1 Crore", "Above ₹1 Crore", "Prefer not to disclose"];
 
 // Email signup validation schema
 const emailSignupSchema = z.object({
@@ -399,14 +421,11 @@ function SignupOptions() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="Hinduism">Hinduism</SelectItem>
-                            <SelectItem value="Buddhism">Buddhism</SelectItem>
-                            <SelectItem value="Jainism">Jainism</SelectItem>
-                            <SelectItem value="Sikhism">Sikhism</SelectItem>
-                            <SelectItem value="Christianity">Christianity</SelectItem>
-                            <SelectItem value="Islam">Islam</SelectItem>
-                            <SelectItem value="Judaism">Judaism</SelectItem>
-                            <SelectItem value="Other">Other</SelectItem>
+                            {religionOptions.map((religion) => (
+                              <SelectItem key={religion} value={religion}>
+                                {religion}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -427,12 +446,11 @@ function SignupOptions() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="Brahmin">Brahmin</SelectItem>
-                            <SelectItem value="Kshatriya">Kshatriya</SelectItem>
-                            <SelectItem value="Vaishya">Vaishya</SelectItem>
-                            <SelectItem value="Shudra">Shudra</SelectItem>
-                            <SelectItem value="Other">Other</SelectItem>
-                            <SelectItem value="No Preference">No Preference</SelectItem>
+                            {casteGroupOptions.map((community) => (
+                              <SelectItem key={community} value={community}>
+                                {community}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -455,17 +473,11 @@ function SignupOptions() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="Hindi">Hindi</SelectItem>
-                          <SelectItem value="Bengali">Bengali</SelectItem>
-                          <SelectItem value="Telugu">Telugu</SelectItem>
-                          <SelectItem value="Tamil">Tamil</SelectItem>
-                          <SelectItem value="Gujarati">Gujarati</SelectItem>
-                          <SelectItem value="Marathi">Marathi</SelectItem>
-                          <SelectItem value="Punjabi">Punjabi</SelectItem>
-                          <SelectItem value="Malayalam">Malayalam</SelectItem>
-                          <SelectItem value="Kannada">Kannada</SelectItem>
-                          <SelectItem value="English">English</SelectItem>
-                          <SelectItem value="Other">Other</SelectItem>
+                          {motherTongues.map((language) => (
+                            <SelectItem key={language} value={language}>
+                              {language}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -488,12 +500,11 @@ function SignupOptions() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="India">India</SelectItem>
-                            <SelectItem value="USA">USA</SelectItem>
-                            <SelectItem value="UK">UK</SelectItem>
-                            <SelectItem value="Canada">Canada</SelectItem>
-                            <SelectItem value="Australia">Australia</SelectItem>
-                            <SelectItem value="Other">Other</SelectItem>
+                            {countries.map((country) => (
+                              <SelectItem key={country.value} value={country.value}>
+                                {country.label}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -551,29 +562,11 @@ function SignupOptions() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="4'6&quot;">4&apos;6&quot;</SelectItem>
-                            <SelectItem value="4'7&quot;">4&apos;7&quot;</SelectItem>
-                            <SelectItem value="4'8&quot;">4&apos;8&quot;</SelectItem>
-                            <SelectItem value="4'9&quot;">4&apos;9&quot;</SelectItem>
-                            <SelectItem value="4'10&quot;">4&apos;10&quot;</SelectItem>
-                            <SelectItem value="4'11&quot;">4&apos;11&quot;</SelectItem>
-                            <SelectItem value="5'0&quot;">5&apos;0&quot;</SelectItem>
-                            <SelectItem value="5'1&quot;">5&apos;1&quot;</SelectItem>
-                            <SelectItem value="5'2&quot;">5&apos;2&quot;</SelectItem>
-                            <SelectItem value="5'3&quot;">5&apos;3&quot;</SelectItem>
-                            <SelectItem value="5'4&quot;">5&apos;4&quot;</SelectItem>
-                            <SelectItem value="5'5&quot;">5&apos;5&quot;</SelectItem>
-                            <SelectItem value="5'6&quot;">5&apos;6&quot;</SelectItem>
-                            <SelectItem value="5'7&quot;">5&apos;7&quot;</SelectItem>
-                            <SelectItem value="5'8&quot;">5&apos;8&quot;</SelectItem>
-                            <SelectItem value="5'9&quot;">5&apos;9&quot;</SelectItem>
-                            <SelectItem value="5'10&quot;">5&apos;10&quot;</SelectItem>
-                            <SelectItem value="5'11&quot;">5&apos;11&quot;</SelectItem>
-                            <SelectItem value="6'0&quot;">6&apos;0&quot;</SelectItem>
-                            <SelectItem value="6'1&quot;">6&apos;1&quot;</SelectItem>
-                            <SelectItem value="6'2&quot;">6&apos;2&quot;</SelectItem>
-                            <SelectItem value="6'3&quot;">6&apos;3&quot;</SelectItem>
-                            <SelectItem value="Above 6'3&quot;">Above 6&apos;3&quot;</SelectItem>
+                            {heightOptions.map((height) => (
+                              <SelectItem key={height} value={height}>
+                                {height}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -594,10 +587,11 @@ function SignupOptions() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="Never Married">Never Married</SelectItem>
-                            <SelectItem value="Divorced">Divorced</SelectItem>
-                            <SelectItem value="Widowed">Widowed</SelectItem>
-                            <SelectItem value="Separated">Separated</SelectItem>
+                            {maritalStatusOptions.map((status) => (
+                              <SelectItem key={status} value={status}>
+                                {status}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -621,13 +615,11 @@ function SignupOptions() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="High School">High School</SelectItem>
-                            <SelectItem value="Bachelor's">Bachelor's</SelectItem>
-                            <SelectItem value="Master's">Master's</SelectItem>
-                            <SelectItem value="Doctorate">Doctorate</SelectItem>
-                            <SelectItem value="Diploma">Diploma</SelectItem>
-                            <SelectItem value="Professional">Professional</SelectItem>
-                            <SelectItem value="Other">Other</SelectItem>
+                            {educationOptions.map((education) => (
+                              <SelectItem key={education} value={education}>
+                                {education}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -648,14 +640,11 @@ function SignupOptions() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="Software Engineer">Software Engineer</SelectItem>
-                            <SelectItem value="Doctor">Doctor</SelectItem>
-                            <SelectItem value="Teacher">Teacher</SelectItem>
-                            <SelectItem value="Business Owner">Business Owner</SelectItem>
-                            <SelectItem value="Government Employee">Government Employee</SelectItem>
-                            <SelectItem value="Private Employee">Private Employee</SelectItem>
-                            <SelectItem value="Student">Student</SelectItem>
-                            <SelectItem value="Other">Other</SelectItem>
+                            {professionOptions.map((profession) => (
+                              <SelectItem key={profession} value={profession}>
+                                {profession}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -678,15 +667,11 @@ function SignupOptions() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="Below ₹2 Lakh">Below ₹2 Lakh</SelectItem>
-                          <SelectItem value="₹2-5 Lakh">₹2-5 Lakh</SelectItem>
-                          <SelectItem value="₹5-10 Lakh">₹5-10 Lakh</SelectItem>
-                          <SelectItem value="₹10-15 Lakh">₹10-15 Lakh</SelectItem>
-                          <SelectItem value="₹15-25 Lakh">₹15-25 Lakh</SelectItem>
-                          <SelectItem value="₹25-50 Lakh">₹25-50 Lakh</SelectItem>
-                          <SelectItem value="₹50 Lakh - ₹1 Crore">₹50 Lakh - ₹1 Crore</SelectItem>
-                          <SelectItem value="Above ₹1 Crore">Above ₹1 Crore</SelectItem>
-                          <SelectItem value="Prefer not to disclose">Prefer not to disclose</SelectItem>
+                          {annualIncomeOptions.map((income) => (
+                            <SelectItem key={income} value={income}>
+                              {income}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -916,14 +901,11 @@ function SignupOptions() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="Hinduism">Hinduism</SelectItem>
-                            <SelectItem value="Buddhism">Buddhism</SelectItem>
-                            <SelectItem value="Jainism">Jainism</SelectItem>
-                            <SelectItem value="Sikhism">Sikhism</SelectItem>
-                            <SelectItem value="Christianity">Christianity</SelectItem>
-                            <SelectItem value="Islam">Islam</SelectItem>
-                            <SelectItem value="Judaism">Judaism</SelectItem>
-                            <SelectItem value="Other">Other</SelectItem>
+                            {religionOptions.map((religion) => (
+                              <SelectItem key={religion} value={religion}>
+                                {religion}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -944,12 +926,11 @@ function SignupOptions() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="Brahmin">Brahmin</SelectItem>
-                            <SelectItem value="Kshatriya">Kshatriya</SelectItem>
-                            <SelectItem value="Vaishya">Vaishya</SelectItem>
-                            <SelectItem value="Shudra">Shudra</SelectItem>
-                            <SelectItem value="Other">Other</SelectItem>
-                            <SelectItem value="No Preference">No Preference</SelectItem>
+                            {casteGroupOptions.map((community) => (
+                              <SelectItem key={community} value={community}>
+                                {community}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -972,17 +953,11 @@ function SignupOptions() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="Hindi">Hindi</SelectItem>
-                          <SelectItem value="Bengali">Bengali</SelectItem>
-                          <SelectItem value="Telugu">Telugu</SelectItem>
-                          <SelectItem value="Tamil">Tamil</SelectItem>
-                          <SelectItem value="Gujarati">Gujarati</SelectItem>
-                          <SelectItem value="Marathi">Marathi</SelectItem>
-                          <SelectItem value="Punjabi">Punjabi</SelectItem>
-                          <SelectItem value="Malayalam">Malayalam</SelectItem>
-                          <SelectItem value="Kannada">Kannada</SelectItem>
-                          <SelectItem value="English">English</SelectItem>
-                          <SelectItem value="Other">Other</SelectItem>
+                          {motherTongues.map((language) => (
+                            <SelectItem key={language} value={language}>
+                              {language}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -1005,12 +980,11 @@ function SignupOptions() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="India">India</SelectItem>
-                            <SelectItem value="USA">USA</SelectItem>
-                            <SelectItem value="UK">UK</SelectItem>
-                            <SelectItem value="Canada">Canada</SelectItem>
-                            <SelectItem value="Australia">Australia</SelectItem>
-                            <SelectItem value="Other">Other</SelectItem>
+                            {countries.map((country) => (
+                              <SelectItem key={country.value} value={country.value}>
+                                {country.label}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -1068,29 +1042,11 @@ function SignupOptions() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="4'6&quot;">4&apos;6&quot;</SelectItem>
-                            <SelectItem value="4'7&quot;">4&apos;7&quot;</SelectItem>
-                            <SelectItem value="4'8&quot;">4&apos;8&quot;</SelectItem>
-                            <SelectItem value="4'9&quot;">4&apos;9&quot;</SelectItem>
-                            <SelectItem value="4'10&quot;">4&apos;10&quot;</SelectItem>
-                            <SelectItem value="4'11&quot;">4&apos;11&quot;</SelectItem>
-                            <SelectItem value="5'0&quot;">5&apos;0&quot;</SelectItem>
-                            <SelectItem value="5'1&quot;">5&apos;1&quot;</SelectItem>
-                            <SelectItem value="5'2&quot;">5&apos;2&quot;</SelectItem>
-                            <SelectItem value="5'3&quot;">5&apos;3&quot;</SelectItem>
-                            <SelectItem value="5'4&quot;">5&apos;4&quot;</SelectItem>
-                            <SelectItem value="5'5&quot;">5&apos;5&quot;</SelectItem>
-                            <SelectItem value="5'6&quot;">5&apos;6&quot;</SelectItem>
-                            <SelectItem value="5'7&quot;">5&apos;7&quot;</SelectItem>
-                            <SelectItem value="5'8&quot;">5&apos;8&quot;</SelectItem>
-                            <SelectItem value="5'9&quot;">5&apos;9&quot;</SelectItem>
-                            <SelectItem value="5'10&quot;">5&apos;10&quot;</SelectItem>
-                            <SelectItem value="5'11&quot;">5&apos;11&quot;</SelectItem>
-                            <SelectItem value="6'0&quot;">6&apos;0&quot;</SelectItem>
-                            <SelectItem value="6'1&quot;">6&apos;1&quot;</SelectItem>
-                            <SelectItem value="6'2&quot;">6&apos;2&quot;</SelectItem>
-                            <SelectItem value="6'3&quot;">6&apos;3&quot;</SelectItem>
-                            <SelectItem value="Above 6'3&quot;">Above 6&apos;3&quot;</SelectItem>
+                            {heightOptions.map((height) => (
+                              <SelectItem key={height} value={height}>
+                                {height}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -1111,10 +1067,11 @@ function SignupOptions() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="Never Married">Never Married</SelectItem>
-                            <SelectItem value="Divorced">Divorced</SelectItem>
-                            <SelectItem value="Widowed">Widowed</SelectItem>
-                            <SelectItem value="Separated">Separated</SelectItem>
+                            {maritalStatusOptions.map((status) => (
+                              <SelectItem key={status} value={status}>
+                                {status}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -1138,13 +1095,11 @@ function SignupOptions() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="High School">High School</SelectItem>
-                            <SelectItem value="Bachelor's">Bachelor's</SelectItem>
-                            <SelectItem value="Master's">Master's</SelectItem>
-                            <SelectItem value="Doctorate">Doctorate</SelectItem>
-                            <SelectItem value="Diploma">Diploma</SelectItem>
-                            <SelectItem value="Professional">Professional</SelectItem>
-                            <SelectItem value="Other">Other</SelectItem>
+                            {educationOptions.map((education) => (
+                              <SelectItem key={education} value={education}>
+                                {education}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -1165,14 +1120,11 @@ function SignupOptions() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="Software Engineer">Software Engineer</SelectItem>
-                            <SelectItem value="Doctor">Doctor</SelectItem>
-                            <SelectItem value="Teacher">Teacher</SelectItem>
-                            <SelectItem value="Business Owner">Business Owner</SelectItem>
-                            <SelectItem value="Government Employee">Government Employee</SelectItem>
-                            <SelectItem value="Private Employee">Private Employee</SelectItem>
-                            <SelectItem value="Student">Student</SelectItem>
-                            <SelectItem value="Other">Other</SelectItem>
+                            {professionOptions.map((profession) => (
+                              <SelectItem key={profession} value={profession}>
+                                {profession}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -1195,15 +1147,11 @@ function SignupOptions() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="Below ₹2 Lakh">Below ₹2 Lakh</SelectItem>
-                          <SelectItem value="₹2-5 Lakh">₹2-5 Lakh</SelectItem>
-                          <SelectItem value="₹5-10 Lakh">₹5-10 Lakh</SelectItem>
-                          <SelectItem value="₹10-15 Lakh">₹10-15 Lakh</SelectItem>
-                          <SelectItem value="₹15-25 Lakh">₹15-25 Lakh</SelectItem>
-                          <SelectItem value="₹25-50 Lakh">₹25-50 Lakh</SelectItem>
-                          <SelectItem value="₹50 Lakh - ₹1 Crore">₹50 Lakh - ₹1 Crore</SelectItem>
-                          <SelectItem value="Above ₹1 Crore">Above ₹1 Crore</SelectItem>
-                          <SelectItem value="Prefer not to disclose">Prefer not to disclose</SelectItem>
+                          {annualIncomeOptions.map((income) => (
+                            <SelectItem key={income} value={income}>
+                              {income}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -1222,8 +1170,6 @@ function SignupOptions() {
             </Form>
           </TabsContent>
         </Tabs>
-
-
       </CardContent>
     </Card>
   );
