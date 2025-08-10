@@ -1,4 +1,3 @@
-
 import { memo, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { User, Clover, ChevronDown, Settings, Heart, Star, Phone, HelpCircle, Shield, LogOut, Edit, Users, Gift } from "lucide-react";
@@ -16,7 +15,7 @@ const Header = memo(() => {
   const { isAuthenticated, user, logout } = useAuth();
 
   const handleProfileClick = () => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated()) { // Changed to function call
       setIsLoginOpen(true);
     }
   };
@@ -77,10 +76,10 @@ const Header = memo(() => {
 
           {/* User Profile Section */}
           <div className="flex items-center space-x-4">
-            {isAuthenticated && user ? (
+            {isAuthenticated() && user ? ( // Changed to function call
               <div className="flex items-center space-x-3">
                 <span className="text-sm text-gray-600 hidden md:block">Welcome, {user.firstName}</span>
-                
+
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="p-0 h-auto hover:bg-gray-50">
@@ -100,7 +99,7 @@ const Header = memo(() => {
                       </div>
                     </Button>
                   </DropdownMenuTrigger>
-                  
+
                   <DropdownMenuContent className="w-64 p-0" align="end">
                     {/* User Info Header */}
                     <div className="p-4 bg-gradient-to-r from-saffron/5 to-temple-gold/5 border-b">
@@ -118,7 +117,7 @@ const Header = memo(() => {
                           )}
                         </div>
                       </div>
-                      
+
                       {/* Upgrade Membership Button */}
                       <Button 
                         className="w-full mt-3 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-medium"
@@ -136,46 +135,46 @@ const Header = memo(() => {
                         <Edit className="w-4 h-4 text-gray-500" />
                         <span>Edit Profile</span>
                       </DropdownMenuItem>
-                      
+
                       <DropdownMenuItem className="flex items-center space-x-3 px-3 py-2 cursor-pointer">
                         <Heart className="w-4 h-4 text-gray-500" />
                         <span>Partner Preferences</span>
                       </DropdownMenuItem>
-                      
+
                       <DropdownMenuItem className="flex items-center space-x-3 px-3 py-2 cursor-pointer">
                         <Star className="w-4 h-4 text-gray-500" />
                         <span>Astrology Services</span>
                       </DropdownMenuItem>
-                      
+
                       <DropdownMenuItem className="flex items-center space-x-3 px-3 py-2 cursor-pointer">
                         <Phone className="w-4 h-4 text-gray-500" />
                         <span>Phonebook</span>
                       </DropdownMenuItem>
-                      
+
                       <DropdownMenuSeparator />
-                      
+
                       <DropdownMenuItem className="flex items-center space-x-3 px-3 py-2 cursor-pointer">
                         <Settings className="w-4 h-4 text-gray-500" />
                         <span>Account & Settings</span>
                       </DropdownMenuItem>
-                      
+
                       <DropdownMenuItem className="flex items-center space-x-3 px-3 py-2 cursor-pointer">
                         <Shield className="w-4 h-4 text-gray-500" />
                         <span>Safety Centre</span>
                       </DropdownMenuItem>
-                      
+
                       <DropdownMenuItem className="flex items-center space-x-3 px-3 py-2 cursor-pointer">
                         <HelpCircle className="w-4 h-4 text-gray-500" />
                         <span>Help & Support</span>
                       </DropdownMenuItem>
-                      
+
                       <DropdownMenuItem className="flex items-center space-x-3 px-3 py-2 cursor-pointer">
                         <Users className="w-4 h-4 text-gray-500" />
                         <span>Success Stories</span>
                       </DropdownMenuItem>
-                      
+
                       <DropdownMenuSeparator />
-                      
+
                       <DropdownMenuItem 
                         className="flex items-center space-x-3 px-3 py-2 cursor-pointer text-red-600 focus:text-red-600"
                         onClick={handleLogout}
@@ -197,7 +196,7 @@ const Header = memo(() => {
                   <User className="w-4 h-4 text-gray-600" />
                   <span className="text-sm font-medium text-gray-700">Login</span>
                 </Button>
-                
+
                 <Button
                   onClick={handleProfileClick}
                   className="bg-saffron hover:bg-saffron/90 text-white px-4 py-2 rounded-lg font-medium text-sm"
