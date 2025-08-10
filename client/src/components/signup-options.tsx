@@ -84,25 +84,31 @@ function SignupOptions() {
     const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const numbers = '0123456789';
     const symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?';
-    
+
     const allChars = lowercase + uppercase + numbers + symbols;
     let password = '';
-    
+
     // Ensure at least one character from each required category
     password += lowercase[Math.floor(Math.random() * lowercase.length)];
     password += uppercase[Math.floor(Math.random() * uppercase.length)];
     password += numbers[Math.floor(Math.random() * numbers.length)];
     password += symbols[Math.floor(Math.random() * symbols.length)];
-    
+
     // Fill the rest randomly (8 more characters for total of 12)
     for (let i = 4; i < 12; i++) {
       password += allChars[Math.floor(Math.random() * allChars.length)];
     }
-    
+
     // Shuffle the password
     password = password.split('').sort(() => Math.random() - 0.5).join('');
-    
+
     form.setValue('password', password);
+    // Trigger validation for the password field
+    form.trigger('password');
+
+    toast({
+      description: "Password generated successfully!"
+    });
   };
 
   const form = useForm<SignupForm>({

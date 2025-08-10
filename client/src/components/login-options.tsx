@@ -55,7 +55,7 @@ const otpVerifySchema = z.object({
 const forgotPasswordSchema = z.object({
   contactMethod: z.string().min(1, "Please enter email or mobile number"),
   otp: z.string().optional(),
-  newPassword: z.string().optional(),
+  newPassword: z.string().min(8, "Password must be at least 8 characters"), // Added min length for new password
   confirmPassword: z.string().optional(),
 }).refine((data) => {
   if (data.newPassword && data.confirmPassword) {
@@ -243,6 +243,26 @@ function LoginOptions() {
     setOtpSent(false);
     otpRequestForm.reset();
     otpVerifyForm.reset();
+  };
+
+  const generatePassword = () => {
+    const length = 9; // Set a length that meets the minimum requirement
+    const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
+    let password = "";
+    for (let i = 0; i < length; i++) {
+      password += charset.charAt(Math.floor(Math.random() * charset.length));
+    }
+
+    // Shuffle the password
+    password = password.split('').sort(() => Math.random() - 0.5).join('');
+
+    forgotPasswordForm.setValue('newPassword', password);
+    // Trigger validation for the password field
+    forgotPasswordForm.trigger('newPassword');
+
+    toast({
+      description: "Password generated successfully!"
+    });
   };
 
   return (

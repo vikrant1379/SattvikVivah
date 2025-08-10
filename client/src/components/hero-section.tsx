@@ -27,10 +27,10 @@ const emailSchema = z.string()
     const parts = email.split('@');
     if (parts.length !== 2) return false;
     const [localPart, domain] = parts;
-    
+
     // Check local part is not empty and domain exists
     if (!localPart || !domain) return false;
-    
+
     // Check domain has at least one dot and proper structure
     const domainParts = domain.split('.');
     return domainParts.length >= 2 && domainParts.every(part => part.length > 0);
@@ -77,17 +77,17 @@ const checkPasswordStrength = (password: string): PasswordStrength => {
   const hasNumber = /\d/.test(password);
   const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
   const hasMinLength = password.length >= 8;
-  
+
   const checks = [hasLowercase, hasUppercase, hasNumber, hasSpecial, hasMinLength];
   const score = checks.filter(Boolean).length;
-  
+
   const feedback: string[] = [];
   if (!hasMinLength) feedback.push("At least 8 characters");
   if (!hasLowercase) feedback.push("One lowercase letter");
   if (!hasUppercase) feedback.push("One uppercase letter");
   if (!hasNumber) feedback.push("One number");
   if (!hasSpecial) feedback.push("One special character");
-  
+
   return {
     score,
     feedback,
@@ -105,22 +105,24 @@ const generateSecurePassword = (): string => {
   const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const numbers = '0123456789';
   const symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?';
-  
+
   // Ensure at least one character from each category
   let password = '';
   password += lowercase[Math.floor(Math.random() * lowercase.length)];
   password += uppercase[Math.floor(Math.random() * uppercase.length)];
   password += numbers[Math.floor(Math.random() * numbers.length)];
   password += symbols[Math.floor(Math.random() * symbols.length)];
-  
+
   // Fill remaining 8 characters randomly
   const allChars = lowercase + uppercase + numbers + symbols;
   for (let i = 4; i < 12; i++) {
     password += allChars[Math.floor(Math.random() * allChars.length)];
   }
-  
+
   // Shuffle the password
-  return password.split('').sort(() => Math.random() - 0.5).join('');
+  password = password.split('').sort(() => Math.random() - 0.5).join('');
+
+  return password;
 };
 
 const HeroSection = memo(() => {
@@ -166,12 +168,14 @@ const HeroSection = memo(() => {
   const generatePassword = useCallback(() => {
     const newPassword = generateSecurePassword();
     form.setValue('password', newPassword);
-    setPasswordStrength(checkPasswordStrength(newPassword));
+    // Trigger validation for the password field
+    form.trigger('password');
+    handlePasswordChange(newPassword);
+
     toast({
-      title: "Password Generated",
-      description: "A strong password has been generated for you.",
+      description: "Strong password generated successfully!"
     });
-  }, [form, toast]);
+  }, [form, toast, handlePasswordChange]);
 
   const handlePasswordChange = useCallback((value: string) => {
     setPasswordStrength(checkPasswordStrength(value));
@@ -205,7 +209,7 @@ const HeroSection = memo(() => {
                 </div>
               </div>
             </div>
-            
+
             {/* Quick Registration Form */}
             <Card className="bg-card/95 backdrop-blur-sm border border-temple-gold/30 shadow-xl hover-elevate">
               <CardHeader>
@@ -241,7 +245,7 @@ const HeroSection = memo(() => {
                           </FormItem>
                         )}
                       />
-                      
+
                       <FormField
                         control={form.control}
                         name="gender"
@@ -264,7 +268,7 @@ const HeroSection = memo(() => {
                         )}
                       />
                     </div>
-                    
+
                     <FormField
                       control={form.control}
                       name="email"
@@ -272,11 +276,11 @@ const HeroSection = memo(() => {
                         <FormItem>
                           <FormLabel>Email Address</FormLabel>
                           <FormControl>
-                            <Input 
-                              placeholder="your.email@example.com" 
+                            <Input
+                              placeholder="your.email@example.com"
                               type="email"
                               autoComplete="email"
-                              {...field} 
+                              {...field}
                             />
                           </FormControl>
                           <p className="text-xs text-muted-foreground mt-1">
@@ -286,7 +290,7 @@ const HeroSection = memo(() => {
                         </FormItem>
                       )}
                     />
-                    
+
                     <FormField
                       control={form.control}
                       name="password"
@@ -307,8 +311,8 @@ const HeroSection = memo(() => {
                           </FormLabel>
                           <FormControl>
                             <div className="relative">
-                              <Input 
-                                placeholder="Create a strong password" 
+                              <Input
+                                placeholder="Create a strong password"
                                 type={showPassword ? "text" : "password"}
                                 {...field}
                                 onChange={(e) => {
@@ -331,7 +335,7 @@ const HeroSection = memo(() => {
                               </Button>
                             </div>
                           </FormControl>
-                          
+
                           {/* Password Strength Indicator */}
                           {field.value && passwordStrength && (
                             <div className="space-y-2">
@@ -363,7 +367,7 @@ const HeroSection = memo(() => {
                                   {passwordStrength.score === 5 && 'Strong'}
                                 </span>
                               </div>
-                              
+
                               {/* Password Requirements */}
                               {passwordStrength.feedback.length > 0 && (
                                 <div className="space-y-1">
@@ -378,7 +382,7 @@ const HeroSection = memo(() => {
                                   </div>
                                 </div>
                               )}
-                              
+
                               {/* Password Requirements Met */}
                               {passwordStrength.score === 5 && (
                                 <div className="flex items-center space-x-2 text-xs text-green-600">
@@ -388,26 +392,26 @@ const HeroSection = memo(() => {
                               )}
                             </div>
                           )}
-                          
+
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                    
-                    <Button 
-                      type="submit" 
+
+                    <Button
+                      type="submit"
                       className="w-full bg-saffron text-primary-foreground hover:bg-saffron/90 shadow-lg hover-elevate font-medium"
                       disabled={isSubmitting || (passwordStrength && passwordStrength.score < 4)}
                     >
                       {isSubmitting ? "Creating Account..." : "Start Your Spiritual Journey"}
                     </Button>
-                    
+
                     {passwordStrength && passwordStrength.score < 4 && (
                       <p className="text-xs text-yellow-600 text-center mt-1">
                         Please create a stronger password to continue
                       </p>
                     )}
-                    
+
                     <div className="space-y-2">
                       <p className="text-xs text-muted-foreground text-center">
                         By registering, you accept our <a href="#" className="text-saffron hover:underline">Terms</a> and <a href="#" className="text-saffron hover:underline">Privacy Policy</a>
@@ -421,12 +425,12 @@ const HeroSection = memo(() => {
               </CardContent>
             </Card>
           </div>
-          
+
           <div className="relative">
-            <img 
-              src="https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600" 
-              alt="Spiritual couple in traditional attire" 
-              className="rounded-2xl shadow-2xl w-full animate-float" 
+            <img
+              src="https://images.unsplash.com/photo-15838472689644?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600"
+              alt="Spiritual couple in traditional attire"
+              className="rounded-2xl shadow-2xl w-full animate-float"
             />
             <div className="absolute -top-6 -left-6 w-24 h-24 bg-temple-gold/20 rounded-full flex items-center justify-center animate-lotus-bloom border border-temple-gold/30">
               <span className="text-temple-gold text-2xl font-devanagari">ॐ</span>
