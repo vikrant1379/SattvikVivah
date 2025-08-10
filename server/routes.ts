@@ -12,53 +12,7 @@ import { countries, statesByCountry, citiesByState } from "../client/src/data/lo
 import crypto from 'crypto';
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Authentication routes
-  app.post("/api/auth/login", async (req, res) => {
-    try {
-      const { email, mobile, password } = req.body;
-
-      if (!password) {
-        return res.status(400).json({ error: "Password is required" });
-      }
-
-      let user;
-      if (email) {
-        // Email login
-        const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-        if (!emailRegex.test(email)) {
-          return res.status(400).json({ error: "Invalid email format" });
-        }
-        user = await storage.getUserByEmail(email);
-      } else if (mobile) {
-        // Mobile login
-        const mobileRegex = /^[6-9]\d{9}$/;
-        if (!mobileRegex.test(mobile.replace(/\D/g, ''))) {
-          return res.status(400).json({ error: "Invalid mobile number format" });
-        }
-        user = await storage.getUserByMobile(mobile);
-      } else {
-        return res.status(400).json({ error: "Email or mobile number is required" });
-      }
-
-      if (!user) {
-        return res.status(401).json({ error: "Invalid credentials" });
-      }
-
-      // Here you would verify the password (implement password hashing/comparison)
-      // For now, we'll just return success
-      res.json({
-        user: {
-          id: user.id,
-          email: user.email,
-          profileFor: user.profileFor,
-          gender: user.gender
-        },
-        message: "Login successful"
-      });
-    } catch (error) {
-      res.status(500).json({ error: "Login failed" });
-    }
-  });
+  
 
   // User routes
   app.post("/api/users", async (req, res) => {
@@ -352,14 +306,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({ languages });
   });
 
-  // Authentication routes
+  // Mock Authentication routes
   app.post('/api/auth/login', (req, res) => {
     const { email, mobile, password, otp, stayLoggedIn } = req.body;
 
     // Mock authentication logic
     if (password === 'demo123' || otp === '123456') {
       const user = {
-        id: '1',
+        id: crypto.randomBytes(16).toString('hex'),
         firstName: 'Demo',
         lastName: 'User',
         email: email || 'demo@example.com',
