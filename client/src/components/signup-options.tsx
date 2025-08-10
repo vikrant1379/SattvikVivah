@@ -150,6 +150,7 @@ function SignupOptions() {
                       <FormControl>
                         <Input
                           placeholder="Enter first name"
+                          className="bg-background"
                           {...field}
                         />
                       </FormControl>
@@ -167,6 +168,7 @@ function SignupOptions() {
                       <FormControl>
                         <Input
                           placeholder="Enter last name"
+                          className="bg-background"
                           {...field}
                         />
                       </FormControl>
@@ -188,6 +190,7 @@ function SignupOptions() {
                         <Input
                           type="email"
                           placeholder="your.email@example.com"
+                          className="bg-background"
                           {...field}
                         />
                       </FormControl>
@@ -203,14 +206,14 @@ function SignupOptions() {
                     <FormItem>
                       <FormLabel>Mobile Number</FormLabel>
                       <FormControl>
-                        <div className="flex">
-                          <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-input bg-muted text-muted-foreground text-sm">
+                        <div className="flex border border-input rounded-md overflow-hidden focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 bg-background">
+                          <span className="inline-flex items-center px-3 bg-background text-foreground text-sm border-r border-input">
                             +91
                           </span>
                           <Input
                             type="tel"
                             placeholder="9876543210"
-                            className="rounded-l-none"
+                            className="border-0 rounded-none focus:ring-0 focus:ring-offset-0 bg-background"
                             {...field}
                             onChange={(e) => {
                               const formatted = formatMobileNumber(e.target.value);
@@ -237,6 +240,7 @@ function SignupOptions() {
                         <Input
                           type={showPassword ? "text" : "password"}
                           placeholder="Create a strong password"
+                          className="bg-background"
                           {...field}
                         />
                         <Button
@@ -269,6 +273,7 @@ function SignupOptions() {
                     <FormControl>
                       <Input
                         type="date"
+                        className="bg-background"
                         {...field}
                       />
                     </FormControl>
@@ -467,6 +472,7 @@ function SignupOptions() {
                       <FormControl>
                         <Input
                           placeholder="Enter state"
+                          className="bg-background"
                           {...field}
                         />
                       </FormControl>
@@ -484,6 +490,7 @@ function SignupOptions() {
                       <FormControl>
                         <Input
                           placeholder="Enter city"
+                          className="bg-background"
                           {...field}
                         />
                       </FormControl>
