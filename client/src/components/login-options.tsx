@@ -537,7 +537,7 @@ function LoginOptions() {
                     <DialogHeader>
                       <DialogTitle>Login with OTP</DialogTitle>
                       <DialogDescription>
-                        {otpSent ? "Please enter the 6-digit verification code" : "Enter your email or mobile number to receive OTP"}
+                        {otpSent ? "" : "Enter your email or mobile number to receive OTP"}
                       </DialogDescription>
                     </DialogHeader>
 
@@ -624,7 +624,7 @@ function LoginOptions() {
                               className="flex-1"
                               onClick={() => setOtpSent(false)}
                             >
-                              Change Number
+                              Change Number/Email
                             </Button>
                             <Button
                               type="submit"
