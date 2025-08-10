@@ -1,13 +1,43 @@
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { AuthService } from '@/services';
-import { LoginCredentials, LoginResponse, AuthUser } from '@/types';
-import { handleApiError } from '@/utils';
+
+interface LoginCredentials {
+  email?: string;
+  mobile?: string;
+  password?: string;
+  otp?: string;
+  stayLoggedIn?: boolean;
+}
+
+interface AuthUser {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  mobile: string;
+  isVerified: boolean;
+}
 
 export const useAuth = () => {
   const [user, setUser] = useState<AuthUser | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Load user on mount
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const currentUser = await AuthService.getCurrentUser();
+        setUser(currentUser);
+      } catch (err) {
+        console.error('Failed to load user:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadUser();
+  }, []);
 
   const login = useCallback(async (credentials: LoginCredentials): Promise<boolean> => {
     setIsLoading(true);
@@ -15,13 +45,90 @@ export const useAuth = () => {
 
     try {
       const response = await AuthService.login(credentials);
-      setUser(response.user);
-      return true;
+      if (response.success) {
+        setUser(response.user);
+        return true;
+      } else {
+        setError(response.message || 'Login failed');
+        return false;
+      }
     } catch (err) {
-      setError(handleApiError(err));
+      setError(err instanceof Error ? err.message : 'Login failed');
       return false;
     } finally {
       setIsLoading(false);
+    }
+  }, []);
+
+  const signup = useCallback(async (userData: any): Promise<boolean> => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await AuthService.signup(userData);
+      if (response.success) {
+        setUser(response.user);
+        return true;
+      } else {
+        setError(response.message || 'Signup failed');
+        return false;
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Signup failed');
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const sendOtp = useCallback(async (contactMethod: string): Promise<boolean> => {
+    setError(null);
+    try {
+      const response = await AuthService.sendOtp(contactMethod);
+      if (!response.success) {
+        setError(response.message || 'Failed to send OTP');
+        return false;
+      }
+      return true;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to send OTP');
+      return false;
+    }
+  }, []);
+
+  const verifyOtp = useCallback(async (contactMethod: string, otp: string, stayLoggedIn?: boolean): Promise<boolean> => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await AuthService.verifyOtp(contactMethod, otp, stayLoggedIn);
+      if (response.success) {
+        setUser(response.user);
+        return true;
+      } else {
+        setError(response.message || 'OTP verification failed');
+        return false;
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'OTP verification failed');
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const resetPassword = useCallback(async (contactMethod: string, otp: string, newPassword: string): Promise<boolean> => {
+    setError(null);
+    try {
+      const response = await AuthService.resetPassword(contactMethod, otp, newPassword);
+      if (!response.success) {
+        setError(response.message || 'Password reset failed');
+        return false;
+      }
+      return true;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Password reset failed');
+      return false;
     }
   }, []);
 
@@ -31,7 +138,7 @@ export const useAuth = () => {
       await AuthService.logout();
       setUser(null);
     } catch (err) {
-      setError(handleApiError(err));
+      setError(err instanceof Error ? err.message : 'Logout failed');
     } finally {
       setIsLoading(false);
     }
@@ -41,12 +148,21 @@ export const useAuth = () => {
     return AuthService.isAuthenticated();
   }, []);
 
+  const clearError = useCallback(() => {
+    setError(null);
+  }, []);
+
   return {
     user,
     isLoading,
     error,
     login,
+    signup,
+    sendOtp,
+    verifyOtp,
+    resetPassword,
     logout,
-    isAuthenticated
+    isAuthenticated,
+    clearError
   };
 };

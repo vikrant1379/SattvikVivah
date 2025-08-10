@@ -9,6 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Eye, EyeOff, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
 
 // Dummy data - replace with actual imports from your data files
 const religionOptions = ["Hinduism", "Buddhism", "Jainism", "Sikhism", "Christianity", "Islam", "Judaism", "Other"];
@@ -78,6 +79,7 @@ type SignupForm = z.infer<typeof signupSchema>;
 function SignupOptions() {
   const [showPassword, setShowPassword] = useState(false);
   const { toast } = useToast();
+  const { signup, isLoading, error, clearError } = useAuth();
 
   const generatePassword = () => {
     const lowercase = 'abcdefghijklmnopqrstuvwxyz';
@@ -138,17 +140,18 @@ function SignupOptions() {
   });
 
   const handleSignup = async (data: SignupForm) => {
-    try {
-      // Add your signup logic here
-      console.log("Signup data:", data);
+    clearError();
+    const success = await signup(data);
+
+    if (success) {
       toast({
         title: "Account Created Successfully!",
-        description: "Please verify your email or mobile number to complete your registration.",
+        description: "Welcome to SattvikVivah! Your spiritual journey begins now.",
       });
-    } catch (error) {
+    } else {
       toast({
         title: "Signup Failed",
-        description: "Please try again later.",
+        description: error || "Please try again later.",
         variant: "destructive",
       });
     }
@@ -679,9 +682,9 @@ function SignupOptions() {
               <Button
               type="submit"
               className="w-full bg-saffron hover:bg-saffron/90"
-              disabled={form.formState.isSubmitting}
+              disabled={form.formState.isSubmitting || isLoading}
             >
-              {form.formState.isSubmitting ? "Creating Account..." : "Create Account"}
+              {form.formState.isSubmitting || isLoading ? "Creating Account..." : "Create Account"}
             </Button>
           </form>
         </Form>

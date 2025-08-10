@@ -13,6 +13,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff, Mail, Phone, Smartphone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
 
 // Login validation schemas
 const emailLoginSchema = z.object({
@@ -84,6 +85,7 @@ function LoginOptions() {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { toast } = useToast();
+  const { login, sendOtp, verifyOtp, resetPassword, isLoading, error, clearError } = useAuth();
 
   // Forms
   const emailForm = useForm<EmailLoginForm>({
@@ -113,58 +115,74 @@ function LoginOptions() {
 
   // Handlers
   const handleEmailLogin = async (data: EmailLoginForm) => {
-    try {
-      console.log("Email login:", data);
+    clearError();
+    const success = await login({
+      email: data.email,
+      password: data.password,
+      stayLoggedIn: data.stayLoggedIn
+    });
+
+    if (success) {
       toast({
         title: "Login Successful",
         description: "Welcome back to SattvikVivah!",
       });
-    } catch (error) {
+    } else {
       toast({
         title: "Login Failed",
-        description: "Invalid credentials. Please try again.",
+        description: error || "Invalid credentials. Please try again.",
         variant: "destructive",
       });
     }
   };
 
   const handleMobileLogin = async (data: MobileLoginForm) => {
-    try {
-      console.log("Mobile login:", data);
+    clearError();
+    const success = await login({
+      mobile: data.mobile,
+      password: data.password,
+      stayLoggedIn: data.stayLoggedIn
+    });
+
+    if (success) {
       toast({
         title: "Login Successful",
         description: "Welcome back to SattvikVivah!",
       });
-    } catch (error) {
+    } else {
       toast({
         title: "Login Failed",
-        description: "Invalid credentials. Please try again.",
+        description: error || "Invalid credentials. Please try again.",
         variant: "destructive",
       });
     }
   };
 
   const handleOtpRequest = async (data: OtpRequestForm) => {
-    try {
-      console.log("Sending OTP to:", data.contactMethod);
+    clearError();
+    const success = await sendOtp(data.contactMethod);
+    
+    if (success) {
       setOtpContactMethod(data.contactMethod);
       setOtpSent(true);
       toast({
         title: "OTP Sent",
         description: "Please check your email/mobile for the OTP.",
       });
-    } catch (error) {
+    } else {
       toast({
         title: "Error",
-        description: "Failed to send OTP. Please try again.",
+        description: error || "Failed to send OTP. Please try again.",
         variant: "destructive",
       });
     }
   };
 
   const handleOtpVerify = async (data: OtpVerifyForm) => {
-    try {
-      console.log("OTP login:", { contactMethod: otpContactMethod, ...data });
+    clearError();
+    const success = await verifyOtp(otpContactMethod, data.otp, data.stayLoggedIn);
+    
+    if (success) {
       setOtpModalOpen(false);
       setOtpSent(false);
       otpRequestForm.reset();
@@ -173,10 +191,10 @@ function LoginOptions() {
         title: "Login Successful",
         description: "Welcome back to SattvikVivah!",
       });
-    } catch (error) {
+    } else {
       toast({
         title: "Login Failed",
-        description: "Invalid OTP. Please try again.",
+        description: error || "Invalid OTP. Please try again.",
         variant: "destructive",
       });
     }
@@ -184,38 +202,36 @@ function LoginOptions() {
 
   const handleForgotPasswordSubmit = async (data: ForgotPasswordForm) => {
     if (forgotPasswordStep === "contact") {
-      try {
-        console.log("Sending reset OTP to:", data.contactMethod);
+      clearError();
+      const success = await sendOtp(data.contactMethod);
+      
+      if (success) {
         setForgotPasswordStep("otp");
         toast({
           title: "OTP Sent",
           description: "Please check your email/mobile for the reset OTP.",
         });
-      } catch (error) {
+      } else {
         toast({
           title: "Error",
-          description: "Failed to send OTP. Please try again.",
+          description: error || "Failed to send OTP. Please try again.",
           variant: "destructive",
         });
       }
     } else if (forgotPasswordStep === "otp") {
-      try {
-        console.log("Verifying OTP:", data.otp);
-        setForgotPasswordStep("reset");
-        toast({
-          title: "OTP Verified",
-          description: "Please enter your new password.",
-        });
-      } catch (error) {
-        toast({
-          title: "Invalid OTP",
-          description: "Please enter a valid OTP.",
-          variant: "destructive",
-        });
-      }
+      // Just move to reset step without verification for UX flow
+      setForgotPasswordStep("reset");
+      toast({
+        title: "OTP Verified",
+        description: "Please enter your new password.",
+      });
     } else if (forgotPasswordStep === "reset") {
-      try {
-        console.log("Resetting password");
+      if (!data.otp || !data.newPassword) return;
+      
+      clearError();
+      const success = await resetPassword(data.contactMethod, data.otp, data.newPassword);
+      
+      if (success) {
         setForgotPasswordOpen(false);
         setForgotPasswordStep("contact");
         forgotPasswordForm.reset();
@@ -223,10 +239,10 @@ function LoginOptions() {
           title: "Password Reset Successful",
           description: "Your password has been updated. Please login with your new password.",
         });
-      } catch (error) {
+      } else {
         toast({
           title: "Error",
-          description: "Failed to reset password. Please try again.",
+          description: error || "Failed to reset password. Please try again.",
           variant: "destructive",
         });
       }
@@ -246,19 +262,33 @@ function LoginOptions() {
   };
 
   const generatePassword = () => {
-    const length = 9; // Set a length that meets the minimum requirement
-    const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
-    let password = "";
-    for (let i = 0; i < length; i++) {
-      password += charset.charAt(Math.floor(Math.random() * charset.length));
+    const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+    const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const numbers = '0123456789';
+    const symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+    
+    let password = '';
+    
+    // Ensure at least one from each category
+    password += lowercase[Math.floor(Math.random() * lowercase.length)];
+    password += uppercase[Math.floor(Math.random() * uppercase.length)];
+    password += numbers[Math.floor(Math.random() * numbers.length)];
+    password += symbols[Math.floor(Math.random() * symbols.length)];
+    
+    // Fill remaining with random characters
+    const allChars = lowercase + uppercase + numbers + symbols;
+    for (let i = 4; i < 12; i++) {
+      password += allChars[Math.floor(Math.random() * allChars.length)];
     }
-
+    
     // Shuffle the password
     password = password.split('').sort(() => Math.random() - 0.5).join('');
 
     forgotPasswordForm.setValue('newPassword', password);
-    // Trigger validation for the password field
-    forgotPasswordForm.trigger('newPassword');
+    forgotPasswordForm.setValue('confirmPassword', password);
+    
+    // Trigger validation for both fields
+    forgotPasswordForm.trigger(['newPassword', 'confirmPassword']);
 
     toast({
       description: "Password generated successfully!"

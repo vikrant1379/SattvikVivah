@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import LoginOptions from "@/components/login-options";
 import SignupOptions from "@/components/signup-options";
+import { useAuth } from "@/hooks/use-auth";
 import { Heart, Search, Users, Star, Shield, CheckCircle, Award, Lock, Crown, Phone } from "lucide-react";
 
 const Home = memo(() => {
@@ -30,12 +31,10 @@ const Home = memo(() => {
 
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
+  const { isAuthenticated, user } = useAuth();
 
   const handleFindMatches = () => {
-    // Check if user is authenticated (replace with actual auth check)
-    const isAuthenticated = false; // This should come from auth context
-    
-    if (isAuthenticated) {
+    if (isAuthenticated()) {
       setLocation('/profiles');
     } else {
       setIsLoginModalOpen(true);

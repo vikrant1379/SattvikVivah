@@ -9,6 +9,7 @@ import {
 } from "@shared/schema";
 import { z } from "zod";
 import { countries, statesByCountry, citiesByState } from "../client/src/data/locations.js";
+import crypto from 'crypto';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Authentication routes
@@ -153,10 +154,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Process caste combinations if both groups and subcastes are selected
       if (filters.casteGroups?.length && filters.casteSubcastes?.length) {
         const combinedCastes: string[] = [];
-        
+
         const hasAllGroups = filters.casteGroups.includes("All");
         const hasAllSubcastes = filters.casteSubcastes.includes("All");
-        
+
         if (hasAllGroups && hasAllSubcastes) {
           // If both "All" are selected, don't filter by caste at all
           filters.combinedCastes = [];
@@ -344,10 +345,124 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/languages", (req, res) => {
     const languages = [
-      "Hindi", "Bengali", "Tamil", "Telugu", "Gujarati", "Marathi", "Kannada",
-      "Malayalam", "Punjabi", "Oriya", "Assamese", "Urdu", "Sanskrit", "English"
+      "Hindi", "Bengali", "Tamil", "Telugu", "Gujarati", "Marathi",
+      "Punjabi", "Malayalam", "Kannada", "English", "Urdu", "Odia",
+      "Assamese", "Other"
     ];
     res.json({ languages });
+  });
+
+  // Authentication routes
+  app.post('/api/auth/login', (req, res) => {
+    const { email, mobile, password, otp, stayLoggedIn } = req.body;
+
+    // Mock authentication logic
+    if (password === 'demo123' || otp === '123456') {
+      const user = {
+        id: '1',
+        firstName: 'Demo',
+        lastName: 'User',
+        email: email || 'demo@example.com',
+        mobile: mobile || '9876543210',
+        isVerified: true
+      };
+
+      const token = crypto.randomBytes(32).toString('hex');
+
+      res.json({
+        success: true,
+        user,
+        token,
+        message: 'Login successful'
+      });
+    } else {
+      res.status(401).json({
+        success: false,
+        message: 'Invalid credentials'
+      });
+    }
+  });
+
+  app.post('/api/auth/signup', (req, res) => {
+    const userData = req.body;
+
+    // Mock signup logic
+    const user = {
+      id: crypto.randomBytes(16).toString('hex'),
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      email: userData.email,
+      mobile: userData.mobile,
+      isVerified: false
+    };
+
+    const token = crypto.randomBytes(32).toString('hex');
+
+    res.json({
+      success: true,
+      user,
+      token,
+      message: 'Account created successfully'
+    });
+  });
+
+  app.post('/api/auth/send-otp', (req, res) => {
+    const { contactMethod } = req.body;
+
+    // Mock OTP sending
+    console.log(`Sending OTP to: ${contactMethod}`);
+
+    res.json({
+      success: true,
+      message: 'OTP sent successfully'
+    });
+  });
+
+  app.post('/api/auth/verify-otp', (req, res) => {
+    const { contactMethod, otp } = req.body;
+
+    // Mock OTP verification
+    if (otp === '123456') {
+      const user = {
+        id: '1',
+        firstName: 'OTP',
+        lastName: 'User',
+        email: contactMethod.includes('@') ? contactMethod : 'otp@example.com',
+        mobile: contactMethod.includes('@') ? '9876543210' : contactMethod,
+        isVerified: true
+      };
+
+      const token = crypto.randomBytes(32).toString('hex');
+
+      res.json({
+        success: true,
+        user,
+        token,
+        message: 'OTP verified successfully'
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: 'Invalid OTP'
+      });
+    }
+  });
+
+  app.post('/api/auth/reset-password', (req, res) => {
+    const { contactMethod, otp, newPassword } = req.body;
+
+    // Mock password reset
+    if (otp === '123456' && newPassword.length >= 8) {
+      res.json({
+        success: true,
+        message: 'Password reset successfully'
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: 'Invalid OTP or password requirements not met'
+      });
+    }
   });
 
   const httpServer = createServer(app);
