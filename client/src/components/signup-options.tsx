@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 // Dummy data - replace with actual imports from your data files
@@ -78,6 +78,36 @@ type SignupForm = z.infer<typeof signupSchema>;
 function SignupOptions() {
   const [showPassword, setShowPassword] = useState(false);
   const { toast } = useToast();
+
+  const generatePassword = () => {
+    const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+    const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const numbers = '0123456789';
+    const symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+    
+    const allChars = lowercase + uppercase + numbers + symbols;
+    let password = '';
+    
+    // Ensure at least one character from each required category
+    password += lowercase[Math.floor(Math.random() * lowercase.length)];
+    password += uppercase[Math.floor(Math.random() * uppercase.length)];
+    password += numbers[Math.floor(Math.random() * numbers.length)];
+    password += symbols[Math.floor(Math.random() * symbols.length)];
+    
+    // Fill the rest randomly (8 more characters for total of 12)
+    for (let i = 4; i < 12; i++) {
+      password += allChars[Math.floor(Math.random() * allChars.length)];
+    }
+    
+    // Shuffle the password
+    password = password.split('').sort(() => Math.random() - 0.5).join('');
+    
+    form.setValue('password', password);
+    toast({
+      title: "Password Generated",
+      description: "A strong password has been generated for you.",
+    });
+  };
 
   const form = useForm<SignupForm>({
     resolver: zodResolver(signupSchema),
@@ -234,7 +264,19 @@ function SignupOptions() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel className="flex items-center justify-between">
+                      <span>Password</span>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={generatePassword}
+                        className="text-xs text-saffron hover:text-saffron/80 p-1 h-auto"
+                      >
+                        <RefreshCw className="w-3 h-3 mr-1" />
+                        Generate
+                      </Button>
+                    </FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Input
