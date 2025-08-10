@@ -13,11 +13,10 @@ import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
 
 // Import centralized data
-import { religionOptions, ethnicityOptions, annualIncomeOptions } from "@/data/religion-ethnicity";
-import { casteGroupOptions, casteSubcasteOptions } from "@/data/caste";
-import { motherTongueOptions } from "@/data/mother-tongue";
-import { countryOptions, statesByCountry, citiesByState } from "@/data/locations";
 import { 
+  religionOptions, 
+  ethnicityOptions, 
+  annualIncomeOptions,
   maritalStatusOptions, 
   heightOptions,
   residentialStatusOptions,
@@ -31,6 +30,9 @@ import {
   horoscopeOptions,
   mangalikOptions
 } from "@/data/personal-attributes";
+import { casteGroupOptions, casteSubcasteOptions } from "@/data/caste";
+import { motherTongueOptions } from "@/data/mother-tongue";
+import { countryOptions, statesByCountry, citiesByState } from "@/data/locations";
 import { educationQualificationOptions } from "@/data/education";
 import { professionOptions } from "@/data/profession";
 
