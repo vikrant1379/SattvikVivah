@@ -266,18 +266,7 @@ const ProfileBrowser = memo(() => {
                     </Badge>
                   ))}
 
-                  {/* Clear Quick Filters button if any are active */}
-                  {quickFilters.some(f => f.active) && (
-                    <Button
-                      variant="ghost" 
-                      size="sm"
-                      onClick={clearQuickFilters}
-                      className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 ml-2"
-                    >
-                      <X className="w-4 h-4 mr-1" />
-                      Clear Quick Filters
-                    </Button>
-                  )}
+                  
                 </div>
               </div>
             </div>
