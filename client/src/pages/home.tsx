@@ -182,7 +182,7 @@ const Home = memo(() => {
                   <Button 
                     variant="outline"
                     size="lg"
-                    className="border-orange-300 text-orange-700 hover:bg-orange-50 hover:border-orange-400 px-8 py-4 text-lg font-semibold transition-all duration-300"
+                    className="border-orange-300 text-orange-700 hover:bg-orange-50 hover:border-orange-400 hover:text-orange-800 px-8 py-4 text-lg font-semibold transition-all duration-300"
                   >
                     <Phone className="w-5 h-5 mr-2" />
                     Speak to Expert
