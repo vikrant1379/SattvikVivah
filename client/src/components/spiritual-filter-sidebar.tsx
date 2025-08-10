@@ -257,16 +257,25 @@ const SpiritualFilterSidebar = memo(() => {
       const value1 = filters1[key as keyof ProfileFilter];
       const value2 = filters2[key as keyof ProfileFilter];
 
+      // Handle null/undefined values
+      if (value1 == null && value2 == null) continue;
+      if (value1 == null || value2 == null) return false;
+
       // Handle arrays
       if (Array.isArray(value1) && Array.isArray(value2)) {
         if (value1.length !== value2.length) return false;
+        // Handle empty arrays as equal
+        if (value1.length === 0 && value2.length === 0) continue;
         const sorted1 = [...value1].sort();
         const sorted2 = [...value2].sort();
         if (!sorted1.every((val, index) => val === sorted2[index])) return false;
       } else if (Array.isArray(value1) || Array.isArray(value2)) {
         return false;
-      } else if (value1 !== value2) {
-        return false;
+      } else {
+        // Handle string comparison with trimming and case sensitivity
+        const str1 = String(value1).trim();
+        const str2 = String(value2).trim();
+        if (str1 !== str2) return false;
       }
     }
     return true;
@@ -284,11 +293,25 @@ const SpiritualFilterSidebar = memo(() => {
       return;
     }
 
+    // Additional check: ensure no empty filters are being saved
+    if (!hasActiveFilterSelections(localFilters)) {
+      alert("Cannot save empty filters. Please select some criteria first.");
+      return;
+    }
+
     const name = generateFilterName();
+    const generateUniqueId = () => {
+      let id;
+      do {
+        id = `filter_${Date.now()}_${Math.random().toString(36).substr(2, 9)}_${Math.floor(Math.random() * 10000)}`;
+      } while (savedFilters.some(f => f.id === id));
+      return id;
+    };
+
     const newSavedFilter = {
       ...localFilters,
       name,
-      id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
+      id: generateUniqueId()
     };
     setSavedFilters(prev => {
       const updated = [...prev, newSavedFilter];
@@ -930,10 +953,18 @@ const SpiritualFilterSidebar = memo(() => {
                                 }
 
                                 const name = generateFilterName();
+                                const generateUniqueId = () => {
+                                  let id;
+                                  do {
+                                    id = `filter_${Date.now()}_${Math.random().toString(36).substr(2, 9)}_${Math.floor(Math.random() * 10000)}`;
+                                  } while (savedFilters.some(f => f.id === id));
+                                  return id;
+                                };
+
                                 const newSavedFilter = {
                                   ...parsedLatest,
                                   name,
-                                  id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
+                                  id: generateUniqueId()
                                 };
                                 setSavedFilters(prev => {
                                   const updated = [...prev, newSavedFilter];
