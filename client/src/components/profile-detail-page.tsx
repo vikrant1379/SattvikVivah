@@ -1,10 +1,17 @@
-import { memo, useCallback, useMemo } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import { useLocation } from "wouter";
 import { useSpiritualContext } from "@/contexts/spiritual-context";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import {
   MapPin,
   Briefcase,
@@ -23,6 +30,10 @@ import {
   Share2,
   MoreHorizontal,
   CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  Languages,
+  User,
 } from "lucide-react";
 import { GiBigDiamondRing } from "react-icons/gi";
 import { formatAnnualIncome } from "../data/annual-income";
@@ -35,6 +46,7 @@ interface ProfileDetailPageProps {
 const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
   const [, setLocation] = useLocation();
   const { allProfiles } = useSpiritualContext();
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // Find the specific profile
   const profile = useMemo(() => {
@@ -97,17 +109,15 @@ const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
     return height;
   };
 
-  // Generate last seen time
-  const getLastSeenTime = () => {
-    const options = [
-      "Last seen 2 hours ago",
-      "Last seen yesterday",
-      "Online now",
-      "Last seen 1 day ago",
-      "Last seen 3 hours ago",
-    ];
-    return options[Math.floor(Math.random() * options.length)];
-  };
+  // Mock images for gallery (in real app, this would come from profile data)
+  const profileImages = [
+    profile.profileImage || profile.profilePicture,
+    // Add more mock images for demo
+    profile.profileImage || profile.profilePicture,
+    profile.profileImage || profile.profilePicture,
+    profile.profileImage || profile.profilePicture,
+    profile.profileImage || profile.profilePicture,
+  ].filter(Boolean);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -122,6 +132,7 @@ const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
                 onClick={handleBackToProfiles}
                 className="text-gray-600 hover:text-gray-900 font-medium"
               >
+                <ChevronLeft className="w-4 h-4 mr-1" />
                 Back to Profiles
               </Button>
             </div>
@@ -134,26 +145,36 @@ const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="grid lg:grid-cols-12 gap-6">
-          {/* Left Sidebar - Profile Image & Actions */}
-          <div className="lg:col-span-3">
-            <div className="sticky top-6 space-y-4">
-              {/* Profile Image Card */}
-              <Card className="overflow-hidden">
-                <div className="relative">
-                  {profile.profileImage || profile.profilePicture ? (
-                    <div className="aspect-[3/4] w-full">
-                      <img
-                        src={profile.profileImage || profile.profilePicture}
-                        alt={profile.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
+        <div className="grid lg:grid-cols-2 gap-8">
+          {/* Left Side - Photo Gallery */}
+          <div className="space-y-4">
+            {/* Main Image with Gallery */}
+            <Card className="overflow-hidden">
+              <div className="relative">
+                <div className="aspect-[3/4] w-full bg-gradient-to-br from-orange-100 via-rose-100 to-pink-100">
+                  {profileImages.length > 0 ? (
+                    <Carousel className="w-full h-full">
+                      <CarouselContent>
+                        {profileImages.map((image, index) => (
+                          <CarouselItem key={index}>
+                            <div className="aspect-[3/4] w-full">
+                              <img
+                                src={image}
+                                alt={`${profile.name} - Photo ${index + 1}`}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                      <CarouselPrevious className="left-4" />
+                      <CarouselNext className="right-4" />
+                    </Carousel>
                   ) : (
-                    <div className="aspect-[3/4] bg-gradient-to-br from-orange-100 via-rose-100 to-pink-100 flex items-center justify-center">
+                    <div className="w-full h-full flex items-center justify-center">
                       <div className="text-center p-6">
-                        <div className="w-20 h-20 rounded-full bg-white/80 flex items-center justify-center mb-4 mx-auto shadow-sm">
-                          <span className="text-2xl font-bold text-orange-600">
+                        <div className="w-24 h-24 rounded-full bg-white/80 flex items-center justify-center mb-4 mx-auto shadow-sm">
+                          <span className="text-3xl font-bold text-orange-600">
                             {profile.name
                               .split(" ")
                               .map((n) => n[0])
@@ -161,7 +182,7 @@ const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
                               .toUpperCase()}
                           </span>
                         </div>
-                        <div className="bg-white/90 backdrop-blur-sm rounded-lg p-3 border">
+                        <div className="bg-white/90 backdrop-blur-sm rounded-lg p-4 border">
                           <p className="text-sm text-orange-700 font-semibold">
                             📸 Photo Protected
                           </p>
@@ -172,209 +193,142 @@ const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
                       </div>
                     </div>
                   )}
-
-                  {/* Online Status */}
-                  <div className="absolute top-3 left-3">
-                    <div className="bg-white/90 backdrop-blur-sm rounded-full px-2 py-1 flex items-center text-xs font-medium text-gray-700">
-                      <div className="w-2 h-2 bg-green-500 rounded-full mr-1"></div>
-                      Online
-                    </div>
-                  </div>
                 </div>
 
-                {/* Action Buttons */}
-                <CardContent className="p-4 space-y-3">
-                  <Button className="w-full bg-red-500 hover:bg-red-600 text-white font-semibold">
-                    <Heart className="w-4 h-4 mr-2" />
-                    Express Interest
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="w-full border-purple-300 text-purple-700 hover:bg-purple-50"
-                  >
-                    <Star className="w-4 h-4 mr-2" />
-                    Add to Shortlist
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="w-full border-blue-300 text-blue-700 hover:bg-blue-50"
-                  >
-                    <MessageCircle className="w-4 h-4 mr-2" />
-                    Send Message
-                  </Button>
+                {/* Image count indicator */}
+                <div className="absolute top-3 right-3 bg-black/60 rounded-md px-2 py-1 text-white text-sm">
+                  {currentImageIndex + 1}/{Math.max(profileImages.length, 5)}
+                </div>
 
-                  <div className="flex gap-2 pt-2">
-                    <Button variant="ghost" size="sm" className="flex-1">
-                      <Share2 className="w-4 h-4 mr-1" />
-                      Share
-                    </Button>
-                    <Button variant="ghost" size="sm" className="flex-1">
-                      <MoreHorizontal className="w-4 h-4" />
-                      More
-                    </Button>
+                {/* Online Status */}
+                <div className="absolute top-3 left-3">
+                  <div className="bg-white/90 backdrop-blur-sm rounded-full px-2 py-1 flex items-center text-xs font-medium text-gray-700">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mr-1"></div>
+                    Online
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
+            </Card>
 
-              {/* Quick Info Card */}
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-semibold text-gray-700">
-                    Quick Info
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Height</span>
-                    <span className="font-medium">
-                      {formatHeight(profile.height)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Age</span>
-                    <span className="font-medium">{profile.age} years</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Religion</span>
-                    <span className="font-medium">
-                      {profile.religion || "Hindu"}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Caste</span>
-                    <span className="font-medium">{profile.caste}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Location</span>
-                    <span className="font-medium">{profile.city}</span>
-                  </div>
-                </CardContent>
-              </Card>
+            {/* Action Buttons */}
+            <div className="space-y-3">
+              <Button className="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-3">
+                <Heart className="w-5 h-5 mr-2" />
+                Express Interest
+              </Button>
+              <div className="grid grid-cols-2 gap-3">
+                <Button
+                  variant="outline"
+                  className="border-purple-300 text-purple-700 hover:bg-purple-50"
+                >
+                  <Star className="w-4 h-4 mr-2" />
+                  Shortlist
+                </Button>
+                <Button
+                  variant="outline"
+                  className="border-blue-300 text-blue-700 hover:bg-blue-50"
+                >
+                  <MessageCircle className="w-4 h-4 mr-2" />
+                  Message
+                </Button>
+              </div>
+              <div className="flex gap-2">
+                <Button variant="ghost" size="sm" className="flex-1">
+                  <Share2 className="w-4 h-4 mr-1" />
+                  Share
+                </Button>
+                <Button variant="ghost" size="sm" className="flex-1">
+                  <MoreHorizontal className="w-4 h-4" />
+                  More
+                </Button>
+              </div>
             </div>
           </div>
 
-          {/* Main Content Area */}
-          <div className="lg:col-span-6 space-y-6">
+          {/* Right Side - Profile Information */}
+          <div className="space-y-6">
             {/* Profile Header */}
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <div className="flex items-center gap-3 mb-2">
-                      <h1 className="text-2xl font-bold text-gray-900">
-                        {profile.name}
-                      </h1>
-                      {profile.verified && (
-                        <CheckCircle2 className="w-6 h-6 text-blue-500" />
-                      )}
-                    </div>
-                    <div className="flex items-center text-sm text-gray-600 gap-4 mb-3">
-                      <span>{profile.age} years</span>
-                      <span>•</span>
-                      <span className="flex items-center">
-                        <MapPin className="w-4 h-4 mr-1" />
-                        {profile.city}, {profile.state}
-                      </span>
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      {getLastSeenTime()}
-                    </div>
-                  </div>
-                </div>
-
-                {profile.bio && (
-                  <div className="mb-4">
-                    <p className="text-gray-700 italic">"{profile.bio}"</p>
-                  </div>
+            <div>
+              <div className="flex items-center gap-3 mb-3">
+                <h1 className="text-3xl font-bold text-gray-900">
+                  {profile.name}
+                </h1>
+                {profile.verified && (
+                  <CheckCircle2 className="w-7 h-7 text-blue-500" />
                 )}
+              </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-blue-50 p-3 rounded-lg">
-                    <div className="flex items-center text-blue-700">
-                      <Briefcase className="w-4 h-4 mr-2" />
-                      <div>
-                        <p className="font-medium text-sm">
-                          {profile.profession}
-                        </p>
-                        {profile.annualIncome && (
-                          <p className="text-xs text-green-600">
-                            {formatAnnualIncome(profile.annualIncome)}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-purple-50 p-3 rounded-lg">
-                    <div className="flex items-center text-purple-700">
-                      <GraduationCap className="w-4 h-4 mr-2" />
-                      <div>
-                        <p className="font-medium text-sm">
-                          {profile.education}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+              {/* Basic Info */}
+              <div className="space-y-3 text-lg">
+                <div className="flex items-center text-gray-700">
+                  <User className="w-5 h-5 mr-3 text-gray-500" />
+                  <span>{profile.age} years old</span>
                 </div>
-              </CardContent>
-            </Card>
 
-            {/* About Section */}
+                <div className="flex items-center text-gray-700">
+                  <div className="w-5 h-5 mr-3 text-gray-500 flex items-center justify-center">
+                    📏
+                  </div>
+                  <span>{formatHeight(profile.height)}</span>
+                </div>
+
+                <div className="flex items-center text-gray-700">
+                  <MapPin className="w-5 h-5 mr-3 text-gray-500" />
+                  <span>{profile.city}, {profile.state}</span>
+                </div>
+
+                <div className="flex items-center text-gray-700">
+                  <Languages className="w-5 h-5 mr-3 text-gray-500" />
+                  <span>{profile.motherTongue}</span>
+                </div>
+              </div>
+
+              {/* Spiritual Tags */}
+              <div className="mt-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">Spiritual Journey</h3>
+                <div className="flex flex-wrap gap-2">
+                  <Badge className="bg-orange-100 text-orange-800 border-orange-200 px-3 py-1">
+                    🕉️ {profile.religion || "Hindu"}
+                  </Badge>
+                  <Badge className="bg-blue-100 text-blue-800 border-blue-200 px-3 py-1">
+                    📿 {profile.caste}
+                  </Badge>
+                  {profile.spiritualPractices?.slice(0, 2).map((practice, index) => (
+                    <Badge key={index} className="bg-purple-100 text-purple-800 border-purple-200 px-3 py-1">
+                      🙏 {practice}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+
+              {/* Bio/About */}
+              {profile.bio && (
+                <div className="mt-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">About Me</h3>
+                  <p className="text-gray-700 leading-relaxed italic">"{profile.bio}"</p>
+                </div>
+              )}
+            </div>
+
+            {/* Education & Career Card */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg font-semibold">
-                  About {profile.name.split(" ")[0]}
-                </CardTitle>
+                <CardTitle className="text-lg font-semibold">Education & Career</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div className="flex items-start space-x-3">
+                  <GraduationCap className="w-5 h-5 text-blue-600 mt-1" />
                   <div>
-                    <span className="text-gray-600">Marital Status:</span>
-                    <span className="ml-2 font-medium">
-                      {profile.maritalStatus}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-gray-600">Mother Tongue:</span>
-                    <span className="ml-2 font-medium">
-                      {profile.motherTongue}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-gray-600">Height:</span>
-                    <span className="ml-2 font-medium">
-                      {formatHeight(profile.height)}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-gray-600">Age:</span>
-                    <span className="ml-2 font-medium">
-                      {profile.age} years
-                    </span>
+                    <p className="font-medium text-gray-900">{profile.education}</p>
+                    <p className="text-sm text-gray-600">Education</p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Education & Career */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold">
-                  Education & Career
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <h4 className="font-medium text-gray-900 mb-2">Education</h4>
-                  <div className="bg-gray-50 p-3 rounded-lg">
-                    <p className="font-medium">{profile.education}</p>
-                  </div>
-                </div>
-                <div>
-                  <h4 className="font-medium text-gray-900 mb-2">Career</h4>
-                  <div className="bg-gray-50 p-3 rounded-lg">
-                    <p className="font-medium">{profile.profession}</p>
+                <div className="flex items-start space-x-3">
+                  <Briefcase className="w-5 h-5 text-green-600 mt-1" />
+                  <div>
+                    <p className="font-medium text-gray-900">{profile.profession}</p>
                     {profile.annualIncome && (
-                      <p className="text-sm text-green-600 mt-1">
+                      <p className="text-sm text-green-600 font-medium">
                         {formatAnnualIncome(profile.annualIncome)}
                       </p>
                     )}
@@ -383,175 +337,72 @@ const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
               </CardContent>
             </Card>
 
-            {/* Spiritual Journey */}
-            {(profile.spiritualPractices ||
-              profile.sacredTexts ||
-              profile.spiritualGoals) && (
+            {/* Spiritual Practices */}
+            {profile.spiritualPractices && profile.spiritualPractices.length > 0 && (
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg font-semibold flex items-center">
                     <span className="mr-2">🕉️</span>
-                    Spiritual Journey
+                    Spiritual Practices
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  {profile.spiritualPractices &&
-                    profile.spiritualPractices.length > 0 && (
-                      <div>
-                        <h4 className="font-medium text-gray-900 mb-2">
-                          Spiritual Practices
-                        </h4>
-                        <div className="flex flex-wrap gap-2">
-                          {profile.spiritualPractices.map((practice, index) => (
-                            <Badge
-                              key={index}
-                              variant="outline"
-                              className="bg-orange-50 border-orange-200"
-                            >
-                              {practice}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                  {profile.sacredTexts && profile.sacredTexts.length > 0 && (
-                    <div>
-                      <h4 className="font-medium text-gray-900 mb-2">
-                        Sacred Texts
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {profile.sacredTexts.map((text, index) => (
-                          <Badge
-                            key={index}
-                            variant="outline"
-                            className="bg-blue-50 border-blue-200"
-                          >
-                            {text}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {profile.spiritualGoals &&
-                    profile.spiritualGoals.length > 0 && (
-                      <div>
-                        <h4 className="font-medium text-gray-900 mb-2">
-                          Spiritual Goals
-                        </h4>
-                        <div className="flex flex-wrap gap-2">
-                          {profile.spiritualGoals.map((goal, index) => (
-                            <Badge
-                              key={index}
-                              variant="outline"
-                              className="bg-green-50 border-green-200"
-                            >
-                              {goal}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                <CardContent>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.spiritualPractices.map((practice, index) => (
+                      <Badge
+                        key={index}
+                        variant="outline"
+                        className="bg-orange-50 border-orange-200 text-orange-800"
+                      >
+                        {practice}
+                      </Badge>
+                    ))}
+                  </div>
                 </CardContent>
               </Card>
             )}
 
-            {/* Lifestyle */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold">
-                  Lifestyle
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-sm text-gray-600">
-                  <p>Lifestyle information will be shared after connection</p>
-                </div>
-              </CardContent>
-            </Card>
+            {/* Sacred Texts */}
+            {profile.sacredTexts && profile.sacredTexts.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold flex items-center">
+                    <span className="mr-2">📖</span>
+                    Sacred Texts
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.sacredTexts.map((text, index) => (
+                      <Badge
+                        key={index}
+                        variant="outline"
+                        className="bg-blue-50 border-blue-200 text-blue-800"
+                      >
+                        {text}
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
-            {/* Family Details */}
+            {/* Contact Information */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg font-semibold">
-                  Family Details
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-sm text-gray-600">
-                  <p>Family information will be shared after connection</p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Contact Details */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold">
-                  Contact Details
-                </CardTitle>
+                <CardTitle className="text-lg font-semibold">Contact Details</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex items-center p-3 bg-gray-50 rounded-lg">
-                  <Phone className="w-4 h-4 mr-3 text-gray-400" />
-                  <span className="text-gray-600 text-sm">
-                    Phone number visible after connection
-                  </span>
+                  <Phone className="w-5 h-5 mr-3 text-gray-400" />
+                  <span className="text-gray-600">Phone number visible after connection</span>
                 </div>
                 <div className="flex items-center p-3 bg-gray-50 rounded-lg">
-                  <Mail className="w-4 h-4 mr-3 text-gray-400" />
-                  <span className="text-gray-600 text-sm">
-                    Email visible after connection
-                  </span>
+                  <Mail className="w-5 h-5 mr-3 text-gray-400" />
+                  <span className="text-gray-600">Email visible after connection</span>
                 </div>
               </CardContent>
             </Card>
-          </div>
-
-          {/* Right Sidebar - Similar Profiles */}
-          <div className="lg:col-span-3">
-            <div className="sticky top-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg font-semibold">
-                    Similar Profiles
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {allProfiles
-                    .slice(0, 3)
-                    .filter((p) => p.id !== profile.id)
-                    .map((similarProfile) => (
-                      <div
-                        key={similarProfile.id}
-                        className="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer"
-                      >
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-100 to-pink-100 flex items-center justify-center">
-                          <span className="text-sm font-bold text-orange-600">
-                            {similarProfile.name
-                              .split(" ")
-                              .map((n) => n[0])
-                              .join("")
-                              .toUpperCase()}
-                          </span>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium text-sm text-gray-900 truncate">
-                            {similarProfile.name}
-                          </p>
-                          <p className="text-xs text-gray-600">
-                            {similarProfile.age}yrs, {similarProfile.city}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  <Button variant="outline" size="sm" className="w-full mt-3">
-                    View More Profiles
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
           </div>
         </div>
       </div>
