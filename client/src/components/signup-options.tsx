@@ -116,7 +116,8 @@ function SignupOptions() {
     form.trigger('password');
 
     toast({
-      description: "Password generated successfully!"
+      description: "Password generated successfully!",
+      duration: 4000
     });
   };
 
@@ -166,6 +167,7 @@ function SignupOptions() {
       toast({
         title: "Success! 🎉",
         description: "Welcome to SattvikVivah! Your spiritual journey begins now.",
+        duration: 4000
       });
       // Navigate to profiles page on successful signup
       setLocation('/profiles');
@@ -174,6 +176,7 @@ function SignupOptions() {
         title: "Signup Failed",
         description: error || "Something went wrong. Please try again.",
         variant: "destructive",
+        duration: 4000
       });
     }
   };
@@ -371,7 +374,7 @@ function SignupOptions() {
                 )}
               />
 
-                {/* Date of Birth */}
+              {/* Date of Birth */}
               <SmartDateSelector
                 label="Date of Birth"
                 value={{

@@ -128,6 +128,7 @@ function LoginOptions() {
       toast({
         title: "Login Successful",
         description: "Welcome back to SattvikVivah!",
+        duration: 3000
       });
       setLocation('/profiles');
     } else {
@@ -151,6 +152,7 @@ function LoginOptions() {
       toast({
         title: "Login Successful",
         description: "Welcome back to SattvikVivah!",
+        duration: 3000
       });
       setLocation('/profiles');
     } else {
@@ -194,6 +196,7 @@ function LoginOptions() {
       toast({
         title: "Login Successful",
         description: "Welcome back to SattvikVivah!",
+        duration: 3000
       });
       setLocation('/profiles');
     } else {
