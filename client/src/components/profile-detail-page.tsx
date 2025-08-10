@@ -96,13 +96,13 @@ const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white shadow-sm border-b sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-6">
+        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center space-x-4">
             <Button
               variant="ghost"
               size="sm"
               onClick={handleBackToProfiles}
-              className="flex items-center space-x-2 text-gray-600 hover:text-orange-600 hover:bg-orange-50 px-4 py-2 rounded-lg transition-all duration-200 font-medium"
+              className="flex items-center space-x-2 text-gray-600 hover:text-orange-600 hover:bg-orange-50 px-3 py-2 rounded-lg transition-all duration-200"
             >
               <span>Back to Profiles</span>
             </Button>
@@ -111,13 +111,13 @@ const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
               variant="ghost"
               size="sm"
               onClick={handleBackToHome}
-              className="hidden sm:flex items-center space-x-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-lg transition-all duration-200 font-medium"
+              className="hidden sm:flex items-center space-x-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-lg transition-all duration-200"
             >
               <Home className="w-4 h-4" />
               <span>Home</span>
             </Button>
           </div>
-          <div className="text-sm text-gray-600 font-medium bg-gray-50 px-3 py-1 rounded-lg">
+          <div className="text-xs sm:text-sm text-gray-600 font-medium">
             ID: {profile.id.toUpperCase()}
           </div>
         </div>
@@ -195,64 +195,54 @@ const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
           {/* Right Column - Profile Details */}
           <div className="lg:col-span-2 space-y-6">
             {/* Basic Information */}
-            <Card className="shadow-lg border border-gray-100 bg-gradient-to-br from-white via-gray-50/30 to-white">
-              <CardHeader className="pb-5">
+            <Card className="shadow-lg border-0 bg-gradient-to-br from-white to-gray-50">
+              <CardHeader className="pb-4">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <div className="flex items-start gap-3 mb-4">
-                      <div className="flex items-center gap-2 min-w-0 flex-1">
-                        <CardTitle className="text-2xl lg:text-3xl font-bold text-gray-900 leading-tight">
+                    <div className="flex items-center gap-3 mb-3 flex-wrap">
+                      <div className="flex items-center gap-2">
+                        <CardTitle className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent break-words">
                           {profile.name}, {profile.age}
                         </CardTitle>
                         {profile.verified && (
-                          <div className="flex-shrink-0 mt-1">
-                            <svg
-                              className="w-5 h-5"
-                              viewBox="0 0 24 24"
-                              aria-label="Verified account"
-                            >
+                          <svg
+                            className="w-6 h-6 flex-shrink-0"
+                            viewBox="0 0 24 24"
+                            aria-label="Verified account"
+                          >
+                            <g>
                               <path
-                                d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"
-                                fill="#1DA1F2"
+                                d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s2.52 1.26 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26 4.8-5.23 1.47 1.36-6.2 6.77z"
+                                fill="#1d9bf0"
                               />
-                              <path
-                                d="M9 12l2 2 4-4"
-                                stroke="white"
-                                strokeWidth="2"
-                                fill="none"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </div>
+                            </g>
+                          </svg>
                         )}
                       </div>
                     </div>
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-gray-700 bg-gradient-to-r from-white/80 to-gray-50/80 backdrop-blur-sm rounded-xl px-5 py-4 border border-gray-200 shadow-sm">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-gray-600 bg-white/60 backdrop-blur-sm rounded-lg px-4 py-3 border border-gray-100">
                       <div className="flex items-center">
                         <MapPin className="w-4 h-4 mr-2 text-orange-500" />
-                        <span className="font-semibold text-sm">{profile.location || `${profile.city}, ${profile.state}`}</span>
+                        <span className="font-medium text-sm sm:text-base">{profile.location || `${profile.city}, ${profile.state}`}</span>
                       </div>
-                      <span className="hidden sm:inline text-gray-400 font-bold">•</span>
-                      <span className="font-semibold text-sm">{formatHeight(profile.height)}</span>
+                      <span className="hidden sm:inline text-gray-400">•</span>
+                      <span className="font-medium text-sm sm:text-base">{formatHeight(profile.height)}</span>
                       {profile.caste && (
                         <>
-                          <span className="hidden sm:inline text-gray-400 font-bold">•</span>
-                          <span className="font-semibold text-sm">{profile.caste}</span>
+                          <span className="hidden sm:inline text-gray-400">•</span>
+                          <span className="font-medium text-sm sm:text-base">{profile.caste}</span>
                         </>
                       )}
                     </div>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="pt-0">
+              <CardContent>
                 {profile.bio && (
-                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 mb-6 border-l-4 border-blue-400">
-                    <p className="text-gray-700 italic text-sm leading-relaxed">"{profile.bio}"</p>
-                  </div>
+                  <p className="text-gray-700 italic mb-4">"{profile.bio}"</p>
                 )}
                 
-                <div className="grid sm:grid-cols-2 gap-5">
+                <div className="grid sm:grid-cols-2 gap-4">
                   <div className="flex items-center p-4 bg-white/80 rounded-lg border border-gray-100 shadow-sm">
                     <Briefcase className="w-5 h-5 mr-3 text-blue-500 flex-shrink-0" />
                     <div className="min-w-0">
@@ -288,22 +278,19 @@ const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
             </Card>
 
             {/* Contact Information */}
-            <Card className="shadow-lg border border-gray-100 bg-gradient-to-br from-white to-gray-50/50">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-lg font-semibold text-gray-900 flex items-center">
-                  <Phone className="w-5 h-5 mr-2 text-blue-500" />
-                  Contact Information
-                </CardTitle>
+            <Card className="shadow-sm border border-gray-100">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg font-semibold text-gray-900">Contact Information</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="flex items-center p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
-                    <Phone className="w-5 h-5 mr-3 text-blue-500" />
-                    <span className="text-gray-700 text-sm font-medium">Phone number visible after connection</span>
+                  <div className="flex items-center p-3 bg-gray-50 rounded-lg">
+                    <Phone className="w-4 h-4 mr-3 text-gray-400" />
+                    <span className="text-gray-600 text-sm">Phone number visible after connection</span>
                   </div>
-                  <div className="flex items-center p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-100">
-                    <Mail className="w-5 h-5 mr-3 text-green-500" />
-                    <span className="text-gray-700 text-sm font-medium">Email visible after connection</span>
+                  <div className="flex items-center p-3 bg-gray-50 rounded-lg">
+                    <Mail className="w-4 h-4 mr-3 text-gray-400" />
+                    <span className="text-gray-600 text-sm">Email visible after connection</span>
                   </div>
                 </div>
               </CardContent>
@@ -311,10 +298,10 @@ const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
 
             {/* Spiritual Information */}
             {(profile.spiritualPractices || profile.sacredTexts || profile.spiritualGoals) && (
-              <Card className="shadow-lg border border-orange-200 bg-gradient-to-br from-orange-50 via-rose-50 to-pink-50">
-                <CardHeader className="pb-4">
+              <Card className="shadow-sm border-0 bg-gradient-to-br from-orange-50 to-rose-50">
+                <CardHeader className="pb-3">
                   <CardTitle className="text-lg font-semibold text-orange-800 flex items-center">
-                    <span className="mr-3 text-xl">🕉️</span>
+                    <span className="mr-2">🕉️</span>
                     Spiritual Journey
                   </CardTitle>
                 </CardHeader>
@@ -362,17 +349,14 @@ const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
             )}
 
             {/* Family Information */}
-            <Card className="shadow-lg border border-gray-100 bg-gradient-to-br from-white to-gray-50/50">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-lg font-semibold text-gray-900 flex items-center">
-                  <Users className="w-5 h-5 mr-2 text-purple-500" />
-                  Family Information
-                </CardTitle>
+            <Card className="shadow-sm border border-gray-100">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg font-semibold text-gray-900">Family Information</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center p-4 bg-gradient-to-r from-purple-50 to-violet-50 rounded-lg border border-purple-100">
-                  <Users className="w-5 h-5 mr-3 text-purple-500" />
-                  <span className="text-gray-700 text-sm font-medium">Family details available after connection</span>
+                <div className="flex items-center p-3 bg-gray-50 rounded-lg">
+                  <Users className="w-4 h-4 mr-3 text-gray-400" />
+                  <span className="text-gray-600 text-sm">Family details available after connection</span>
                 </div>
               </CardContent>
             </Card>
