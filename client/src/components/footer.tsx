@@ -110,8 +110,8 @@ const Footer = memo(() => {
               <Link href="/terms" className="hover:text-sage"> Terms of Service</Link>
             </p>
             <div className="flex items-center space-x-4">
-              <span className="text-sage text-lg animate-om-pulse">
-                🕉️ Om Shanti Shanti Shanti
+              <span className="text-sage font-devanagari text-lg animate-om-pulse">
+                ॐ शान्ति शान्ति शान्ति
               </span>
             </div>
           </div>

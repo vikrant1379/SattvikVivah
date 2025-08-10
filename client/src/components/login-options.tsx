@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -145,20 +146,19 @@ export function LoginOptions() {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-deep-maroon font-serif">Password</FormLabel>
+                      <FormLabel>Password</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Input
                             type={showPassword ? "text" : "password"}
                             placeholder="Enter your password"
-                            className="border-temple-gold/50 focus:border-saffron bg-white/80"
                             {...field}
                           />
                           <Button
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-temple-gold hover:text-saffron"
+                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                             onClick={() => setShowPassword(!showPassword)}
                           >
                             {showPassword ? (
@@ -221,20 +221,19 @@ export function LoginOptions() {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-deep-maroon font-serif">Password</FormLabel>
+                      <FormLabel>Password</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Input
                             type={showPassword ? "text" : "password"}
                             placeholder="Enter your password"
-                            className="border-temple-gold/50 focus:border-saffron bg-white/80"
                             {...field}
                           />
                           <Button
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-temple-gold hover:text-saffron"
+                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                             onClick={() => setShowPassword(!showPassword)}
                           >
                             {showPassword ? (
