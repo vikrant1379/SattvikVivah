@@ -157,13 +157,13 @@ function LoginOptions() {
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent focus:ring-0 focus:ring-offset-0 focus:outline-none"
+                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-gray-100 focus:ring-0 focus:ring-offset-0 focus:outline-none"
                             onClick={() => setShowPassword(!showPassword)}
                           >
                             {showPassword ? (
-                              <EyeOff className="h-4 w-4" />
+                              <EyeOff className="h-4 w-4 text-gray-600" />
                             ) : (
-                              <Eye className="h-4 w-4" />
+                              <Eye className="h-4 w-4 text-gray-600" />
                             )}
                           </Button>
                         </div>
@@ -232,13 +232,13 @@ function LoginOptions() {
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent focus:ring-0 focus:ring-offset-0 focus:outline-none"
+                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-gray-100 focus:ring-0 focus:ring-offset-0 focus:outline-none"
                             onClick={() => setShowPassword(!showPassword)}
                           >
                             {showPassword ? (
-                              <EyeOff className="h-4 w-4" />
+                              <EyeOff className="h-4 w-4 text-gray-600" />
                             ) : (
-                              <Eye className="h-4 w-4" />
+                              <Eye className="h-4 w-4 text-gray-600" />
                             )}
                           </Button>
                         </div>
