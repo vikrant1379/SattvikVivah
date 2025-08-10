@@ -60,7 +60,9 @@ const signupSchema = z.object({
     .refine((password) => /[A-Z]/.test(password), "Password must contain at least one uppercase letter")
     .refine((password) => /\d/.test(password), "Password must contain at least one number")
     .refine((password) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password), "Password must contain at least one special character"),
-  dateOfBirth: z.string().min(1, "Date of birth is required"),
+  dobDay: z.string().min(1, "Day is required"),
+  dobMonth: z.string().min(1, "Month is required"),
+  dobYear: z.string().min(1, "Year is required"),
   gender: z.string().min(1, "Please select your gender"),
   lookingFor: z.string().min(1, "Please select what you're looking for"),
   profileFor: z.string().min(1, "Please select who this profile is for"),
@@ -125,7 +127,9 @@ function SignupOptions() {
       email: "",
       mobile: "",
       password: "",
-      dateOfBirth: "",
+      dobDay: "",
+      dobMonth: "",
+      dobYear: "",
       gender: "",
       lookingFor: "",
       profileFor: "",
@@ -145,7 +149,17 @@ function SignupOptions() {
 
   const handleSignup = async (data: SignupForm) => {
     clearError();
-    const success = await signup(data);
+    
+    // Combine separate date fields into dateOfBirth
+    const { dobDay, dobMonth, dobYear, ...restData } = data;
+    const dateOfBirth = `${dobYear}-${dobMonth.padStart(2, '0')}-${dobDay.padStart(2, '0')}`;
+    
+    const signupData = {
+      ...restData,
+      dateOfBirth
+    };
+    
+    const success = await signup(signupData);
 
     if (success) {
       toast({
@@ -350,23 +364,97 @@ function SignupOptions() {
               />
 
                 {/* Date of Birth */}
-              <FormField
-                control={form.control}
-                name="dateOfBirth"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Date of Birth</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="date"
-                        className="bg-background"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="space-y-2">
+                <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                  Your date of birth
+                </label>
+                <div className="grid grid-cols-3 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="dobDay"
+                    render={({ field }) => (
+                      <FormItem>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Day" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
+                              <SelectItem key={day} value={day.toString()}>
+                                {day}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="dobMonth"
+                    render={({ field }) => (
+                      <FormItem>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Month" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {[
+                              { value: "1", label: "January" },
+                              { value: "2", label: "February" },
+                              { value: "3", label: "March" },
+                              { value: "4", label: "April" },
+                              { value: "5", label: "May" },
+                              { value: "6", label: "June" },
+                              { value: "7", label: "July" },
+                              { value: "8", label: "August" },
+                              { value: "9", label: "September" },
+                              { value: "10", label: "October" },
+                              { value: "11", label: "November" },
+                              { value: "12", label: "December" }
+                            ].map((month) => (
+                              <SelectItem key={month.value} value={month.value}>
+                                {month.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="dobYear"
+                    render={({ field }) => (
+                      <FormItem>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Year" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {Array.from({ length: 60 }, (_, i) => new Date().getFullYear() - 18 - i).map((year) => (
+                              <SelectItem key={year} value={year.toString()}>
+                                {year}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
 
               {/* Gender and Looking For */}
               <div className="grid grid-cols-2 gap-4">
