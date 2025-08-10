@@ -28,18 +28,50 @@ const ProfileBrowser = memo(() => {
   // Safely get spiritual context
   const { searchResults, isSearching, clearSearch, filters: contextFilters, setFilters, allProfiles } = useSpiritualContext();
 
-  // Filter profiles based on search query only (quick filters are handled by spiritual context)
+  // Filter profiles based on search query - enhanced to search by name, ID, location, profession, etc.
   const filteredProfiles = useMemo(() => {
     let filtered = [...searchResults];
 
-    // Apply search query filter (name or ID)
+    // Apply comprehensive search query filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase().trim();
       filtered = filtered.filter(profile => {
+        // Basic identifiers
         const matchesId = profile.id.toLowerCase().includes(query);
         const matchesName = profile.name?.toLowerCase().includes(query) || false;
         const matchesUsername = profile.username?.toLowerCase().includes(query) || false;
-        return matchesId || matchesName || matchesUsername;
+        
+        // Location fields
+        const matchesCity = profile.city?.toLowerCase().includes(query) || false;
+        const matchesState = profile.state?.toLowerCase().includes(query) || false;
+        const matchesCountry = profile.country?.toLowerCase().includes(query) || false;
+        
+        // Professional fields
+        const matchesProfession = profile.profession?.toLowerCase().includes(query) || false;
+        const matchesEducation = profile.education?.toLowerCase().includes(query) || false;
+        
+        // Personal attributes
+        const matchesMotherTongue = profile.motherTongue?.toLowerCase().includes(query) || false;
+        const matchesCaste = profile.caste?.toLowerCase().includes(query) || false;
+        const matchesReligion = profile.religion?.toLowerCase().includes(query) || false;
+        
+        // Spiritual attributes
+        const matchesGuruLineage = profile.guruLineage?.toLowerCase().includes(query) || false;
+        const matchesSpiritualPractices = profile.spiritualPractices?.some(practice => 
+          practice.toLowerCase().includes(query)) || false;
+        const matchesSacredTexts = profile.sacredTexts?.some(text => 
+          text.toLowerCase().includes(query)) || false;
+        
+        // Astrological attributes
+        const matchesRashi = profile.rashi?.toLowerCase().includes(query) || false;
+        const matchesNakshatra = profile.nakshatra?.toLowerCase().includes(query) || false;
+        
+        return matchesId || matchesName || matchesUsername || 
+               matchesCity || matchesState || matchesCountry ||
+               matchesProfession || matchesEducation ||
+               matchesMotherTongue || matchesCaste || matchesReligion ||
+               matchesGuruLineage || matchesSpiritualPractices || matchesSacredTexts ||
+               matchesRashi || matchesNakshatra;
       });
     }
 
@@ -227,7 +259,7 @@ const ProfileBrowser = memo(() => {
                     </div>
                     <Input
                       type="text"
-                      placeholder="Search by name or ID..."
+                      placeholder="Search by name, ID, location, profession, caste, spiritual practices..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="pl-10 pr-10 h-11 bg-white border-orange-200 focus:border-orange-400 focus:ring-orange-400/20 rounded-xl"
