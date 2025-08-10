@@ -1,16 +1,18 @@
 import { memo, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { User, Clover, ChevronDown, Settings, Heart, Star, Phone, HelpCircle, Shield, LogOut, Edit, Users, Gift } from "lucide-react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import LoginOptions from "./login-options";
+import SignupOptions from "./signup-options";
 import { useAuth } from "@/hooks/use-auth";
 
 const Header = memo(() => {
   const [location] = useLocation();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isSignupOpen, setIsSignupOpen] = useState(false);
 
   const { isAuthenticated, user, logout } = useAuth();
 
@@ -18,6 +20,10 @@ const Header = memo(() => {
     if (!isAuthenticated()) { // Changed to function call
       setIsLoginOpen(true);
     }
+  };
+
+  const handleSignupClick = () => {
+    setIsSignupOpen(true);
   };
 
   const handleLogout = async () => {
@@ -198,7 +204,7 @@ const Header = memo(() => {
                 </Button>
 
                 <Button
-                  onClick={handleProfileClick}
+                  onClick={handleSignupClick}
                   className="bg-saffron hover:bg-saffron/90 text-white px-4 py-2 rounded-lg font-medium text-sm"
                 >
                   Sign Up Free
@@ -213,6 +219,18 @@ const Header = memo(() => {
       <Dialog open={isLoginOpen} onOpenChange={setIsLoginOpen}>
         <DialogContent className="sm:max-w-[425px] bg-card border-temple-gold/20">
           <LoginOptions />
+        </DialogContent>
+      </Dialog>
+
+      {/* Signup Dialog */}
+      <Dialog open={isSignupOpen} onOpenChange={setIsSignupOpen}>
+        <DialogContent className="sm:max-w-4xl max-h-[95vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-center text-2xl font-bold text-saffron">
+              Create Your Sacred Profile
+            </DialogTitle>
+          </DialogHeader>
+          <SignupOptions />
         </DialogContent>
       </Dialog>
     </header>
