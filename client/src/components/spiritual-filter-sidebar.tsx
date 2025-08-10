@@ -763,7 +763,7 @@ const SpiritualFilterSidebar = memo(() => {
         </div>
 
         {/* Saved Filters - Collapsible */}
-        {(savedFilters.length > 0 || localStorage.getItem('spiritualFiltersLatest')) && (
+        {(localStorage.getItem('spiritualFiltersLatest') || savedFilters.length > 0) && (
           <Collapsible 
             open={savedFiltersOpen} 
             onOpenChange={setSavedFiltersOpen}
@@ -828,7 +828,7 @@ const SpiritualFilterSidebar = memo(() => {
                               };
                               setLocalFilters(emptyFilters);
                             }
-                            
+
                             // Force component re-render to hide the latest search option
                             setSavedFiltersOpen(false);
                             setTimeout(() => setSavedFiltersOpen(true), 50);
