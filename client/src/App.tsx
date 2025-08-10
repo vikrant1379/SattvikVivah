@@ -3,12 +3,12 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SpiritualProvider } from "@/contexts/spiritual-context";
-import { useEffect } from "react";
+import { useEffect, memo } from "react";
 import { preloadResource } from "@/utils";
 import { StaticDataService } from "@/services";
 import AppRouter from "@/components/router";
 
-function App() {
+const App = memo(() => {
   // Preload critical resources and data
   useEffect(() => {
     // Preload common static data in the background
@@ -43,6 +43,8 @@ function App() {
       </SpiritualProvider>
     </QueryClientProvider>
   );
-}
+});
+
+App.displayName = 'App';
 
 export default App;
