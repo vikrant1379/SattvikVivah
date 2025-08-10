@@ -34,52 +34,66 @@ const Home = memo(() => {
       
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative bg-gradient-to-br from-orange-50/30 via-white to-rose-50/30 py-20">
+        <section className="relative bg-gradient-to-br from-sandalwood/40 via-card-cream to-temple-gold/20 py-20 sacred-pattern">
           <div className="container mx-auto px-4">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               {/* Left Content */}
               <div className="space-y-8">
                 <div>
-                  <h1 className="text-5xl lg:text-6xl font-bold mb-6">
+                  <div className="flex items-center justify-center lg:justify-start mb-4">
+                    <span className="text-saffron text-4xl animate-om-pulse">🕉️</span>
+                  </div>
+                  <h1 className="text-5xl lg:text-6xl font-bold mb-6 text-deep-maroon">
                     Find Your{" "}
-                    <span className="bg-gradient-to-r from-orange-600 to-rose-600 bg-clip-text text-transparent">
-                      Dharmic Partner
+                    <span className="bg-gradient-to-r from-saffron to-temple-gold bg-clip-text text-transparent block">
+                      Sacred Companion
                     </span>
                   </h1>
-                  <p className="text-xl text-gray-600 mb-2">
-                    For souls seeking Grihastha Ashram through spiritual
+                  <h2 className="text-3xl lg:text-4xl font-semibold mb-4 text-indigo-night">
+                    Spiritual Matrimony for Dharmic Living
+                  </h2>
+                  <p className="text-xl text-gray-700 mb-2 font-serif">
+                    Begin your sacred journey of Grihastha Ashram
                   </p>
-                  <p className="text-xl text-gray-600 mb-8">
-                    alignment. Our mission is sacred pursuit.
+                  <p className="text-xl text-gray-700 mb-8 font-serif">
+                    Spiritual union, not material pursuit
                   </p>
-                  <p className="text-sm text-gray-500 italic">
-                    "Marriage is not just union of two bodies, but union of two souls on their dharmic journey."
-                  </p>
+                  <div className="bg-gradient-to-r from-saffron/10 to-temple-gold/10 p-4 rounded-lg border-l-4 border-saffron">
+                    <p className="text-base text-deep-maroon italic font-serif">
+                      "Marriage is not just union of bodies, but sacred communion of souls"
+                    </p>
+                    <p className="text-sm text-gray-600 mt-2 font-serif">
+                      - Ancient Vedic Wisdom
+                    </p>
+                  </div>
                 </div>
 
                 {/* Quick Search Form */}
-                <Card className="bg-white/80 backdrop-blur-sm border-orange-100/50 shadow-lg">
+                <Card className="bg-card-cream/90 backdrop-blur-sm border-temple-gold/30 shadow-xl">
                   <CardContent className="p-6">
-                    <h3 className="text-lg font-semibold mb-4 text-gray-800">
-                      Begin Your Sacred Journey
-                    </h3>
+                    <div className="text-center mb-4">
+                      <h3 className="text-lg font-semibold text-deep-maroon mb-2">
+                        🕉️ Begin Your Sacred Journey 🕉️
+                      </h3>
+                      <p className="text-sm text-indigo-night font-serif">Find your spiritual life partner</p>
+                    </div>
                     
                     <div className="space-y-4">
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                          <label className="block text-sm font-medium text-deep-maroon mb-1 font-serif">
                             Looking for
                           </label>
-                          <select className="w-full p-3 border border-orange-200 rounded-lg focus:ring-orange-400 focus:border-orange-400">
+                          <select className="w-full p-3 border border-temple-gold/50 rounded-lg focus:ring-saffron focus:border-saffron bg-white/80">
                             <option>Bride</option>
                             <option>Groom</option>
                           </select>
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                          <label className="block text-sm font-medium text-deep-maroon mb-1 font-serif">
                             Age
                           </label>
-                          <select className="w-full p-3 border border-orange-200 rounded-lg focus:ring-orange-400 focus:border-orange-400">
+                          <select className="w-full p-3 border border-temple-gold/50 rounded-lg focus:ring-saffron focus:border-saffron bg-white/80">
                             <option>21 to 30</option>
                             <option>25 to 35</option>
                             <option>30 to 40</option>
@@ -88,10 +102,10 @@ const Home = memo(() => {
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-deep-maroon mb-1 font-serif">
                           Community
                         </label>
-                        <select className="w-full p-3 border border-orange-200 rounded-lg focus:ring-orange-400 focus:border-orange-400">
+                        <select className="w-full p-3 border border-temple-gold/50 rounded-lg focus:ring-saffron focus:border-saffron bg-white/80">
                           <option>Any Community</option>
                           <option>Brahmin</option>
                           <option>Kshatriya</option>
@@ -101,83 +115,154 @@ const Home = memo(() => {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-deep-maroon mb-1 font-serif">
                           Location
                         </label>
                         <input 
                           type="text"
-                          placeholder="Enter your preferred location"
-                          className="w-full p-3 border border-orange-200 rounded-lg focus:ring-orange-400 focus:border-orange-400"
+                          placeholder="Enter preferred location"
+                          className="w-full p-3 border border-temple-gold/50 rounded-lg focus:ring-saffron focus:border-saffron bg-white/80"
                         />
                       </div>
 
                       <Button 
                         onClick={handleFindMatches}
-                        className="w-full bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                        className="w-full bg-gradient-to-r from-saffron to-temple-gold hover:from-saffron/90 hover:to-temple-gold/90 text-white py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 font-serif"
                       >
                         <Search className="w-5 h-5 mr-2" />
                         Start Sacred Journey
                       </Button>
 
-                      <p className="text-xs text-center text-gray-500">
-                        By continuing, you agree to our <a href="#" className="text-orange-600 hover:underline">Terms</a> and <a href="#" className="text-orange-600 hover:underline">Privacy Policy</a>
+                      <p className="text-xs text-center text-deep-maroon/70 font-serif">
+                        By proceeding, you agree to our <a href="#" className="text-saffron hover:underline font-semibold">Terms</a> and <a href="#" className="text-saffron hover:underline font-semibold">Privacy Policy</a>
                       </p>
                     </div>
                   </CardContent>
                 </Card>
               </div>
 
-              {/* Right - Spiritual Wedding Images */}
+              {/* Right - Divine Marriage Artworks */}
               <div className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
                   {/* Ram-Sita Wedding */}
-                  <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
-                    <div className="aspect-[3/4] bg-gradient-to-br from-orange-100 to-rose-100 flex items-center justify-center">
-                      <div className="text-center p-4">
-                        <div className="text-4xl mb-2">🌺</div>
-                        <h4 className="font-semibold text-orange-800 mb-1">राम-सीता विवाह</h4>
-                        <p className="text-xs text-gray-600">Divine Union of Virtue</p>
+                  <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border-temple-gold/30 hover:border-saffron/50">
+                    <div className="aspect-[3/4] bg-gradient-to-br from-orange-100 via-rose-50 to-yellow-50 relative group overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                      <div className="absolute inset-4 border-2 border-temple-gold/30 rounded-lg bg-gradient-to-br from-orange-50/80 to-rose-50/80 backdrop-blur-sm">
+                        <div className="h-full flex flex-col items-center justify-center p-4 text-center">
+                          <div className="mb-3 transform group-hover:scale-110 transition-transform duration-300">
+                            <div className="w-16 h-16 bg-gradient-to-br from-orange-400 to-rose-400 rounded-full flex items-center justify-center mb-2 shadow-lg">
+                              <span className="text-2xl text-white">🏹</span>
+                            </div>
+                            <div className="flex justify-center space-x-1">
+                              <span className="text-lg">👑</span>
+                              <span className="text-lg">💍</span>
+                              <span className="text-lg">👑</span>
+                            </div>
+                          </div>
+                          <h4 className="font-bold text-orange-800 mb-1 text-sm">Ram-Sita Wedding</h4>
+                          <p className="text-xs text-orange-700 font-serif italic">Divine Union of Dharma</p>
+                          <div className="mt-2 flex justify-center space-x-1">
+                            <span className="text-xs">🌺</span>
+                            <span className="text-xs">🕉️</span>
+                            <span className="text-xs">🌺</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </Card>
 
                   {/* Shiva-Parvati Wedding */}
-                  <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
-                    <div className="aspect-[3/4] bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
-                      <div className="text-center p-4">
-                        <div className="text-4xl mb-2">🕉️</div>
-                        <h4 className="font-semibold text-blue-800 mb-1">शिव-पार्वती विवाह</h4>
-                        <p className="text-xs text-gray-600">Eternal Sacred Bond</p>
+                  <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border-temple-gold/30 hover:border-saffron/50">
+                    <div className="aspect-[3/4] bg-gradient-to-br from-blue-100 via-purple-50 to-indigo-50 relative group overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                      <div className="absolute inset-4 border-2 border-blue-300/40 rounded-lg bg-gradient-to-br from-blue-50/80 to-purple-50/80 backdrop-blur-sm">
+                        <div className="h-full flex flex-col items-center justify-center p-4 text-center">
+                          <div className="mb-3 transform group-hover:scale-110 transition-transform duration-300">
+                            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center mb-2 shadow-lg">
+                              <span className="text-2xl text-white font-devanagari">🔱</span>
+                            </div>
+                            <div className="flex justify-center space-x-1">
+                              <span className="text-lg">🌙</span>
+                              <span className="text-lg">💫</span>
+                              <span className="text-lg">🌟</span>
+                            </div>
+                          </div>
+                          <h4 className="font-bold text-blue-800 mb-1 text-sm">Shiva-Parvati Wedding</h4>
+                          <p className="text-xs text-blue-700 font-serif italic">Eternal Cosmic Union</p>
+                          <div className="mt-2 flex justify-center space-x-1">
+                            <span className="text-xs">🕉️</span>
+                            <span className="text-xs">🔱</span>
+                            <span className="text-xs">🕉️</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </Card>
 
                   {/* Krishna-Rukmini Wedding */}
-                  <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
-                    <div className="aspect-[3/4] bg-gradient-to-br from-yellow-100 to-orange-100 flex items-center justify-center">
-                      <div className="text-center p-4">
-                        <div className="text-4xl mb-2">🪶</div>
-                        <h4 className="font-semibold text-yellow-800 mb-1">कृष्ण-रुक्मिणी विवाह</h4>
-                        <p className="text-xs text-gray-600">Divine Love & Devotion</p>
+                  <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border-temple-gold/30 hover:border-saffron/50">
+                    <div className="aspect-[3/4] bg-gradient-to-br from-yellow-100 via-orange-50 to-amber-50 relative group overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                      <div className="absolute inset-4 border-2 border-yellow-300/40 rounded-lg bg-gradient-to-br from-yellow-50/80 to-orange-50/80 backdrop-blur-sm">
+                        <div className="h-full flex flex-col items-center justify-center p-4 text-center">
+                          <div className="mb-3 transform group-hover:scale-110 transition-transform duration-300">
+                            <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-full flex items-center justify-center mb-2 shadow-lg">
+                              <span className="text-2xl text-white">🪶</span>
+                            </div>
+                            <div className="flex justify-center space-x-1">
+                              <span className="text-lg">🦚</span>
+                              <span className="text-lg">💝</span>
+                              <span className="text-lg">🌸</span>
+                            </div>
+                          </div>
+                          <h4 className="font-bold text-yellow-800 mb-1 text-sm">Krishna-Rukmini Wedding</h4>
+                          <p className="text-xs text-yellow-700 font-serif italic">Divine Love & Devotion</p>
+                          <div className="mt-2 flex justify-center space-x-1">
+                            <span className="text-xs">🪶</span>
+                            <span className="text-xs">💕</span>
+                            <span className="text-xs">🪶</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </Card>
 
-                  {/* Modern Spiritual Couple */}
-                  <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
-                    <div className="aspect-[3/4] bg-gradient-to-br from-green-100 to-teal-100 flex items-center justify-center">
-                      <div className="text-center p-4">
-                        <div className="text-4xl mb-2">🙏</div>
-                        <h4 className="font-semibold text-green-800 mb-1">आपका विवाह</h4>
-                        <p className="text-xs text-gray-600">Your Sacred Journey</p>
+                  {/* Your Sacred Journey */}
+                  <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border-temple-gold/30 hover:border-saffron/50">
+                    <div className="aspect-[3/4] bg-gradient-to-br from-green-100 via-teal-50 to-emerald-50 relative group overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                      <div className="absolute inset-4 border-2 border-green-300/40 rounded-lg bg-gradient-to-br from-green-50/80 to-teal-50/80 backdrop-blur-sm">
+                        <div className="h-full flex flex-col items-center justify-center p-4 text-center">
+                          <div className="mb-3 transform group-hover:scale-110 transition-transform duration-300">
+                            <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-teal-500 rounded-full flex items-center justify-center mb-2 shadow-lg animate-pulse">
+                              <span className="text-2xl text-white">🙏</span>
+                            </div>
+                            <div className="flex justify-center space-x-1">
+                              <span className="text-lg">✨</span>
+                              <span className="text-lg">💫</span>
+                              <span className="text-lg">✨</span>
+                            </div>
+                          </div>
+                          <h4 className="font-bold text-green-800 mb-1 text-sm">Your Sacred Wedding</h4>
+                          <p className="text-xs text-green-700 font-serif italic">Your Sacred Journey</p>
+                          <div className="mt-2 flex justify-center space-x-1">
+                            <span className="text-xs">🌟</span>
+                            <span className="text-xs">💖</span>
+                            <span className="text-xs">🌟</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </Card>
                 </div>
 
-                <div className="text-center">
-                  <p className="text-sm text-gray-600 italic">
-                    "जब परमात्मा की कृपा हो, तो मिलन अवश्य होता है"
+                <div className="text-center bg-gradient-to-r from-saffron/10 to-temple-gold/10 p-4 rounded-lg border border-temple-gold/20">
+                  <p className="text-sm text-deep-maroon italic font-serif mb-1">
+                    "When the Divine blesses, union becomes inevitable"
+                  </p>
+                  <p className="text-xs text-indigo-night font-serif">
+                    - Ancient Vedic Wisdom
                   </p>
                 </div>
               </div>
