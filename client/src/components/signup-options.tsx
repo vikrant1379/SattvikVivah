@@ -103,10 +103,6 @@ function SignupOptions() {
     password = password.split('').sort(() => Math.random() - 0.5).join('');
     
     form.setValue('password', password);
-    toast({
-      title: "Password Generated",
-      description: "A strong password has been generated for you.",
-    });
   };
 
   const form = useForm<SignupForm>({
