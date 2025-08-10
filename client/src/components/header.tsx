@@ -82,148 +82,116 @@ const Header = memo(() => {
 
           {/* User Profile Section */}
           <div className="flex items-center space-x-4">
-            {isAuthenticated() && user ? (
-              <>
-                {/* Welcome text - more professional */}
-                <span className="text-sm text-gray-600 hidden lg:block font-medium">
-                  Welcome, {user.firstName}
-                </span>
+            {isAuthenticated() && user ? ( // Changed to function call
+              <div className="flex items-center space-x-3">
+                <span className="text-sm text-gray-600 hidden md:block">Welcome, {user.firstName}</span>
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="p-0 h-auto hover:bg-gray-50/80 transition-all duration-200">
-                      <div className="flex items-center space-x-3 px-3 py-2 rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all duration-200">
-                        {/* Profile avatar */}
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-saffron/20 to-temple-gold/20 flex items-center justify-center border-2 border-saffron/10">
-                          <User className="w-5 h-5 text-saffron" />
+                    <Button variant="ghost" className="p-0 h-auto hover:bg-gray-50">
+                      <div className="flex items-center space-x-2 px-3 py-2 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-saffron/20 to-temple-gold/20 flex items-center justify-center">
+                          <User className="w-4 h-4 text-saffron" />
                         </div>
-                        
-                        {/* Profile info - cleaner layout */}
-                        <div className="hidden md:flex flex-col items-start min-w-0">
-                          <span className="text-sm font-medium text-gray-700 truncate">My Profile</span>
+                        <div className="hidden md:flex flex-col items-start">
+                          <span className="text-xs text-gray-500">My Profile</span>
                           {membershipType && (
-                            <Badge className={`text-xs px-2 py-0.5 h-5 text-white ${membershipBadgeColor} font-medium`}>
+                            <Badge className={`text-xs px-2 py-0 h-4 text-white ${membershipBadgeColor}`}>
                               {membershipType}
                             </Badge>
                           )}
                         </div>
-                        
-                        <ChevronDown className="w-4 h-4 text-gray-500 transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                        <ChevronDown className="w-4 h-4 text-gray-400" />
                       </div>
                     </Button>
                   </DropdownMenuTrigger>
 
-                  <DropdownMenuContent className="w-72 p-0 shadow-xl border-0 rounded-xl" align="end" sideOffset={8}>
-                    {/* Professional header design */}
-                    <div className="p-5 bg-white border-b border-gray-100">
-                      <div className="flex items-start space-x-4">
-                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-saffron/20 to-temple-gold/20 flex items-center justify-center border-3 border-saffron/10 flex-shrink-0">
-                          <User className="w-8 h-8 text-saffron" />
+                  <DropdownMenuContent className="w-64 p-0" align="end">
+                    {/* User Info Header */}
+                    <div className="p-4 bg-gradient-to-r from-saffron/5 to-temple-gold/5 border-b">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-saffron/20 to-temple-gold/20 flex items-center justify-center">
+                          <User className="w-6 h-6 text-saffron" />
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-lg text-gray-900 truncate">{user.firstName} {user.lastName}</h3>
-                          <p className="text-sm text-gray-500 mb-2">ID - {user.id?.slice(-6)?.toUpperCase()}</p>
+                        <div>
+                          <p className="font-semibold text-gray-900">{user.firstName} {user.lastName}</p>
+                          <p className="text-xs text-gray-500">ID - SV{user.id?.slice(-6)?.toUpperCase()}</p>
                           {membershipType && (
-                            <Badge className={`text-xs px-3 py-1 h-6 text-white ${membershipBadgeColor} font-medium rounded-full`}>
+                            <Badge className={`text-xs mt-1 px-2 py-0 h-5 text-white ${membershipBadgeColor}`}>
                               {membershipType} Member
                             </Badge>
                           )}
                         </div>
                       </div>
 
-                      {/* Upgrade CTA */}
+                      {/* Upgrade Membership Button */}
                       <Button 
-                        className="w-full mt-4 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+                        className="w-full mt-3 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-medium"
                         size="sm"
                       >
                         <Gift className="w-4 h-4 mr-2" />
                         Upgrade Membership
                       </Button>
-                      <p className="text-xs text-center text-gray-500 mt-2 font-medium">Flat 54% OFF till 13 Aug</p>
+                      <p className="text-xs text-center text-gray-500 mt-1">Flat 54% OFF till 13 Aug</p>
                     </div>
 
-                    {/* Menu items with professional styling */}
-                    <div className="py-2">
-                      <DropdownMenuItem className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors duration-150 mx-2 rounded-lg">
-                        <div className="flex items-center space-x-3">
-                          <Edit className="w-5 h-5 text-gray-600" />
-                          <span className="text-gray-800 font-medium">Edit Profile</span>
-                        </div>
-                        <ChevronDown className="w-4 h-4 text-gray-400 -rotate-90" />
+                    {/* Menu Items */}
+                    <div className="p-1">
+                      <DropdownMenuItem className="flex items-center space-x-3 px-3 py-2 cursor-pointer">
+                        <Edit className="w-4 h-4 text-gray-500" />
+                        <span>Edit Profile</span>
                       </DropdownMenuItem>
 
-                      <DropdownMenuItem className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors duration-150 mx-2 rounded-lg">
-                        <div className="flex items-center space-x-3">
-                          <Heart className="w-5 h-5 text-gray-600" />
-                          <span className="text-gray-800 font-medium">Partner Preferences</span>
-                        </div>
-                        <ChevronDown className="w-4 h-4 text-gray-400 -rotate-90" />
+                      <DropdownMenuItem className="flex items-center space-x-3 px-3 py-2 cursor-pointer">
+                        <Heart className="w-4 h-4 text-gray-500" />
+                        <span>Partner Preferences</span>
                       </DropdownMenuItem>
 
-                      <DropdownMenuItem className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors duration-150 mx-2 rounded-lg">
-                        <div className="flex items-center space-x-3">
-                          <Star className="w-5 h-5 text-gray-600" />
-                          <span className="text-gray-800 font-medium">Astrology Services</span>
-                        </div>
-                        <ChevronDown className="w-4 h-4 text-gray-400 -rotate-90" />
+                      <DropdownMenuItem className="flex items-center space-x-3 px-3 py-2 cursor-pointer">
+                        <Star className="w-4 h-4 text-gray-500" />
+                        <span>Astrology Services</span>
                       </DropdownMenuItem>
 
-                      <DropdownMenuItem className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors duration-150 mx-2 rounded-lg">
-                        <div className="flex items-center space-x-3">
-                          <Phone className="w-5 h-5 text-gray-600" />
-                          <span className="text-gray-800 font-medium">Phonebook</span>
-                        </div>
-                        <ChevronDown className="w-4 h-4 text-gray-400 -rotate-90" />
+                      <DropdownMenuItem className="flex items-center space-x-3 px-3 py-2 cursor-pointer">
+                        <Phone className="w-4 h-4 text-gray-500" />
+                        <span>Phonebook</span>
                       </DropdownMenuItem>
 
-                      <DropdownMenuSeparator className="my-2 mx-4" />
+                      <DropdownMenuSeparator />
 
-                      <DropdownMenuItem className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors duration-150 mx-2 rounded-lg">
-                        <div className="flex items-center space-x-3">
-                          <Settings className="w-5 h-5 text-gray-600" />
-                          <span className="text-gray-800 font-medium">Account & Settings</span>
-                        </div>
-                        <ChevronDown className="w-4 h-4 text-gray-400 -rotate-90" />
+                      <DropdownMenuItem className="flex items-center space-x-3 px-3 py-2 cursor-pointer">
+                        <Settings className="w-4 h-4 text-gray-500" />
+                        <span>Account & Settings</span>
                       </DropdownMenuItem>
 
-                      <DropdownMenuItem className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors duration-150 mx-2 rounded-lg">
-                        <div className="flex items-center space-x-3">
-                          <Shield className="w-5 h-5 text-gray-600" />
-                          <span className="text-gray-800 font-medium">Safety Centre</span>
-                        </div>
-                        <ChevronDown className="w-4 h-4 text-gray-400 -rotate-90" />
+                      <DropdownMenuItem className="flex items-center space-x-3 px-3 py-2 cursor-pointer">
+                        <Shield className="w-4 h-4 text-gray-500" />
+                        <span>Safety Centre</span>
                       </DropdownMenuItem>
 
-                      <DropdownMenuItem className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors duration-150 mx-2 rounded-lg">
-                        <div className="flex items-center space-x-3">
-                          <HelpCircle className="w-5 h-5 text-gray-600" />
-                          <span className="text-gray-800 font-medium">Help & Support</span>
-                        </div>
-                        <ChevronDown className="w-4 h-4 text-gray-400 -rotate-90" />
+                      <DropdownMenuItem className="flex items-center space-x-3 px-3 py-2 cursor-pointer">
+                        <HelpCircle className="w-4 h-4 text-gray-500" />
+                        <span>Help & Support</span>
                       </DropdownMenuItem>
 
-                      <DropdownMenuItem className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors duration-150 mx-2 rounded-lg">
-                        <div className="flex items-center space-x-3">
-                          <Users className="w-5 h-5 text-gray-600" />
-                          <span className="text-gray-800 font-medium">Success Stories</span>
-                        </div>
-                        <ChevronDown className="w-4 h-4 text-gray-400 -rotate-90" />
+                      <DropdownMenuItem className="flex items-center space-x-3 px-3 py-2 cursor-pointer">
+                        <Users className="w-4 h-4 text-gray-500" />
+                        <span>Success Stories</span>
                       </DropdownMenuItem>
 
-                      <DropdownMenuSeparator className="my-2 mx-4" />
+                      <DropdownMenuSeparator />
 
                       <DropdownMenuItem 
-                        className="flex items-center space-x-3 px-4 py-3 cursor-pointer hover:bg-red-50 transition-colors duration-150 mx-2 rounded-lg text-red-600 hover:text-red-700"
+                        className="flex items-center space-x-3 px-3 py-2 cursor-pointer text-red-600 focus:text-red-600"
                         onClick={handleLogout}
                       >
-                        <LogOut className="w-5 h-5" />
-                        <span className="font-medium">Sign Out</span>
+                        <LogOut className="w-4 h-4" />
+                        <span>Sign Out</span>
                       </DropdownMenuItem>
                     </div>
                   </DropdownMenuContent>
                 </DropdownMenu>
-              </>
-            )
+              </div>
             ) : (
               <div className="flex items-center space-x-3">
                 <Button
