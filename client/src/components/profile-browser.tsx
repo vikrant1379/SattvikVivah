@@ -96,7 +96,6 @@ const ProfileBrowser = memo(() => {
   const toggleQuickFilter = useCallback((filterId: string) => {
     if (filterId === "verified" || filterId === "withPhoto") {
       // For verified and withPhoto, update the spiritual context instead
-      const { setFilters } = useSpiritualContext();
       setFilters({
         ...contextFilters,
         [filterId]: filterId === "verified" ? !contextFilters.verified : !contextFilters.withPhoto
@@ -113,7 +112,7 @@ const ProfileBrowser = memo(() => {
         return newSet;
       });
     }
-  }, [contextFilters]);
+  }, [contextFilters, setFilters]);
 
   const clearQuickFilters = useCallback(() => {
     setSearchQuery("");
