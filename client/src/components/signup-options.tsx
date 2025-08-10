@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -276,7 +275,7 @@ function SignupOptions() {
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent focus:ring-0 focus:ring-offset-0"
                             onClick={() => setShowPassword(!showPassword)}
                           >
                             {showPassword ? (
@@ -552,29 +551,29 @@ function SignupOptions() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="4'6\"">4'6"</SelectItem>
-                            <SelectItem value="4'7\"">4'7"</SelectItem>
-                            <SelectItem value="4'8\"">4'8"</SelectItem>
-                            <SelectItem value="4'9\"">4'9"</SelectItem>
-                            <SelectItem value="4'10\"">4'10"</SelectItem>
-                            <SelectItem value="4'11\"">4'11"</SelectItem>
-                            <SelectItem value="5'0\"">5'0"</SelectItem>
-                            <SelectItem value="5'1\"">5'1"</SelectItem>
-                            <SelectItem value="5'2\"">5'2"</SelectItem>
-                            <SelectItem value="5'3\"">5'3"</SelectItem>
-                            <SelectItem value="5'4\"">5'4"</SelectItem>
-                            <SelectItem value="5'5\"">5'5"</SelectItem>
-                            <SelectItem value="5'6\"">5'6"</SelectItem>
-                            <SelectItem value="5'7\"">5'7"</SelectItem>
-                            <SelectItem value="5'8\"">5'8"</SelectItem>
-                            <SelectItem value="5'9\"">5'9"</SelectItem>
-                            <SelectItem value="5'10\"">5'10"</SelectItem>
-                            <SelectItem value="5'11\"">5'11"</SelectItem>
-                            <SelectItem value="6'0\"">6'0"</SelectItem>
-                            <SelectItem value="6'1\"">6'1"</SelectItem>
-                            <SelectItem value="6'2\"">6'2"</SelectItem>
-                            <SelectItem value="6'3\"">6'3"</SelectItem>
-                            <SelectItem value="Above 6'3\"">Above 6'3"</SelectItem>
+                            <SelectItem value="4'6&quot;">4&apos;6&quot;</SelectItem>
+                            <SelectItem value="4'7&quot;">4&apos;7&quot;</SelectItem>
+                            <SelectItem value="4'8&quot;">4&apos;8&quot;</SelectItem>
+                            <SelectItem value="4'9&quot;">4&apos;9&quot;</SelectItem>
+                            <SelectItem value="4'10&quot;">4&apos;10&quot;</SelectItem>
+                            <SelectItem value="4'11&quot;">4&apos;11&quot;</SelectItem>
+                            <SelectItem value="5'0&quot;">5&apos;0&quot;</SelectItem>
+                            <SelectItem value="5'1&quot;">5&apos;1&quot;</SelectItem>
+                            <SelectItem value="5'2&quot;">5&apos;2&quot;</SelectItem>
+                            <SelectItem value="5'3&quot;">5&apos;3&quot;</SelectItem>
+                            <SelectItem value="5'4&quot;">5&apos;4&quot;</SelectItem>
+                            <SelectItem value="5'5&quot;">5&apos;5&quot;</SelectItem>
+                            <SelectItem value="5'6&quot;">5&apos;6&quot;</SelectItem>
+                            <SelectItem value="5'7&quot;">5&apos;7&quot;</SelectItem>
+                            <SelectItem value="5'8&quot;">5&apos;8&quot;</SelectItem>
+                            <SelectItem value="5'9&quot;">5&apos;9&quot;</SelectItem>
+                            <SelectItem value="5'10&quot;">5&apos;10&quot;</SelectItem>
+                            <SelectItem value="5'11&quot;">5&apos;11&quot;</SelectItem>
+                            <SelectItem value="6'0&quot;">6&apos;0&quot;</SelectItem>
+                            <SelectItem value="6'1&quot;">6&apos;1&quot;</SelectItem>
+                            <SelectItem value="6'2&quot;">6&apos;2&quot;</SelectItem>
+                            <SelectItem value="6'3&quot;">6&apos;3&quot;</SelectItem>
+                            <SelectItem value="Above 6'3&quot;">Above 6&apos;3&quot;</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -793,7 +792,7 @@ function SignupOptions() {
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent focus:ring-0 focus:ring-offset-0"
                             onClick={() => setShowPassword(!showPassword)}
                           >
                             {showPassword ? (
@@ -1069,29 +1068,29 @@ function SignupOptions() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="4'6\"">4'6"</SelectItem>
-                            <SelectItem value="4'7\"">4'7"</SelectItem>
-                            <SelectItem value="4'8\"">4'8"</SelectItem>
-                            <SelectItem value="4'9\"">4'9"</SelectItem>
-                            <SelectItem value="4'10\"">4'10"</SelectItem>
-                            <SelectItem value="4'11\"">4'11"</SelectItem>
-                            <SelectItem value="5'0\"">5'0"</SelectItem>
-                            <SelectItem value="5'1\"">5'1"</SelectItem>
-                            <SelectItem value="5'2\"">5'2"</SelectItem>
-                            <SelectItem value="5'3\"">5'3"</SelectItem>
-                            <SelectItem value="5'4\"">5'4"</SelectItem>
-                            <SelectItem value="5'5\"">5'5"</SelectItem>
-                            <SelectItem value="5'6\"">5'6"</SelectItem>
-                            <SelectItem value="5'7\"">5'7"</SelectItem>
-                            <SelectItem value="5'8\"">5'8"</SelectItem>
-                            <SelectItem value="5'9\"">5'9"</SelectItem>
-                            <SelectItem value="5'10\"">5'10"</SelectItem>
-                            <SelectItem value="5'11\"">5'11"</SelectItem>
-                            <SelectItem value="6'0\"">6'0"</SelectItem>
-                            <SelectItem value="6'1\"">6'1"</SelectItem>
-                            <SelectItem value="6'2\"">6'2"</SelectItem>
-                            <SelectItem value="6'3\"">6'3"</SelectItem>
-                            <SelectItem value="Above 6'3\"">Above 6'3"</SelectItem>
+                            <SelectItem value="4'6&quot;">4&apos;6&quot;</SelectItem>
+                            <SelectItem value="4'7&quot;">4&apos;7&quot;</SelectItem>
+                            <SelectItem value="4'8&quot;">4&apos;8&quot;</SelectItem>
+                            <SelectItem value="4'9&quot;">4&apos;9&quot;</SelectItem>
+                            <SelectItem value="4'10&quot;">4&apos;10&quot;</SelectItem>
+                            <SelectItem value="4'11&quot;">4&apos;11&quot;</SelectItem>
+                            <SelectItem value="5'0&quot;">5&apos;0&quot;</SelectItem>
+                            <SelectItem value="5'1&quot;">5&apos;1&quot;</SelectItem>
+                            <SelectItem value="5'2&quot;">5&apos;2&quot;</SelectItem>
+                            <SelectItem value="5'3&quot;">5&apos;3&quot;</SelectItem>
+                            <SelectItem value="5'4&quot;">5&apos;4&quot;</SelectItem>
+                            <SelectItem value="5'5&quot;">5&apos;5&quot;</SelectItem>
+                            <SelectItem value="5'6&quot;">5&apos;6&quot;</SelectItem>
+                            <SelectItem value="5'7&quot;">5&apos;7&quot;</SelectItem>
+                            <SelectItem value="5'8&quot;">5&apos;8&quot;</SelectItem>
+                            <SelectItem value="5'9&quot;">5&apos;9&quot;</SelectItem>
+                            <SelectItem value="5'10&quot;">5&apos;10&quot;</SelectItem>
+                            <SelectItem value="5'11&quot;">5&apos;11&quot;</SelectItem>
+                            <SelectItem value="6'0&quot;">6&apos;0&quot;</SelectItem>
+                            <SelectItem value="6'1&quot;">6&apos;1&quot;</SelectItem>
+                            <SelectItem value="6'2&quot;">6&apos;2&quot;</SelectItem>
+                            <SelectItem value="6'3&quot;">6&apos;3&quot;</SelectItem>
+                            <SelectItem value="Above 6'3&quot;">Above 6&apos;3&quot;</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -1224,7 +1223,7 @@ function SignupOptions() {
           </TabsContent>
         </Tabs>
 
-        
+
       </CardContent>
     </Card>
   );
