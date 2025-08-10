@@ -1,4 +1,3 @@
-
 # Development Guidelines
 
 This document outlines the best practices, coding standards, and architectural patterns to follow when developing and maintaining this spiritual matchmaking application.
@@ -144,10 +143,10 @@ export class ProfileService {
 
     // Fetch from API
     const profile = await apiRequest<IUserProfile>('GET', `/api/profiles/${id}`);
-    
+
     // Cache result
     this.cache.set(id, profile);
-    
+
     return profile;
   }
 
@@ -328,7 +327,7 @@ describe('ProfileCard', () => {
 
   it('should render profile information correctly', () => {
     render(<ProfileCard profile={mockProfile} />);
-    
+
     expect(screen.getByText(mockProfile.name)).toBeInTheDocument();
     expect(screen.getByText(`Age: ${mockProfile.age}`)).toBeInTheDocument();
   });
@@ -413,5 +412,48 @@ npm run dev
 # Build for production
 npm run build
 ```
+
+## Targeted Modification Principle
+
+### Scope of Changes
+When implementing feature requests or bug fixes:
+
+- **Modify only the specific page/component/feature mentioned** in the request
+- **Do not make changes to unrelated components** unless explicitly asked
+- **Preserve existing functionality** of other parts of the application
+- **Maintain consistency** with the existing codebase patterns
+
+### Implementation Guidelines
+```typescript
+// ✅ Good - Only modify the specific component requested
+// If asked to update ProfileCard component
+export const ProfileCard: React.FC<IProfileCardProps> = ({ profile }) => {
+  // Make changes only within this component
+  // Don't modify other components or global styles
+};
+
+// ❌ Bad - Don't modify unrelated components
+// Don't change Header, Footer, or other components unless asked
+```
+
+### Change Isolation Rules
+1. **Component Level**: Changes should be isolated to the specific component
+2. **Page Level**: If updating a page, don't modify other pages
+3. **Feature Level**: Keep feature changes contained within that feature's scope
+4. **Style Changes**: Only update styles for the specific element/component mentioned
+5. **API Changes**: Only modify endpoints or data structures if specifically requested
+
+### Example Scenarios
+- **Request**: "Update the profile card's background color"
+  - **Do**: Modify only ProfileCard component styles
+  - **Don't**: Change other card components or global theme colors
+
+- **Request**: "Add a new button to the header"
+  - **Do**: Modify only Header component
+  - **Don't**: Update footer, sidebar, or other navigation elements
+
+- **Request**: "Fix the search functionality"
+  - **Do**: Modify search-related components and services
+  - **Don't**: Change profile display or other unrelated features
 
 Remember: **Code quality is not negotiable.** Every piece of code should meet these standards before being merged into the main branch.
