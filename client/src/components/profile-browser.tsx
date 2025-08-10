@@ -1,4 +1,3 @@
-
 import { memo, useCallback, useState, useMemo } from "react";
 import { useLocation } from "wouter";
 import { useSpiritualContext } from "@/contexts/spiritual-context";
@@ -8,7 +7,18 @@ import PremiumBenefits from "@/components/premium-benefits";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Search, X, Filter, CheckCircle, Clock, MapPin, Users, ChevronLeft, Home } from "lucide-react";
+import {
+  Loader2,
+  Search,
+  X,
+  Filter,
+  CheckCircle,
+  Clock,
+  MapPin,
+  Users,
+  ChevronLeft,
+  Home,
+} from "lucide-react";
 import type { UserProfile } from "@shared/schema";
 import type { ProfileFilter } from "@/types/profile";
 
@@ -23,10 +33,19 @@ interface QuickFilter {
 const ProfileBrowser = memo(() => {
   const [location, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeQuickFilters, setActiveQuickFilters] = useState<Set<string>>(new Set());
+  const [activeQuickFilters, setActiveQuickFilters] = useState<Set<string>>(
+    new Set(),
+  );
 
   // Safely get spiritual context
-  const { searchResults, isSearching, clearSearch, filters: contextFilters, setFilters, allProfiles } = useSpiritualContext();
+  const {
+    searchResults,
+    isSearching,
+    clearSearch,
+    filters: contextFilters,
+    setFilters,
+    allProfiles,
+  } = useSpiritualContext();
 
   // Filter profiles based on search query - enhanced to search by name, ID, location, profession, etc.
   const filteredProfiles = useMemo(() => {
@@ -35,43 +54,72 @@ const ProfileBrowser = memo(() => {
     // Apply comprehensive search query filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase().trim();
-      filtered = filtered.filter(profile => {
+      filtered = filtered.filter((profile) => {
         // Basic identifiers
         const matchesId = profile.id.toLowerCase().includes(query);
-        const matchesName = profile.name?.toLowerCase().includes(query) || false;
-        const matchesUsername = profile.username?.toLowerCase().includes(query) || false;
-        
+        const matchesName =
+          profile.name?.toLowerCase().includes(query) || false;
+        const matchesUsername =
+          profile.username?.toLowerCase().includes(query) || false;
+
         // Location fields
-        const matchesCity = profile.city?.toLowerCase().includes(query) || false;
-        const matchesState = profile.state?.toLowerCase().includes(query) || false;
-        const matchesCountry = profile.country?.toLowerCase().includes(query) || false;
-        
+        const matchesCity =
+          profile.city?.toLowerCase().includes(query) || false;
+        const matchesState =
+          profile.state?.toLowerCase().includes(query) || false;
+        const matchesCountry =
+          profile.country?.toLowerCase().includes(query) || false;
+
         // Professional fields
-        const matchesProfession = profile.profession?.toLowerCase().includes(query) || false;
-        const matchesEducation = profile.education?.toLowerCase().includes(query) || false;
-        
+        const matchesProfession =
+          profile.profession?.toLowerCase().includes(query) || false;
+        const matchesEducation =
+          profile.education?.toLowerCase().includes(query) || false;
+
         // Personal attributes
-        const matchesMotherTongue = profile.motherTongue?.toLowerCase().includes(query) || false;
-        const matchesCaste = profile.caste?.toLowerCase().includes(query) || false;
-        const matchesReligion = profile.religion?.toLowerCase().includes(query) || false;
-        
+        const matchesMotherTongue =
+          profile.motherTongue?.toLowerCase().includes(query) || false;
+        const matchesCaste =
+          profile.caste?.toLowerCase().includes(query) || false;
+        const matchesReligion =
+          profile.religion?.toLowerCase().includes(query) || false;
+
         // Spiritual attributes
-        const matchesGuruLineage = profile.guruLineage?.toLowerCase().includes(query) || false;
-        const matchesSpiritualPractices = profile.spiritualPractices?.some(practice => 
-          practice.toLowerCase().includes(query)) || false;
-        const matchesSacredTexts = profile.sacredTexts?.some(text => 
-          text.toLowerCase().includes(query)) || false;
-        
+        const matchesGuruLineage =
+          profile.guruLineage?.toLowerCase().includes(query) || false;
+        const matchesSpiritualPractices =
+          profile.spiritualPractices?.some((practice) =>
+            practice.toLowerCase().includes(query),
+          ) || false;
+        const matchesSacredTexts =
+          profile.sacredTexts?.some((text) =>
+            text.toLowerCase().includes(query),
+          ) || false;
+
         // Astrological attributes
-        const matchesRashi = profile.rashi?.toLowerCase().includes(query) || false;
-        const matchesNakshatra = profile.nakshatra?.toLowerCase().includes(query) || false;
-        
-        return matchesId || matchesName || matchesUsername || 
-               matchesCity || matchesState || matchesCountry ||
-               matchesProfession || matchesEducation ||
-               matchesMotherTongue || matchesCaste || matchesReligion ||
-               matchesGuruLineage || matchesSpiritualPractices || matchesSacredTexts ||
-               matchesRashi || matchesNakshatra;
+        const matchesRashi =
+          profile.rashi?.toLowerCase().includes(query) || false;
+        const matchesNakshatra =
+          profile.nakshatra?.toLowerCase().includes(query) || false;
+
+        return (
+          matchesId ||
+          matchesName ||
+          matchesUsername ||
+          matchesCity ||
+          matchesState ||
+          matchesCountry ||
+          matchesProfession ||
+          matchesEducation ||
+          matchesMotherTongue ||
+          matchesCaste ||
+          matchesReligion ||
+          matchesGuruLineage ||
+          matchesSpiritualPractices ||
+          matchesSacredTexts ||
+          matchesRashi ||
+          matchesNakshatra
+        );
       });
     }
 
@@ -88,66 +136,76 @@ const ProfileBrowser = memo(() => {
         id: "verified",
         label: "Verified",
         icon: <CheckCircle className="w-3 h-3" />,
-        count: countSource.filter(p => p.verified).length,
-        active: contextFilters.verified || false
+        count: countSource.filter((p) => p.verified).length,
+        active: contextFilters.verified || false,
       },
       {
         id: "recent",
         label: "Just Joined",
         icon: <Clock className="w-3 h-3" />,
-        count: countSource.filter(p => {
+        count: countSource.filter((p) => {
           const joinDate = new Date(p.createdAt || p.joinedDate || Date.now());
           const now = new Date();
-          const daysDiff = (now.getTime() - joinDate.getTime()) / (1000 * 3600 * 24);
+          const daysDiff =
+            (now.getTime() - joinDate.getTime()) / (1000 * 3600 * 24);
           return daysDiff <= 30;
         }).length,
-        active: contextFilters.recentlyJoined || false
+        active: contextFilters.recentlyJoined || false,
       },
       {
         id: "nearby",
         label: "Nearby",
         icon: <MapPin className="w-3 h-3" />,
-        count: countSource.filter(p => p.city === "Mumbai" || p.city === "Delhi" || p.city === "New Delhi").length,
-        active: contextFilters.nearby || false
+        count: countSource.filter(
+          (p) =>
+            p.city === "Mumbai" || p.city === "Delhi" || p.city === "New Delhi",
+        ).length,
+        active: contextFilters.nearby || false,
       },
       {
         id: "withPhoto",
         label: "With Photo",
         icon: <Users className="w-3 h-3" />,
-        count: countSource.filter(p => p.profilePicture || p.profileImage || p.withPhoto).length,
-        active: contextFilters.withPhoto || false
-      }
+        count: countSource.filter(
+          (p) => p.profilePicture || p.profileImage || p.withPhoto,
+        ).length,
+        active: contextFilters.withPhoto || false,
+      },
     ];
   }, [searchResults, contextFilters]);
 
-  const toggleQuickFilter = useCallback((filterId: string) => {
-    // All quick filters are handled through the spiritual context
-    const filterMapping = {
-      verified: 'verified',
-      withPhoto: 'withPhoto',
-      recent: 'recentlyJoined',
-      nearby: 'nearby'
-    };
+  const toggleQuickFilter = useCallback(
+    (filterId: string) => {
+      // All quick filters are handled through the spiritual context
+      const filterMapping = {
+        verified: "verified",
+        withPhoto: "withPhoto",
+        recent: "recentlyJoined",
+        nearby: "nearby",
+      };
 
-    const contextKey = filterMapping[filterId as keyof typeof filterMapping];
-    if (contextKey) {
-      setFilters({
-        ...contextFilters,
-        [contextKey]: !contextFilters[contextKey as keyof typeof contextFilters]
-      });
-      
-      // Update local state for quick filter active status
-      if (contextFilters[contextKey as keyof typeof contextFilters]) {
-        setActiveQuickFilters(prev => {
-          const next = new Set(prev);
-          next.delete(filterId);
-          return next;
+      const contextKey = filterMapping[filterId as keyof typeof filterMapping];
+      if (contextKey) {
+        setFilters({
+          ...contextFilters,
+          [contextKey]:
+            !contextFilters[contextKey as keyof typeof contextFilters],
         });
-      } else {
-        setActiveQuickFilters(prev => new Set(prev).add(filterId));
+
+        // Update local state for quick filter active status
+        if (contextFilters[contextKey as keyof typeof contextFilters]) {
+          setActiveQuickFilters((prev) => {
+            const next = new Set(prev);
+            next.delete(filterId);
+            return next;
+          });
+        } else {
+          setActiveQuickFilters((prev) => new Set(prev).add(filterId));
+        }
       }
-    }
-  }, [contextFilters, setFilters]);
+    },
+    [contextFilters, setFilters],
+  );
 
   const clearQuickFilters = useCallback(() => {
     setSearchQuery("");
@@ -158,7 +216,7 @@ const ProfileBrowser = memo(() => {
       verified: false,
       withPhoto: false,
       recentlyJoined: false,
-      nearby: false
+      nearby: false,
     });
   }, [contextFilters, setFilters]);
 
@@ -167,7 +225,7 @@ const ProfileBrowser = memo(() => {
     setActiveQuickFilters(new Set());
     clearSearch();
     // Also trigger the spiritual context clear to ensure all filters are reset
-    window.dispatchEvent(new CustomEvent('clearAllSpiritualFilters'));
+    window.dispatchEvent(new CustomEvent("clearAllSpiritualFilters"));
   }, [clearSearch]);
 
   const hasActiveFilters = useMemo(() => {
@@ -180,12 +238,14 @@ const ProfileBrowser = memo(() => {
         return value.length > 0;
       }
 
-      return value !== undefined && value !== null && value !== "" && value !== false;
+      return (
+        value !== undefined && value !== null && value !== "" && value !== false
+      );
     });
   }, [searchQuery, contextFilters]);
 
   const handleBackToHome = () => {
-    setLocation('/');
+    setLocation("/");
   };
 
   return (
@@ -202,10 +262,12 @@ const ProfileBrowser = memo(() => {
                 className="flex items-center space-x-2 text-gray-600 hover:text-orange-600 hover:bg-orange-50 px-4 py-2 rounded-lg transition-all duration-200"
               >
                 <Home className="w-4 h-4" />
-                <span>← Back to Home</span>
+                <span>Back to Home</span>
               </Button>
               <div className="h-6 border-l border-gray-300"></div>
-              <h1 className="text-xl font-semibold text-gray-800">Profile Browser</h1>
+              <h1 className="text-xl font-semibold text-gray-800">
+                Profile Browser
+              </h1>
             </div>
             <div className="text-sm text-gray-600">
               Find your perfect spiritual match
@@ -238,9 +300,8 @@ const ProfileBrowser = memo(() => {
                       ) : (
                         <>
                           {filteredProfiles.length > 0
-                            ? `${filteredProfiles.length} profile${filteredProfiles.length === 1 ? '' : 's'} found`
-                            : "No profiles match your criteria"
-                          }
+                            ? `${filteredProfiles.length} profile${filteredProfiles.length === 1 ? "" : "s"} found`
+                            : "No profiles match your criteria"}
                           {searchResults.length !== filteredProfiles.length && (
                             <span className="text-orange-600 ml-1">
                               (filtered from {searchResults.length})
@@ -296,8 +357,6 @@ const ProfileBrowser = memo(() => {
                       <span className="ml-1">{filter.label}</span>
                     </Badge>
                   ))}
-
-                  
                 </div>
               </div>
             </div>
@@ -307,8 +366,12 @@ const ProfileBrowser = memo(() => {
               <div className="flex items-center justify-center py-20">
                 <div className="text-center">
                   <Loader2 className="w-12 h-12 animate-spin text-orange-500 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Finding your perfect matches...</h3>
-                  <p className="text-gray-600">Please wait while we search through our database</p>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    Finding your perfect matches...
+                  </h3>
+                  <p className="text-gray-600">
+                    Please wait while we search through our database
+                  </p>
                 </div>
               </div>
             ) : filteredProfiles.length > 0 ? (
@@ -347,20 +410,21 @@ const ProfileBrowser = memo(() => {
                   <h3 className="text-xl font-semibold text-gray-900 mb-3">
                     {searchQuery || hasActiveFilters
                       ? "No matches found"
-                      : "No profiles found"
-                    }</h3>
+                      : "No profiles found"}
+                  </h3>
                   <p className="text-gray-600 mb-6 leading-relaxed">
                     {searchQuery || hasActiveFilters
                       ? "Try adjusting your search terms or filters to find more matches"
-                      : "Try adjusting your filters to discover more spiritual partners"
-                    }
+                      : "Try adjusting your filters to discover more spiritual partners"}
                   </p>
                   <Button
                     onClick={clearAllFilters}
                     className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 font-semibold px-6 py-3 text-base"
                   >
                     <X className="w-5 h-5 mr-2" />
-                    {hasActiveFilters ? "🔄 Clear All Filters" : "🔍 Reset Search"}
+                    {hasActiveFilters
+                      ? "🔄 Clear All Filters"
+                      : "🔍 Reset Search"}
                   </Button>
                 </div>
               </div>
@@ -377,6 +441,6 @@ const ProfileBrowser = memo(() => {
   );
 });
 
-ProfileBrowser.displayName = 'ProfileBrowser';
+ProfileBrowser.displayName = "ProfileBrowser";
 
 export default ProfileBrowser;
