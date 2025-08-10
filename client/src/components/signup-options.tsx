@@ -394,7 +394,7 @@ function SignupOptions() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="Self">Myself</SelectItem>
+                        <SelectItem value="Self">Self</SelectItem>
                         <SelectItem value="Son">Son</SelectItem>
                         <SelectItem value="Daughter">Daughter</SelectItem>
                         <SelectItem value="Brother">Brother</SelectItem>
