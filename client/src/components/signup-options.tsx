@@ -366,7 +366,7 @@ function SignupOptions() {
                 {/* Date of Birth */}
               <div className="space-y-2">
                 <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                  Your date of birth
+                  Date of Birth
                 </label>
                 <div className="grid grid-cols-3 gap-4">
                   <FormField
@@ -374,9 +374,9 @@ function SignupOptions() {
                     name="dobDay"
                     render={({ field }) => (
                       <FormItem>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select onValueChange={field.onChange} value={field.value || ""}>
                           <FormControl>
-                            <SelectTrigger>
+                            <SelectTrigger className="bg-background">
                               <SelectValue placeholder="Day" />
                             </SelectTrigger>
                           </FormControl>
@@ -398,9 +398,9 @@ function SignupOptions() {
                     name="dobMonth"
                     render={({ field }) => (
                       <FormItem>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select onValueChange={field.onChange} value={field.value || ""}>
                           <FormControl>
-                            <SelectTrigger>
+                            <SelectTrigger className="bg-background">
                               <SelectValue placeholder="Month" />
                             </SelectTrigger>
                           </FormControl>
@@ -435,9 +435,9 @@ function SignupOptions() {
                     name="dobYear"
                     render={({ field }) => (
                       <FormItem>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select onValueChange={field.onChange} value={field.value || ""}>
                           <FormControl>
-                            <SelectTrigger>
+                            <SelectTrigger className="bg-background">
                               <SelectValue placeholder="Year" />
                             </SelectTrigger>
                           </FormControl>
