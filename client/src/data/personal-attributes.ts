@@ -6,7 +6,7 @@ export const maritalStatusOptions = [
 ];
 
 export const religionOptions = [
-  "Hindu",
+  "Hinduism",
   "Buddhism",
   "Jainism",
   "Sikhism",
@@ -42,13 +42,8 @@ export const annualIncomeOptions = [
   "₹2-5 Lakh",
   "₹5-10 Lakh",
   "₹10-15 Lakh",
-  "₹15-20 Lakh",
-  "₹20-25 Lakh",
-  "₹25-30 Lakh",
-  "₹30-35 Lakh",
-  "₹35-40 Lakh",
-  "₹40-45 Lakh",
-  "₹45-50 Lakh",
+  "₹15-25 Lakh",
+  "₹25-50 Lakh",
   "₹50 Lakh - ₹1 Crore",
   "Above ₹1 Crore",
   "Prefer not to disclose",
@@ -180,5 +175,5 @@ export const heightOptions = [
   "6'4\" (193 cm)",
   "6'5\" (196 cm)",
   "6'6\" (198 cm)",
-  "6'7\" (201 cm)",
+  "6'7\" (201 cm)"
 ];
