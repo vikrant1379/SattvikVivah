@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -12,27 +12,27 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
 
-// Dummy data - replace with actual imports from your data files
-const religionOptions = ["Hinduism", "Buddhism", "Jainism", "Sikhism", "Christianity", "Islam", "Judaism", "Other"];
-const casteGroupOptions = ["Brahmin", "Kshatriya", "Vaishya", "Shudra", "Other", "No Preference"];
-const motherTongueOptions = ["Hindi", "Bengali", "Telugu", "Tamil", "Gujarati", "Marathi", "Punjabi", "Malayalam", "Kannada", "English", "Other"];
-const countries = [
-  { value: "India", label: "India" },
-  { value: "USA", label: "USA" },
-  { value: "UK", label: "UK" },
-  { value: "Canada", label: "Canada" },
-  { value: "Australia", label: "Australia" },
-  { value: "Other", label: "Other" },
-];
-const heightOptions = [
-  "4'6\"", "4'7\"", "4'8\"", "4'9\"", "4'10\"", "4'11\"",
-  "5'0\"", "5'1\"", "5'2\"", "5'3\"", "5'4\"", "5'5\"", "5'6\"", "5'7\"", "5'8\"", "5'9\"", "5'10\"", "5'11\"",
-  "6'0\"", "6'1\"", "6'2\"", "6'3\"", "Above 6'3\""
-];
-const maritalStatusOptions = ["Never Married", "Divorced", "Widowed", "Separated"];
-const educationOptions = ["High School", "Bachelor's", "Master's", "Doctorate", "Diploma", "Professional", "Other"];
-const professionOptions = ["Software Engineer", "Doctor", "Teacher", "Business Owner", "Government Employee", "Private Employee", "Student", "Other"];
-const annualIncomeOptions = ["Below ₹2 Lakh", "₹2-5 Lakh", "₹5-10 Lakh", "₹10-15 Lakh", "₹15-25 Lakh", "₹25-50 Lakh", "₹50 Lakh - ₹1 Crore", "Above ₹1 Crore", "Prefer not to disclose"];
+// Import centralized data
+import { religionOptions, ethnicityOptions, annualIncomeOptions } from "@/data/religion-ethnicity";
+import { casteGroupOptions } from "@/data/caste";
+import { motherTongueOptions } from "@/data/mother-tongue";
+import { countryOptions, statesByCountry, citiesByState } from "@/data/locations";
+import { 
+  maritalStatusOptions, 
+  heightOptions,
+  residentialStatusOptions,
+  physicalStatusOptions,
+  bloodGroupOptions,
+  healthConditionsOptions,
+  smokingHabitsOptions,
+  drinkingHabitsOptions,
+  eatingHabitsOptions,
+  hasChildrenOptions,
+  horoscopeOptions,
+  mangalikOptions
+} from "@/data/personal-attributes";
+import { educationQualificationOptions } from "@/data/education";
+import { professionOptions } from "@/data/profession";
 
 // Signup validation schema with both email and mobile mandatory
 const signupSchema = z.object({
@@ -167,6 +167,35 @@ function SignupOptions() {
     // Limit to 10 digits
     return digits.slice(0, 10);
   };
+
+  // Watch for country changes to update available states
+  const selectedCountry = form.watch('country');
+  const selectedState = form.watch('state');
+
+  // Get available states for selected country
+  const availableStates = selectedCountry && statesByCountry[selectedCountry] 
+    ? statesByCountry[selectedCountry] 
+    : [];
+
+  // Get available cities for selected state
+  const availableCities = selectedState && citiesByState[selectedState] 
+    ? citiesByState[selectedState] 
+    : [];
+
+  // Reset state when country changes
+  React.useEffect(() => {
+    if (selectedCountry) {
+      form.setValue('state', '');
+      form.setValue('city', '');
+    }
+  }, [selectedCountry, form]);
+
+  // Reset city when state changes
+  React.useEffect(() => {
+    if (selectedState) {
+      form.setValue('city', '');
+    }
+  }, [selectedState, form]);
 
   return (
     <Card className="w-full max-w-2xl mx-auto">
@@ -502,7 +531,7 @@ function SignupOptions() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {countries.map((country) => (
+                          {countryOptions.map((country) => (
                             <SelectItem key={country.value} value={country.value}>
                               {country.label}
                             </SelectItem>
@@ -520,13 +549,20 @@ function SignupOptions() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>State</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Enter state"
-                          className="bg-background"
-                          {...field}
-                        />
-                      </FormControl>
+                      <Select onValueChange={field.onChange} value={field.value || ""}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder={selectedCountry ? "Select State" : "Select Country First"} />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {availableStates.map((state) => (
+                            <SelectItem key={state} value={state}>
+                              {state}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -538,13 +574,20 @@ function SignupOptions() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>City</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Enter city"
-                          className="bg-background"
-                          {...field}
-                        />
-                      </FormControl>
+                      <Select onValueChange={field.onChange} value={field.value || ""}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder={selectedState ? "Select City" : "Select State First"} />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {availableCities.map((city) => (
+                            <SelectItem key={city} value={city}>
+                              {city}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -619,7 +662,7 @@ function SignupOptions() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {educationOptions.map((education) => (
+                          {educationQualificationOptions.map((education) => (
                             <SelectItem key={education} value={education}>
                               {education}
                             </SelectItem>
