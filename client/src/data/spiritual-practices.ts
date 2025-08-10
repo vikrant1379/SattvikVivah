@@ -1,7 +1,7 @@
 export const spiritualPractices = [
   "Meditation & Dhyana",
   "Daily Sadhana",
-  "Seva & Karma Yoga", 
+  "Seva & Karma Yoga",
   "Yoga Practice",
   "Pranayama",
   "Japa Meditation",
@@ -19,7 +19,7 @@ export const spiritualPractices = [
 export const sacredTexts = [
   "Bhagavad Gita",
   "Upanishads",
-  "Ramayana", 
+  "Ramayana",
   "Mahabharata",
   "Vedas",
   "Puranas",
@@ -34,7 +34,7 @@ export const sacredTexts = [
 
 export const guruLineages = [
   "Goenka Tradition",
-  "Ramakrishna Mission", 
+  "Ramakrishna Mission",
   "Art of Living",
   "Isha Foundation",
   "Chinmaya Mission",

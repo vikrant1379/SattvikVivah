@@ -94,6 +94,22 @@ const filterProfiles = (profiles: UserProfile[], filters: ProfileFilter): UserPr
       if (!hasCommonElements(filters.spiritualPractices, profile.spiritualPractices)) return false;
     }
 
+    // Astrological filters
+    if (filters.rashi && profile.rashi !== filters.rashi) return false;
+    if (filters.nakshatra && profile.nakshatra !== filters.nakshatra) return false;
+    if (filters.manglikStatus && filters.manglikStatus !== "Doesn't Matter" && profile.manglikStatus !== filters.manglikStatus) return false;
+
+    // Vedic lifestyle filters
+    if (filters.ayurvedicConstitution && profile.ayurvedicConstitution !== filters.ayurvedicConstitution) return false;
+    if (filters.fastingPractices?.length && profile.fastingPractices?.length) {
+      if (!hasCommonElements(filters.fastingPractices, profile.fastingPractices)) return false;
+    }
+
+    // Dharmic goals
+    if (filters.spiritualGoals?.length && profile.spiritualGoals?.length) {
+      if (!hasCommonElements(filters.spiritualGoals, profile.spiritualGoals)) return false;
+    }
+
     // Sacred texts
     if (filters.sacredTexts?.length && profile.sacredTexts?.length) {
       if (!hasCommonElements(filters.sacredTexts, profile.sacredTexts)) return false;

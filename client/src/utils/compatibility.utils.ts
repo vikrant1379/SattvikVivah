@@ -1,4 +1,3 @@
-
 import { SpiritualProfile } from '@/types';
 import { COMPATIBILITY_WEIGHTS, SPIRITUAL_LEVELS } from '@/constants';
 
@@ -6,63 +5,60 @@ export const calculateCompatibilityScore = (
   profile1: SpiritualProfile,
   profile2: SpiritualProfile
 ): number => {
-  let score = 0;
-  let totalFactors = 0;
+  let totalScore = 0;
+  let maxScore = 0;
 
-  // Spiritual practices compatibility
-  if ((profile1.spiritualPractices || []).length > 0 && (profile2.spiritualPractices || []).length > 0) {
-    const practices1 = new Set(profile1.spiritualPractices || []);
-    const practices2 = new Set(profile2.spiritualPractices || []);
-    const commonPractices = new Set([...practices1].filter(x => practices2.has(x)));
-    const practicesScore = (commonPractices.size / Math.max(practices1.size, practices2.size)) * COMPATIBILITY_WEIGHTS.SPIRITUAL_PRACTICES;
-    score += practicesScore;
-    totalFactors += COMPATIBILITY_WEIGHTS.SPIRITUAL_PRACTICES;
+  // Spiritual practices compatibility (25 points)
+  const practices1 = profile1.spiritualPractices || [];
+  const practices2 = profile2.spiritualPractices || [];
+  const commonPractices = practices1.filter(p => practices2.includes(p));
+  const practicesScore = (commonPractices.length / Math.max(practices1.length, practices2.length, 1)) * COMPATIBILITY_WEIGHTS.SPIRITUAL_PRACTICES;
+  totalScore += practicesScore;
+  maxScore += COMPATIBILITY_WEIGHTS.SPIRITUAL_PRACTICES;
+
+  // Astrological compatibility (20 points)
+  if (profile1.gunaScore && profile2.gunaScore) {
+    const gunaCompatibility = Math.min(profile1.gunaScore, profile2.gunaScore) / 36;
+    totalScore += gunaCompatibility * 20;
+    maxScore += 20;
   }
 
-  // Sacred texts compatibility
-  if ((profile1.sacredTexts || []).length > 0 && (profile2.sacredTexts || []).length > 0) {
-    const texts1 = new Set(profile1.sacredTexts || []);
-    const texts2 = new Set(profile2.sacredTexts || []);
-    const commonTexts = new Set([...texts1].filter(x => texts2.has(x)));
-    const textsScore = (commonTexts.size / Math.max(texts1.size, texts2.size)) * COMPATIBILITY_WEIGHTS.SACRED_TEXTS;
-    score += textsScore;
-    totalFactors += COMPATIBILITY_WEIGHTS.SACRED_TEXTS;
+  // Vedic lifestyle alignment (15 points)
+  if (profile1.ayurvedicConstitution && profile2.ayurvedicConstitution) {
+    const constitutionMatch = profile1.ayurvedicConstitution === profile2.ayurvedicConstitution ? 15 : 8;
+    totalScore += constitutionMatch;
+    maxScore += 15;
   }
 
-  // Guru lineage compatibility
+  // Dharmic goals alignment (15 points)
+  const goals1 = profile1.spiritualGoals || [];
+  const goals2 = profile2.spiritualGoals || [];
+  const commonGoals = goals1.filter(g => goals2.includes(g));
+  const goalsScore = (commonGoals.length / Math.max(goals1.length, goals2.length, 1)) * 15;
+  totalScore += goalsScore;
+  maxScore += 15;
+
+  // Community & lineage (10 points)
   if (profile1.guruLineage && profile2.guruLineage) {
-    const lineageScore = profile1.guruLineage === profile2.guruLineage ? COMPATIBILITY_WEIGHTS.GURU_LINEAGE : 0;
-    score += lineageScore;
-    totalFactors += COMPATIBILITY_WEIGHTS.GURU_LINEAGE;
+    const lineageMatch = profile1.guruLineage === profile2.guruLineage ? 10 : 5;
+    totalScore += lineageMatch;
+    maxScore += 10;
   }
 
-  // Daily sadhana compatibility
-  if (profile1.dailySadhana && profile2.dailySadhana) {
-    const sadhanaScore = profile1.dailySadhana === profile2.dailySadhana ? COMPATIBILITY_WEIGHTS.DAILY_SADHANA : 0;
-    score += sadhanaScore;
-    totalFactors += COMPATIBILITY_WEIGHTS.DAILY_SADHANA;
-  }
+  // Sacred texts compatibility (15 points)
+  const texts1 = profile1.sacredTexts || [];
+  const texts2 = profile2.sacredTexts || [];
+  const commonTexts = texts1.filter(t => texts2.includes(t));
+  const textsScore = (commonTexts.length / Math.max(texts1.length, texts2.length, 1)) * COMPATIBILITY_WEIGHTS.SACRED_TEXTS;
+  totalScore += textsScore;
+  maxScore += COMPATIBILITY_WEIGHTS.SACRED_TEXTS;
 
-  // Dietary lifestyle compatibility
-  if (profile1.eatingHabits && profile2.eatingHabits) {
-    const dietScore = profile1.eatingHabits === profile2.eatingHabits ? COMPATIBILITY_WEIGHTS.DIETARY_LIFESTYLE : 0;
-    score += dietScore;
-    totalFactors += COMPATIBILITY_WEIGHTS.DIETARY_LIFESTYLE;
-  }
-
-  // Location proximity
-  if (profile1.state && profile2.state) {
-    const locationScore = profile1.state === profile2.state ? COMPATIBILITY_WEIGHTS.LOCATION_PROXIMITY : 0;
-    score += locationScore;
-    totalFactors += COMPATIBILITY_WEIGHTS.LOCATION_PROXIMITY;
-  }
-
-  return totalFactors > 0 ? Math.round((score / totalFactors) * 100) : 0;
+  return Math.round((totalScore / maxScore) * 100);
 };
 
 export const getSpiritualLevel = (profile: SpiritualProfile): string => {
   let level = 0;
-  
+
   if ((profile.spiritualPractices || []).length > 0) level++;
   if ((profile.sacredTexts || []).length > 0) level++;
   if (profile.guruLineage) level++;

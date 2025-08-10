@@ -33,17 +33,33 @@ export const spiritualProfiles = pgTable("spiritual_profiles", {
   spiritualPractices: jsonb("spiritual_practices").$type<string[]>().notNull().default([]),
   sacredTexts: jsonb("sacred_texts").$type<string[]>().notNull().default([]),
   guruLineage: text("guru_lineage"),
-  dailySadhana: text("daily_sadhana"),
-  sevaActivities: text("seva_activities"),
-  // Lifestyle attributes
+
+  // Astrological compatibility
+  birthTime: text("birth_time"),
+  birthPlace: text("birth_place"),
+  rashi: text("rashi"), // Moon sign
+  nakshatra: text("nakshatra"), // Birth star
+  manglikStatus: text("manglik_status"), // Yes, No, Anshik
+  gunaScore: integer("guna_score"), // Out of 36
+  doshas: jsonb("doshas").$type<string[]>(), // Mangal, Shani, etc.
+
+  // Lifestyle preferences
   smokingHabits: text("smoking_habits"), // No, Socially, Regularly
   drinkingHabits: text("drinking_habits"), // No, Socially, Regularly
   eatingHabits: text("eating_habits"), // Vegetarian, Vegan, Non Vegetarian, Eggetarian, Pescetarian
 
+  // Vedic lifestyle
+  dailyRoutine: text("daily_routine"), // Dinacharya type
+  ayurvedicConstitution: text("ayurvedic_constitution"), // 'Vata' | 'Pitta' | 'Kapha' | 'Vata-Pitta' | 'Pitta-Kapha' | 'Vata-Kapha'
+  fastingPractices: jsonb("fasting_practices").$type<string[]>(),
+  seasonalPractices: jsonb("seasonal_practices").$type<string[]>(), // Ritucharya
+  wakeUpTime: text("wake_up_time"),
+  sleepTime: text("sleep_time"),
+
   // Family and astrological attributes
   hasChildren: text("has_children"), // No, Yes - living with me, Yes - not living with me, Prefer not to say
   horoscope: text("horoscope"), // Zodiac signs
-  mangalik: text("mangalik"), // Yes, No, Anshik, Don't know, Prefer not to say
+  // mangalik: text("mangalik"), // Replaced by manglikStatus
   residentialStatus: text("residential_status"), // Citizen, Permanent Resident, Work Permit, etc.
 
   // Physical and health attributes
@@ -52,13 +68,27 @@ export const spiritualProfiles = pgTable("spiritual_profiles", {
   healthConditions: text("health_conditions"), // Any chronic conditions including HIV+
   medicalHistory: text("medical_history"), // Any relevant medical history
 
-  // Life goals and spiritual aspirations
-  dharmaGoals: text("dharma_goals"),
-  mokshaPerspective: text("moksha_perspective"),
-  grhasthaVision: text("grhastha_vision"),
+  // Personal goals and aspirations
+  bio: text("bio"),
+
+  // Dharmic goals & life purpose
+  ashramsGoals: jsonb("ashrams_goals").$type<string[]>(), // Grihastha objectives
+  dharmicCareerPath: text("dharmic_career_path"),
+  sevaPreferences: jsonb("seva_preferences").$type<string[]>(),
+  spiritualGoals: jsonb("spiritual_goals").$type<string[]>(),
+  familyValues: jsonb("family_values").$type<string[]>(),
+  childRearingPhilosophy: text("child_rearing_philosophy"),
+  jointSpiritualPractices: jsonb("joint_spiritual_practices").$type<string[]>(),
+
+  // Community & lineage
+  discipleLineage: text("disciple_lineage"),
+  satsangCommunity: jsonb("satsang_community").$type<string[]>(),
+  pilgrimageExperience: jsonb("pilgrimage_experience").$type<string[]>(),
+  festivalCelebrations: jsonb("festival_celebrations").$type<string[]>(),
+  preferredDeities: jsonb("preferred_deities").$type<string[]>(),
+  spiritualMentor: text("spiritual_mentor"),
 
   // Profile details
-  bio: text("bio"),
   photoUrl: text("photo_url"),
   verified: boolean("verified").default(false),
   active: boolean("active").default(true),
@@ -142,8 +172,43 @@ export const profileFilterSchema = z.object({
   healthConditions: z.string().optional(),
   hasChildren: z.string().optional(),
   horoscope: z.string().optional(),
-  mangalik: z.string().optional(),
+  // mangalik: z.string().optional(), // Replaced by manglikStatus
   residentialStatus: z.string().optional(),
+
+  // Astrological compatibility filters
+  birthTime: z.string().optional(),
+  birthPlace: z.string().optional(),
+  rashi: z.string().optional(),
+  nakshatra: z.string().optional(),
+  manglikStatus: z.enum(['Yes', 'No', 'Anshik']).optional(),
+  gunaScoreMin: z.number().optional(),
+  gunaScoreMax: z.number().optional(),
+  doshas: z.array(z.string()).optional(),
+
+  // Vedic lifestyle filters
+  dailyRoutine: z.string().optional(),
+  ayurvedicConstitution: z.enum(['Vata', 'Pitta', 'Kapha', 'Vata-Pitta', 'Pitta-Kapha', 'Vata-Kapha']).optional(),
+  fastingPractices: z.array(z.string()).optional(),
+  seasonalPractices: z.array(z.string()).optional(),
+  wakeUpTime: z.string().optional(),
+  sleepTime: z.string().optional(),
+
+  // Dharmic goals & life purpose filters
+  ashramsGoals: z.array(z.string()).optional(),
+  dharmicCareerPath: z.string().optional(),
+  sevaPreferences: z.array(z.string()).optional(),
+  spiritualGoals: z.array(z.string()).optional(),
+  familyValues: z.array(z.string()).optional(),
+  childRearingPhilosophy: z.string().optional(),
+  jointSpiritualPractices: z.array(z.string()).optional(),
+
+  // Community & lineage filters
+  discipleLineage: z.string().optional(),
+  satsangCommunity: z.array(z.string()).optional(),
+  pilgrimageExperience: z.array(z.string()).optional(),
+  festivalCelebrations: z.array(z.string()).optional(),
+  preferredDeities: z.array(z.string()).optional(),
+  spiritualMentor: z.string().optional(),
 });
 
 // Types
