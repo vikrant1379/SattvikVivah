@@ -237,54 +237,7 @@ const ProfileBrowser = memo(() => {
                   </Badge>
                 ))}
 
-                {/* Clear All Filters Button */}
-                {hasActiveFilters && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={clearAllFilters}
-                    className="text-red-600 hover:text-white hover:bg-red-600 border-red-300 hover:border-red-600 font-medium transition-all duration-200 shadow-sm hover:shadow-md"
-                    title="Clear all filters including sidebar filters"
-                  >
-                    <X className="w-4 h-4 mr-1.5" />
-                    Clear All
-                  </Button>
-                )}
-              </div>
-
-              {/* Active Search/Filter Indicators */}
-              {(searchQuery || activeQuickFilters.size > 0) && (
-                <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-orange-100">
-                  <span className="text-xs text-gray-500 font-medium">Active filters:</span>
-                  
-                  {searchQuery && (
-                    <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">
-                      Search: "{searchQuery}"
-                      <button
-                        onClick={() => setSearchQuery("")}
-                        className="ml-1.5 hover:bg-blue-200 rounded-full p-0.5 transition-colors"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </Badge>
-                  )}
-                  
-                  {Array.from(activeQuickFilters).map(filterId => {
-                    const filter = quickFilters.find(f => f.id === filterId);
-                    return filter ? (
-                      <Badge key={filterId} variant="secondary" className="bg-orange-100 text-orange-800 border-orange-200">
-                        {filter.label}
-                        <button
-                          onClick={() => toggleQuickFilter(filterId)}
-                          className="ml-1.5 hover:bg-orange-200 rounded-full p-0.5 transition-colors"
-                        >
-                          <X className="w-3 h-3" />
-                        </button>
-                      </Badge>
-                    ) : null;
-                  })}
                 </div>
-              )}
             </div>
           </div>
 
