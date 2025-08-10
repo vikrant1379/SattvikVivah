@@ -14,6 +14,7 @@ interface AuthUser {
   id: string;
   firstName: string;
   lastName: string;
+  name: string;
   email: string;
   mobile: string;
   isVerified: boolean;
