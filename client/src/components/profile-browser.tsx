@@ -115,12 +115,31 @@ const ProfileBrowser = memo(() => {
     setSearchQuery("");
     setActiveQuickFilters(new Set());
     clearSearch();
+    // Also trigger the spiritual context clear to ensure all filters are reset
+    window.dispatchEvent(new CustomEvent('clearAllSpiritualFilters'));
   }, [clearSearch]);
 
-  const hasActiveFilters = searchQuery.trim() || activeQuickFilters.size > 0 || Object.keys(contextFilters).some(key => {
-    const value = contextFilters[key as keyof typeof contextFilters];
-    return Array.isArray(value) ? value.length > 0 : value !== undefined && value !== null && value !== "";
-  });
+  const hasActiveFilters = useMemo(() => {
+    // Check search query
+    if (searchQuery.trim()) return true;
+    
+    // Check quick filters
+    if (activeQuickFilters.size > 0) return true;
+    
+    // Check context filters comprehensively
+    return Object.entries(contextFilters).some(([key, value]) => {
+      // Skip these keys as they don't represent meaningful selections
+      if (key === 'verified' || key === 'withPhoto') {
+        return value === true;
+      }
+      
+      if (Array.isArray(value)) {
+        return value.length > 0;
+      }
+      
+      return value !== undefined && value !== null && value !== "" && value !== false;
+    });
+  }, [searchQuery, activeQuickFilters, contextFilters]);
 
   return (
     <div className="flex flex-1 bg-gradient-to-br from-orange-50/30 via-white to-rose-50/30 min-h-screen">

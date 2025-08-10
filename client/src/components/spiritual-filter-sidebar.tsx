@@ -144,6 +144,17 @@ const SpiritualFilterSidebar = memo(() => {
     } catch (error) {
       console.error('Failed to load saved filters:', error);
     }
+
+    // Listen for clear all event from main filter area
+    const handleClearAllEvent = () => {
+      clearFilters();
+    };
+
+    window.addEventListener('clearAllSpiritualFilters', handleClearAllEvent);
+
+    return () => {
+      window.removeEventListener('clearAllSpiritualFilters', handleClearAllEvent);
+    };
   }, []);
 
   // Search states for each section
@@ -683,15 +694,86 @@ const SpiritualFilterSidebar = memo(() => {
   }, [localFilters, handleSearch]);
 
   const clearFilters = useCallback(() => {
-    const clearedFilters = {
+    const clearedFilters: ProfileFilter = {
+      ageMin: undefined,
+      ageMax: undefined,
+      country: undefined,
+      state: undefined,
+      city: undefined,
+      motherTongue: undefined,
+      otherLanguages: [],
+      spiritualPractices: undefined,
+      sacredTexts: undefined,
+      guruLineage: undefined,
+      education: undefined,
+      profession: undefined,
+      heightMin: undefined,
+      heightMax: undefined,
+      smokingHabits: undefined,
+      drinkingHabits: undefined,
+      eatingHabits: undefined,
+      physicalStatus: undefined,
+      bloodGroup: undefined,
+      healthConditions: undefined,
+      dietaryLifestyle: undefined,
+      maritalStatus: undefined,
+      verified: false,
+      withPhoto: false,
+      caste: undefined,
+      casteGroup: undefined,
+      casteSubcaste: undefined,
       casteGroups: [],
-      casteSubcastes: []
+      casteSubcastes: [],
+      religion: undefined,
+      ethnicity: undefined,
+      annualIncome: undefined,
+      annualIncomeMin: undefined,
+      annualIncomeMax: undefined,
+      hasChildren: undefined,
+      horoscope: undefined,
+      mangalik: undefined,
+      residentialStatus: undefined
     };
+
     setLocalFilters(clearedFilters);
     setFilters(clearedFilters);
     setCurrentLoadedFilterId(null);
-    // Clear latest search from localStorage as well
+    
+    // Clear latest search from localStorage
     localStorage.removeItem('spiritualFiltersLatest');
+    
+    // Reset all search states
+    setSearchStates({
+      education: "",
+      profession: "",
+      casteGroup: "",
+      casteSubcaste: "",
+      spiritualPractices: "",
+      sacredTexts: "",
+      guruLineages: "",
+      motherTongue: "",
+      otherLanguages: "",
+      countries: "",
+      states: "",
+      cities: "",
+      religion: "",
+      ethnicity: "",
+      annualIncome: ""
+    });
+
+    // Reset expanded sections
+    setExpandedSections({
+      education: false,
+      profession: false,
+      casteGroup: false,
+      casteSubcaste: false,
+      spiritualPractices: false,
+      sacredTexts: false,
+      guruLineages: false,
+      religion: false,
+      ethnicity: false,
+      annualIncome: false
+    });
     
     // Force re-render of saved filters section to hide it if no saved filters
     if (savedFilters.length === 0) {

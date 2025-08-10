@@ -179,12 +179,48 @@ export function SpiritualProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const clearSearch = useCallback(() => {
-    setFiltersState({
+    const emptyFilters: ProfileFilter = {
+      ageMin: undefined,
+      ageMax: undefined,
+      country: undefined,
+      state: undefined,
+      city: undefined,
+      motherTongue: undefined,
+      otherLanguages: [],
+      spiritualPractices: undefined,
+      sacredTexts: undefined,
+      guruLineage: undefined,
+      education: undefined,
+      profession: undefined,
+      heightMin: undefined,
+      heightMax: undefined,
+      smokingHabits: undefined,
+      drinkingHabits: undefined,
+      eatingHabits: undefined,
+      physicalStatus: undefined,
+      bloodGroup: undefined,
+      healthConditions: undefined,
+      dietaryLifestyle: undefined,
+      maritalStatus: undefined,
+      verified: false,
+      withPhoto: false,
+      caste: undefined,
+      casteGroup: undefined,
+      casteSubcaste: undefined,
       casteGroups: [],
       casteSubcastes: [],
+      religion: undefined,
+      ethnicity: undefined,
+      annualIncome: undefined,
       annualIncomeMin: undefined,
       annualIncomeMax: undefined,
-    });
+      hasChildren: undefined,
+      horoscope: undefined,
+      mangalik: undefined,
+      residentialStatus: undefined
+    };
+    
+    setFiltersState(emptyFilters);
     setSearchResults(mockProfiles.slice(0, 10)); // Reset to first 10
   }, []);
 
