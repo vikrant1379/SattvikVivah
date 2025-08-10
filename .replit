@@ -12,6 +12,7 @@ localPort = 5000
 externalPort = 80
 
 [workflows]
+runButton = "Run Development Server"
 
 [[workflows.workflow]]
 name = "Code Quality Check"
@@ -38,3 +39,12 @@ args = "npm run type-check"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "npm run lint:check"
+
+[[workflows.workflow]]
+name = "Run Development Server"
+author = 46257489
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
