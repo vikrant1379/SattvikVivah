@@ -814,29 +814,46 @@ const SpiritualFilterSidebar = memo(() => {
                         )}
                       </button>
                       <div className="flex items-center gap-1">
-                        {currentLoadedFilterId === 'latest' && (
-                          <button
-                            onClick={() => {
-                              // Update latest search with current filters
-                              localStorage.setItem('spiritualFiltersLatest', JSON.stringify(localFilters));
-                            }}
-                            className="text-orange-600 hover:text-orange-700 text-sm px-1"
-                            title="Update latest search with current filters"
-                          >
-                            🔄
-                          </button>
-                        )}
+                        <button
+                          onClick={() => {
+                            // Save current filters as latest search
+                            localStorage.setItem('spiritualFiltersLatest', JSON.stringify(localFilters));
+                            // Show success feedback
+                            const button = event?.currentTarget;
+                            if (button) {
+                              const originalText = button.textContent;
+                              button.textContent = '✓';
+                              button.style.color = '#10b981';
+                              setTimeout(() => {
+                                button.textContent = originalText;
+                                button.style.color = '';
+                              }, 1000);
+                            }
+                          }}
+                          className="text-orange-600 hover:text-orange-700 text-sm px-1 transition-colors"
+                          title="Update latest search with current filters"
+                        >
+                          🔄
+                        </button>
                         <button
                           onClick={() => {
                             localStorage.removeItem('spiritualFiltersLatest');
                             if (currentLoadedFilterId === 'latest') {
                               setCurrentLoadedFilterId(null);
+                              // Reset to empty filters
+                              const emptyFilters = {
+                                casteGroups: [],
+                                casteSubcastes: [],
+                                annualIncomeMin: undefined,
+                                annualIncomeMax: undefined,
+                              };
+                              setLocalFilters(emptyFilters);
                             }
-                            // Force re-render by updating a state that affects the render
-                            setSavedFiltersOpen(prev => !prev);
-                            setSavedFiltersOpen(prev => !prev);
+                            // Force component re-render to hide the latest search option
+                            setSavedFiltersOpen(false);
+                            setTimeout(() => setSavedFiltersOpen(true), 50);
                           }}
-                          className="text-red-500 hover:text-red-700 text-sm px-1"
+                          className="text-red-500 hover:text-red-700 text-sm px-1 transition-colors"
                           title="Clear latest search"
                         >
                           ✕
