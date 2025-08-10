@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -84,6 +85,7 @@ function LoginOptions() {
   const [forgotPasswordStep, setForgotPasswordStep] = useState<"contact" | "otp" | "reset">("contact");
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [, setLocation] = useLocation();
   const { toast } = useToast();
   const { login, sendOtp, verifyOtp, resetPassword, isLoading, error, clearError } = useAuth();
 
@@ -127,6 +129,7 @@ function LoginOptions() {
         title: "Login Successful",
         description: "Welcome back to SattvikVivah!",
       });
+      setLocation('/profiles');
     } else {
       toast({
         title: "Login Failed",
@@ -149,6 +152,7 @@ function LoginOptions() {
         title: "Login Successful",
         description: "Welcome back to SattvikVivah!",
       });
+      setLocation('/profiles');
     } else {
       toast({
         title: "Login Failed",
@@ -161,7 +165,7 @@ function LoginOptions() {
   const handleOtpRequest = async (data: OtpRequestForm) => {
     clearError();
     const success = await sendOtp(data.contactMethod);
-    
+
     if (success) {
       setOtpContactMethod(data.contactMethod);
       setOtpSent(true);
@@ -181,7 +185,7 @@ function LoginOptions() {
   const handleOtpVerify = async (data: OtpVerifyForm) => {
     clearError();
     const success = await verifyOtp(otpContactMethod, data.otp, data.stayLoggedIn);
-    
+
     if (success) {
       setOtpModalOpen(false);
       setOtpSent(false);
@@ -191,6 +195,7 @@ function LoginOptions() {
         title: "Login Successful",
         description: "Welcome back to SattvikVivah!",
       });
+      setLocation('/profiles');
     } else {
       toast({
         title: "Login Failed",
@@ -204,7 +209,7 @@ function LoginOptions() {
     if (forgotPasswordStep === "contact") {
       clearError();
       const success = await sendOtp(data.contactMethod);
-      
+
       if (success) {
         setForgotPasswordStep("otp");
         toast({
@@ -227,10 +232,10 @@ function LoginOptions() {
       });
     } else if (forgotPasswordStep === "reset") {
       if (!data.otp || !data.newPassword) return;
-      
+
       clearError();
       const success = await resetPassword(data.contactMethod, data.otp, data.newPassword);
-      
+
       if (success) {
         setForgotPasswordOpen(false);
         setForgotPasswordStep("contact");
@@ -266,27 +271,27 @@ function LoginOptions() {
     const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const numbers = '0123456789';
     const symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?';
-    
+
     let password = '';
-    
+
     // Ensure at least one from each category
     password += lowercase[Math.floor(Math.random() * lowercase.length)];
     password += uppercase[Math.floor(Math.random() * uppercase.length)];
     password += numbers[Math.floor(Math.random() * numbers.length)];
     password += symbols[Math.floor(Math.random() * symbols.length)];
-    
+
     // Fill remaining with random characters
     const allChars = lowercase + uppercase + numbers + symbols;
     for (let i = 4; i < 12; i++) {
       password += allChars[Math.floor(Math.random() * allChars.length)];
     }
-    
+
     // Shuffle the password
     password = password.split('').sort(() => Math.random() - 0.5).join('');
 
     forgotPasswordForm.setValue('newPassword', password);
     forgotPasswordForm.setValue('confirmPassword', password);
-    
+
     // Trigger validation for both fields
     forgotPasswordForm.trigger(['newPassword', 'confirmPassword']);
 

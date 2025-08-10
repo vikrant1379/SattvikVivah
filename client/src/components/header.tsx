@@ -1,18 +1,15 @@
-
 import { memo, useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Clover, User } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { LoginOptions } from "@/components/login-options";
+import { User, Clover } from "lucide-react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import LoginOptions from "./login-options";
+import { useAuth } from "@/hooks/use-auth";
 
 const Header = memo(() => {
   const [location] = useLocation();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
-  
-  // Mock authentication state - replace with real auth context
-  const isAuthenticated = false;
-  const user = null;
+
+  const { isAuthenticated, user } = useAuth();
 
   const handleProfileClick = () => {
     if (!isAuthenticated) {

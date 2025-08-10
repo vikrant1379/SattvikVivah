@@ -1,4 +1,3 @@
-
 import { apiRequest } from './api.service';
 
 interface LoginCredentials {
@@ -64,13 +63,13 @@ export class AuthService {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials)
       });
-      
+
       const data = await response.json();
-      
+
       if (data.success) {
         this.setAuthData(data.token, data.user, credentials.stayLoggedIn);
       }
-      
+
       return data;
     } catch (error) {
       throw new Error('Login failed. Please try again.');
@@ -84,13 +83,13 @@ export class AuthService {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData)
       });
-      
+
       const data = await response.json();
-      
+
       if (data.success) {
         this.setAuthData(data.token, data.user, false);
       }
-      
+
       return data;
     } catch (error) {
       throw new Error('Signup failed. Please try again.');
@@ -104,7 +103,7 @@ export class AuthService {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ contactMethod })
       });
-      
+
       return response.json();
     } catch (error) {
       throw new Error('Failed to send OTP. Please try again.');
@@ -118,13 +117,13 @@ export class AuthService {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ contactMethod, otp })
       });
-      
+
       const data = await response.json();
-      
+
       if (data.success) {
         this.setAuthData(data.token, data.user, stayLoggedIn);
       }
-      
+
       return data;
     } catch (error) {
       throw new Error('OTP verification failed. Please try again.');
@@ -138,7 +137,7 @@ export class AuthService {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ contactMethod, otp, newPassword })
       });
-      
+
       return response.json();
     } catch (error) {
       throw new Error('Password reset failed. Please try again.');
@@ -148,7 +147,7 @@ export class AuthService {
   static async getCurrentUser(): Promise<AuthUser | null> {
     const userStr = localStorage.getItem(this.USER_KEY) || sessionStorage.getItem(this.USER_KEY);
     if (!userStr) return null;
-    
+
     try {
       return JSON.parse(userStr);
     } catch {
@@ -164,8 +163,9 @@ export class AuthService {
   }
 
   static isAuthenticated(): boolean {
-    const token = localStorage.getItem(this.TOKEN_KEY) || sessionStorage.getItem(this.TOKEN_KEY);
-    return !!token;
+    const token = localStorage.getItem('auth_token');
+    const user = localStorage.getItem('auth_user');
+    return !!(token && user);
   }
 
   static getToken(): string | null {

@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Eye, EyeOff, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
+import { useLocation } from "wouter";
 
 // Dummy data - replace with actual imports from your data files
 const religionOptions = ["Hinduism", "Buddhism", "Jainism", "Sikhism", "Christianity", "Islam", "Judaism", "Other"];
@@ -77,6 +78,7 @@ const signupSchema = z.object({
 type SignupForm = z.infer<typeof signupSchema>;
 
 function SignupOptions() {
+  const [, setLocation] = useLocation();
   const [showPassword, setShowPassword] = useState(false);
   const { toast } = useToast();
   const { signup, isLoading, error, clearError } = useAuth();
@@ -145,13 +147,15 @@ function SignupOptions() {
 
     if (success) {
       toast({
-        title: "Account Created Successfully!",
+        title: "Success! 🎉",
         description: "Welcome to SattvikVivah! Your spiritual journey begins now.",
       });
+      // Navigate to profiles page on successful signup
+      setLocation('/profiles');
     } else {
       toast({
         title: "Signup Failed",
-        description: error || "Please try again later.",
+        description: error || "Something went wrong. Please try again.",
         variant: "destructive",
       });
     }
