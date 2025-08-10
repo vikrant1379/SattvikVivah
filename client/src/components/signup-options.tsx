@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 // Dummy data - replace with actual imports from your data files
@@ -245,6 +245,38 @@ function SignupOptions() {
     return digits.slice(0, 10);
   };
 
+  const generateSecurePassword = () => {
+    const lowercase = "abcdefghijklmnopqrstuvwxyz";
+    const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const numbers = "0123456789";
+    const specials = "!@#$%^&*()_+-=[]{}|;:,.<>?";
+    
+    // Ensure at least one character from each category
+    let password = "";
+    password += lowercase[Math.floor(Math.random() * lowercase.length)];
+    password += uppercase[Math.floor(Math.random() * uppercase.length)];
+    password += numbers[Math.floor(Math.random() * numbers.length)];
+    password += specials[Math.floor(Math.random() * specials.length)];
+    
+    // Fill the rest with random characters from all categories
+    const allChars = lowercase + uppercase + numbers + specials;
+    for (let i = 4; i < 12; i++) {
+      password += allChars[Math.floor(Math.random() * allChars.length)];
+    }
+    
+    // Shuffle the password
+    return password.split("").sort(() => Math.random() - 0.5).join("");
+  };
+
+  const handleGeneratePassword = () => {
+    const newPassword = generateSecurePassword();
+    form.setValue("password", newPassword);
+    toast({
+      title: "Password Generated",
+      description: "A strong password has been generated for you.",
+    });
+  };
+
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader className="text-center">
@@ -359,7 +391,19 @@ function SignupOptions() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel className="flex items-center justify-between">
+                    <span>Password</span>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleGeneratePassword}
+                      className="text-xs text-saffron hover:text-saffron/80 p-1 h-auto"
+                    >
+                      <RefreshCw className="w-3 h-3 mr-1" />
+                      Generate
+                    </Button>
+                  </FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
