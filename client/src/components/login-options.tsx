@@ -343,7 +343,7 @@ function LoginOptions() {
                     control={emailForm.control}
                     name="stayLoggedIn"
                     render={({ field }) => (
-                      <FormItem className="flex items-center space-x-2">
+                      <FormItem className="flex items-center space-x-2 space-y-0">
                         <FormControl>
                           <Checkbox
                             checked={field.value}
@@ -603,7 +603,7 @@ function LoginOptions() {
                             control={otpVerifyForm.control}
                             name="stayLoggedIn"
                             render={({ field }) => (
-                              <FormItem className="flex items-center space-x-2">
+                              <FormItem className="flex items-center space-x-2 space-y-0">
                                 <FormControl>
                                   <Checkbox
                                     checked={field.value}
@@ -712,7 +712,7 @@ function LoginOptions() {
                     control={mobileForm.control}
                     name="stayLoggedIn"
                     render={({ field }) => (
-                      <FormItem className="flex items-center space-x-2">
+                      <FormItem className="flex items-center space-x-2 space-y-0">
                         <FormControl>
                           <Checkbox
                             checked={field.value}
