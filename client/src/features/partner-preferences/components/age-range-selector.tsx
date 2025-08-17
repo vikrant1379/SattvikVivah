@@ -17,20 +17,36 @@ export const AgeRangeSelector: React.FC<AgeRangeSelectorProps> = ({
   className = ''
 }) => {
   const handleMinAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newMinAge = parseInt(e.target.value);
-    if (!isNaN(newMinAge) && newMinAge >= AGE_CONSTRAINTS.MIN && newMinAge <= AGE_CONSTRAINTS.MAX) {
+    const value = e.target.value;
+    if (value === '') {
+      onAgeRangeChange(AGE_CONSTRAINTS.MIN, maxAge);
+      return;
+    }
+    
+    const newMinAge = parseInt(value);
+    if (!isNaN(newMinAge)) {
+      // Clamp the value to constraints
+      const clampedMinAge = Math.max(AGE_CONSTRAINTS.MIN, Math.min(AGE_CONSTRAINTS.MAX, newMinAge));
       // If new min age is greater than current max age, update max age to match
-      const newMaxAge = newMinAge > maxAge ? newMinAge : maxAge;
-      onAgeRangeChange(newMinAge, newMaxAge);
+      const newMaxAge = clampedMinAge > maxAge ? clampedMinAge : maxAge;
+      onAgeRangeChange(clampedMinAge, newMaxAge);
     }
   };
 
   const handleMaxAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newMaxAge = parseInt(e.target.value);
-    if (!isNaN(newMaxAge) && newMaxAge <= AGE_CONSTRAINTS.MAX && newMaxAge >= AGE_CONSTRAINTS.MIN) {
+    const value = e.target.value;
+    if (value === '') {
+      onAgeRangeChange(minAge, AGE_CONSTRAINTS.MAX);
+      return;
+    }
+    
+    const newMaxAge = parseInt(value);
+    if (!isNaN(newMaxAge)) {
+      // Clamp the value to constraints
+      const clampedMaxAge = Math.max(AGE_CONSTRAINTS.MIN, Math.min(AGE_CONSTRAINTS.MAX, newMaxAge));
       // If new max age is less than current min age, update min age to match
-      const newMinAge = newMaxAge < minAge ? newMaxAge : minAge;
-      onAgeRangeChange(newMinAge, newMaxAge);
+      const newMinAge = clampedMaxAge < minAge ? clampedMaxAge : minAge;
+      onAgeRangeChange(newMinAge, clampedMaxAge);
     }
   };
 
