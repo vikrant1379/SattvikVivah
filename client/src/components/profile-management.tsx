@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,10 +9,13 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Camera, Star, User, Heart, Briefcase, Users, Eye, EyeOff } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from './ui/command';
+import { Camera, Star, User, Heart, Briefcase, Users, Eye, EyeOff, MapPin, Check, ChevronDown } from 'lucide-react';
 import { horoscopeService } from '@/services/horoscope.service';
 import { generateBasicHoroscope } from '@/utils/vedic-astrology.utils';
 import AstrologicalCalculator from '@/components/astrological-calculator';
+import { placesService, PlaceSearchResult } from '../services/places.service';
 import type { UserProfile } from '@shared/schema';
 import {
   religionOptions,
@@ -63,6 +66,46 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
     time: profile.birthTime || '12:00',
     place: profile.birthPlace || ''
   });
+
+  // Place search states
+  const [isPlaceSearchOpen, setIsPlaceSearchOpen] = useState(false);
+  const [placeQuery, setPlaceQuery] = useState('');
+  const [placeResults, setPlaceResults] = useState<PlaceSearchResult[]>([]);
+  const [isSearchingPlaces, setIsSearchingPlaces] = useState(false);
+
+  // Place search functionality
+  useEffect(() => {
+    const searchPlaces = async () => {
+      if (placeQuery.length < 3) {
+        setPlaceResults([]);
+        return;
+      }
+
+      setIsSearchingPlaces(true);
+      try {
+        const results = await placesService.searchPlaces(placeQuery);
+        setPlaceResults(results);
+      } catch (error) {
+        console.error('Error searching places:', error);
+        setPlaceResults([]);
+      } finally {
+        setIsSearchingPlaces(false);
+      }
+    };
+
+    const debounceTimer = setTimeout(searchPlaces, 300);
+    return () => clearTimeout(debounceTimer);
+  }, [placeQuery]);
+
+  const handlePlaceSelect = (place: PlaceSearchResult) => {
+    const placeString = `${place.name}, ${place.state}`;
+    setFormData(prev => ({
+      ...prev,
+      birthPlace: placeString
+    }));
+    setPlaceQuery(placeString);
+    setIsPlaceSearchOpen(false);
+  };
 
   // Calculate individual section completion percentages
   const calculateSectionCompletion = (sectionId: string): number => {
@@ -349,6 +392,57 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
                 </div>
               </div>
 
+              {/* Birth Place */}
+                <div>
+                  <Label htmlFor="birthPlace" className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4" />
+                    Place of Birth
+                  </Label>
+                  <Popover open={isPlaceSearchOpen} onOpenChange={setIsPlaceSearchOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={isPlaceSearchOpen}
+                        className="w-full justify-between mt-1"
+                      >
+                        {formData.birthPlace || "Select birth place..."}
+                        <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-full p-0">
+                      <Command>
+                        <CommandInput
+                          placeholder="Search places..."
+                          value={placeQuery}
+                          onValueChange={setPlaceQuery}
+                        />
+                        <CommandList>
+                          <CommandEmpty>
+                            {isSearchingPlaces ? "Searching..." : "No places found."}
+                          </CommandEmpty>
+                          <CommandGroup>
+                            {placeResults.map((place) => (
+                              <CommandItem
+                                key={place.id}
+                                value={place.id}
+                                onSelect={() => handlePlaceSelect(place)}
+                              >
+                                <Check
+                                  className={`mr-2 h-4 w-4 ${
+                                    formData.birthPlace === `${place.name}, ${place.state}` ? "opacity-100" : "opacity-0"
+                                  }`}
+                                />
+                                {place.name}, {place.state}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+
               {/* Astrological Calculation Section */}
               <AstrologicalCalculator
                 onCalculationComplete={(astroData) => {
@@ -425,7 +519,7 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
                     id="spiritualJourney"
                     value={formData.spiritualJourney || ''}
                     onChange={(e) => setFormData({...formData, spiritualJourney: e.target.value})}
-                    placeholder="Share your spiritual background, inspirations, and practices that have shaped your journey..."
+                    placeholder="Share your spiritual background, inspirations, and practices that havee shaped your journey..."
                     className="min-h-28"
                   />
                 </div>
