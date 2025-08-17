@@ -92,6 +92,7 @@ export const spiritualProfiles = pgTable("spiritual_profiles", {
   photoUrl: text("photo_url"),
   verified: boolean("verified").default(false),
   active: boolean("active").default(true),
+  profileCompletionPercentage: integer("profile_completion_percentage").default(15),
 
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),

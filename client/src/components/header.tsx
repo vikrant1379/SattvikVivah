@@ -36,6 +36,8 @@ const Header = memo(() => {
                               membershipType === "Sadhaka" ? "bg-gradient-to-r from-purple-500 to-purple-600" : 
                               "bg-gradient-to-r from-green-500 to-green-600";
 
+  const [, setLocation] = useLocation();
+
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-temple-gold to-transparent opacity-60"></div>
@@ -157,7 +159,10 @@ const Header = memo(() => {
 
                       <DropdownMenuSeparator />
 
-                      <DropdownMenuItem className="flex items-center space-x-3 px-3 py-2 cursor-pointer">
+                      <DropdownMenuItem 
+                        className="flex items-center space-x-3 px-3 py-2 cursor-pointer"
+                        onClick={() => setLocation('/account')}
+                      >
                         <Settings className="w-4 h-4 text-gray-500" />
                         <span>Account & Settings</span>
                       </DropdownMenuItem>

@@ -2466,49 +2466,22 @@ const SpiritualFilterSidebar = memo(() => {
                 </div>
 
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Guna Score Range</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Select
-                      value={localFilters.gunaScoreMin?.toString() || ""}
-                      onValueChange={(value) =>
-                        setLocalFilters(prev => ({
-                          ...prev,
-                          gunaScoreMin: value ? parseInt(value) : undefined
-                        }))
-                      }
-                    >
-                      <SelectTrigger className="h-9 text-sm">
-                        <SelectValue placeholder="Min" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {Array.from({ length: 36 }, (_, i) => i + 1).map((score) => (
-                          <SelectItem key={score} value={score.toString()}>
-                            {score}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <Select
-                      value={localFilters.gunaScoreMax?.toString() || ""}
-                      onValueChange={(value) =>
-                        setLocalFilters(prev => ({
-                          ...prev,
-                          gunaScoreMax: value ? parseInt(value) : undefined
-                        }))
-                      }
-                    >
-                      <SelectTrigger className="h-9 text-sm">
-                        <SelectValue placeholder="Max" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {Array.from({ length: 36 }, (_, i) => i + 1).map((score) => (
-                          <SelectItem key={score} value={score.toString()}>
-                            {score}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Minimum Guna Match</Label>
+                  <Input
+                    type="number"
+                    placeholder="Minimum score"
+                    min="0"
+                    max="36"
+                    className="h-9 text-sm"
+                    value={localFilters.gunaScoreMin || ""}
+                    onChange={(e) =>
+                      setLocalFilters(prev => ({
+                        ...prev,
+                        gunaScoreMin: e.target.value ? parseInt(e.target.value) : undefined
+                      }))
+                    }
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Minimum score out of 36</p>
                 </div>
               </div>
             )}
