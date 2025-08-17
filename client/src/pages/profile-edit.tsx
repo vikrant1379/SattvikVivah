@@ -399,7 +399,7 @@ export const ProfileEditPage: React.FC = () => {
                             <div className="w-5 h-5 bg-orange-100 rounded-full flex items-center justify-center">📅</div>
                             <div>
                               <div className="text-gray-500 text-xs">Age</div>
-                              <div className="font-medium">{profile.age} years</div>
+                              <div className="font-medium">{profile.age}</div>
                             </div>
                           </div>
 
