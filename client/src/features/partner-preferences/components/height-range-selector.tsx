@@ -1,6 +1,7 @@
+
 import React from 'react';
-import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
 import { heightOptions } from '@/data/static-options';
 import { VALIDATION_MESSAGES } from '../constants/partner-preferences.constants';
 
@@ -20,19 +21,13 @@ export const HeightRangeSelector: React.FC<HeightRangeSelectorProps> = ({
   const handleMinHeightChange = (value: string) => {
     const minHeightIndex = heightOptions.indexOf(value);
     const currentMaxHeightIndex = heightOptions.indexOf(maxHeight);
-
-    // If new min height is greater than current max height, update max height to match
+    
     const newMaxHeight = minHeightIndex > currentMaxHeightIndex ? value : maxHeight;
     onHeightRangeChange(value, newMaxHeight);
   };
 
   const handleMaxHeightChange = (value: string) => {
-    const maxHeightIndex = heightOptions.indexOf(value);
-    const currentMinHeightIndex = heightOptions.indexOf(minHeight);
-
-    // If new max height is less than current min height, update min height to match
-    const newMinHeight = maxHeightIndex < currentMinHeightIndex ? value : minHeight;
-    onHeightRangeChange(newMinHeight, value);
+    onHeightRangeChange(minHeight, value);
   };
 
   const getFilteredMaxHeightOptions = () => {
@@ -40,7 +35,7 @@ export const HeightRangeSelector: React.FC<HeightRangeSelectorProps> = ({
     return heightOptions.filter((height, index) => index >= minHeightIndex);
   };
 
-  const hasValidationError = minHeight && maxHeight &&
+  const hasValidationError = minHeight && maxHeight && 
     heightOptions.indexOf(minHeight) > heightOptions.indexOf(maxHeight);
 
   return (

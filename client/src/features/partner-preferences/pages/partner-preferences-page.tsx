@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useLocation } from 'wouter';
 import { Header } from '@/components/header';
@@ -8,20 +9,28 @@ import { AgeRangeSelector } from '../components/age-range-selector';
 import { HeightRangeSelector } from '../components/height-range-selector';
 import { DEFAULT_PREFERENCES } from '../constants/partner-preferences.constants';
 import type { PartnerPreferences } from '../types/partner-preferences.types';
-import { PartnerPreferencesForm } from '../components/partner-preferences-form';
 
 export const PartnerPreferencesPage: React.FC = () => {
   const [, setLocation] = useLocation();
-  const [initialData] = useState<Partial<PartnerPreferences>>({
-    ageRangeMin: 25,
-    ageRangeMax: 35,
-    heightRangeMin: "5'2\" (157 cm)",
-    heightRangeMax: "5'8\" (173 cm)"
-  });
+  const [preferences, setPreferences] = useState<PartnerPreferences>(DEFAULT_PREFERENCES);
 
-  const handleSubmit = (data: PartnerPreferences) => {
-    console.log('Saving preferences:', data);
+  const handleSave = () => {
+    console.log('Preferences saved:', preferences);
     alert('Partner preferences saved successfully!');
+  };
+
+  const handleAgeRangeChange = (minAge: number, maxAge: number) => {
+    setPreferences(prev => ({
+      ...prev,
+      ageRange: [minAge, maxAge]
+    }));
+  };
+
+  const handleHeightRangeChange = (minHeight: string, maxHeight: string) => {
+    setPreferences(prev => ({
+      ...prev,
+      heightRange: [minHeight, maxHeight]
+    }));
   };
 
   return (
@@ -29,7 +38,7 @@ export const PartnerPreferencesPage: React.FC = () => {
       <Header />
       <div className="container mx-auto px-4 py-6 max-w-4xl">
         <div className="mb-6">
-          <button
+          <button 
             onClick={() => setLocation('/')}
             className="text-orange-600 hover:text-orange-700 flex items-center space-x-2"
           >
@@ -48,10 +57,27 @@ export const PartnerPreferencesPage: React.FC = () => {
           </CardHeader>
 
           <CardContent className="p-6 space-y-6">
-            <PartnerPreferencesForm
-              initialData={initialData}
-              onSubmit={handleSubmit}
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <AgeRangeSelector
+                minAge={preferences.ageRange[0]}
+                maxAge={preferences.ageRange[1]}
+                onAgeRangeChange={handleAgeRangeChange}
+              />
+
+              <HeightRangeSelector
+                minHeight={preferences.heightRange[0]}
+                maxHeight={preferences.heightRange[1]}
+                onHeightRangeChange={handleHeightRangeChange}
+              />
+            </div>
+
+            {/* Save Button */}
+            <div className="flex justify-end pt-6 border-t">
+              <Button onClick={handleSave} className="bg-orange-600 hover:bg-orange-700 px-8">
+                <Save className="w-4 h-4 mr-2" />
+                Save Preferences
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
