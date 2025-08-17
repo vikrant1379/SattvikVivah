@@ -242,4 +242,5 @@ const Header = memo(() => {
 
 Header.displayName = "Header";
 
+export { Header };
 export default Header;
