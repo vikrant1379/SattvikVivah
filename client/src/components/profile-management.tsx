@@ -25,7 +25,8 @@ import {
   familyValuesOptions,
   familyTypes,
   ayurvedicConstitutions,
-  spiritualPracticesOptions
+  spiritualPracticesOptions,
+  heightOptions
 } from '../data/static-options';
 import { educationQualificationOptions } from '../data/education';
 import { professionOptions } from '../data/profession';
@@ -298,7 +299,7 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
           <TabsContent value="basic" className="space-y-4">
             <CardHeader>
               <CardTitle>Basic Information</CardTitle>
-              <p className="text-sm text-gray-600">Auto-filled from signup, add missing details</p>
+              <p className="text-sm text-gray-600">Update Your Information</p>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -929,14 +930,43 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
                   </div>
                 </div>
 
-                <div>
-                  <Label htmlFor="heightRange">Height Range</Label>
-                  <Input
-                    id="heightRange"
-                    value={formData.heightRange || ''}
-                    onChange={(e) => setFormData({...formData, heightRange: e.target.value})}
-                    placeholder="e.g., 5'5\" - 6'0\""
-                  />
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <Label htmlFor="heightRangeMin">Min Height</Label>
+                    <Select
+                      value={formData.heightRangeMin || ''}
+                      onValueChange={(value) => setFormData({...formData, heightRangeMin: value})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Min" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {heightOptions.map(height => (
+                          <SelectItem key={height} value={height}>
+                            {height}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="heightRangeMax">Max Height</Label>
+                    <Select
+                      value={formData.heightRangeMax || ''}
+                      onValueChange={(value) => setFormData({...formData, heightRangeMax: value})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Max" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {heightOptions.map(height => (
+                          <SelectItem key={height} value={height}>
+                            {height}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
 
                 <div>

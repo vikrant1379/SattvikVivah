@@ -176,6 +176,14 @@ export const profileFilterSchema = z.object({
   // mangalik: z.string().optional(), // Replaced by manglikStatus
   residentialStatus: z.string().optional(),
 
+  // Basic Preferences
+  ageRangeMin: z.number().optional(),
+  ageRangeMax: z.number().optional(),
+  heightRange: z.string().optional(),
+  heightRangeMin: z.string().optional(),
+  heightRangeMax: z.string().optional(),
+  locationPreference: z.string().optional(),
+
   // Astrological compatibility filters
   birthTime: z.string().optional(),
   birthPlace: z.string().optional(),
