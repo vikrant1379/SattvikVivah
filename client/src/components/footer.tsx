@@ -123,4 +123,5 @@ const Footer = memo(() => {
 
 Footer.displayName = "Footer";
 
+export { Footer };
 export default Footer;

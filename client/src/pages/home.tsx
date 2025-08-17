@@ -1,4 +1,3 @@
-
 import { memo, useRef, useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import Header from "@/components/header";
@@ -101,7 +100,7 @@ const Home = memo(() => {
   return (
     <div ref={homeRef} className="min-h-screen flex flex-col bg-gradient-to-br from-orange-50/30 via-white to-rose-50/30">
       <Header />
-      
+
       <main className="flex-1">
         {/* Hero Section with Sanskrit Blessing */}
         <section className="relative py-20 overflow-hidden">
@@ -138,7 +137,7 @@ const Home = memo(() => {
                     Sacred journey towards Grihastha Ashram through 
                     spiritually aligned companionship
                   </p>
-                  
+
                   {/* Sanskrit Shloka about Marriage */}
                   <Card className="bg-gradient-to-r from-orange-50 to-rose-50 border-orange-200/50 mb-6">
                     <CardContent className="p-6 text-center">
@@ -206,7 +205,7 @@ const Home = memo(() => {
                             <h4 className="font-bold text-gray-800 text-lg mb-1">{marriage.names}</h4>
                             <p className="text-sm text-gray-600 mb-2">{marriage.englishNames}</p>
                             <p className="text-xs text-gray-700 font-medium mb-3">{marriage.description}</p>
-                            
+
                             <div className="bg-white/80 p-3 rounded-lg">
                               <div className="text-sm font-bold text-orange-800 mb-1 font-serif">
                                 {marriage.shloka}
@@ -226,7 +225,7 @@ const Home = memo(() => {
           </div>
         </section>
 
-        
+
 
         {/* Trust & Security Section */}
         <section className="py-16 bg-gradient-to-br from-orange-50 to-rose-50">
@@ -248,7 +247,7 @@ const Home = memo(() => {
                 <div className="text-gray-700 font-medium">Verified Profiles</div>
                 <div className="text-sm text-gray-500">100% Document Verified</div>
               </div>
-              
+
               <div className="text-center">
                 <div className="w-16 h-16 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Heart className="w-8 h-8 text-rose-600" />
@@ -257,7 +256,7 @@ const Home = memo(() => {
                 <div className="text-gray-700 font-medium">Success Stories</div>
                 <div className="text-sm text-gray-500">Happy Marriages</div>
               </div>
-              
+
               <div className="text-center">
                 <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Award className="w-8 h-8 text-blue-600" />
@@ -266,7 +265,7 @@ const Home = memo(() => {
                 <div className="text-gray-700 font-medium">Years of Trust</div>
                 <div className="text-sm text-gray-500">Since 2000</div>
               </div>
-              
+
               <div className="text-center">
                 <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Shield className="w-8 h-8 text-purple-600" />
@@ -330,7 +329,7 @@ const Home = memo(() => {
         <SattvikConnectPreview />
         <SuccessStoriesCarousel />
       </main>
-      
+
       <Footer />
 
       {/* Login Modal */}
