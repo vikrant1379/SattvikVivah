@@ -323,3 +323,4 @@ const PartnerPreferencesPage: React.FC<PartnerPreferencesPageProps> = () => {
 };
 
 export default PartnerPreferencesPage;
+export { PartnerPreferencesPage };
