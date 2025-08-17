@@ -160,29 +160,45 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="text-2xl">Profile Management</CardTitle>
-              <p className="text-gray-600">Complete your profile to get better matches</p>
+              <p className="text-gray-600">Manage your profile information</p>
             </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-blue-600">{completionPercentage}%</div>
-              <p className="text-sm text-gray-500">Complete</p>
+            <div className="relative group">
+              <div className="text-center cursor-help">
+                <div className="text-2xl font-bold text-blue-600">{completionPercentage}%</div>
+                <p className="text-xs text-gray-500">Profile Score</p>
+              </div>
+              
+              {/* Hover tooltip */}
+              <div className="absolute top-full right-0 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg p-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10">
+                <div className="text-sm font-medium text-gray-900 mb-2">Profile Completion Details</div>
+                <Progress value={completionPercentage} className="w-full h-2 mb-3" />
+                <div className="space-y-2 max-h-40 overflow-y-auto">
+                  {profileSections.map(section => (
+                    <div key={section.id} className="flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-2">
+                        {section.icon}
+                        <span className={section.completed ? "text-green-700" : "text-gray-600"}>
+                          {section.title}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span className="text-gray-500">{section.weight}%</span>
+                        {section.completed ? (
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        ) : (
+                          <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="text-xs text-gray-500 mt-2 pt-2 border-t">
+                  Complete missing sections to improve match visibility
+                </div>
+              </div>
             </div>
           </div>
         </CardHeader>
-        <CardContent>
-          <Progress value={completionPercentage} className="w-full h-3" />
-          <div className="mt-3 flex flex-wrap gap-2">
-            {profileSections.map(section => (
-              <Badge
-                key={section.id}
-                variant={section.completed ? "default" : "secondary"}
-                className="flex items-center gap-1"
-              >
-                {section.icon}
-                {section.title} ({section.weight}%)
-              </Badge>
-            ))}
-          </div>
-        </CardContent>
       </Card>
 
       {/* Profile Form Tabs */}
@@ -604,10 +620,10 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
           <div className="flex justify-between items-center">
             <div>
               <p className="text-sm text-gray-600">
-                Profile Completion: <span className="font-semibold">{completionPercentage}%</span>
+                Ready to save your changes?
               </p>
               <p className="text-xs text-gray-500">
-                Complete your profile to get better matches and visibility
+                Your profile will be updated instantly
               </p>
             </div>
             <Button onClick={handleSave} className="px-8">

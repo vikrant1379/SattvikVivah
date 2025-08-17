@@ -84,8 +84,28 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({
       <DropdownMenuContent className="w-64 p-4" align="end">
         {/* User Info Header */}
         <div className="flex items-center space-x-3 mb-4">
-          <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+          <div className="relative w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
             <User className="w-6 h-6 text-orange-600" />
+            {/* Subtle completion ring */}
+            <svg className="absolute inset-0 w-12 h-12 transform -rotate-90" viewBox="0 0 36 36">
+              <path
+                d="M18 2.0845
+                  a 15.9155 15.9155 0 0 1 0 31.831
+                  a 15.9155 15.9155 0 0 1 0 -31.831"
+                fill="none"
+                stroke="#e5e7eb"
+                strokeWidth="2"
+              />
+              <path
+                d="M18 2.0845
+                  a 15.9155 15.9155 0 0 1 0 31.831
+                  a 15.9155 15.9155 0 0 1 0 -31.831"
+                fill="none"
+                stroke="#10b981"
+                strokeWidth="2"
+                strokeDasharray="85, 100"
+              />
+            </svg>
           </div>
           <div>
             <div className="font-medium text-gray-900">{user.name}</div>
