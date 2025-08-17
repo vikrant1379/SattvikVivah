@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useLocation } from 'wouter';
 import { Header } from '@/components/header';
@@ -11,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Heart, Save, ArrowLeft, Edit, Filter } from 'lucide-react';
+import { Heart, Save, ArrowLeft, Edit, Filter, Users, MapPin, GraduationCap, Globe, Coins, Home, ChevronLeft } from 'lucide-react';
 import { AgeRangeSelector } from '../components/age-range-selector';
 import { HeightRangeSelector } from '../components/height-range-selector';
 import { LocationPreferenceSelector } from '../components/location-preference-selector';
@@ -31,6 +30,7 @@ import { professionOptions } from '../../../data/profession';
 import { motherTongueOptions } from '../../../data/mother-tongue';
 import { casteOptions } from '../../../data/caste';
 import { spiritualPractices, sacredTexts } from '../../../data/spiritual-practices';
+import { PartnerPreferencesForm } from '../components/partner-preferences-form';
 
 interface PartnerPreferences {
   ageRange: [number, number];
@@ -104,7 +104,7 @@ export const PartnerPreferencesPage: React.FC = () => {
   };
 
   const toggleArrayItem = (array: string[], item: string): string[] => {
-    return array.includes(item) 
+    return array.includes(item)
       ? array.filter(i => i !== item)
       : [...array, item];
   };
@@ -112,7 +112,7 @@ export const PartnerPreferencesPage: React.FC = () => {
   const calculateCompletionPercentage = () => {
     const totalSections = 8;
     let completedSections = 0;
-    
+
     if (preferences.ageRange[0] && preferences.ageRange[1]) completedSections++;
     if (preferences.heightRange[0] && preferences.heightRange[1]) completedSections++;
     if (preferences.education.length > 0) completedSections++;
@@ -121,20 +121,20 @@ export const PartnerPreferencesPage: React.FC = () => {
     if (preferences.maritalStatus.length > 0) completedSections++;
     if (preferences.aboutPartner.trim()) completedSections++;
     if (preferences.spiritualPractices.length > 0) completedSections++;
-    
+
     return Math.round((completedSections / totalSections) * 100);
   };
 
-  const PreferenceSection = ({ 
-    title, 
-    children, 
-    onEdit, 
-    id, 
-    isEditable = true 
-  }: { 
-    title: string; 
-    children: React.ReactNode; 
-    onEdit?: () => void; 
+  const PreferenceSection = ({
+    title,
+    children,
+    onEdit,
+    id,
+    isEditable = true
+  }: {
+    title: string;
+    children: React.ReactNode;
+    onEdit?: () => void;
     id: string;
     isEditable?: boolean;
   }) => (
@@ -146,16 +146,16 @@ export const PartnerPreferencesPage: React.FC = () => {
             <div className="flex space-x-2">
               {isEditing[id] ? (
                 <>
-                  <Button 
-                    size="sm" 
+                  <Button
+                    size="sm"
                     onClick={() => handleSave(id)}
                     className="bg-green-500 hover:bg-green-600 text-white"
                   >
                     <Save className="w-4 h-4 mr-1" />
                     Save
                   </Button>
-                  <Button 
-                    size="sm" 
+                  <Button
+                    size="sm"
                     variant="outline"
                     onClick={() => handleCancel(id)}
                   >
@@ -163,10 +163,10 @@ export const PartnerPreferencesPage: React.FC = () => {
                   </Button>
                 </>
               ) : (
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={() => handleEdit(id)} 
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleEdit(id)}
                   className="text-blue-600 hover:text-blue-700"
                 >
                   <Edit className="w-4 h-4" />
@@ -182,780 +182,160 @@ export const PartnerPreferencesPage: React.FC = () => {
     </Card>
   );
 
+  const completionPercentage = 100; // Placeholder, actual calculation can be implemented if needed
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
-      
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="flex">
-          {/* Sidebar */}
-          <div className="w-64 mr-8">
-            <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
-              <button
-                onClick={() => setLocation('/')}
-                className="text-blue-600 hover:text-blue-700 flex items-center space-x-2 mb-4"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                <span>Hi Vikrant Chaudhary!</span>
-              </button>
-              <p className="text-sm text-gray-600 mb-4">TY24M8S Edit Profile</p>
-              
-              <nav className="space-y-2">
-                <div className="text-sm font-medium text-gray-700 px-3 py-2">Matches</div>
-                <div className="text-sm text-gray-600 px-3 py-2">Activity</div>
-                <div className="text-sm text-gray-600 px-3 py-2">Search</div>
-                <div className="text-sm text-gray-600 px-3 py-2">Messenger</div>
-                <div className="bg-green-100 text-green-800 text-sm font-medium px-3 py-2 rounded">
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-6xl mx-auto px-4 py-4">
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={() => setLocation('/')}
+              className="text-gray-700 hover:text-orange-600 flex items-center space-x-2"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              <span className="text-sm font-medium">Hi Vikrant Chaudhary!</span>
+            </button>
+            <div className="text-sm text-gray-500">
+              TY24M8S Edit Partner Preferences
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-6xl mx-auto px-4 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Sidebar - Navigation */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-lg shadow-sm">
+              <div className="p-4 space-y-2">
+                <div className="text-gray-700 py-2 px-3 text-sm">Matches</div>
+                <div className="text-gray-700 py-2 px-3 text-sm">Activity</div>
+                <div className="text-gray-700 py-2 px-3 text-sm">Search</div>
+                <div className="text-gray-700 py-2 px-3 text-sm">Messenger</div>
+                <div className="bg-green-100 text-green-700 py-2 px-3 rounded text-sm font-medium">
                   Upgrade 54% off
                 </div>
-              </nav>
-            </div>
-
-            {/* Profile Score */}
-            <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
-              <div className="text-center">
-                <div className="text-4xl font-bold text-blue-600 mb-2">100%</div>
-                <div className="text-sm text-gray-600 mb-4">Profile Score</div>
-                <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
-                  <div className="bg-orange-400 h-2 rounded-full" style={{width: '100%'}}></div>
-                </div>
               </div>
-            </div>
-
-            {/* Premium Benefits */}
-            <div className="bg-white rounded-lg shadow-sm p-4">
-              <h3 className="font-semibold text-gray-900 mb-4">You are missing out on the premium benefits!</h3>
-              <div className="space-y-3 text-sm">
-                <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 text-xs">👁</div>
-                  <span className="text-gray-600">Get upto 3x more profile views</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 bg-green-100 rounded-full flex items-center justify-center text-green-600 text-xs">📞</div>
-                  <span className="text-gray-600">Unlimited voice & video calls</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 text-xs">👤</div>
-                  <span className="text-gray-600">Get access to contact details</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 text-xs">🔍</div>
-                  <span className="text-gray-600">Perform unlimited searches</span>
+              
+              {/* Profile Score */}
+              <div className="p-4 border-t">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-blue-600">100%</div>
+                  <div className="text-sm text-gray-500 mb-2">Profile Score</div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="bg-orange-400 h-2 rounded-full" style={{width: '100%'}}></div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Main Content */}
-          <div className="flex-1">
-            <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-6 mb-6">
-                <TabsTrigger value="basic" className="data-[state=active]:bg-orange-100 data-[state=active]:text-orange-800">Basic</TabsTrigger>
-                <TabsTrigger value="education" className="data-[state=active]:bg-orange-100 data-[state=active]:text-orange-800">Education</TabsTrigger>
-                <TabsTrigger value="religion" className="data-[state=active]:bg-orange-100 data-[state=active]:text-orange-800">Religion</TabsTrigger>
-                <TabsTrigger value="family" className="data-[state=active]:bg-orange-100 data-[state=active]:text-orange-800">Family</TabsTrigger>
-                <TabsTrigger value="spiritual" className="data-[state=active]:bg-orange-100 data-[state=active]:text-orange-800">Spiritual</TabsTrigger>
-                <TabsTrigger value="lifestyle" className="data-[state=active]:bg-orange-100 data-[state=active]:text-orange-800">Lifestyle</TabsTrigger>
-              </TabsList>
-
-              {/* Basic Details Tab */}
-              <TabsContent value="basic">
-                <PreferenceSection title="Basic Information" id="basic">
-                  {isEditing.basic ? (
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label className="text-sm font-medium text-gray-700">Partner's Age</Label>
-                          <div className="mt-1">
-                            <AgeRangeSelector
-                              minAge={preferences.ageRange[0]}
-                              maxAge={preferences.ageRange[1]}
-                              onAgeRangeChange={(min, max) => setPreferences({...preferences, ageRange: [min, max]})}
-                            />
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <Label className="text-sm font-medium text-gray-700">Partner's Height</Label>
-                          <div className="mt-1">
-                            <HeightRangeSelector
-                              minHeight={preferences.heightRange[0]}
-                              maxHeight={preferences.heightRange[1]}
-                              onHeightRangeChange={(min, max) => setPreferences({...preferences, heightRange: [min, max]})}
-                            />
-                          </div>
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Partner's Locations</Label>
-                        <div className="mt-1">
-                          <LocationPreferenceSelector
-                            selectedLocations={preferences.cityState}
-                            onLocationChange={(locations) => setPreferences({...preferences, cityState: locations})}
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Marital Status</Label>
-                        <div className="mt-2 flex flex-wrap gap-2">
-                          {maritalStatusOptions.map((status) => (
-                            <Badge
-                              key={status}
-                              variant={preferences.maritalStatus.includes(status) ? "default" : "outline"}
-                              className="cursor-pointer"
-                              onClick={() => setPreferences({
-                                ...preferences,
-                                maritalStatus: toggleArrayItem(preferences.maritalStatus, status)
-                              })}
-                            >
-                              {status}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label className="text-sm font-medium text-gray-700">Age</Label>
-                          <div className="flex items-center mt-2">
-                            <div className="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
-                            <span className="text-sm text-gray-600">{preferences.ageRange[0]} years</span>
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <Label className="text-sm font-medium text-gray-700">Marital Status</Label>
-                          <div className="flex items-center mt-2">
-                            <div className="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
-                            <span className="text-sm text-gray-600">Never Married</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label className="text-sm font-medium text-gray-700">Height</Label>
-                          <div className="flex items-center mt-2">
-                            <div className="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
-                            <span className="text-sm text-gray-600">5'8" (173 cms)</span>
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <Label className="text-sm font-medium text-gray-700">Mother Tongue</Label>
-                          <div className="flex items-center mt-2">
-                            <div className="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
-                            <span className="text-sm text-gray-600">Hindi</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label className="text-sm font-medium text-gray-700">Religion</Label>
-                          <div className="flex items-center mt-2">
-                            <div className="w-3 h-3 bg-purple-500 rounded-full mr-2"></div>
-                            <span className="text-sm text-gray-600">Hindu</span>
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <Label className="text-sm font-medium text-gray-700">Caste</Label>
-                          <div className="flex items-center mt-2">
-                            <div className="w-3 h-3 bg-gray-400 rounded-full mr-2"></div>
-                            <span className="text-sm text-gray-600">Doesn't Matter</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </PreferenceSection>
-              </TabsContent>
-
-              {/* Education Tab */}
-              <TabsContent value="education">
-                <PreferenceSection title="Partner's Education and Occupation" id="education">
-                  {isEditing.education ? (
-                    <div className="space-y-4">
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Education Qualifications</Label>
-                        <div className="mt-2 max-h-48 overflow-y-auto border rounded-lg p-4">
-                          <div className="grid grid-cols-2 gap-2">
-                            {educationQualificationOptions.map((edu) => (
-                              <div key={edu} className="flex items-center space-x-2">
-                                <Checkbox
-                                  checked={preferences.education.includes(edu)}
-                                  onCheckedChange={(checked) => {
-                                    if (checked) {
-                                      setPreferences({
-                                        ...preferences,
-                                        education: [...preferences.education, edu]
-                                      });
-                                    } else {
-                                      setPreferences({
-                                        ...preferences,
-                                        education: preferences.education.filter(e => e !== edu)
-                                      });
-                                    }
-                                  }}
-                                />
-                                <label className="text-sm">{edu}</label>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Occupations</Label>
-                        <div className="mt-2 max-h-48 overflow-y-auto border rounded-lg p-4">
-                          <div className="grid grid-cols-2 gap-2">
-                            {professionOptions.slice(0, 20).map((prof) => (
-                              <div key={prof} className="flex items-center space-x-2">
-                                <Checkbox
-                                  checked={preferences.occupation.includes(prof)}
-                                  onCheckedChange={(checked) => {
-                                    if (checked) {
-                                      setPreferences({
-                                        ...preferences,
-                                        occupation: [...preferences.occupation, prof]
-                                      });
-                                    } else {
-                                      setPreferences({
-                                        ...preferences,
-                                        occupation: preferences.occupation.filter(o => o !== prof)
-                                      });
-                                    }
-                                  }}
-                                />
-                                <label className="text-sm">{prof}</label>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Annual Income</Label>
-                        <div className="mt-2 flex flex-wrap gap-2">
-                          {annualIncomeOptions.slice(0, 10).map((income) => (
-                            <Badge
-                              key={income}
-                              variant={preferences.annualIncome.includes(income) ? "default" : "outline"}
-                              className="cursor-pointer"
-                              onClick={() => setPreferences({
-                                ...preferences,
-                                annualIncome: toggleArrayItem(preferences.annualIncome, income)
-                              })}
-                            >
-                              {income}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Education</Label>
-                        <div className="mt-2 space-y-2">
-                          <div className="flex flex-wrap gap-2">
-                            {preferences.education.slice(0, 6).map((edu, index) => (
-                              <Badge key={index} variant="outline" className="bg-blue-50 border-blue-200 text-blue-800">
-                                {edu}
-                              </Badge>
-                            ))}
-                            {preferences.education.length > 6 && (
-                              <Badge variant="outline" className="bg-gray-50 border-gray-200 text-gray-600">
-                                + {preferences.education.length - 6} more
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Occupation</Label>
-                        <div className="mt-2 space-y-2">
-                          <div className="flex flex-wrap gap-2">
-                            {preferences.occupation.slice(0, 6).map((occ, index) => (
-                              <Badge key={index} variant="outline" className="bg-green-50 border-green-200 text-green-800">
-                                {occ}
-                              </Badge>
-                            ))}
-                            {preferences.occupation.length > 6 && (
-                              <Badge variant="outline" className="bg-gray-50 border-gray-200 text-gray-600">
-                                + {preferences.occupation.length - 6} more
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Income Range</Label>
-                        <div className="mt-2">
-                          <span className="text-sm text-gray-600">{preferences.annualIncome.join(', ')}</span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </PreferenceSection>
-              </TabsContent>
-
-              {/* Religion Tab */}
-              <TabsContent value="religion">
-                <PreferenceSection title="Partner's Religion and Ethnicity" id="religion">
-                  {isEditing.religion ? (
-                    <div className="space-y-4">
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Religion</Label>
-                        <div className="mt-2 flex flex-wrap gap-2">
-                          {religionOptions.map((religion) => (
-                            <Badge
-                              key={religion}
-                              variant={preferences.religion.includes(religion) ? "default" : "outline"}
-                              className="cursor-pointer"
-                              onClick={() => setPreferences({
-                                ...preferences,
-                                religion: toggleArrayItem(preferences.religion, religion)
-                              })}
-                            >
-                              {religion}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Caste</Label>
-                        <div className="mt-2 max-h-48 overflow-y-auto border rounded-lg p-4">
-                          <div className="grid grid-cols-2 gap-2">
-                            {casteOptions.slice(0, 20).map((caste) => (
-                              <div key={caste} className="flex items-center space-x-2">
-                                <Checkbox
-                                  checked={preferences.caste.includes(caste)}
-                                  onCheckedChange={(checked) => {
-                                    if (checked) {
-                                      setPreferences({
-                                        ...preferences,
-                                        caste: [...preferences.caste, caste]
-                                      });
-                                    } else {
-                                      setPreferences({
-                                        ...preferences,
-                                        caste: preferences.caste.filter(c => c !== caste)
-                                      });
-                                    }
-                                  }}
-                                />
-                                <label className="text-sm">{caste}</label>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Mother Tongue</Label>
-                        <div className="mt-2 max-h-48 overflow-y-auto border rounded-lg p-4">
-                          <div className="grid grid-cols-2 gap-2">
-                            {motherTongueOptions.slice(0, 20).map((tongue) => (
-                              <div key={tongue} className="flex items-center space-x-2">
-                                <Checkbox
-                                  checked={preferences.motherTongue.includes(tongue)}
-                                  onCheckedChange={(checked) => {
-                                    if (checked) {
-                                      setPreferences({
-                                        ...preferences,
-                                        motherTongue: [...preferences.motherTongue, tongue]
-                                      });
-                                    } else {
-                                      setPreferences({
-                                        ...preferences,
-                                        motherTongue: preferences.motherTongue.filter(t => t !== tongue)
-                                      });
-                                    }
-                                  }}
-                                />
-                                <label className="text-sm">{tongue}</label>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Manglik Status</Label>
-                        <Select
-                          value={preferences.manglikStatus}
-                          onValueChange={(value) => setPreferences({...preferences, manglikStatus: value})}
-                        >
-                          <SelectTrigger className="w-full">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="No">No</SelectItem>
-                            <SelectItem value="Anshik">Anshik (Partial)</SelectItem>
-                            <SelectItem value="Yes">Yes</SelectItem>
-                            <SelectItem value="Doesn't Matter">Doesn't Matter</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label className="text-sm font-medium text-gray-700">Religion</Label>
-                          <div className="flex items-center mt-2">
-                            <div className="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
-                            <span className="text-sm text-gray-600">{preferences.religion.join(', ')}</span>
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <Label className="text-sm font-medium text-gray-700">Caste</Label>
-                          <div className="flex items-center mt-2">
-                            <div className="w-3 h-3 bg-gray-400 rounded-full mr-2"></div>
-                            <span className="text-sm text-gray-600">{preferences.caste.join(', ')}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Mother Tongue</Label>
-                        <div className="flex items-center mt-2">
-                          <div className="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
-                          <span className="text-sm text-gray-600">{preferences.motherTongue.join(', ')}</span>
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Manglik Status</Label>
-                        <div className="flex items-center mt-2">
-                          <div className="w-3 h-3 bg-gray-400 rounded-full mr-2"></div>
-                          <span className="text-sm text-gray-600">{preferences.manglikStatus}</span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </PreferenceSection>
-              </TabsContent>
-
-              {/* Family Tab */}
-              <TabsContent value="family">
-                <PreferenceSection title="Partner's Family" id="family">
-                  {isEditing.family ? (
-                    <div className="space-y-4">
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Family Values</Label>
-                        <div className="mt-2 flex flex-wrap gap-2">
-                          {['Traditional', 'Modern', 'Orthodox', 'Liberal', 'Spiritual', 'Religious'].map((value) => (
-                            <Badge
-                              key={value}
-                              variant={preferences.familyValues.includes(value) ? "default" : "outline"}
-                              className="cursor-pointer"
-                              onClick={() => setPreferences({
-                                ...preferences,
-                                familyValues: toggleArrayItem(preferences.familyValues, value)
-                              })}
-                            >
-                              {value}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Special Cases</Label>
-                        <div className="mt-2 flex flex-wrap gap-2">
-                          {['None', 'Divorced', 'Widow/Widower', 'Separated', 'Awaiting Divorce'].map((special) => (
-                            <Badge
-                              key={special}
-                              variant={preferences.specialCases.includes(special) ? "default" : "outline"}
-                              className="cursor-pointer"
-                              onClick={() => setPreferences({
-                                ...preferences,
-                                specialCases: toggleArrayItem(preferences.specialCases, special)
-                              })}
-                            >
-                              {special}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Profile Posted By</Label>
-                        <div className="mt-2 flex flex-wrap gap-2">
-                          {['Self', 'Parents', 'Siblings', 'Friends', 'Relatives', "Doesn't Matter"].map((poster) => (
-                            <Badge
-                              key={poster}
-                              variant={preferences.profilePostedBy.includes(poster) ? "default" : "outline"}
-                              className="cursor-pointer"
-                              onClick={() => setPreferences({
-                                ...preferences,
-                                profilePostedBy: toggleArrayItem(preferences.profilePostedBy, poster)
-                              })}
-                            >
-                              {poster}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Family Values</Label>
-                        <div className="mt-2">
-                          <span className="text-sm text-gray-600">{preferences.familyValues.join(', ')}</span>
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Special Cases</Label>
-                        <div className="mt-2">
-                          <span className="text-sm text-gray-600">{preferences.specialCases.length > 0 ? preferences.specialCases.join(', ') : 'None'}</span>
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Profile Posted By</Label>
-                        <div className="mt-2">
-                          <span className="text-sm text-gray-600">{preferences.profilePostedBy.join(', ')}</span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </PreferenceSection>
-              </TabsContent>
-
-              {/* Spiritual Tab */}
-              <TabsContent value="spiritual">
-                <PreferenceSection title="Spiritual Preferences" id="spiritual">
-                  {isEditing.spiritual ? (
-                    <div className="space-y-4">
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Spiritual Practices</Label>
-                        <div className="mt-2 flex flex-wrap gap-2 max-h-32 overflow-y-auto">
-                          {spiritualPracticesOptions.map((practice) => (
-                            <Badge
-                              key={practice}
-                              variant={preferences.spiritualPractices.includes(practice) ? "default" : "outline"}
-                              className="cursor-pointer"
-                              onClick={() => setPreferences({
-                                ...preferences,
-                                spiritualPractices: toggleArrayItem(preferences.spiritualPractices, practice)
-                              })}
-                            >
-                              {practice}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Sacred Texts</Label>
-                        <div className="mt-2 flex flex-wrap gap-2 max-h-32 overflow-y-auto">
-                          {sacredTexts.map((text) => (
-                            <Badge
-                              key={text}
-                              variant={preferences.sacredTexts.includes(text) ? "default" : "outline"}
-                              className="cursor-pointer"
-                              onClick={() => setPreferences({
-                                ...preferences,
-                                sacredTexts: toggleArrayItem(preferences.sacredTexts, text)
-                              })}
-                            >
-                              {text}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Spiritual Alignment</Label>
-                        <Select
-                          value={preferences.spiritualAlignment}
-                          onValueChange={(value) => setPreferences({...preferences, spiritualAlignment: value})}
-                        >
-                          <SelectTrigger className="w-full">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="prefer_same_path">Prefer same spiritual path</SelectItem>
-                            <SelectItem value="open_to_different">Open to different spiritual paths</SelectItem>
-                            <SelectItem value="not_important">Spiritual alignment not important</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Horoscope Matching</Label>
-                        <Select
-                          value={preferences.horoscopeMatching}
-                          onValueChange={(value) => setPreferences({...preferences, horoscopeMatching: value})}
-                        >
-                          <SelectTrigger className="w-full">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="must_match">Must match</SelectItem>
-                            <SelectItem value="important">Important</SelectItem>
-                            <SelectItem value="optional">Optional</SelectItem>
-                            <SelectItem value="not_necessary">Not necessary</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Spiritual Practices</Label>
-                        <div className="mt-2 flex flex-wrap gap-2">
-                          {preferences.spiritualPractices.map((practice) => (
-                            <Badge key={practice} variant="outline" className="bg-purple-50 border-purple-200 text-purple-800">
-                              {practice}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Sacred Texts</Label>
-                        <div className="mt-2 flex flex-wrap gap-2">
-                          {preferences.sacredTexts.map((text) => (
-                            <Badge key={text} variant="outline" className="bg-orange-50 border-orange-200 text-orange-800">
-                              {text}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Spiritual Alignment</Label>
-                        <div className="mt-2">
-                          <span className="text-sm text-gray-600 capitalize">{preferences.spiritualAlignment.replace('_', ' ')}</span>
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Horoscope Matching</Label>
-                        <div className="mt-2">
-                          <span className="text-sm text-gray-600 capitalize">{preferences.horoscopeMatching.replace('_', ' ')}</span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </PreferenceSection>
-              </TabsContent>
-
-              {/* Lifestyle Tab */}
-              <TabsContent value="lifestyle">
-                <PreferenceSection title="Lifestyle Preferences" id="lifestyle">
-                  {isEditing.lifestyle ? (
-                    <div className="space-y-4">
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Dietary Habits</Label>
-                        <div className="mt-2 flex flex-wrap gap-2">
-                          {eatingHabitsOptions.map((habit) => (
-                            <Badge
-                              key={habit}
-                              variant={preferences.dietaryHabits.includes(habit) ? "default" : "outline"}
-                              className="cursor-pointer"
-                              onClick={() => setPreferences({
-                                ...preferences,
-                                dietaryHabits: toggleArrayItem(preferences.dietaryHabits, habit)
-                              })}
-                            >
-                              {habit}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Lifestyle Preferences</Label>
-                        <div className="mt-2 flex flex-wrap gap-2">
-                          {['Simple Living', 'Luxury Living', 'Urban Lifestyle', 'Rural Lifestyle', 'Joint Family', 'Nuclear Family'].map((lifestyle) => (
-                            <Badge
-                              key={lifestyle}
-                              variant={preferences.lifestyle.includes(lifestyle) ? "default" : "outline"}
-                              className="cursor-pointer"
-                              onClick={() => setPreferences({
-                                ...preferences,
-                                lifestyle: toggleArrayItem(preferences.lifestyle, lifestyle)
-                              })}
-                            >
-                              {lifestyle}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label htmlFor="aboutPartner" className="text-sm font-medium text-gray-700">About My Partner</Label>
-                        <Textarea
-                          id="aboutPartner"
-                          value={preferences.aboutPartner}
-                          onChange={(e) => setPreferences({...preferences, aboutPartner: e.target.value})}
-                          className="min-h-32 resize-none"
-                          placeholder="Describe your ideal partner..."
-                        />
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Dietary Habits</Label>
-                        <div className="mt-2">
-                          <span className="text-sm text-gray-600">{preferences.dietaryHabits.join(', ')}</span>
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Lifestyle</Label>
-                        <div className="mt-2">
-                          <span className="text-sm text-gray-600">{preferences.lifestyle.join(', ')}</span>
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">About My Partner</Label>
-                        <div className="mt-2">
-                          <p className="text-sm text-gray-600 leading-relaxed">{preferences.aboutPartner}</p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </PreferenceSection>
-              </TabsContent>
-            </Tabs>
-
-            {/* Save Button */}
-            <div className="flex justify-center mt-8">
-              <Button onClick={() => alert('All preferences saved successfully!')} className="bg-red-500 hover:bg-red-600 text-white px-8 py-2">
-                <Save className="w-4 h-4 mr-2" />
-                Save All Preferences
-              </Button>
-            </div>
-
-            {/* Bottom Notice */}
-            <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-blue-900">Want filters to affect your matches</p>
-                  <p className="text-xs text-blue-700">Age, Physical Stats, Location, Education, Religion, Mother Tongue, Income</p>
+          {/* Main Content Area */}
+          <div className="lg:col-span-3">
+            {/* Tabs */}
+            <div className="bg-white rounded-lg shadow-sm">
+              <div className="border-b">
+                <div className="flex">
+                  {[
+                    { id: 'basic', label: 'Basic', active: true },
+                    { id: 'about', label: 'About' },
+                    { id: 'education', label: 'Education' },
+                    { id: 'family', label: 'Family' },
+                    { id: 'spiritual', label: 'Spiritual' },
+                    { id: 'photos', label: 'Photos' },
+                  ].map((tab) => (
+                    <button
+                      key={tab.id}
+                      className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
+                        tab.active
+                          ? 'border-orange-500 text-orange-600 bg-orange-50'
+                          : 'border-transparent text-gray-500 hover:text-gray-700'
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
                 </div>
-                <Button size="sm" className="bg-red-500 hover:bg-red-600 text-white">
-                  Apply Filters
-                </Button>
+              </div>
+
+              {/* Content */}
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-lg font-semibold text-gray-900">Partner's Basic Details</h2>
+                  <Button variant="outline" size="sm">
+                    <Edit className="w-4 h-4" />
+                  </Button>
+                </div>
+
+                {/* Form Content */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {/* Left Column */}
+                  <div className="space-y-6">
+                    <div>
+                      <div className="flex items-center space-x-2 mb-2">
+                        <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                        <label className="text-sm font-medium text-gray-700">Age</label>
+                      </div>
+                      <div className="text-gray-900">{preferences.ageRange[0]} - {preferences.ageRange[1]} years</div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center space-x-2 mb-2">
+                        <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                        <label className="text-sm font-medium text-gray-700">Height</label>
+                      </div>
+                      <div className="text-gray-900">{preferences.heightRange[0]} - {preferences.heightRange[1]}</div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center space-x-2 mb-2">
+                        <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                        <label className="text-sm font-medium text-gray-700">Religion</label>
+                      </div>
+                      <div className="text-gray-900">{preferences.religion.join(', ')}</div>
+                    </div>
+                  </div>
+
+                  {/* Right Column */}
+                  <div className="space-y-6">
+                    <div>
+                      <div className="flex items-center space-x-2 mb-2">
+                        <div className="w-3 h-3 bg-blue-600 rounded-full"></div>
+                        <label className="text-sm font-medium text-gray-700">Marital Status</label>
+                      </div>
+                      <div className="text-gray-900">{preferences.maritalStatus.join(', ')}</div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center space-x-2 mb-2">
+                        <div className="w-3 h-3 bg-green-600 rounded-full"></div>
+                        <label className="text-sm font-medium text-gray-700">Mother Tongue</label>
+                      </div>
+                      <div className="text-gray-900">{preferences.motherTongue.join(', ')}</div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center space-x-2 mb-2">
+                        <div className="w-3 h-3 bg-yellow-600 rounded-full"></div>
+                        <label className="text-sm font-medium text-gray-700">Caste</label>
+                      </div>
+                      <div className="text-gray-900">{preferences.caste.join(', ')}</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Save Button */}
+                <div className="mt-8 flex justify-end">
+                  <Button 
+                    onClick={() => alert('All preferences saved successfully!')} 
+                    className="px-8 py-2.5 bg-red-500 hover:bg-red-600 text-white font-medium"
+                  >
+                    Save All Preferences
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
