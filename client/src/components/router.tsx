@@ -6,7 +6,7 @@ import ProfileDetailPage from "@/components/profile-detail-page";
 import ProfileBrowser from "@/components/profile-browser";
 import { AccountPage } from "@/pages/account";
 import { ProfileEditPage } from "@/pages/profile-edit";
-import { PartnerPreferencesPage } from "@/pages/partner-preferences";
+import { PartnerPreferencesPage } from "@/features/partner-preferences";
 
 // Lazy load heavy components
 const ProfileDetailModal = lazy(() => import("@/components/profile-detail-modal"));
