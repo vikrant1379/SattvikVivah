@@ -1,0 +1,72 @@
+
+import React from 'react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { AGE_CONSTRAINTS, VALIDATION_MESSAGES } from '../constants/partner-preferences.constants';
+
+interface AgeRangeSelectorProps {
+  minAge: number;
+  maxAge: number;
+  onAgeRangeChange: (minAge: number, maxAge: number) => void;
+  className?: string;
+}
+
+export const AgeRangeSelector: React.FC<AgeRangeSelectorProps> = ({
+  minAge,
+  maxAge,
+  onAgeRangeChange,
+  className = ''
+}) => {
+  const handleMinAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newMinAge = parseInt(e.target.value) || AGE_CONSTRAINTS.MIN;
+    if (newMinAge >= AGE_CONSTRAINTS.MIN && newMinAge <= AGE_CONSTRAINTS.MAX) {
+      onAgeRangeChange(newMinAge, Math.max(newMinAge, maxAge));
+    }
+  };
+
+  const handleMaxAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newMaxAge = parseInt(e.target.value) || AGE_CONSTRAINTS.MAX;
+    if (newMaxAge <= AGE_CONSTRAINTS.MAX && newMaxAge >= minAge) {
+      onAgeRangeChange(minAge, newMaxAge);
+    }
+  };
+
+  const hasValidationError = minAge > maxAge;
+
+  return (
+    <div className={className}>
+      <Label className="text-base font-semibold mb-3 block">Age Range</Label>
+      <div className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label className="text-sm">Minimum Age</Label>
+            <Input
+              type="number"
+              min={AGE_CONSTRAINTS.MIN}
+              max={AGE_CONSTRAINTS.MAX}
+              value={minAge}
+              onChange={handleMinAgeChange}
+              placeholder="Min age"
+            />
+          </div>
+          <div>
+            <Label className="text-sm">Maximum Age</Label>
+            <Input
+              type="number"
+              min={minAge}
+              max={AGE_CONSTRAINTS.MAX}
+              value={maxAge}
+              onChange={handleMaxAgeChange}
+              placeholder="Max age"
+            />
+          </div>
+        </div>
+        {hasValidationError && (
+          <div className="text-red-500 text-sm">
+            {VALIDATION_MESSAGES.AGE_RANGE_INVALID}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
