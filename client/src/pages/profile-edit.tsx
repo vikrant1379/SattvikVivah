@@ -89,7 +89,7 @@ export const ProfileEditPage: React.FC = () => {
   const [birthDetails, setBirthDetails] = useState({
     date: profile.createdAt ? new Date(profile.createdAt).toISOString().split('T')[0] : '',
     time: profile.birthTime || '12:00',
-    place: profile.birthPlace || ''
+    birthPlace: profile.birthPlace || ''
   });
 
   const handleEdit = (section: string) => {
