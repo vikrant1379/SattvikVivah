@@ -22,7 +22,7 @@ import {
   drinkingHabitsOptions,
   eatingHabitsOptions
 } from '../data/static-options';
-import { educationOptions } from '../data/education';
+import { educationQualificationOptions } from '../data/education';
 import { professionOptions } from '../data/profession';
 import { motherTongueOptions } from '../data/mother-tongue';
 import { casteOptions } from '../data/caste';
@@ -413,7 +413,7 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
                       <SelectValue placeholder="Select Education" />
                     </SelectTrigger>
                     <SelectContent>
-                      {educationOptions.map(edu => (
+                      {educationQualificationOptions.map(edu => (
                         <SelectItem key={edu} value={edu}>
                           {edu}
                         </SelectItem>
