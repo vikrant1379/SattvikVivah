@@ -37,7 +37,9 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  log('🚀 Starting server initialization...');
   const server = await registerRoutes(app);
+  log('📋 Routes registered successfully');
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
@@ -92,9 +94,11 @@ app.use((req, res, next) => {
   });
 
   try {
+    log(`🔧 Attempting to start server on ${host}:${port}...`);
     server.listen(port, host, () => {
       log(`✅ Server running at http://${host}:${port}`);
       log(`🚀 Environment: ${app.get("env") || "development"}`);
+      log(`🌐 Server is ready to accept connections`);
     });
   } catch (error) {
     log(`❌ Failed to start server: ${error}`);
