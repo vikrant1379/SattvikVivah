@@ -254,3 +254,11 @@ export const ayurvedicConstitutions = [
   "Vata-Kapha",
   "Tridoshic"
 ];
+
+export const familyTypes = [
+  "Nuclear Family",
+  "Joint Family", 
+  "Extended Family",
+  "Single Parent Family",
+  "Blended Family"
+];
