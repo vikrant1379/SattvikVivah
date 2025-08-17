@@ -228,7 +228,7 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
                     id="height"
                     value={formData.height || ''}
                     onChange={(e) => setFormData(prev => ({ ...prev, height: e.target.value }))}
-                    placeholder="e.g., 5'6\""
+                    placeholder="e.g., 5'6&quot;"
                   />
                 </div>
                 <div>
