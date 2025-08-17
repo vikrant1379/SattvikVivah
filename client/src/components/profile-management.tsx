@@ -22,7 +22,10 @@ import {
   smokingHabitsOptions,
   drinkingHabitsOptions,
   eatingHabitsOptions,
-  familyValuesOptions
+  familyValuesOptions,
+  familyTypes,
+  ayurvedicConstitutions,
+  spiritualPracticesOptions
 } from '../data/static-options';
 import { educationQualificationOptions } from '../data/education';
 import { professionOptions } from '../data/profession';
@@ -76,7 +79,7 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
           formData.horoscope
         ];
         return Math.round((basicFields.filter(field => field).length / basicFields.length) * 100);
-      
+
       case 'about':
         const aboutFields = [
           profile.bio,
@@ -85,7 +88,7 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
           profile.smokingHabits
         ];
         return Math.round((aboutFields.filter(field => field).length / aboutFields.length) * 100);
-      
+
       case 'education':
         const educationFields = [
           profile.education,
@@ -93,13 +96,13 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
           profile.annualIncome
         ];
         return Math.round((educationFields.filter(field => field).length / educationFields.length) * 100);
-      
+
       case 'family':
         const familyFields = [
           profile.familyValues?.length > 0 ? 'filled' : null
         ];
         return familyFields[0] ? 100 : 0;
-      
+
       case 'preferences':
         const preferenceFields = [
           profile.spiritualGoals?.length > 0 ? 'filled' : null,
@@ -107,10 +110,10 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
           profile.guruLineage
         ];
         return Math.round((preferenceFields.filter(field => field).length / preferenceFields.length) * 100);
-      
+
       case 'photos':
         return profile.photoUrl ? 100 : 0;
-      
+
       default:
         return 0;
     }
@@ -164,21 +167,73 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
 
   // Calculate profile completion percentage
   const calculateCompletionPercentage = () => {
-    const totalWeight = profileSections.reduce((sum, section) => sum + section.weight, 0);
-    const completedWeight = profileSections
-      .filter(section => section.completed)
-      .reduce((sum, section) => sum + section.weight, 0);
-    return Math.round((completedWeight / totalWeight) * 100);
+    // Updated sections based on new field structure
+    const sections = [
+      {
+        name: 'Basic Information',
+        weight: 15,
+        fields: ['name', 'age', 'gender', 'height', 'location', 'religion', 'caste']
+      },
+      {
+        name: 'About Me',
+        weight: 20,
+        fields: ['selfDescription', 'spiritualJourney', 'dailyRoutine']
+      },
+      {
+        name: 'Family Details',
+        weight: 15,
+        fields: ['familyBackground', 'familyOccupation', 'familyLifestyle', 'fatherOccupation', 'motherOccupation']
+      },
+      {
+        name: 'Education & Career',
+        weight: 15,
+        fields: ['education', 'profession', 'annualIncome']
+      },
+      {
+        name: 'Partner Preferences',
+        weight: 20,
+        fields: ['idealPartner', 'spiritualAlignment', 'relocationPreference', 'careerChoice']
+      },
+      {
+        name: 'Spiritual Details',
+        weight: 15,
+        fields: ['spiritualPractices', 'sacredTexts', 'spiritualPath', 'coreValues']
+      }
+    ];
+
+    const sectionCompletions = sections.map(section => {
+      const completedFields = section.fields.filter(field => {
+        const value = formData[field as keyof typeof formData];
+        return value !== undefined && value !== null && value !== '' &&
+               (!Array.isArray(value) || value.length > 0);
+      });
+      const completionPercentage = (completedFields.length / section.fields.length) * 100;
+      return {
+        ...section,
+        completionPercentage: Math.round(completionPercentage),
+        completedFields: completedFields.length,
+        totalFields: section.fields.length
+      };
+    });
+
+    const totalScore = sectionCompletions.reduce((total, section) => {
+      return total + (section.completionPercentage * section.weight / 100);
+    }, 0);
+
+    return {
+      overallPercentage: Math.round(totalScore),
+      sectionCompletions
+    };
   };
 
-  
+
 
   const handleSave = () => {
     onProfileUpdate(formData);
     alert('Profile updated successfully!');
   };
 
-  const completionPercentage = calculateCompletionPercentage();
+  const { overallPercentage, sectionCompletions } = calculateCompletionPercentage();
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
@@ -192,39 +247,31 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
             </div>
             <div className="relative group">
               <div className="text-center cursor-help">
-                <div className="text-2xl font-bold text-blue-600">{completionPercentage}%</div>
+                <div className="text-2xl font-bold text-blue-600">{overallPercentage}%</div>
                 <p className="text-xs text-gray-500">Profile Score</p>
               </div>
-              
+
               {/* Hover tooltip */}
               <div className="absolute top-full right-0 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg p-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10">
                 <div className="text-sm font-medium text-gray-900 mb-2">Profile Completion Details</div>
-                <Progress value={completionPercentage} className="w-full h-2 mb-3" />
+                <Progress value={overallPercentage} className="w-full h-2 mb-3" />
                 <div className="space-y-2 max-h-40 overflow-y-auto">
-                  {profileSections.map(section => {
-                    const sectionCompletion = calculateSectionCompletion(section.id);
-                    return (
-                      <div key={section.id} className="flex items-center justify-between text-xs">
-                        <div className="flex items-center gap-2">
-                          {section.icon}
-                          <span className={sectionCompletion === 100 ? "text-green-700" : "text-gray-600"}>
-                            {section.title}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className={sectionCompletion === 100 ? "text-green-700 font-medium" : "text-gray-500"}>
-                            {sectionCompletion}%
-                          </span>
-                          <div className="w-8 h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                            <div 
-                              className="h-full bg-green-500 transition-all duration-300"
-                              style={{ width: `${sectionCompletion}%` }}
-                            ></div>
-                          </div>
-                        </div>
+                  {sectionCompletions.map(section => (
+                    <div key={section.name} className="flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-2">
+                        <span className={section.completionPercentage > 50 ? "text-green-700" : "text-gray-600"}>
+                          {section.name}
+                        </span>
                       </div>
-                    );
-                  })}
+                      <div className="flex items-center gap-1">
+                        <span className="text-gray-500">{section.completionPercentage}%</span>
+                        <div className={`w-2 h-2 rounded-full ${
+                          section.completionPercentage === 100 ? 'bg-green-500' :
+                          section.completionPercentage > 50 ? 'bg-yellow-500' : 'bg-gray-300'
+                        }`}></div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
                 <div className="text-xs text-gray-500 mt-2 pt-2 border-t">
                   Complete missing sections to improve match visibility
@@ -347,79 +394,206 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
           </TabsContent>
 
           {/* About Me Tab */}
-          <TabsContent value="about" className="space-y-4">
-            <CardHeader>
-              <CardTitle>About Me</CardTitle>
-              <p className="text-sm text-gray-600">Share your spiritual journey and lifestyle</p>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label htmlFor="bio">About Me / Spiritual Path *</Label>
-                <Textarea
-                  id="bio"
-                  value={formData.bio || ''}
-                  onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
-                  placeholder="Share your spiritual journey, values, and what you're looking for in a partner..."
-                  rows={4}
-                />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <TabsContent value="about" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>About You</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Self Description - Required */}
                 <div>
-                  <Label htmlFor="eating-habits">Eating Habits *</Label>
-                  <Select
-                    value={formData.eatingHabits || ''}
-                    onValueChange={(value) => setFormData(prev => ({ ...prev, eatingHabits: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select Diet" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {eatingHabitsOptions.map(diet => (
-                        <SelectItem key={diet} value={diet}>
-                          {diet}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Label htmlFor="selfDescription" className="text-sm font-medium">
+                    About Yourself <span className="text-red-500">*</span>
+                  </Label>
+                  <Textarea
+                    id="selfDescription"
+                    value={formData.selfDescription || ''}
+                    onChange={(e) => setFormData({...formData, selfDescription: e.target.value})}
+                    placeholder="Describe your personality, interests, lifestyle, and what makes you unique..."
+                    className="min-h-32"
+                    required
+                  />
                 </div>
+
+                {/* Spiritual Journey - Optional */}
                 <div>
-                  <Label htmlFor="drinking-habits">Drinking Habits</Label>
-                  <Select
-                    value={formData.drinkingHabits || ''}
-                    onValueChange={(value) => setFormData(prev => ({ ...prev, drinkingHabits: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select Habit" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {drinkingHabitsOptions.map(habit => (
-                        <SelectItem key={habit} value={habit}>
-                          {habit}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Label htmlFor="spiritualJourney" className="text-sm font-medium">
+                    Your Spiritual Journey
+                  </Label>
+                  <Textarea
+                    id="spiritualJourney"
+                    value={formData.spiritualJourney || ''}
+                    onChange={(e) => setFormData({...formData, spiritualJourney: e.target.value})}
+                    placeholder="Share your spiritual background, inspirations, and practices that have shaped your journey..."
+                    className="min-h-28"
+                  />
                 </div>
+
+                {/* Daily Routine - Optional */}
                 <div>
-                  <Label htmlFor="smoking-habits">Smoking Habits</Label>
-                  <Select
-                    value={formData.smokingHabits || ''}
-                    onValueChange={(value) => setFormData(prev => ({ ...prev, smokingHabits: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select Habit" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {smokingHabitsOptions.map(habit => (
-                        <SelectItem key={habit} value={habit}>
-                          {habit}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Label htmlFor="dailyRoutine" className="text-sm font-medium">
+                    Daily Sadhana & Routine
+                  </Label>
+                  <Textarea
+                    id="dailyRoutine"
+                    value={formData.dailyRoutine || ''}
+                    onChange={(e) => setFormData({...formData, dailyRoutine: e.target.value})}
+                    placeholder="Describe your daily sadhana, prayer, yoga, meditation, or other spiritual practices..."
+                    className="min-h-28"
+                  />
                 </div>
-              </div>
-            </CardContent>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Spiritual Practices</Label>
+                    <div className="flex flex-wrap gap-2 mt-2 max-h-32 overflow-y-auto">
+                      {spiritualPracticesOptions.map(practice => (
+                        <Badge
+                          key={practice}
+                          variant={formData.spiritualPractices?.includes(practice) ? "default" : "outline"}
+                          className="cursor-pointer"
+                          onClick={() => {
+                            const current = formData.spiritualPractices || [];
+                            const updated = current.includes(practice)
+                              ? current.filter(p => p !== practice)
+                              : [...current, practice];
+                            setFormData({...formData, spiritualPractices: updated});
+                          }}
+                        >
+                          {practice}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label>Sacred Texts</Label>
+                    <div className="flex flex-wrap gap-2 mt-2 max-h-32 overflow-y-auto">
+                      {sacredTexts.map(text => (
+                        <Badge
+                          key={text}
+                          variant={formData.sacredTexts?.includes(text) ? "default" : "outline"}
+                          className="cursor-pointer"
+                          onClick={() => {
+                            const current = formData.sacredTexts || [];
+                            const updated = current.includes(text)
+                              ? current.filter(t => t !== text)
+                              : [...current, text];
+                            setFormData({...formData, sacredTexts: updated});
+                          }}
+                        >
+                          {text}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="ayurvedicConstitution">Ayurvedic Constitution</Label>
+                    <Select
+                      value={formData.ayurvedicConstitution || ''}
+                      onValueChange={(value) => setFormData({...formData, ayurvedicConstitution: value})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select constitution" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {ayurvedicConstitutions.map(constitution => (
+                          <SelectItem key={constitution} value={constitution}>
+                            {constitution}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="eatingHabits">Eating Habits</Label>
+                    <Select
+                      value={formData.eatingHabits || ''}
+                      onValueChange={(value) => setFormData({...formData, eatingHabits: value})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select eating habits" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {eatingHabitsOptions.map(habit => (
+                          <SelectItem key={habit} value={habit}>
+                            {habit}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Additional Spiritual Details Section */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Spiritual Details</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Spiritual Path */}
+                <div>
+                  <Label htmlFor="spiritualPath" className="text-sm font-medium">
+                    Spiritual Path & Tradition
+                  </Label>
+                  <Textarea
+                    id="spiritualPath"
+                    value={formData.spiritualPath || ''}
+                    onChange={(e) => setFormData({...formData, spiritualPath: e.target.value})}
+                    placeholder="Mention the spiritual tradition or path you follow, if any..."
+                    className="min-h-24"
+                  />
+                </div>
+
+                {/* Gurus & Inspirations */}
+                <div>
+                  <Label htmlFor="gurusInspirations" className="text-sm font-medium">
+                    Gurus, Teachers & Inspirations
+                  </Label>
+                  <Textarea
+                    id="gurusInspirations"
+                    value={formData.gurusInspirations || ''}
+                    onChange={(e) => setFormData({...formData, gurusInspirations: e.target.value})}
+                    placeholder="List gurus, teachers, books, or personalities that inspire you..."
+                    className="min-h-24"
+                  />
+                </div>
+
+                {/* Core Values */}
+                <div>
+                  <Label htmlFor="coreValues" className="text-sm font-medium">
+                    Core Values
+                  </Label>
+                  <Textarea
+                    id="coreValues"
+                    value={formData.coreValues || ''}
+                    onChange={(e) => setFormData({...formData, coreValues: e.target.value})}
+                    placeholder="Values like simplicity, compassion, karma yoga, discipline, non-violence..."
+                    className="min-h-24"
+                  />
+                </div>
+
+                {/* Spiritual Interests */}
+                <div>
+                  <Label htmlFor="spiritualInterests" className="text-sm font-medium">
+                    Spiritual Interests & Activities
+                  </Label>
+                  <Textarea
+                    id="spiritualInterests"
+                    value={formData.spiritualInterests || ''}
+                    onChange={(e) => setFormData({...formData, spiritualInterests: e.target.value})}
+                    placeholder="Activities like meditation, seva, satsang, nature walks, scriptural study..."
+                    className="min-h-24"
+                  />
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* Education & Career Tab */}
@@ -489,123 +663,293 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
           </TabsContent>
 
           {/* Family Details Tab */}
-          <TabsContent value="family" className="space-y-4">
-            <CardHeader>
-              <CardTitle>Family Details</CardTitle>
-              <p className="text-sm text-gray-600">Family background and values</p>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label>Family Values *</Label>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
-                  {familyValuesOptions.map(value => (
-                    <label key={value} className="flex items-center space-x-2">
-                      <Checkbox
-                        checked={formData.familyValues?.includes(value) || false}
-                        onCheckedChange={(checked) => {
-                          const currentValues = formData.familyValues || [];
-                          if (checked) {
-                            setFormData(prev => ({
-                              ...prev,
-                              familyValues: [...currentValues, value]
-                            }));
-                          } else {
-                            setFormData(prev => ({
-                              ...prev,
-                              familyValues: currentValues.filter(v => v !== value)
-                            }));
-                          }
-                        }}
-                      />
-                      <span className="text-sm">{value}</span>
-                    </label>
-                  ))}
+          <TabsContent value="family" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Family Details</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Family Background */}
+                <div>
+                  <Label htmlFor="familyBackground" className="text-sm font-medium">
+                    Family Background & Values
+                  </Label>
+                  <Textarea
+                    id="familyBackground"
+                    value={formData.familyBackground || ''}
+                    onChange={(e) => setFormData({...formData, familyBackground: e.target.value})}
+                    placeholder="Describe your family values, culture, traditions, and background..."
+                    className="min-h-28"
+                  />
                 </div>
-              </div>
-            </CardContent>
+
+                {/* Family Occupation */}
+                <div>
+                  <Label htmlFor="familyOccupation" className="text-sm font-medium">
+                    Family Occupation Details
+                  </Label>
+                  <Textarea
+                    id="familyOccupation"
+                    value={formData.familyOccupation || ''}
+                    onChange={(e) => setFormData({...formData, familyOccupation: e.target.value})}
+                    placeholder="Occupations and roles of parents, siblings, grandparents..."
+                    className="min-h-24"
+                  />
+                </div>
+
+                {/* Family Lifestyle */}
+                <div>
+                  <Label htmlFor="familyLifestyle" className="text-sm font-medium">
+                    Family Lifestyle
+                  </Label>
+                  <Textarea
+                    id="familyLifestyle"
+                    value={formData.familyLifestyle || ''}
+                    onChange={(e) => setFormData({...formData, familyLifestyle: e.target.value})}
+                    placeholder="Details like simplicity, modern/traditional blend, farmhouse/village life, etc..."
+                    className="min-h-24"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="fatherOccupation">Father's Occupation</Label>
+                    <Input
+                      id="fatherOccupation"
+                      value={formData.fatherOccupation || ''}
+                      onChange={(e) => setFormData({...formData, fatherOccupation: e.target.value})}
+                      placeholder="Father's profession"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="motherOccupation">Mother's Occupation</Label>
+                    <Input
+                      id="motherOccupation"
+                      value={formData.motherOccupation || ''}
+                      onChange={(e) => setFormData({...formData, motherOccupation: e.target.value})}
+                      placeholder="Mother's profession"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="siblings">Siblings</Label>
+                  <Input
+                    id="siblings"
+                    value={formData.siblings || ''}
+                    onChange={(e) => setFormData({...formData, siblings: e.target.value})}
+                    placeholder="Number and details of siblings"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="familyType">Family Type</Label>
+                  <Select
+                    value={formData.familyType || ''}
+                    onValueChange={(value) => setFormData({...formData, familyType: value})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select family type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {familyTypes.map(type => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* Partner Preferences Tab */}
-          <TabsContent value="preferences" className="space-y-4">
-            <CardHeader>
-              <CardTitle>Partner Preferences</CardTitle>
-              <p className="text-sm text-gray-600">What you're looking for in a life partner</p>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label>Spiritual Goals *</Label>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
-                  {spiritualPractices.map(goal => (
-                    <label key={goal} className="flex items-center space-x-2">
-                      <Checkbox
-                        checked={formData.spiritualGoals?.includes(goal) || false}
-                        onCheckedChange={(checked) => {
-                          const currentGoals = formData.spiritualGoals || [];
-                          if (checked) {
-                            setFormData(prev => ({
-                              ...prev,
-                              spiritualGoals: [...currentGoals, goal]
-                            }));
-                          } else {
-                            setFormData(prev => ({
-                              ...prev,
-                              spiritualGoals: currentGoals.filter(g => g !== goal)
-                            }));
-                          }
-                        }}
-                      />
-                      <span className="text-sm">{goal}</span>
-                    </label>
-                  ))}
+          <TabsContent value="preferences" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Partner Preferences</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Ideal Partner - Required */}
+                <div>
+                  <Label htmlFor="idealPartner" className="text-sm font-medium">
+                    Your Ideal Life Partner <span className="text-red-500">*</span>
+                  </Label>
+                  <Textarea
+                    id="idealPartner"
+                    value={formData.idealPartner || ''}
+                    onChange={(e) => setFormData({...formData, idealPartner: e.target.value})}
+                    placeholder="Describe your vision for your life partner in one paragraph..."
+                    className="min-h-32"
+                    required
+                  />
                 </div>
-              </div>
-              <div>
-                <Label>Sacred Texts Read</Label>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
-                  {sacredTexts.map(text => (
-                    <label key={text} className="flex items-center space-x-2">
-                      <Checkbox
-                        checked={formData.sacredTexts?.includes(text) || false}
-                        onCheckedChange={(checked) => {
-                          const currentTexts = formData.sacredTexts || [];
-                          if (checked) {
-                            setFormData(prev => ({
-                              ...prev,
-                              sacredTexts: [...currentTexts, text]
-                            }));
-                          } else {
-                            setFormData(prev => ({
-                              ...prev,
-                              sacredTexts: currentTexts.filter(t => t !== text)
-                            }));
-                          }
-                        }}
-                      />
-                      <span className="text-sm">{text}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
 
-              <div>
-                <Label htmlFor="guruLineage">Guru/Spiritual Lineage</Label>
-                <Select
-                  value={formData.guruLineage || ''}
-                  onValueChange={(value) => setFormData(prev => ({ ...prev, guruLineage: value }))}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Lineage" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {guruLineages.map(lineage => (
-                      <SelectItem key={lineage} value={lineage}>
-                        {lineage}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardContent>
+                {/* Spiritual Alignment */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium">Spiritual Alignment Preference</Label>
+                  <Select
+                    value={formData.spiritualAlignment || ''}
+                    onValueChange={(value) => setFormData({...formData, spiritualAlignment: value})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select spiritual alignment preference" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="prefer_same_path">Prefer same spiritual path</SelectItem>
+                      <SelectItem value="open_to_different">Open to different path</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Textarea
+                    value={formData.spiritualAlignmentDetails || ''}
+                    onChange={(e) => setFormData({...formData, spiritualAlignmentDetails: e.target.value})}
+                    placeholder="Explain your spiritual alignment preference..."
+                    className="min-h-20"
+                  />
+                </div>
+
+                {/* Relocation Preference */}
+                <div>
+                  <Label htmlFor="relocationPreference" className="text-sm font-medium">
+                    Relocation Preference
+                  </Label>
+                  <Select
+                    value={formData.relocationPreference || ''}
+                    onValueChange={(value) => setFormData({...formData, relocationPreference: value})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select relocation preference" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="willing_to_relocate">Willing to relocate</SelectItem>
+                      <SelectItem value="prefer_hometown">Prefer hometown</SelectItem>
+                      <SelectItem value="open_to_discussion">Open to discussion</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Career Choice */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium">Partner's Career Choice</Label>
+                  <Select
+                    value={formData.careerChoice || ''}
+                    onValueChange={(value) => setFormData({...formData, careerChoice: value})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select career preference" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="working_partner">Working partner</SelectItem>
+                      <SelectItem value="homemaker">Homemaker</SelectItem>
+                      <SelectItem value="either_is_fine">Either is fine</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Textarea
+                    value={formData.careerChoiceDetails || ''}
+                    onChange={(e) => setFormData({...formData, careerChoiceDetails: e.target.value})}
+                    placeholder="Additional details about career expectations..."
+                    className="min-h-20"
+                  />
+                </div>
+
+                {/* Horoscope Preference */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium">Horoscope Matching Preference</Label>
+                  <Select
+                    value={formData.horoscopePreference || ''}
+                    onValueChange={(value) => setFormData({...formData, horoscopePreference: value})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select horoscope preference" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="match_required">Match required</SelectItem>
+                      <SelectItem value="optional">Optional</SelectItem>
+                      <SelectItem value="not_necessary">Not necessary</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Textarea
+                    value={formData.horoscopePreferenceDetails || ''}
+                    onChange={(e) => setFormData({...formData, horoscopePreferenceDetails: e.target.value})}
+                    placeholder="Minimum Guna score preference or Nakshatra preference..."
+                    className="min-h-20"
+                  />
+                </div>
+
+                {/* Parenting Vision */}
+                <div>
+                  <Label htmlFor="parentingVision" className="text-sm font-medium">
+                    Parenting Vision
+                  </Label>
+                  <Textarea
+                    id="parentingVision"
+                    value={formData.parentingVision || ''}
+                    onChange={(e) => setFormData({...formData, parentingVision: e.target.value})}
+                    placeholder="Your expectations around raising children, parenting style, values to instill..."
+                    className="min-h-28"
+                  />
+                </div>
+
+                {/* Support Expectations */}
+                <div>
+                  <Label htmlFor="supportExpectations" className="text-sm font-medium">
+                    Support Expectations
+                  </Label>
+                  <Textarea
+                    id="supportExpectations"
+                    value={formData.supportExpectations || ''}
+                    onChange={(e) => setFormData({...formData, supportExpectations: e.target.value})}
+                    placeholder="How your partner can support you in spiritual and professional pursuits..."
+                    className="min-h-28"
+                  />
+                </div>
+
+                {/* Basic Preferences */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="ageRangeMin">Minimum Age</Label>
+                    <Input
+                      id="ageRangeMin"
+                      type="number"
+                      value={formData.ageRangeMin || ''}
+                      onChange={(e) => setFormData({...formData, ageRangeMin: parseInt(e.target.value)})}
+                      placeholder="Minimum age"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="ageRangeMax">Maximum Age</Label>
+                    <Input
+                      id="ageRangeMax"
+                      type="number"
+                      value={formData.ageRangeMax || ''}
+                      onChange={(e) => setFormData({...formData, ageRangeMax: parseInt(e.target.value)})}
+                      placeholder="Maximum age"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="heightRange">Height Range</Label>
+                  <Input
+                    id="heightRange"
+                    value={formData.heightRange || ''}
+                    onChange={(e) => setFormData({...formData, heightRange: e.target.value})}
+                    placeholder="e.g., 5'5\" - 6'0\""
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="locationPreference">Location Preference</Label>
+                  <Input
+                    id="locationPreference"
+                    value={formData.locationPreference || ''}
+                    onChange={(e) => setFormData({...formData, locationPreference: e.target.value})}
+                    placeholder="Preferred locations"
+                  />
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* Photos Tab */}

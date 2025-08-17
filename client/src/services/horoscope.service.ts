@@ -32,6 +32,7 @@ export interface CompatibilityResponse {
     score: number;
     analysis: string;
     recommendations: string[];
+    gunaScore?: number;
   };
   detailedAnalysis: {
     gunaMatching: number;
@@ -77,12 +78,18 @@ class HoroscopeService {
       const horoscope1 = generateBasicHoroscope(request.person1);
       const horoscope2 = generateBasicHoroscope(request.person2);
       
+      // Calculate Guna matching score between the two horoscopes
+      const gunaMatchingScore = this.calculateGunaMatching(horoscope1, horoscope2);
+      
       const compatibility = analyzeCompatibility(horoscope1, horoscope2);
       
       return {
-        compatibility,
+        compatibility: {
+          ...compatibility,
+          gunaScore: gunaMatchingScore
+        },
         detailedAnalysis: {
-          gunaMatching: horoscope1.gunaScore || 0,
+          gunaMatching: gunaMatchingScore,
           doshaCompatibility: this.getDoshaCompatibilityAnalysis(horoscope1, horoscope2),
           planetaryHarmony: this.getPlanetaryHarmonyAnalysis(horoscope1, horoscope2),
           longevityFactor: this.getLongevityAnalysis(horoscope1, horoscope2)
@@ -92,6 +99,144 @@ class HoroscopeService {
       console.error('Error analyzing compatibility:', error);
       throw new Error('Failed to analyze compatibility. Please try again.');
     }
+  }
+  
+  // Calculate Guna matching between two horoscopes (Ashtakoota)
+  private calculateGunaMatching(horoscope1: HoroscopeData, horoscope2: HoroscopeData): number {
+    let totalScore = 0;
+    
+    // 1. Varna (Caste) - 1 point
+    const varnaCompatibility = this.getVarnaCompatibility(horoscope1.moonSign, horoscope2.moonSign);
+    totalScore += varnaCompatibility;
+    
+    // 2. Vashya (Mutual Attraction) - 2 points
+    const vashyaCompatibility = this.getVashyaCompatibility(horoscope1.moonSign, horoscope2.moonSign);
+    totalScore += vashyaCompatibility;
+    
+    // 3. Tara (Birth Star) - 3 points
+    const taraCompatibility = this.getTaraCompatibility(horoscope1.nakshatra, horoscope2.nakshatra);
+    totalScore += taraCompatibility;
+    
+    // 4. Yoni (Animal Nature) - 4 points
+    const yoniCompatibility = this.getYoniCompatibility(horoscope1.nakshatra, horoscope2.nakshatra);
+    totalScore += yoniCompatibility;
+    
+    // 5. Graha Maitri (Planetary Friendship) - 5 points
+    const grahaMaitriCompatibility = this.getGrahaMaitriCompatibility(horoscope1.moonSign, horoscope2.moonSign);
+    totalScore += grahaMaitriCompatibility;
+    
+    // 6. Gana (Temperament) - 6 points
+    const ganaCompatibility = this.getGanaCompatibility(horoscope1.nakshatra, horoscope2.nakshatra);
+    totalScore += ganaCompatibility;
+    
+    // 7. Bhakoot (Moon Sign Compatibility) - 7 points
+    const bhakootCompatibility = this.getBhakootCompatibility(horoscope1.moonSign, horoscope2.moonSign);
+    totalScore += bhakootCompatibility;
+    
+    // 8. Nadi (Pulse/Health) - 8 points
+    const nadiCompatibility = this.getNadiCompatibility(horoscope1.nakshatra, horoscope2.nakshatra);
+    totalScore += nadiCompatibility;
+    
+    return Math.min(totalScore, 36); // Maximum possible score is 36
+  }
+  
+  // Helper methods for Guna calculations
+  private getVarnaCompatibility(moonSign1: string, moonSign2: string): number {
+    // Simplified Varna compatibility - in real implementation, use proper Varna mapping
+    const varnaMapping: { [key: string]: number } = {
+      'Mesha': 2, 'Simha': 2, 'Dhanus': 2, // Kshatriya
+      'Vrishabha': 3, 'Kanya': 3, 'Makara': 3, // Vaishya
+      'Mithuna': 4, 'Tula': 4, 'Kumbha': 4, // Shudra
+      'Karka': 1, 'Vrischika': 1, 'Meena': 1 // Brahmin
+    };
+    
+    const varna1 = varnaMapping[moonSign1] || 1;
+    const varna2 = varnaMapping[moonSign2] || 1;
+    
+    if (varna1 >= varna2) return 1;
+    return 0;
+  }
+  
+  private getVashyaCompatibility(moonSign1: string, moonSign2: string): number {
+    // Simplified Vashya compatibility
+    const vashyaGroups = [
+      ['Mesha', 'Simha'], // Leo controls Aries
+      ['Vrishabha', 'Tula'], // Libra controls Taurus
+      ['Mithuna', 'Kanya'], // Virgo controls Gemini
+      ['Karka', 'Vrischika'], // Scorpio controls Cancer
+      ['Dhanus', 'Meena'] // Pisces controls Sagittarius
+    ];
+    
+    for (const group of vashyaGroups) {
+      if (group.includes(moonSign1) && group.includes(moonSign2)) {
+        return 2;
+      }
+    }
+    return 1; // Partial compatibility
+  }
+  
+  private getTaraCompatibility(nakshatra1: string, nakshatra2: string): number {
+    // Simplified Tara calculation - ideally calculate star distance
+    // For demo, return random compatible score
+    return Math.floor(Math.random() * 3) + 1; // 1-3 points
+  }
+  
+  private getYoniCompatibility(nakshatra1: string, nakshatra2: string): number {
+    // Simplified Yoni compatibility
+    return Math.floor(Math.random() * 4) + 1; // 1-4 points
+  }
+  
+  private getGrahaMaitriCompatibility(moonSign1: string, moonSign2: string): number {
+    // Simplified Graha Maitri - based on moon sign lords
+    return Math.floor(Math.random() * 5) + 1; // 1-5 points
+  }
+  
+  private getGanaCompatibility(nakshatra1: string, nakshatra2: string): number {
+    // Simplified Gana compatibility
+    const ganaMapping: { [key: string]: string } = {
+      'Ashwini': 'Deva', 'Bharani': 'Manushya', 'Krittika': 'Rakshasa',
+      'Rohini': 'Manushya', 'Mrigashira': 'Deva', 'Ardra': 'Manushya'
+      // Add more nakshatras...
+    };
+    
+    const gana1 = ganaMapping[nakshatra1] || 'Manushya';
+    const gana2 = ganaMapping[nakshatra2] || 'Manushya';
+    
+    if (gana1 === gana2) return 6; // Same gana
+    if ((gana1 === 'Deva' && gana2 === 'Manushya') || (gana1 === 'Manushya' && gana2 === 'Deva')) return 6;
+    if ((gana1 === 'Manushya' && gana2 === 'Rakshasa') || (gana1 === 'Rakshasa' && gana2 === 'Manushya')) return 0;
+    return 1; // Partial compatibility
+  }
+  
+  private getBhakootCompatibility(moonSign1: string, moonSign2: string): number {
+    // Simplified Bhakoot - based on sign positions
+    const signPositions: { [key: string]: number } = {
+      'Mesha': 1, 'Vrishabha': 2, 'Mithuna': 3, 'Karka': 4,
+      'Simha': 5, 'Kanya': 6, 'Tula': 7, 'Vrischika': 8,
+      'Dhanus': 9, 'Makara': 10, 'Kumbha': 11, 'Meena': 12
+    };
+    
+    const pos1 = signPositions[moonSign1] || 1;
+    const pos2 = signPositions[moonSign2] || 1;
+    const diff = Math.abs(pos1 - pos2);
+    
+    if ([1, 6, 8].includes(diff)) return 0; // Incompatible positions
+    return 7; // Compatible
+  }
+  
+  private getNadiCompatibility(nakshatra1: string, nakshatra2: string): number {
+    // Simplified Nadi - very important, either 0 or 8
+    const nadiMapping: { [key: string]: string } = {
+      'Ashwini': 'Adi', 'Bharani': 'Madhya', 'Krittika': 'Antya',
+      'Rohini': 'Adi', 'Mrigashira': 'Madhya', 'Ardra': 'Antya'
+      // Add more...
+    };
+    
+    const nadi1 = nadiMapping[nakshatra1] || 'Adi';
+    const nadi2 = nadiMapping[nakshatra2] || 'Adi';
+    
+    if (nadi1 === nadi2) return 0; // Same nadi is bad
+    return 8; // Different nadi is good
   }
   
   // Get daily horoscope
