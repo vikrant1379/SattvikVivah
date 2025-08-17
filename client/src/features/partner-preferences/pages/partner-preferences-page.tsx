@@ -280,7 +280,7 @@ export const PartnerPreferencesPage: React.FC = () => {
                     <div className="mt-1">
                       <LocationPreferenceSelector
                         selectedLocations={preferences.cityState}
-                        onLocationsChange={(locations) => setPreferences({...preferences, cityState: locations})}
+                        onLocationChange={(locations) => setPreferences({...preferences, cityState: locations})}
                       />
                     </div>
                   </div>
