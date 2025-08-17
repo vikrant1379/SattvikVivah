@@ -66,9 +66,10 @@ app.use((req, res, next) => {
   // Handle port conflicts gracefully
   server.on('error', (err: any) => {
     if (err.code === 'EADDRINUSE') {
-      log(`Port ${port} is already in use. Attempting to kill existing process...`);
+      log(`Port ${port} is already in use. Server will exit.`);
       process.exit(1);
     } else {
+      log(`Server error: ${err.message}`);
       throw err;
     }
   });
@@ -90,7 +91,13 @@ app.use((req, res, next) => {
     });
   });
 
-  server.listen(port, host, () => {
-    log(`Server running at http://${host}:${port}`);
-  });
+  try {
+    server.listen(port, host, () => {
+      log(`✅ Server running at http://${host}:${port}`);
+      log(`🚀 Environment: ${app.get("env") || "development"}`);
+    });
+  } catch (error) {
+    log(`❌ Failed to start server: ${error}`);
+    process.exit(1);
+  }
 })();
