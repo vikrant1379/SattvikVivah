@@ -28,7 +28,4 @@ for (const command of cleanupCommands) {
   }
 }
 
-// Give a brief moment for processes to actually terminate
-setTimeout(() => {
-  console.log('✅ Cleanup completed');
-}, 500);
+console.log('✅ Cleanup completed');
