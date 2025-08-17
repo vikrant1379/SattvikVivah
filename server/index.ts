@@ -39,8 +39,10 @@ app.use((req, res, next) => {
 (async () => {
   try {
     log('🚀 Starting server initialization...');
+    log('🔧 About to register routes...');
     const server = await registerRoutes(app);
     log('📋 Routes registered successfully');
+    log('✅ Server object created, proceeding with configuration...');
 
     app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
       const status = err.status || err.statusCode || 500;
@@ -83,7 +85,8 @@ app.use((req, res, next) => {
       });
     });
 
-    log(`🔧 Attempting to start server on ${host}:${port}...`);
+    log(`🔧 About to bind server to ${host}:${port}...`);
+    log('🎯 Calling server.listen()...');
     server.listen(port, host, () => {
       log(`✅ Server running at http://${host}:${port}`);
       log(`🚀 Environment: ${app.get("env") || "development"}`);
