@@ -5,6 +5,8 @@ import NotFound from "@/pages/not-found";
 import ProfileDetailPage from "@/components/profile-detail-page";
 import ProfileBrowser from "@/components/profile-browser";
 import { AccountPage } from "@/pages/account";
+import { ProfileEditPage } from "@/pages/profile-edit";
+import { PartnerPreferencesPage } from "@/pages/partner-preferences";
 
 // Lazy load heavy components
 const ProfileDetailModal = lazy(() => import("@/components/profile-detail-modal"));
@@ -55,6 +57,8 @@ const AppRouter = memo(() => {
           </Route>
 
           <Route path="/account" component={AccountPage} />
+          <Route path="/profile/edit" component={ProfileEditPage} />
+          <Route path="/profile/preferences" component={PartnerPreferencesPage} />
 
           <Route component={NotFound} />
         </Switch>

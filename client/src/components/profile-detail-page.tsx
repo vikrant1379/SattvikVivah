@@ -40,7 +40,7 @@ import {
 import { GiBigDiamondRing } from "react-icons/gi";
 import { formatAnnualIncome } from "../data/annual-income";
 import type { UserProfile } from "@shared/schema";
-import Header from "./header";
+import { Header } from "./header";
 
 interface ProfileDetailPageProps {
   profileId: string;

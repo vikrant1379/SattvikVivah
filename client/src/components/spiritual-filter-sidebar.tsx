@@ -2474,12 +2474,17 @@ const SpiritualFilterSidebar = memo(() => {
                     max="36"
                     className="h-9 text-sm"
                     value={localFilters.gunaScoreMin || ""}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const numValue = value ? parseInt(value) : undefined;
+                      if (numValue !== undefined && (numValue < 0 || numValue > 36)) {
+                        return; // Don't update if out of range
+                      }
                       setLocalFilters(prev => ({
                         ...prev,
-                        gunaScoreMin: e.target.value ? parseInt(e.target.value) : undefined
-                      }))
-                    }
+                        gunaScoreMin: numValue
+                      }));
+                    }}
                   />
                   <p className="text-xs text-gray-500 mt-1">Minimum score out of 36</p>
                 </div>

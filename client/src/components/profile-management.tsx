@@ -132,7 +132,7 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
         rashi: horoscope.moonSign,
         nakshatra: horoscope.nakshatra,
         horoscope: horoscope.sunSign,
-        gunaScore: Math.floor(Math.random() * 36) + 1, // Simplified for demo
+        gunaScore: Math.floor(Math.random() * 37), // 0-36 range for demo
         doshas: horoscope.doshas,
         birthTime: birthDetails.time,
         birthPlace: birthDetails.place
