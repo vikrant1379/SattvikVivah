@@ -302,7 +302,7 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
               <p className="text-sm text-gray-600">Update Your Information</p>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="name">Full Name *</Label>
                   <Input
@@ -316,18 +316,35 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
                   <Input
                     id="age"
                     type="number"
+                    min="18"
+                    max="75"
                     value={formData.age || ''}
-                    onChange={(e) => setFormData(prev => ({ ...prev, age: parseInt(e.target.value) }))}
+                    onChange={(e) => {
+                      const age = parseInt(e.target.value);
+                      if (age >= 18 && age <= 75) {
+                        setFormData({...formData, age: age});
+                      }
+                    }}
+                    placeholder="Enter your age (18-75)"
                   />
                 </div>
                 <div>
                   <Label htmlFor="height">Height</Label>
-                  <Input
-                    id="height"
+                  <Select
                     value={formData.height || ''}
-                    onChange={(e) => setFormData(prev => ({ ...prev, height: e.target.value }))}
-                    placeholder="e.g., 5'6&quot;"
-                  />
+                    onValueChange={(value) => setFormData({...formData, height: value})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select height" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {heightOptions.map((height) => (
+                        <SelectItem key={height} value={height}>
+                          {height}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
                   <Label htmlFor="mother-tongue">Mother Tongue</Label>
@@ -349,48 +366,78 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
                 </div>
               </div>
 
-              {/* Astrological Calculation Section */}
-              <AstrologicalCalculator
-                onCalculationComplete={(astroData) => {
-                  setFormData(prev => ({
-                    ...prev,
-                    rashi: astroData.rashi,
-                    nakshatra: astroData.nakshatra,
-                    horoscope: astroData.horoscope,
-                    gunaScore: astroData.gunaScore,
-                    doshas: astroData.doshas,
-                    birthTime: birthDetails.time,
-                    birthPlace: birthDetails.place
-                  }));
-                }}
-                initialData={{
-                  date: birthDetails.date,
-                  time: birthDetails.time,
-                  place: birthDetails.place
-                }}
-              />
+              {/* Birth Details and Astrological Information */}
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="birthPlace">Place of Birth</Label>
+                  <AstrologicalCalculator
+                    birthDetails={birthDetails}
+                    onBirthDetailsChange={setBirthDetails}
+                    onAstrologicalDataChange={(data) => {
+                      setFormData({
+                        ...formData,
+                        rashi: data.rashi,
+                        nakshatra: data.nakshatra,
+                        manglikStatus: data.manglikStatus
+                      });
+                    }}
+                  />
+                </div>
 
-              {/* Display calculated astrological details */}
-              {formData.rashi && (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-white rounded-lg border">
+                {/* Manual Astrological Fields */}
+                <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <Label className="text-xs text-gray-500">Rashi (Moon Sign)</Label>
-                    <p className="font-medium">{formData.rashi}</p>
+                    <Label htmlFor="rashi">Rashi (Moon Sign)</Label>
+                    <Select
+                      value={formData.rashi || ''}
+                      onValueChange={(value) => setFormData({...formData, rashi: value})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select rashi" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {['Mesha', 'Vrishabha', 'Mithuna', 'Karka', 'Simha', 'Kanya', 'Tula', 'Vrishchika', 'Dhanu', 'Makara', 'Kumbha', 'Meena'].map((rashi) => (
+                          <SelectItem key={rashi} value={rashi}>{rashi}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
+
                   <div>
-                    <Label className="text-xs text-gray-500">Nakshatra</Label>
-                    <p className="font-medium">{formData.nakshatra}</p>
+                    <Label htmlFor="nakshatra">Nakshatra</Label>
+                    <Select
+                      value={formData.nakshatra || ''}
+                      onValueChange={(value) => setFormData({...formData, nakshatra: value})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select nakshatra" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {['Ashwini', 'Bharani', 'Krittika', 'Rohini', 'Mrigashirsha', 'Ardra', 'Punarvasu', 'Pushya', 'Ashlesha', 'Magha', 'Purva Phalguni', 'Uttara Phalguni', 'Hasta', 'Chitra', 'Swati', 'Vishakha', 'Anuradha', 'Jyeshtha', 'Mula', 'Purva Ashadha', 'Uttara Ashadha', 'Shravana', 'Dhanishta', 'Shatabhisha', 'Purva Bhadrapada', 'Uttara Bhadrapada', 'Revati'].map((nakshatra) => (
+                          <SelectItem key={nakshatra} value={nakshatra}>{nakshatra}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
+
                   <div>
-                    <Label className="text-xs text-gray-500">Zodiac Sign</Label>
-                    <p className="font-medium">{formData.horoscope}</p>
-                  </div>
-                  <div>
-                    <Label className="text-xs text-gray-500">Guna Score</Label>
-                    <p className="font-medium">{formData.gunaScore}/36</p>
+                    <Label htmlFor="manglikStatus">Manglik Status</Label>
+                    <Select
+                      value={formData.manglikStatus || ''}
+                      onValueChange={(value) => setFormData({...formData, manglikStatus: value})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="No">No</SelectItem>
+                        <SelectItem value="Anshik">Anshik (Partial)</SelectItem>
+                        <SelectItem value="Yes">Yes</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
-              )}
+              </div>
             </CardContent>
           </TabsContent>
 
@@ -914,8 +961,15 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
                       id="ageRangeMin"
                       type="number"
                       value={formData.ageRangeMin || ''}
-                      onChange={(e) => setFormData({...formData, ageRangeMin: parseInt(e.target.value)})}
+                      onChange={(e) => {
+                        const minAge = parseInt(e.target.value);
+                        if (minAge >= 18 && minAge <= 75) {
+                          setFormData({...formData, ageRangeMin: minAge});
+                        }
+                      }}
                       placeholder="Minimum age"
+                      min="18"
+                      max="75"
                     />
                   </div>
                   <div>
@@ -924,8 +978,15 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
                       id="ageRangeMax"
                       type="number"
                       value={formData.ageRangeMax || ''}
-                      onChange={(e) => setFormData({...formData, ageRangeMax: parseInt(e.target.value)})}
+                      onChange={(e) => {
+                        const maxAge = parseInt(e.target.value);
+                        if (maxAge >= 18 && maxAge <= 75) {
+                          setFormData({...formData, ageRangeMax: maxAge});
+                        }
+                      }}
                       placeholder="Maximum age"
+                      min="18"
+                      max="75"
                     />
                   </div>
                 </div>

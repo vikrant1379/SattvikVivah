@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
 import { Heart, Save, ArrowLeft } from 'lucide-react';
+import { heightOptions } from '@/data/static-options';
 
 export const PartnerPreferencesPage: React.FC = () => {
   const [, setLocation] = useLocation();
@@ -63,18 +64,101 @@ export const PartnerPreferencesPage: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <Label className="text-base font-semibold mb-3 block">Age Range</Label>
-                <div className="px-2">
-                  <Slider
-                    value={preferences.ageRange}
-                    onValueChange={(value) => setPreferences(prev => ({ ...prev, ageRange: value }))}
-                    max={60}
-                    min={18}
-                    step={1}
-                    className="w-full"
-                  />
-                  <div className="flex justify-between text-sm text-gray-600 mt-1">
-                    <span>{preferences.ageRange[0]} years</span>
-                    <span>{preferences.ageRange[1]} years</span>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-sm">Minimum Age</Label>
+                      <Input
+                        type="number"
+                        min="18"
+                        max="75"
+                        value={preferences.ageRange[0]}
+                        onChange={(e) => {
+                          const minAge = parseInt(e.target.value);
+                          if (minAge >= 18 && minAge <= preferences.ageRange[1]) {
+                            setPreferences(prev => ({
+                              ...prev,
+                              ageRange: [minAge, prev.ageRange[1]]
+                            }));
+                          }
+                        }}
+                        placeholder="Min age"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-sm">Maximum Age</Label>
+                      <Input
+                        type="number"
+                        min="18"
+                        max="75"
+                        value={preferences.ageRange[1]}
+                        onChange={(e) => {
+                          const maxAge = parseInt(e.target.value);
+                          if (maxAge <= 75 && maxAge >= preferences.ageRange[0]) {
+                            setPreferences(prev => ({
+                              ...prev,
+                              ageRange: [prev.ageRange[0], maxAge]
+                            }));
+                          }
+                        }}
+                        placeholder="Max age"
+                      />
+                    </div>
+                  </div>
+                  {preferences.ageRange[0] > preferences.ageRange[1] && (
+                    <div className="text-red-500 text-sm">
+                      Minimum age cannot be greater than maximum age
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <Label className="text-base font-semibold mb-3 block">Height Range</Label>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-sm">Minimum Height</Label>
+                      <Select
+                        value={preferences.heightRange[0]}
+                        onValueChange={(value) => {
+                          setPreferences(prev => ({
+                            ...prev,
+                            heightRange: [value, prev.heightRange[1]]
+                          }));
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Min height" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {heightOptions.map((height) => (
+                            <SelectItem key={height} value={height}>{height}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-sm">Maximum Height</Label>
+                      <Select
+                        value={preferences.heightRange[1]}
+                        onValueChange={(value) => {
+                          setPreferences(prev => ({
+                            ...prev,
+                            heightRange: [prev.heightRange[0], value]
+                          }));
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Max height" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {heightOptions.map((height) => (
+                            <SelectItem key={height} value={height}>{height}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                 </div>
               </div>
