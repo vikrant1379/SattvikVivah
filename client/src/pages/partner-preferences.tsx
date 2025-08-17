@@ -74,11 +74,11 @@ export const PartnerPreferencesPage: React.FC = () => {
                         max="75"
                         value={preferences.ageRange[0]}
                         onChange={(e) => {
-                          const minAge = parseInt(e.target.value);
-                          if (minAge >= 18 && minAge <= preferences.ageRange[1]) {
+                          const minAge = parseInt(e.target.value) || 18;
+                          if (minAge >= 18 && minAge <= 75) {
                             setPreferences(prev => ({
                               ...prev,
-                              ageRange: [minAge, prev.ageRange[1]]
+                              ageRange: [minAge, Math.max(minAge, prev.ageRange[1])]
                             }));
                           }
                         }}
@@ -89,11 +89,11 @@ export const PartnerPreferencesPage: React.FC = () => {
                       <Label className="text-sm">Maximum Age</Label>
                       <Input
                         type="number"
-                        min="18"
+                        min={preferences.ageRange[0]}
                         max="75"
                         value={preferences.ageRange[1]}
                         onChange={(e) => {
-                          const maxAge = parseInt(e.target.value);
+                          const maxAge = parseInt(e.target.value) || 75;
                           if (maxAge <= 75 && maxAge >= preferences.ageRange[0]) {
                             setPreferences(prev => ({
                               ...prev,
@@ -122,9 +122,15 @@ export const PartnerPreferencesPage: React.FC = () => {
                       <Select
                         value={preferences.heightRange[0]}
                         onValueChange={(value) => {
+                          const minHeightIndex = heightOptions.indexOf(value);
+                          const currentMaxHeightIndex = heightOptions.indexOf(preferences.heightRange[1]);
+                          
                           setPreferences(prev => ({
                             ...prev,
-                            heightRange: [value, prev.heightRange[1]]
+                            heightRange: [
+                              value, 
+                              minHeightIndex > currentMaxHeightIndex ? value : prev.heightRange[1]
+                            ]
                           }));
                         }}
                       >
@@ -153,13 +159,25 @@ export const PartnerPreferencesPage: React.FC = () => {
                           <SelectValue placeholder="Max height" />
                         </SelectTrigger>
                         <SelectContent>
-                          {heightOptions.map((height) => (
+                          {heightOptions
+                            .filter((height) => {
+                              const minHeightIndex = heightOptions.indexOf(preferences.heightRange[0]);
+                              const currentHeightIndex = heightOptions.indexOf(height);
+                              return currentHeightIndex >= minHeightIndex;
+                            })
+                            .map((height) => (
                             <SelectItem key={height} value={height}>{height}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                     </div>
                   </div>
+                  {preferences.heightRange[0] && preferences.heightRange[1] && 
+                   heightOptions.indexOf(preferences.heightRange[0]) > heightOptions.indexOf(preferences.heightRange[1]) && (
+                    <div className="text-red-500 text-sm">
+                      Minimum height cannot be greater than maximum height
+                    </div>
+                  )}
                 </div>
               </div>
 
