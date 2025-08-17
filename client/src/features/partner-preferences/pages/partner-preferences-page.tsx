@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'wouter';
 import { Header } from '@/components/header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -185,93 +185,158 @@ export const PartnerPreferencesPage: React.FC = () => {
   const completionPercentage = 100; // Placeholder, actual calculation can be implemented if needed
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-rose-50">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-6xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => setLocation('/')}
-                className="text-gray-700 hover:text-orange-600 flex items-center space-x-2"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                <span className="text-sm font-medium">Back to Profile</span>
-              </button>
-              <div className="h-6 w-px bg-gray-300" />
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Partner Preferences</h1>
-                <p className="text-sm text-gray-600">Define your ideal partner criteria to get better matches</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="text-right">
-                <div className="text-sm font-medium text-gray-900">Completion: {completionPercentage}%</div>
-                <Progress value={completionPercentage} className="w-32 h-2 mt-1" />
-              </div>
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={() => setLocation('/')}
+              className="text-gray-700 hover:text-orange-600 flex items-center space-x-2"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              <span className="text-sm font-medium">Hi Vikrant Chaudhary!</span>
+            </button>
+            <div className="text-sm text-gray-500">
+              TY24M8S Edit Partner Preferences
             </div>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Sidebar - Categories */}
+      <div className="max-w-6xl mx-auto px-4 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Sidebar - Navigation */}
           <div className="lg:col-span-1">
-            <Card className="sticky top-8">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-lg">Preference Categories</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                {[
-                  { id: 'basic', label: 'Basic', icon: Users, active: true },
-                  { id: 'education', label: 'Education', icon: GraduationCap },
-                  { id: 'religion', label: 'Religion', icon: Globe },
-                  { id: 'family', label: 'Family', icon: Home },
-                  { id: 'spiritual', label: 'Spiritual', icon: Heart },
-                  { id: 'lifestyle', label: 'Lifestyle', icon: MapPin },
-                ].map((category) => (
-                  <button
-                    key={category.id}
-                    className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-left transition-colors ${
-                      category.active
-                        ? 'bg-orange-100 text-orange-700 border border-orange-200'
-                        : 'hover:bg-gray-50 text-gray-700'
-                    }`}
-                  >
-                    <category.icon className="w-4 h-4" />
-                    <span className="font-medium">{category.label}</span>
-                  </button>
-                ))}
-              </CardContent>
-            </Card>
+            <div className="bg-white rounded-lg shadow-sm">
+              <div className="p-4 space-y-2">
+                <div className="text-gray-700 py-2 px-3 text-sm">Matches</div>
+                <div className="text-gray-700 py-2 px-3 text-sm">Activity</div>
+                <div className="text-gray-700 py-2 px-3 text-sm">Search</div>
+                <div className="text-gray-700 py-2 px-3 text-sm">Messenger</div>
+                <div className="bg-green-100 text-green-700 py-2 px-3 rounded text-sm font-medium">
+                  Upgrade 54% off
+                </div>
+              </div>
+              
+              {/* Profile Score */}
+              <div className="p-4 border-t">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-blue-600">100%</div>
+                  <div className="text-sm text-gray-500 mb-2">Profile Score</div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="bg-orange-400 h-2 rounded-full" style={{width: '100%'}}></div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Main Form Area */}
+          {/* Main Content Area */}
           <div className="lg:col-span-3">
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="text-xl">Partner's Basic Details</CardTitle>
-                    <p className="text-gray-600 mt-1">Set your preferences for age, location, and other basic criteria</p>
-                  </div>
+            {/* Tabs */}
+            <div className="bg-white rounded-lg shadow-sm">
+              <div className="border-b">
+                <div className="flex">
+                  {[
+                    { id: 'basic', label: 'Basic', active: true },
+                    { id: 'about', label: 'About' },
+                    { id: 'education', label: 'Education' },
+                    { id: 'family', label: 'Family' },
+                    { id: 'spiritual', label: 'Spiritual' },
+                    { id: 'photos', label: 'Photos' },
+                  ].map((tab) => (
+                    <button
+                      key={tab.id}
+                      className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
+                        tab.active
+                          ? 'border-orange-500 text-orange-600 bg-orange-50'
+                          : 'border-transparent text-gray-500 hover:text-gray-700'
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-lg font-semibold text-gray-900">Partner's Basic Details</h2>
                   <Button variant="outline" size="sm">
-                    Reset to Default
+                    <Edit className="w-4 h-4" />
                   </Button>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <PartnerPreferencesForm />
-              </CardContent>
-            </Card>
 
-            {/* Save Button */}
-            <div className="mt-6 flex justify-end">
-              <Button onClick={() => alert('All preferences saved successfully!')} className="px-8 py-2.5 bg-gradient-to-r from-orange-600 to-rose-600 hover:from-orange-700 hover:to-rose-700 text-white font-medium">
-                Save All Preferences
-              </Button>
+                {/* Form Content */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {/* Left Column */}
+                  <div className="space-y-6">
+                    <div>
+                      <div className="flex items-center space-x-2 mb-2">
+                        <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                        <label className="text-sm font-medium text-gray-700">Age</label>
+                      </div>
+                      <div className="text-gray-900">{preferences.ageRange[0]} - {preferences.ageRange[1]} years</div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center space-x-2 mb-2">
+                        <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                        <label className="text-sm font-medium text-gray-700">Height</label>
+                      </div>
+                      <div className="text-gray-900">{preferences.heightRange[0]} - {preferences.heightRange[1]}</div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center space-x-2 mb-2">
+                        <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                        <label className="text-sm font-medium text-gray-700">Religion</label>
+                      </div>
+                      <div className="text-gray-900">{preferences.religion.join(', ')}</div>
+                    </div>
+                  </div>
+
+                  {/* Right Column */}
+                  <div className="space-y-6">
+                    <div>
+                      <div className="flex items-center space-x-2 mb-2">
+                        <div className="w-3 h-3 bg-blue-600 rounded-full"></div>
+                        <label className="text-sm font-medium text-gray-700">Marital Status</label>
+                      </div>
+                      <div className="text-gray-900">{preferences.maritalStatus.join(', ')}</div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center space-x-2 mb-2">
+                        <div className="w-3 h-3 bg-green-600 rounded-full"></div>
+                        <label className="text-sm font-medium text-gray-700">Mother Tongue</label>
+                      </div>
+                      <div className="text-gray-900">{preferences.motherTongue.join(', ')}</div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center space-x-2 mb-2">
+                        <div className="w-3 h-3 bg-yellow-600 rounded-full"></div>
+                        <label className="text-sm font-medium text-gray-700">Caste</label>
+                      </div>
+                      <div className="text-gray-900">{preferences.caste.join(', ')}</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Save Button */}
+                <div className="mt-8 flex justify-end">
+                  <Button 
+                    onClick={() => alert('All preferences saved successfully!')} 
+                    className="px-8 py-2.5 bg-red-500 hover:bg-red-600 text-white font-medium"
+                  >
+                    Save All Preferences
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
