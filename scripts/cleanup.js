@@ -1,25 +1,33 @@
 
+#!/usr/bin/env node
+
 // Cleanup script to kill processes on port 5000
 import { execSync } from 'child_process';
 
 console.log('🧹 Starting cleanup...');
 
-// Kill any processes using port 5000 with multiple approaches
-try {
-  execSync('pkill -f "tsx server/index.ts"', { stdio: 'ignore' });
-} catch (e) { /* ignore */ }
+const cleanupCommands = [
+  'pkill -f "tsx server/index.ts"',
+  'pkill -f "node.*5000"', 
+  'fuser -k 5000/tcp',
+  'pkill -f "tsx"'
+];
 
-try {
-  execSync('pkill -f "node.*5000"', { stdio: 'ignore' });
-} catch (e) { /* ignore */ }
+let hasError = false;
 
-try {
-  execSync('fuser -k 5000/tcp', { stdio: 'ignore' });
-} catch (e) { /* ignore */ }
+for (const command of cleanupCommands) {
+  try {
+    execSync(command, { stdio: 'ignore', timeout: 3000 });
+  } catch (error) {
+    hasError = true;
+  }
+}
 
-// Additional cleanup for any tsx processes
-try {
-  execSync('pkill -f "tsx"', { stdio: 'ignore' });
-} catch (e) { /* ignore */ }
+if (hasError) {
+  console.log('⚠️ Cleanup completed with warnings');
+} else {
+  console.log('✅ Cleanup completed successfully');
+}
 
-console.log('✅ Cleanup completed successfully');
+// Force exit to ensure script doesn't hang
+process.exit(0);
