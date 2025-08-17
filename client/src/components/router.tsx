@@ -52,13 +52,13 @@ const AppRouter = memo(() => {
             </div>
           </Route>
 
-          <Route path="/profile/:id">
-            {(params) => <ProfileDetailPage profileId={params.id} />}
-          </Route>
-
           <Route path="/account" component={AccountPage} />
           <Route path="/profile/edit" component={ProfileEditPage} />
           <Route path="/profile/preferences" component={PartnerPreferencesPage} />
+
+          <Route path="/profile/:id">
+            {(params) => <ProfileDetailPage profileId={params.id} />}
+          </Route>
 
           <Route component={NotFound} />
         </Switch>
