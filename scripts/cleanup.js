@@ -1,6 +1,4 @@
 
-#!/usr/bin/env node
-
 // Cleanup script to kill processes on port 5000
 import { execSync } from 'child_process';
 
