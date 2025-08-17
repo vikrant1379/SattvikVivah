@@ -5,27 +5,17 @@ import { execSync } from 'child_process';
 console.log('🧹 Starting cleanup...');
 
 const cleanupCommands = [
-  'pkill -f "tsx server/index.ts"',
-  'pkill -f "node.*5000"', 
-  'fuser -k 5000/tcp',
-  'pkill -f "tsx"'
+  'fuser -k 5000/tcp 2>/dev/null',
+  'pkill -f "tsx server/index.ts" 2>/dev/null',
+  'pkill -f "node.*5000" 2>/dev/null'
 ];
-
-let hasError = false;
 
 for (const command of cleanupCommands) {
   try {
-    execSync(command, { stdio: 'ignore', timeout: 3000 });
+    execSync(command, { stdio: 'ignore', timeout: 2000 });
   } catch (error) {
-    hasError = true;
+    // Ignore errors as processes might not exist
   }
 }
 
-if (hasError) {
-  console.log('⚠️ Cleanup completed with warnings');
-} else {
-  console.log('✅ Cleanup completed successfully');
-}
-
-// Force exit to ensure script doesn't hang
-process.exit(0);
+console.log('✅ Cleanup completed');
