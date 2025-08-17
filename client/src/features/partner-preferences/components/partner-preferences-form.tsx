@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AgeRangeSelector } from './age-range-selector';
 import { HeightRangeSelector } from './height-range-selector';
+import { LocationPreferenceSelector } from './location-preference-selector';
 import { PartnerPreferences } from '../types/partner-preferences.types';
 
 interface PartnerPreferencesFormProps {
@@ -44,6 +45,13 @@ export function PartnerPreferencesForm({
     });
   };
 
+  const handleLocationChange = (locations: string[]) => {
+    setFormData({
+      ...formData,
+      locationPreference: locations.join(', ')
+    });
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <Card>
@@ -54,24 +62,19 @@ export function PartnerPreferencesForm({
           <AgeRangeSelector
             minAge={formData.ageRangeMin || 18}
             maxAge={formData.ageRangeMax || 75}
-            onChange={handleAgeRangeChange}
+            onAgeRangeChange={handleAgeRangeChange}
           />
           
           <HeightRangeSelector
             minHeight={formData.heightRangeMin || "4'6\""}
             maxHeight={formData.heightRangeMax || "6'6\""}
-            onChange={handleHeightRangeChange}
+            onHeightRangeChange={handleHeightRangeChange}
           />
 
-          <div>
-            <Label htmlFor="locationPreference">Location Preference</Label>
-            <Input
-              id="locationPreference"
-              value={formData.locationPreference || ''}
-              onChange={(e) => setFormData({...formData, locationPreference: e.target.value})}
-              placeholder="Preferred location or willingness to relocate"
-            />
-          </div>
+          <LocationPreferenceSelector
+            selectedLocations={formData.locationPreference ? formData.locationPreference.split(', ').filter(Boolean) : []}
+            onLocationChange={handleLocationChange}
+          />
         </CardContent>
       </Card>
 

@@ -1,7 +1,6 @@
-
 import React from 'react';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { AGE_CONSTRAINTS, VALIDATION_MESSAGES } from '../constants/partner-preferences.constants';
 
 interface AgeRangeSelectorProps {
@@ -18,16 +17,20 @@ export const AgeRangeSelector: React.FC<AgeRangeSelectorProps> = ({
   className = ''
 }) => {
   const handleMinAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newMinAge = parseInt(e.target.value) || AGE_CONSTRAINTS.MIN;
-    if (newMinAge >= AGE_CONSTRAINTS.MIN && newMinAge <= AGE_CONSTRAINTS.MAX) {
-      onAgeRangeChange(newMinAge, Math.max(newMinAge, maxAge));
+    const newMinAge = parseInt(e.target.value);
+    if (!isNaN(newMinAge) && newMinAge >= AGE_CONSTRAINTS.MIN && newMinAge <= AGE_CONSTRAINTS.MAX) {
+      // If new min age is greater than current max age, update max age to match
+      const newMaxAge = newMinAge > maxAge ? newMinAge : maxAge;
+      onAgeRangeChange(newMinAge, newMaxAge);
     }
   };
 
   const handleMaxAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newMaxAge = parseInt(e.target.value) || AGE_CONSTRAINTS.MAX;
-    if (newMaxAge <= AGE_CONSTRAINTS.MAX && newMaxAge >= minAge) {
-      onAgeRangeChange(minAge, newMaxAge);
+    const newMaxAge = parseInt(e.target.value);
+    if (!isNaN(newMaxAge) && newMaxAge <= AGE_CONSTRAINTS.MAX && newMaxAge >= AGE_CONSTRAINTS.MIN) {
+      // If new max age is less than current min age, update min age to match
+      const newMinAge = newMaxAge < minAge ? newMaxAge : minAge;
+      onAgeRangeChange(newMinAge, newMaxAge);
     }
   };
 
