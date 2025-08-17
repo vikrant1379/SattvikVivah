@@ -22,12 +22,18 @@ export const HeightRangeSelector: React.FC<HeightRangeSelectorProps> = ({
     const minHeightIndex = heightOptions.indexOf(value);
     const currentMaxHeightIndex = heightOptions.indexOf(maxHeight);
     
+    // If new min height is greater than current max height, update max height to match
     const newMaxHeight = minHeightIndex > currentMaxHeightIndex ? value : maxHeight;
     onHeightRangeChange(value, newMaxHeight);
   };
 
   const handleMaxHeightChange = (value: string) => {
-    onHeightRangeChange(minHeight, value);
+    const maxHeightIndex = heightOptions.indexOf(value);
+    const currentMinHeightIndex = heightOptions.indexOf(minHeight);
+    
+    // If new max height is less than current min height, update min height to match
+    const newMinHeight = maxHeightIndex < currentMinHeightIndex ? value : minHeight;
+    onHeightRangeChange(newMinHeight, value);
   };
 
   const getFilteredMaxHeightOptions = () => {

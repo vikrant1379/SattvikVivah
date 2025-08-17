@@ -54,13 +54,13 @@ export function PartnerPreferencesForm({
           <AgeRangeSelector
             minAge={formData.ageRangeMin || 18}
             maxAge={formData.ageRangeMax || 75}
-            onChange={handleAgeRangeChange}
+            onAgeRangeChange={handleAgeRangeChange}
           />
           
           <HeightRangeSelector
             minHeight={formData.heightRangeMin || "4'6\""}
             maxHeight={formData.heightRangeMax || "6'6\""}
-            onChange={handleHeightRangeChange}
+            onHeightRangeChange={handleHeightRangeChange}
           />
 
           <div>
