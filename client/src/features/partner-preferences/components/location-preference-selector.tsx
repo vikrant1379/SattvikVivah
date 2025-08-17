@@ -1,11 +1,12 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { X } from 'lucide-react';
-import { countryOptions, statesByCountry, citiesByState } from '@/data/locations';
+import { Input } from '@/components/ui/input';
+import { X, Search } from 'lucide-react';
+import { citiesByState } from '@/data/locations';
 
 interface LocationPreferenceSelectorProps {
   selectedLocations: string[];
@@ -16,134 +17,111 @@ export function LocationPreferenceSelector({
   selectedLocations, 
   onLocationChange 
 }: LocationPreferenceSelectorProps) {
-  const [selectedCountry, setSelectedCountry] = useState('');
-  const [selectedState, setSelectedState] = useState('');
-  const [availableStates, setAvailableStates] = useState<string[]>([]);
-  const [availableCities, setAvailableCities] = useState<string[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCity, setSelectedCity] = useState('');
 
-  useEffect(() => {
-    if (selectedCountry) {
-      const countryCode = countryOptions.find(c => c.label === selectedCountry)?.value;
-      if (countryCode && statesByCountry[countryCode]) {
-        setAvailableStates(statesByCountry[countryCode]);
-      } else {
-        setAvailableStates([]);
-      }
-      setSelectedState('');
-      setAvailableCities([]);
-    }
-  }, [selectedCountry]);
+  // Get all Indian cities from the data
+  const allIndianCities = useMemo(() => {
+    const cities: string[] = [];
+    Object.values(citiesByState).forEach(stateCities => {
+      cities.push(...stateCities);
+    });
+    return cities.sort();
+  }, []);
 
-  useEffect(() => {
-    if (selectedState && citiesByState[selectedState]) {
-      setAvailableCities(citiesByState[selectedState]);
-    } else {
-      setAvailableCities([]);
-    }
-  }, [selectedState]);
+  // Filter cities based on search term
+  const filteredCities = useMemo(() => {
+    if (!searchTerm) return allIndianCities;
+    return allIndianCities.filter(city => 
+      city.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [allIndianCities, searchTerm]);
 
-  const addLocation = (city: string) => {
+  const addCity = (city: string) => {
     if (city && !selectedLocations.includes(city)) {
       onLocationChange([...selectedLocations, city]);
+      setSelectedCity('');
     }
   };
 
-  const removeLocation = (city: string) => {
+  const removeCity = (city: string) => {
     onLocationChange(selectedLocations.filter(loc => loc !== city));
   };
 
-  const addCurrentSelection = () => {
-    if (selectedState && !selectedLocations.includes(selectedState)) {
-      onLocationChange([...selectedLocations, selectedState]);
+  const addSearchedCity = () => {
+    if (selectedCity) {
+      addCity(selectedCity);
     }
   };
 
   return (
     <div className="space-y-4">
-      <Label>Location Preferences</Label>
+      <Label>Preferred Cities</Label>
       
-      {/* Location Selection */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div>
-          <Label htmlFor="country">Country</Label>
-          <Select value={selectedCountry} onValueChange={setSelectedCountry}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select country" />
-            </SelectTrigger>
-            <SelectContent>
-              {countryOptions.map((country) => (
-                <SelectItem key={country.value} value={country.label}>
-                  {country.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+      {/* City Search and Selection */}
+      <div className="space-y-3">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+          <Input
+            type="text"
+            placeholder="Search cities..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
         </div>
 
-        <div>
-          <Label htmlFor="state">State/Province</Label>
-          <Select 
-            value={selectedState} 
-            onValueChange={setSelectedState}
-            disabled={!selectedCountry}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select state" />
-            </SelectTrigger>
-            <SelectContent>
-              {availableStates.map((state) => (
-                <SelectItem key={state} value={state}>
-                  {state}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="flex items-end">
-          <Button 
-            type="button"
-            onClick={addCurrentSelection}
-            disabled={!selectedState}
-            className="w-full"
-          >
-            Add State/Region
-          </Button>
-        </div>
-      </div>
-
-      {/* City Selection */}
-      {availableCities.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="md:col-span-3">
-            <Label htmlFor="city">Specific Cities (Optional)</Label>
-            <Select onValueChange={addLocation}>
+            <Select value={selectedCity} onValueChange={setSelectedCity}>
               <SelectTrigger>
-                <SelectValue placeholder="Select specific cities" />
+                <SelectValue placeholder="Select a city" />
               </SelectTrigger>
-              <SelectContent>
-                {availableCities.map((city) => (
-                  <SelectItem key={city} value={city}>
-                    {city}
+              <SelectContent className="max-h-60">
+                {filteredCities.length > 0 ? (
+                  filteredCities.map((city) => (
+                    <SelectItem 
+                      key={city} 
+                      value={city}
+                      disabled={selectedLocations.includes(city)}
+                    >
+                      {city}
+                      {selectedLocations.includes(city) && " (Already selected)"}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem value="" disabled>
+                    No cities found
                   </SelectItem>
-                ))}
+                )}
               </SelectContent>
             </Select>
           </div>
+          
+          <div className="flex items-end">
+            <Button 
+              type="button"
+              onClick={addSearchedCity}
+              disabled={!selectedCity || selectedLocations.includes(selectedCity)}
+              className="w-full"
+            >
+              Add City
+            </Button>
+          </div>
         </div>
-      )}
+      </div>
 
-      {/* Selected Locations */}
+      {/* Selected Cities */}
       {selectedLocations.length > 0 && (
         <div>
-          <Label>Selected Locations ({selectedLocations.length})</Label>
+          <Label>Selected Cities ({selectedLocations.length})</Label>
           <div className="flex flex-wrap gap-2 mt-2">
-            {selectedLocations.map((location) => (
-              <Badge key={location} variant="secondary" className="flex items-center gap-1">
-                {location}
+            {selectedLocations.map((city) => (
+              <Badge key={city} variant="secondary" className="flex items-center gap-1">
+                {city}
                 <X 
                   className="h-3 w-3 cursor-pointer hover:text-red-500" 
-                  onClick={() => removeLocation(location)}
+                  onClick={() => removeCity(city)}
                 />
               </Badge>
             ))}
@@ -153,7 +131,13 @@ export function LocationPreferenceSelector({
 
       {selectedLocations.length === 0 && (
         <p className="text-sm text-gray-500">
-          Select countries, states/provinces, or specific cities where you'd like to find matches
+          Select cities where you'd like to find matches. You can search and select multiple cities.
+        </p>
+      )}
+
+      {filteredCities.length > 20 && searchTerm && (
+        <p className="text-xs text-gray-400">
+          Showing {filteredCities.length} cities. Type more to narrow results.
         </p>
       )}
     </div>
