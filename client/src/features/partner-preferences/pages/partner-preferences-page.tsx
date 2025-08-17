@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useLocation } from 'wouter';
 import { Header } from '@/components/header';
@@ -112,7 +111,7 @@ export const PartnerPreferencesPage: React.FC = () => {
   const calculateCompletionPercentage = () => {
     const totalSections = 8;
     let completedSections = 0;
-    
+
     if (preferences.ageRange[0] && preferences.ageRange[1]) completedSections++;
     if (preferences.heightRange[0] && preferences.heightRange[1]) completedSections++;
     if (preferences.education.length > 0) completedSections++;
@@ -121,7 +120,7 @@ export const PartnerPreferencesPage: React.FC = () => {
     if (preferences.maritalStatus.length > 0) completedSections++;
     if (preferences.aboutPartner.trim()) completedSections++;
     if (preferences.spiritualPractices.length > 0) completedSections++;
-    
+
     return Math.round((completedSections / totalSections) * 100);
   };
 
@@ -185,57 +184,10 @@ export const PartnerPreferencesPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
-      {/* Top Banner */}
-      <div className="bg-blue-600 text-white p-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between">
-            <div>
-              <button
-                onClick={() => setLocation('/')}
-                className="text-white hover:text-blue-200 flex items-center space-x-2 mb-2"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                <span>Set Partner Preferences</span>
-              </button>
-              <p className="text-blue-100 text-sm">
-                Define your ideal partner criteria to get better matches.
-              </p>
-              <div className="flex items-center mt-2">
-                <div className="text-sm font-medium mr-2">Completion: {calculateCompletionPercentage()}%</div>
-                <Progress value={calculateCompletionPercentage()} className="w-32 h-2" />
-              </div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center">
-              <p className="text-sm font-medium mb-2">You are missing out on the premium benefits!</p>
-              <div className="space-y-2 text-xs">
-                <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 bg-blue-200 rounded-full flex items-center justify-center text-blue-800 text-xs">👁</div>
-                  <span>Get upto 3x more profile views</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 bg-green-200 rounded-full flex items-center justify-center text-green-800 text-xs">📞</div>
-                  <span>Unlimited voice & video calls</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 bg-purple-200 rounded-full flex items-center justify-center text-purple-800 text-xs">👤</div>
-                  <span>Get access to contact details</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 bg-orange-200 rounded-full flex items-center justify-center text-orange-800 text-xs">🔍</div>
-                  <span>Perform unlimited searches</span>
-                </div>
-              </div>
-              <p className="text-xs mt-2 text-blue-200">Flat 54% OFF till 16 Aug</p>
-              <Button size="sm" className="mt-2 bg-red-500 hover:bg-red-600 text-white text-xs">
-                Upgrade now →
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <div className="max-w-6xl mx-auto px-4 py-6">
+      {/* Removed Top Banner */}
+
+      <div className="max-w-6xl mx-auto px-4">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="basic">Basic</TabsTrigger>
@@ -262,7 +214,7 @@ export const PartnerPreferencesPage: React.FC = () => {
                         />
                       </div>
                     </div>
-                    
+
                     <div>
                       <Label className="text-sm font-medium text-gray-700">Partner's Height</Label>
                       <div className="mt-1">
@@ -314,7 +266,7 @@ export const PartnerPreferencesPage: React.FC = () => {
                         <span className="text-sm text-gray-600">{preferences.ageRange[0]} years - {preferences.ageRange[1]} years</span>
                       </div>
                     </div>
-                    
+
                     <div>
                       <Label className="text-sm font-medium text-gray-700">Partner's Height</Label>
                       <div className="flex items-center mt-2">
@@ -585,7 +537,7 @@ export const PartnerPreferencesPage: React.FC = () => {
                         <span className="text-sm text-gray-600">{preferences.religion.join(', ')}</span>
                       </div>
                     </div>
-                    
+
                     <div>
                       <Label className="text-sm font-medium text-gray-700">Caste</Label>
                       <div className="flex items-center mt-2">
