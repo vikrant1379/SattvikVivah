@@ -4,6 +4,8 @@ import { execSync } from 'child_process';
 
 (async function cleanup() {
   try {
+    console.log('🧹 Starting cleanup...');
+    
     // Kill any processes using port 5000
     execSync('pkill -f "tsx server/index.ts" || true', { stdio: 'ignore' });
     execSync('pkill -f "node.*5000" || true', { stdio: 'ignore' });
@@ -16,8 +18,8 @@ import { execSync } from 'child_process';
   } catch (error) {
     // Ignore errors - cleanup is best effort
     console.log('⚠️ Cleanup completed with warnings');
+  } finally {
+    // Always exit, regardless of success or failure
+    process.exit(0);
   }
-  
-  // Explicitly exit the process
-  process.exit(0);
 })();
