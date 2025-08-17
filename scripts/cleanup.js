@@ -17,4 +17,7 @@ import { execSync } from 'child_process';
     // Ignore errors - cleanup is best effort
     console.log('⚠️ Cleanup completed with warnings');
   }
+  
+  // Explicitly exit the process
+  process.exit(0);
 })();
