@@ -230,6 +230,90 @@ export function calculateGunaMatching(
   return Math.min(totalScore, 36);
 }
 
+// Accurate astrological calculation using astronomical formulas
+export async function calculateAccurateAstrology(birthDetails: BirthDetails): Promise<{
+  rashi: string;
+  nakshatra: string;
+  horoscope: string;
+  gunaScore: number;
+  doshas: string[];
+}> {
+  const birthDate = new Date(birthDetails.date + 'T' + birthDetails.time);
+  
+  // Calculate Julian Day Number for accurate astronomical calculations
+  const julianDay = dateToJulianDay(birthDate);
+  
+  // Calculate sun position using more accurate formula
+  const sunLongitude = calculateSunLongitude(julianDay);
+  const sunSign = calculateZodiacSign(sunLongitude);
+  
+  // Calculate moon position (simplified but more accurate than random)
+  const moonLongitude = calculateMoonLongitude(julianDay, birthDetails.latitude || 0, birthDetails.longitude || 0);
+  const moonRashi = calculateRashi(moonLongitude);
+  const { name: nakshatra } = calculateNakshatra(moonLongitude);
+  
+  // Calculate doshas based on planetary positions
+  const basicChart = generateBasicHoroscope(birthDetails);
+  const doshaAnalysis = analyzeDoshas(basicChart.planets);
+  
+  return {
+    rashi: moonRashi,
+    nakshatra: nakshatra,
+    horoscope: sunSign,
+    gunaScore: Math.floor(Math.random() * 37), // Still simplified for demo
+    doshas: doshaAnalysis.mangal || doshaAnalysis.shani || doshaAnalysis.rahu || doshaAnalysis.ketu 
+      ? ['Mangal', 'Shani', 'Rahu', 'Ketu'].filter(dosha => {
+        if (dosha === 'Mangal') return doshaAnalysis.mangal;
+        if (dosha === 'Shani') return doshaAnalysis.shani;
+        if (dosha === 'Rahu') return doshaAnalysis.rahu;
+        if (dosha === 'Ketu') return doshaAnalysis.ketu;
+        return false;
+      })
+      : []
+  };
+}
+
+// Convert date to Julian Day Number for astronomical calculations
+function dateToJulianDay(date: Date): number {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const hour = date.getHours();
+  const minute = date.getMinutes();
+  
+  const a = Math.floor((14 - month) / 12);
+  const y = year + 4800 - a;
+  const m = month + 12 * a - 3;
+  
+  const jdn = day + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+  const jd = jdn + (hour - 12) / 24 + minute / 1440;
+  
+  return jd;
+}
+
+// Calculate sun's longitude more accurately
+function calculateSunLongitude(julianDay: number): number {
+  const n = julianDay - 2451545.0;
+  const L = (280.460 + 0.9856474 * n) % 360;
+  const g = ((357.528 + 0.9856003 * n) % 360) * Math.PI / 180;
+  const lambda = (L + 1.915 * Math.sin(g) + 0.020 * Math.sin(2 * g)) % 360;
+  
+  return lambda < 0 ? lambda + 360 : lambda;
+}
+
+// Calculate moon's longitude (simplified but more accurate)
+function calculateMoonLongitude(julianDay: number, latitude: number, longitude: number): number {
+  const n = julianDay - 2451545.0;
+  const L = (218.316 + 13.176396 * n) % 360;
+  const M = ((134.963 + 13.064993 * n) % 360) * Math.PI / 180;
+  const F = ((93.272 + 13.229350 * n) % 360) * Math.PI / 180;
+  
+  const moonLon = (L + 6.289 * Math.sin(M) + 1.274 * Math.sin(2 * ((L - 218.316) * Math.PI / 180) - M) + 
+                  0.658 * Math.sin(2 * ((L - 218.316) * Math.PI / 180))) % 360;
+  
+  return moonLon < 0 ? moonLon + 360 : moonLon;
+}
+
 // Basic horoscope generation (simplified)
 export function generateBasicHoroscope(birthDetails: BirthDetails): HoroscopeData {
   // This is a simplified implementation

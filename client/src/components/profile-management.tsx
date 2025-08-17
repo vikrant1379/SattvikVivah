@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Camera, Star, User, Heart, Briefcase, Users, Eye, EyeOff } from 'lucide-react';
 import { horoscopeService } from '@/services/horoscope.service';
 import { generateBasicHoroscope } from '@/utils/vedic-astrology.utils';
+import AstrologicalCalculator from '@/components/astrological-calculator';
 import type { UserProfile } from '@shared/schema';
 import {
   religionOptions,
@@ -20,7 +21,8 @@ import {
   maritalStatusOptions,
   smokingHabitsOptions,
   drinkingHabitsOptions,
-  eatingHabitsOptions
+  eatingHabitsOptions,
+  familyValuesOptions
 } from '../data/static-options';
 import { educationQualificationOptions } from '../data/education';
 import { professionOptions } from '../data/profession';
@@ -58,48 +60,104 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
     place: profile.birthPlace || ''
   });
 
-  // Profile sections with weightage
+  // Calculate individual section completion percentages
+  const calculateSectionCompletion = (sectionId: string): number => {
+    switch (sectionId) {
+      case 'basic':
+        const basicFields = [
+          profile.name,
+          profile.age,
+          profile.height,
+          profile.motherTongue,
+          profile.religion,
+          profile.caste,
+          formData.rashi,
+          formData.nakshatra,
+          formData.horoscope
+        ];
+        return Math.round((basicFields.filter(field => field).length / basicFields.length) * 100);
+      
+      case 'about':
+        const aboutFields = [
+          profile.bio,
+          profile.eatingHabits,
+          profile.drinkingHabits,
+          profile.smokingHabits
+        ];
+        return Math.round((aboutFields.filter(field => field).length / aboutFields.length) * 100);
+      
+      case 'education':
+        const educationFields = [
+          profile.education,
+          profile.profession,
+          profile.annualIncome
+        ];
+        return Math.round((educationFields.filter(field => field).length / educationFields.length) * 100);
+      
+      case 'family':
+        const familyFields = [
+          profile.familyValues?.length > 0 ? 'filled' : null
+        ];
+        return familyFields[0] ? 100 : 0;
+      
+      case 'preferences':
+        const preferenceFields = [
+          profile.spiritualGoals?.length > 0 ? 'filled' : null,
+          profile.sacredTexts?.length > 0 ? 'filled' : null,
+          profile.guruLineage
+        ];
+        return Math.round((preferenceFields.filter(field => field).length / preferenceFields.length) * 100);
+      
+      case 'photos':
+        return profile.photoUrl ? 100 : 0;
+      
+      default:
+        return 0;
+    }
+  };
+
+  // Profile sections with individual completion percentages
   const profileSections: ProfileSection[] = [
     {
       id: 'basic',
       title: 'Basic Information',
       weight: 15,
-      completed: !!(profile.name && profile.age && profile.religion && profile.caste),
+      completed: calculateSectionCompletion('basic') === 100,
       icon: <User className="w-4 h-4" />
     },
     {
       id: 'about',
       title: 'About Me',
       weight: 20,
-      completed: !!(profile.bio && profile.eatingHabits),
+      completed: calculateSectionCompletion('about') === 100,
       icon: <Heart className="w-4 h-4" />
     },
     {
       id: 'education',
       title: 'Education & Career',
       weight: 15,
-      completed: !!(profile.education && profile.profession && profile.annualIncome),
+      completed: calculateSectionCompletion('education') === 100,
       icon: <Briefcase className="w-4 h-4" />
     },
     {
       id: 'family',
       title: 'Family Details',
       weight: 15,
-      completed: !!(profile.familyValues && profile.familyValues.length > 0),
+      completed: calculateSectionCompletion('family') === 100,
       icon: <Users className="w-4 h-4" />
     },
     {
       id: 'preferences',
       title: 'Partner Preferences',
       weight: 20,
-      completed: !!(profile.spiritualGoals && profile.spiritualGoals.length > 0),
+      completed: calculateSectionCompletion('preferences') === 100,
       icon: <Star className="w-4 h-4" />
     },
     {
       id: 'photos',
       title: 'Photos',
       weight: 15,
-      completed: !!profile.photoUrl,
+      completed: calculateSectionCompletion('photos') === 100,
       icon: <Camera className="w-4 h-4" />
     }
   ];
@@ -113,37 +171,7 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
     return Math.round((completedWeight / totalWeight) * 100);
   };
 
-  // Calculate astrological details from birth information
-  const calculateAstrologicalDetails = async () => {
-    if (!birthDetails.date || !birthDetails.time || !birthDetails.place) {
-      alert('Please fill all birth details to calculate astrological information');
-      return;
-    }
-
-    try {
-      const horoscope = generateBasicHoroscope({
-        date: birthDetails.date,
-        time: birthDetails.time,
-        place: birthDetails.place
-      });
-
-      setFormData(prev => ({
-        ...prev,
-        rashi: horoscope.moonSign,
-        nakshatra: horoscope.nakshatra,
-        horoscope: horoscope.sunSign,
-        gunaScore: Math.floor(Math.random() * 37), // 0-36 range for demo
-        doshas: horoscope.doshas,
-        birthTime: birthDetails.time,
-        birthPlace: birthDetails.place
-      }));
-
-      alert('Astrological details calculated successfully!');
-    } catch (error) {
-      console.error('Error calculating astrological details:', error);
-      alert('Error calculating astrological details. Please try again.');
-    }
-  };
+  
 
   const handleSave = () => {
     onProfileUpdate(formData);
@@ -173,24 +201,30 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
                 <div className="text-sm font-medium text-gray-900 mb-2">Profile Completion Details</div>
                 <Progress value={completionPercentage} className="w-full h-2 mb-3" />
                 <div className="space-y-2 max-h-40 overflow-y-auto">
-                  {profileSections.map(section => (
-                    <div key={section.id} className="flex items-center justify-between text-xs">
-                      <div className="flex items-center gap-2">
-                        {section.icon}
-                        <span className={section.completed ? "text-green-700" : "text-gray-600"}>
-                          {section.title}
-                        </span>
+                  {profileSections.map(section => {
+                    const sectionCompletion = calculateSectionCompletion(section.id);
+                    return (
+                      <div key={section.id} className="flex items-center justify-between text-xs">
+                        <div className="flex items-center gap-2">
+                          {section.icon}
+                          <span className={sectionCompletion === 100 ? "text-green-700" : "text-gray-600"}>
+                            {section.title}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className={sectionCompletion === 100 ? "text-green-700 font-medium" : "text-gray-500"}>
+                            {sectionCompletion}%
+                          </span>
+                          <div className="w-8 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                            <div 
+                              className="h-full bg-green-500 transition-all duration-300"
+                              style={{ width: `${sectionCompletion}%` }}
+                            ></div>
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <span className="text-gray-500">{section.weight}%</span>
-                        {section.completed ? (
-                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        ) : (
-                          <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
                 <div className="text-xs text-gray-500 mt-2 pt-2 border-t">
                   Complete missing sections to improve match visibility
@@ -216,7 +250,7 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
           {/* Basic Information Tab */}
           <TabsContent value="basic" className="space-y-4">
             <CardHeader>
-              <CardTitle>Basic Information (15% weightage)</CardTitle>
+              <CardTitle>Basic Information</CardTitle>
               <p className="text-sm text-gray-600">Auto-filled from signup, add missing details</p>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -268,77 +302,54 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
               </div>
 
               {/* Astrological Calculation Section */}
-              <Card className="bg-blue-50 border-blue-200">
-                <CardHeader>
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <Star className="w-5 h-5 text-yellow-500" />
-                    Calculate Astrological Details
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <Label htmlFor="birth-date">Date of Birth *</Label>
-                      <Input
-                        id="birth-date"
-                        type="date"
-                        value={birthDetails.date}
-                        onChange={(e) => setBirthDetails(prev => ({ ...prev, date: e.target.value }))}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="birth-time">Time of Birth *</Label>
-                      <Input
-                        id="birth-time"
-                        type="time"
-                        value={birthDetails.time}
-                        onChange={(e) => setBirthDetails(prev => ({ ...prev, time: e.target.value }))}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="birth-place">Place of Birth *</Label>
-                      <Input
-                        id="birth-place"
-                        value={birthDetails.place}
-                        onChange={(e) => setBirthDetails(prev => ({ ...prev, place: e.target.value }))}
-                        placeholder="City, State, Country"
-                      />
-                    </div>
-                  </div>
-                  <Button onClick={calculateAstrologicalDetails} className="w-full">
-                    Calculate Zodiac Sign, Nakshatra & Horoscope
-                  </Button>
+              <AstrologicalCalculator
+                onCalculationComplete={(astroData) => {
+                  setFormData(prev => ({
+                    ...prev,
+                    rashi: astroData.rashi,
+                    nakshatra: astroData.nakshatra,
+                    horoscope: astroData.horoscope,
+                    gunaScore: astroData.gunaScore,
+                    doshas: astroData.doshas,
+                    birthTime: birthDetails.time,
+                    birthPlace: birthDetails.place
+                  }));
+                }}
+                initialData={{
+                  date: birthDetails.date,
+                  time: birthDetails.time,
+                  place: birthDetails.place
+                }}
+              />
 
-                  {/* Display calculated astrological details */}
-                  {formData.rashi && (
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-white rounded-lg">
-                      <div>
-                        <Label className="text-xs text-gray-500">Rashi (Moon Sign)</Label>
-                        <p className="font-medium">{formData.rashi}</p>
-                      </div>
-                      <div>
-                        <Label className="text-xs text-gray-500">Nakshatra</Label>
-                        <p className="font-medium">{formData.nakshatra}</p>
-                      </div>
-                      <div>
-                        <Label className="text-xs text-gray-500">Zodiac Sign</Label>
-                        <p className="font-medium">{formData.horoscope}</p>
-                      </div>
-                      <div>
-                        <Label className="text-xs text-gray-500">Guna Score</Label>
-                        <p className="font-medium">{formData.gunaScore}/36</p>
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+              {/* Display calculated astrological details */}
+              {formData.rashi && (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-white rounded-lg border">
+                  <div>
+                    <Label className="text-xs text-gray-500">Rashi (Moon Sign)</Label>
+                    <p className="font-medium">{formData.rashi}</p>
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-500">Nakshatra</Label>
+                    <p className="font-medium">{formData.nakshatra}</p>
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-500">Zodiac Sign</Label>
+                    <p className="font-medium">{formData.horoscope}</p>
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-500">Guna Score</Label>
+                    <p className="font-medium">{formData.gunaScore}/36</p>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </TabsContent>
 
           {/* About Me Tab */}
           <TabsContent value="about" className="space-y-4">
             <CardHeader>
-              <CardTitle>About Me (20% weightage)</CardTitle>
+              <CardTitle>About Me</CardTitle>
               <p className="text-sm text-gray-600">Share your spiritual journey and lifestyle</p>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -414,7 +425,7 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
           {/* Education & Career Tab */}
           <TabsContent value="education" className="space-y-4">
             <CardHeader>
-              <CardTitle>Education & Career (15% weightage)</CardTitle>
+              <CardTitle>Education & Career</CardTitle>
               <p className="text-sm text-gray-600">Professional background and achievements</p>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -480,14 +491,14 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
           {/* Family Details Tab */}
           <TabsContent value="family" className="space-y-4">
             <CardHeader>
-              <CardTitle>Family Details (15% weightage)</CardTitle>
+              <CardTitle>Family Details</CardTitle>
               <p className="text-sm text-gray-600">Family background and values</p>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
                 <Label>Family Values *</Label>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
-                  {['Traditional', 'Modern', 'Liberal', 'Orthodox', 'Progressive', 'Spiritual'].map(value => (
+                  {familyValuesOptions.map(value => (
                     <label key={value} className="flex items-center space-x-2">
                       <Checkbox
                         checked={formData.familyValues?.includes(value) || false}
@@ -517,7 +528,7 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
           {/* Partner Preferences Tab */}
           <TabsContent value="preferences" className="space-y-4">
             <CardHeader>
-              <CardTitle>Partner Preferences (20% weightage)</CardTitle>
+              <CardTitle>Partner Preferences</CardTitle>
               <p className="text-sm text-gray-600">What you're looking for in a life partner</p>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -600,7 +611,7 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
           {/* Photos Tab */}
           <TabsContent value="photos" className="space-y-4">
             <CardHeader>
-              <CardTitle>Photos (15% weightage)</CardTitle>
+              <CardTitle>Photos</CardTitle>
               <p className="text-sm text-gray-600">Upload 2-5 profile photos</p>
             </CardHeader>
             <CardContent className="space-y-4">

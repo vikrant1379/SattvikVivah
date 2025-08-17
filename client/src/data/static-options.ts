@@ -195,6 +195,15 @@ export const heightOptions = [
   "6'7\" (201 cm)"
 ];
 
+export const familyValuesOptions = [
+  "Traditional",
+  "Modern", 
+  "Liberal",
+  "Orthodox",
+  "Progressive",
+  "Spiritual"
+];
+
 // Income options for min/max selection
 export const annualIncomeMinOptions = [
   "Below ₹2 Lakh",
