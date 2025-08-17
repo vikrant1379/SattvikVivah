@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,10 +9,29 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Camera, Star, User, Heart, BookOpen, Briefcase, Users, Eye, EyeOff } from 'lucide-react';
+import { Camera, Star, User, Heart, Briefcase, Users, Eye, EyeOff } from 'lucide-react';
 import { horoscopeService } from '@/services/horoscope.service';
 import { generateBasicHoroscope } from '@/utils/vedic-astrology.utils';
 import type { UserProfile } from '@shared/schema';
+import {
+  religionOptions,
+  ethnicityOptions,
+  annualIncomeOptions,
+  maritalStatusOptions,
+  smokingHabitsOptions,
+  drinkingHabitsOptions,
+  eatingHabitsOptions
+} from '../data/static-options';
+import { educationOptions } from '../data/education';
+import { professionOptions } from '../data/profession';
+import { motherTongueOptions } from '../data/mother-tongue';
+import { casteOptions } from '../data/caste';
+import {
+  spiritualPractices,
+  sacredTexts,
+  guruLineages,
+  dietaryLifestyles
+} from '../data/spiritual-practices';
 
 interface ProfileSection {
   id: string;
@@ -215,11 +233,21 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
                 </div>
                 <div>
                   <Label htmlFor="mother-tongue">Mother Tongue</Label>
-                  <Input
-                    id="mother-tongue"
+                  <Select
                     value={formData.motherTongue || ''}
-                    onChange={(e) => setFormData(prev => ({ ...prev, motherTongue: e.target.value }))}
-                  />
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, motherTongue: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Language" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {motherTongueOptions.map(lang => (
+                        <SelectItem key={lang} value={lang}>
+                          {lang}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 
@@ -264,7 +292,7 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
                   <Button onClick={calculateAstrologicalDetails} className="w-full">
                     Calculate Zodiac Sign, Nakshatra & Horoscope
                   </Button>
-                  
+
                   {/* Display calculated astrological details */}
                   {formData.rashi && (
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-white rounded-lg">
@@ -316,14 +344,14 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
                     onValueChange={(value) => setFormData(prev => ({ ...prev, eatingHabits: value }))}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select" />
+                      <SelectValue placeholder="Select Diet" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Vegetarian">Vegetarian</SelectItem>
-                      <SelectItem value="Vegan">Vegan</SelectItem>
-                      <SelectItem value="Eggetarian">Eggetarian</SelectItem>
-                      <SelectItem value="Pescetarian">Pescetarian</SelectItem>
-                      <SelectItem value="Non Vegetarian">Non Vegetarian</SelectItem>
+                      {eatingHabitsOptions.map(diet => (
+                        <SelectItem key={diet} value={diet}>
+                          {diet}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -334,12 +362,14 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
                     onValueChange={(value) => setFormData(prev => ({ ...prev, drinkingHabits: value }))}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select" />
+                      <SelectValue placeholder="Select Habit" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="No">No</SelectItem>
-                      <SelectItem value="Socially">Socially</SelectItem>
-                      <SelectItem value="Regularly">Regularly</SelectItem>
+                      {drinkingHabitsOptions.map(habit => (
+                        <SelectItem key={habit} value={habit}>
+                          {habit}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -350,12 +380,14 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
                     onValueChange={(value) => setFormData(prev => ({ ...prev, smokingHabits: value }))}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select" />
+                      <SelectValue placeholder="Select Habit" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="No">No</SelectItem>
-                      <SelectItem value="Socially">Socially</SelectItem>
-                      <SelectItem value="Regularly">Regularly</SelectItem>
+                      {smokingHabitsOptions.map(habit => (
+                        <SelectItem key={habit} value={habit}>
+                          {habit}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -373,39 +405,55 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="education">Education *</Label>
-                  <Input
-                    id="education"
+                  <Select
                     value={formData.education || ''}
-                    onChange={(e) => setFormData(prev => ({ ...prev, education: e.target.value }))}
-                    placeholder="e.g., MBA, B.Tech, etc."
-                  />
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, education: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Education" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {educationOptions.map(edu => (
+                        <SelectItem key={edu} value={edu}>
+                          {edu}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
                   <Label htmlFor="profession">Profession *</Label>
-                  <Input
-                    id="profession"
+                  <Select
                     value={formData.profession || ''}
-                    onChange={(e) => setFormData(prev => ({ ...prev, profession: e.target.value }))}
-                    placeholder="e.g., Software Engineer, Doctor, etc."
-                  />
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, profession: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Profession" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {professionOptions.map(prof => (
+                        <SelectItem key={prof} value={prof}>
+                          {prof}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
-                  <Label htmlFor="annual-income">Annual Income *</Label>
+                  <Label htmlFor="annualIncome">Annual Income</Label>
                   <Select
                     value={formData.annualIncome || ''}
                     onValueChange={(value) => setFormData(prev => ({ ...prev, annualIncome: value }))}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select range" />
+                      <SelectValue placeholder="Select Income Range" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Not Disclosed">Not Disclosed</SelectItem>
-                      <SelectItem value="Up to ₹2 Lakh">Up to ₹2 Lakh</SelectItem>
-                      <SelectItem value="₹2-5 Lakh">₹2-5 Lakh</SelectItem>
-                      <SelectItem value="₹5-10 Lakh">₹5-10 Lakh</SelectItem>
-                      <SelectItem value="₹10-20 Lakh">₹10-20 Lakh</SelectItem>
-                      <SelectItem value="₹20-50 Lakh">₹20-50 Lakh</SelectItem>
-                      <SelectItem value="₹50 Lakh+">₹50 Lakh+</SelectItem>
+                      {annualIncomeOptions.map(income => (
+                        <SelectItem key={income} value={income}>
+                          {income}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -460,7 +508,7 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
               <div>
                 <Label>Spiritual Goals *</Label>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
-                  {['Dharmic Living', 'Meditation Practice', 'Pilgrimage', 'Service', 'Study', 'Family Life'].map(goal => (
+                  {spiritualPractices.map(goal => (
                     <label key={goal} className="flex items-center space-x-2">
                       <Checkbox
                         checked={formData.spiritualGoals?.includes(goal) || false}
@@ -483,6 +531,52 @@ export const ProfileManagement: React.FC<ProfileManagementProps> = ({
                     </label>
                   ))}
                 </div>
+              </div>
+              <div>
+                <Label>Sacred Texts Read</Label>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
+                  {sacredTexts.map(text => (
+                    <label key={text} className="flex items-center space-x-2">
+                      <Checkbox
+                        checked={formData.sacredTexts?.includes(text) || false}
+                        onCheckedChange={(checked) => {
+                          const currentTexts = formData.sacredTexts || [];
+                          if (checked) {
+                            setFormData(prev => ({
+                              ...prev,
+                              sacredTexts: [...currentTexts, text]
+                            }));
+                          } else {
+                            setFormData(prev => ({
+                              ...prev,
+                              sacredTexts: currentTexts.filter(t => t !== text)
+                            }));
+                          }
+                        }}
+                      />
+                      <span className="text-sm">{text}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="guruLineage">Guru/Spiritual Lineage</Label>
+                <Select
+                  value={formData.guruLineage || ''}
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, guruLineage: value }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Lineage" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {guruLineages.map(lineage => (
+                      <SelectItem key={lineage} value={lineage}>
+                        {lineage}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </CardContent>
           </TabsContent>
