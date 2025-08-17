@@ -88,7 +88,11 @@ const SpiritualFilterSidebar = memo(() => {
     hasChildren: filters.hasChildren,
     horoscope: filters.horoscope,
     mangalik: filters.mangalik,
-    residentialStatus: filters.residentialStatus
+    residentialStatus: filters.residentialStatus,
+    rashi: filters.rashi,
+    nakshatra: filters.nakshatra,
+    gunaScoreMin: filters.gunaScoreMin,
+    gunaScoreMax: filters.gunaScoreMax
   });
 
   // Collapsible states - start with some sections open
@@ -109,7 +113,8 @@ const SpiritualFilterSidebar = memo(() => {
     lifestyle: false,
     religion: false,
     ethnicity: false,
-    annualIncome: false
+    annualIncome: false,
+    horoscope: false
   });
 
   // Saved filters functionality
@@ -222,7 +227,8 @@ const SpiritualFilterSidebar = memo(() => {
       lifestyle: false,
       religion: false,
       ethnicity: false,
-      annualIncome: false
+      annualIncome: false,
+      horoscope: false
     });
   };
 
@@ -732,7 +738,11 @@ const SpiritualFilterSidebar = memo(() => {
       hasChildren: undefined,
       horoscope: undefined,
       mangalik: undefined,
-      residentialStatus: undefined
+      residentialStatus: undefined,
+      rashi: undefined,
+      nakshatra: undefined,
+      gunaScoreMin: undefined,
+      gunaScoreMax: undefined
     };
 
     setLocalFilters(clearedFilters);
@@ -2310,7 +2320,52 @@ const SpiritualFilterSidebar = memo(() => {
                 </div>
 
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Horoscope</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Residential Status</Label>
+                  <Select
+                    value={localFilters.residentialStatus || ""}
+                    onValueChange={(value) =>
+                      setLocalFilters(prev => ({
+                        ...prev,
+                        residentialStatus: value || undefined
+                      }))
+                    }
+                  >
+                    <SelectTrigger className="h-9 text-sm">
+                      <SelectValue placeholder="Select Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {residentialStatusOptions.map((status: string) => (
+                        <SelectItem key={status} value={status}>
+                          {status}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Horoscope & Nakshatra Section */}
+          <div className="border-b border-gray-200 pb-4">
+            <div 
+              className="flex items-center justify-between cursor-pointer py-2"
+              onClick={() => toggleSection('horoscope')}
+            >
+              <h3 className="font-medium text-gray-900 text-sm uppercase tracking-wide flex items-center gap-2">
+                <span>🌟</span>
+                HOROSCOPE & NAKSHATRA
+              </h3>
+              {openSections.horoscope ? 
+                <ChevronDown className="w-4 h-4 text-gray-500" /> : 
+                <ChevronRight className="w-4 h-4 text-gray-500" />
+              }
+            </div>
+
+            {openSections.horoscope && (
+              <div className="mt-3 space-y-4">
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Zodiac Sign</Label>
                   <Select
                     value={localFilters.horoscope || ""}
                     onValueChange={(value) =>
@@ -2334,7 +2389,60 @@ const SpiritualFilterSidebar = memo(() => {
                 </div>
 
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Mangalik</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Rashi (Moon Sign)</Label>
+                  <Select
+                    value={localFilters.rashi || ""}
+                    onValueChange={(value) =>
+                      setLocalFilters(prev => ({
+                        ...prev,
+                        rashi: value || undefined
+                      }))
+                    }
+                  >
+                    <SelectTrigger className="h-9 text-sm">
+                      <SelectValue placeholder="Select Rashi" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {['Mesha', 'Vrishabha', 'Mithuna', 'Karka', 'Simha', 'Kanya',
+                        'Tula', 'Vrishchika', 'Dhanu', 'Makara', 'Kumbha', 'Meena'].map((rashi) => (
+                        <SelectItem key={rashi} value={rashi}>
+                          {rashi}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Nakshatra</Label>
+                  <Select
+                    value={localFilters.nakshatra || ""}
+                    onValueChange={(value) =>
+                      setLocalFilters(prev => ({
+                        ...prev,
+                        nakshatra: value || undefined
+                      }))
+                    }
+                  >
+                    <SelectTrigger className="h-9 text-sm">
+                      <SelectValue placeholder="Select Nakshatra" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {['Ashwini', 'Bharani', 'Krittika', 'Rohini', 'Mrigashirsha', 'Ardra',
+                        'Punarvasu', 'Pushya', 'Ashlesha', 'Magha', 'Purva Phalguni', 'Uttara Phalguni',
+                        'Hasta', 'Chitra', 'Swati', 'Vishakha', 'Anuradha', 'Jyeshtha',
+                        'Mula', 'Purva Ashadha', 'Uttara Ashadha', 'Shravana', 'Dhanishta', 'Shatabhisha',
+                        'Purva Bhadrapada', 'Uttara Bhadrapada', 'Revati'].map((nakshatra) => (
+                        <SelectItem key={nakshatra} value={nakshatra}>
+                          {nakshatra}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Mangalik Status</Label>
                   <Select
                     value={localFilters.mangalik || ""}
                     onValueChange={(value) =>
@@ -2358,27 +2466,49 @@ const SpiritualFilterSidebar = memo(() => {
                 </div>
 
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Residential Status</Label>
-                  <Select
-                    value={localFilters.residentialStatus || ""}
-                    onValueChange={(value) =>
-                      setLocalFilters(prev => ({
-                        ...prev,
-                        residentialStatus: value || undefined
-                      }))
-                    }
-                  >
-                    <SelectTrigger className="h-9 text-sm">
-                      <SelectValue placeholder="Select Status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {residentialStatusOptions.map((status: string) => (
-                        <SelectItem key={status} value={status}>
-                          {status}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Guna Score Range</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Select
+                      value={localFilters.gunaScoreMin?.toString() || ""}
+                      onValueChange={(value) =>
+                        setLocalFilters(prev => ({
+                          ...prev,
+                          gunaScoreMin: value ? parseInt(value) : undefined
+                        }))
+                      }
+                    >
+                      <SelectTrigger className="h-9 text-sm">
+                        <SelectValue placeholder="Min" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Array.from({ length: 36 }, (_, i) => i + 1).map((score) => (
+                          <SelectItem key={score} value={score.toString()}>
+                            {score}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Select
+                      value={localFilters.gunaScoreMax?.toString() || ""}
+                      onValueChange={(value) =>
+                        setLocalFilters(prev => ({
+                          ...prev,
+                          gunaScoreMax: value ? parseInt(value) : undefined
+                        }))
+                      }
+                    >
+                      <SelectTrigger className="h-9 text-sm">
+                        <SelectValue placeholder="Max" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Array.from({ length: 36 }, (_, i) => i + 1).map((score) => (
+                          <SelectItem key={score} value={score.toString()}>
+                            {score}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </div>
             )}
