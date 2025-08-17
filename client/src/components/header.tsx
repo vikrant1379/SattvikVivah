@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import LoginOptions from "./login-options";
 import SignupOptions from "./signup-options";
 import { useAuth } from "@/hooks/use-auth";
+import { UserProfileMenu } from "./user-profile-menu";
 
 const Header = memo(() => {
   const [location] = useLocation();
@@ -35,6 +36,8 @@ const Header = memo(() => {
   const membershipBadgeColor = membershipType === "Guru Guidance" ? "bg-gradient-to-r from-yellow-500 to-yellow-600" : 
                               membershipType === "Sadhaka" ? "bg-gradient-to-r from-purple-500 to-purple-600" : 
                               "bg-gradient-to-r from-green-500 to-green-600";
+
+  const [, setLocation] = useLocation();
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
@@ -84,111 +87,7 @@ const Header = memo(() => {
           <div className="flex items-center space-x-4">
             {isAuthenticated() && user ? ( // Changed to function call
               <div className="flex items-center space-x-3">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="p-0 h-auto hover:bg-gray-50">
-                      <div className="flex items-center space-x-2 px-3 py-2 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-saffron/20 to-temple-gold/20 flex items-center justify-center">
-                          <User className="w-4 h-4 text-saffron" />
-                        </div>
-                        <div className="hidden md:flex flex-col items-start">
-                          <span className="text-sm font-medium text-gray-900">{user.firstName}</span>
-                          {membershipType && (
-                            <Badge className={`text-xs px-2 py-0 h-4 text-white ${membershipBadgeColor}`}>
-                              {membershipType}
-                            </Badge>
-                          )}
-                        </div>
-                        <ChevronDown className="w-4 h-4 text-gray-400" />
-                      </div>
-                    </Button>
-                  </DropdownMenuTrigger>
-
-                  <DropdownMenuContent className="w-64 p-0" align="end">
-                    {/* User Info Header */}
-                    <div className="p-4 bg-gradient-to-r from-saffron/5 to-temple-gold/5 border-b">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-saffron/20 to-temple-gold/20 flex items-center justify-center">
-                          <User className="w-6 h-6 text-saffron" />
-                        </div>
-                        <div className="flex-1">
-                          <p className="font-semibold text-gray-900">{user.firstName} {user.lastName}</p>
-                          <p className="text-xs text-gray-500">ID - SV{user.id?.slice(-6)?.toUpperCase()}</p>
-                        </div>
-                        {membershipType && (
-                          <Badge className={`text-xs px-2 py-1 text-white ${membershipBadgeColor}`}>
-                            {membershipType}
-                          </Badge>
-                        )}
-                      </div>
-
-                      {/* Upgrade Membership Button */}
-                      <Button 
-                        className="w-full mt-3 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-medium"
-                        size="sm"
-                      >
-                        <Gift className="w-4 h-4 mr-2" />
-                        Upgrade Membership
-                      </Button>
-                      <p className="text-xs text-center text-gray-500 mt-1">Flat 54% OFF till 13 Aug</p>
-                    </div>
-
-                    {/* Menu Items */}
-                    <div className="p-1">
-                      <DropdownMenuItem className="flex items-center space-x-3 px-3 py-2 cursor-pointer">
-                        <Edit className="w-4 h-4 text-gray-500" />
-                        <span>Edit Profile</span>
-                      </DropdownMenuItem>
-
-                      <DropdownMenuItem className="flex items-center space-x-3 px-3 py-2 cursor-pointer">
-                        <Heart className="w-4 h-4 text-gray-500" />
-                        <span>Partner Preferences</span>
-                      </DropdownMenuItem>
-
-                      <DropdownMenuItem className="flex items-center space-x-3 px-3 py-2 cursor-pointer">
-                        <Star className="w-4 h-4 text-gray-500" />
-                        <span>Astrology Services</span>
-                      </DropdownMenuItem>
-
-                      <DropdownMenuItem className="flex items-center space-x-3 px-3 py-2 cursor-pointer">
-                        <Phone className="w-4 h-4 text-gray-500" />
-                        <span>Phonebook</span>
-                      </DropdownMenuItem>
-
-                      <DropdownMenuSeparator />
-
-                      <DropdownMenuItem className="flex items-center space-x-3 px-3 py-2 cursor-pointer">
-                        <Settings className="w-4 h-4 text-gray-500" />
-                        <span>Account & Settings</span>
-                      </DropdownMenuItem>
-
-                      <DropdownMenuItem className="flex items-center space-x-3 px-3 py-2 cursor-pointer">
-                        <Shield className="w-4 h-4 text-gray-500" />
-                        <span>Safety Centre</span>
-                      </DropdownMenuItem>
-
-                      <DropdownMenuItem className="flex items-center space-x-3 px-3 py-2 cursor-pointer">
-                        <HelpCircle className="w-4 h-4 text-gray-500" />
-                        <span>Help & Support</span>
-                      </DropdownMenuItem>
-
-                      <DropdownMenuItem className="flex items-center space-x-3 px-3 py-2 cursor-pointer">
-                        <Users className="w-4 h-4 text-gray-500" />
-                        <span>Success Stories</span>
-                      </DropdownMenuItem>
-
-                      <DropdownMenuSeparator />
-
-                      <DropdownMenuItem 
-                        className="flex items-center space-x-3 px-3 py-2 cursor-pointer text-red-600 focus:text-red-600"
-                        onClick={handleLogout}
-                      >
-                        <LogOut className="w-4 h-4" />
-                        <span>Sign Out</span>
-                      </DropdownMenuItem>
-                    </div>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <UserProfileMenu />
               </div>
             ) : (
               <div className="flex items-center space-x-3">
@@ -237,4 +136,5 @@ const Header = memo(() => {
 
 Header.displayName = "Header";
 
+export { Header };
 export default Header;

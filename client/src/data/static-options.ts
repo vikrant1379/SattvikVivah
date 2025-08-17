@@ -1,4 +1,3 @@
-
 // Centralized static data - single source of truth
 export const religionOptions = [
   "Hinduism",
@@ -195,6 +194,15 @@ export const heightOptions = [
   "6'7\" (201 cm)"
 ];
 
+export const familyValuesOptions = [
+  "Traditional",
+  "Modern", 
+  "Liberal",
+  "Orthodox",
+  "Progressive",
+  "Spiritual"
+];
+
 // Income options for min/max selection
 export const annualIncomeMinOptions = [
   "Below ₹2 Lakh",
@@ -226,4 +234,31 @@ export const annualIncomeMaxOptions = [
   "₹50 Lakh",
   "₹1 Crore",
   "Above ₹1 Crore",
+];
+
+export const spiritualPracticesOptions = [
+  "Traditional",
+  "Modern", 
+  "Liberal",
+  "Orthodox",
+  "Progressive",
+  "Spiritual"
+];
+
+export const ayurvedicConstitutions = [
+  "Vata",
+  "Pitta", 
+  "Kapha",
+  "Vata-Pitta",
+  "Pitta-Kapha",
+  "Vata-Kapha",
+  "Tridoshic"
+];
+
+export const familyTypes = [
+  "Nuclear Family",
+  "Joint Family", 
+  "Extended Family",
+  "Single Parent Family",
+  "Blended Family"
 ];

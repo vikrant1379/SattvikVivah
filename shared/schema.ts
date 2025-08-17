@@ -92,6 +92,7 @@ export const spiritualProfiles = pgTable("spiritual_profiles", {
   photoUrl: text("photo_url"),
   verified: boolean("verified").default(false),
   active: boolean("active").default(true),
+  profileCompletionPercentage: integer("profile_completion_percentage").default(15),
 
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -175,6 +176,14 @@ export const profileFilterSchema = z.object({
   // mangalik: z.string().optional(), // Replaced by manglikStatus
   residentialStatus: z.string().optional(),
 
+  // Basic Preferences
+  ageRangeMin: z.number().optional(),
+  ageRangeMax: z.number().optional(),
+  heightRange: z.string().optional(),
+  heightRangeMin: z.string().optional(),
+  heightRangeMax: z.string().optional(),
+  locationPreference: z.string().optional(),
+
   // Astrological compatibility filters
   birthTime: z.string().optional(),
   birthPlace: z.string().optional(),
@@ -215,6 +224,35 @@ export const profileFilterSchema = z.object({
   withPhoto: z.boolean().optional(),
   recentlyJoined: z.boolean().optional(),
   nearby: z.boolean().optional(),
+
+  // About Me section
+  selfDescription: z.string().optional(),
+  spiritualJourney: z.string().optional(),
+  dailyRoutine: z.string().optional(),
+  profileImage: z.string().optional(),
+
+  // Family Details section
+  familyBackground: z.string().optional(),
+  familyOccupation: z.string().optional(),
+  familyLifestyle: z.string().optional(),
+
+  // Partner Preferences section
+  idealPartner: z.string().optional(),
+  spiritualAlignment: z.string().optional(),
+  spiritualAlignmentDetails: z.string().optional(),
+  relocationPreference: z.string().optional(),
+  careerChoice: z.string().optional(),
+  careerChoiceDetails: z.string().optional(),
+  horoscopePreference: z.string().optional(),
+  horoscopePreferenceDetails: z.string().optional(),
+  parentingVision: z.string().optional(),
+  supportExpectations: z.string().optional(),
+
+  // Additional Spiritual Details section
+  spiritualPath: z.string().optional(),
+  gurusInspirations: z.string().optional(),
+  coreValues: z.string().optional(),
+  spiritualInterests: z.string().optional(),
 });
 
 // Types

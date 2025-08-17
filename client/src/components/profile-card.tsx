@@ -1,4 +1,4 @@
-import { memo } from "react";
+import React, { memo, useState } from "react";
 import { useLocation } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,13 +18,26 @@ import {
 import { GiBigDiamondRing } from "react-icons/gi";
 import { formatAnnualIncome } from "../data/annual-income";
 import type { UserProfile } from "@shared/schema";
+import { HoroscopeDetailModal } from './horoscope-detail-modal';
 
 interface ProfileCardProps {
   profile: UserProfile;
-  onProfileClick?: (profile: UserProfile) => void;
+  onViewProfile?: (profileId: string) => void;
+  onInterest?: (profileId: string) => void;
+  showCompatibility?: boolean;
+  userProfile?: UserProfile;
+  className?: string;
 }
 
-const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
+export const ProfileCard = memo<ProfileCardProps>(({
+  profile,
+  onViewProfile,
+  onInterest,
+  showCompatibility = false,
+  userProfile,
+  className = ""
+}) => {
+  const [showHoroscopeModal, setShowHoroscopeModal] = useState(false);
   const [, setLocation] = useLocation();
 
   // Calculate spiritual level indicator
@@ -157,7 +170,7 @@ const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
                 </div>
               </div>
             )}
-            
+
           </div>
 
 
@@ -382,6 +395,10 @@ const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
                     'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                   gap: "6px",
                 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onInterest?.(profile.id);
+                }}
               >
                 <Heart style={{ width: "18px", height: "18px" }} />
                 <span>Interest</span>
@@ -399,6 +416,10 @@ const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
                   fontFamily:
                     'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                   gap: "6px",
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onInterest?.(profile.id); // Assuming this is also for interest, adjust if needed
                 }}
               >
                 <Heart
@@ -421,6 +442,10 @@ const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
                     'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                   gap: "6px",
                 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // Add Shortlist logic here
+                }}
               >
                 <Star style={{ width: "18px", height: "18px" }} />
                 <span>Shortlist</span>
@@ -439,14 +464,37 @@ const ProfileCard = memo(({ profile, onProfileClick }: ProfileCardProps) => {
                     'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                   gap: "6px",
                 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // Add Chat logic here
+                }}
               >
                 <MessageCircle style={{ width: "18px", height: "18px" }} />
                 <span>Chat</span>
+              </Button>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowHoroscopeModal(true);
+                }}
+                className="flex items-center gap-1 px-3"
+                title="View Horoscope"
+              >
+                <Star className="w-3 h-3" />
+                <span className="hidden sm:inline">Kundli</span>
               </Button>
             </div>
           </div>
         </div>
       </CardContent>
+      <HoroscopeDetailModal
+        profile={profile}
+        isOpen={showHoroscopeModal}
+        onClose={() => setShowHoroscopeModal(false)}
+      />
     </Card>
   );
 });

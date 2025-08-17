@@ -1,4 +1,3 @@
-
 import { memo, useCallback, useMemo, useState } from "react";
 import { useLocation } from "wouter";
 import { useSpiritualContext } from "@/contexts/spiritual-context";
@@ -41,6 +40,7 @@ import {
 import { GiBigDiamondRing } from "react-icons/gi";
 import { formatAnnualIncome } from "../data/annual-income";
 import type { UserProfile } from "@shared/schema";
+import { Header } from "./header";
 
 interface ProfileDetailPageProps {
   profileId: string;
@@ -124,24 +124,7 @@ const ProfileDetailPage = memo(({ profileId }: ProfileDetailPageProps) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-orange-100">
-        <div className="max-w-6xl mx-auto px-4 py-2">
-          <div className="flex items-center justify-between">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleBackToProfiles}
-              className="text-gray-600 hover:text-gray-900 text-sm font-medium"
-            >
-              <ChevronLeft className="w-4 h-4 mr-1" />
-              Back to Profiles
-            </Button>
-            <div className="text-xs text-gray-500 font-medium">
-              ID: {profile.id.toUpperCase()}
-            </div>
-          </div>
-        </div>
-      </div>
+      <Header />
 
       {/* Main Content */}
       <div className="max-w-5xl mx-auto px-4 py-6">

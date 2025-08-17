@@ -1,8 +1,9 @@
-modules = ["nodejs-20", "web"]
+modules = [ "web", "nodejs-18"]
 run = "npm run dev"
 
 [nix]
 channel = "stable-25_05"
+packages = ["psmisc"]
 
 [deployment]
 run = ["sh", "-c", "npm run dev"]

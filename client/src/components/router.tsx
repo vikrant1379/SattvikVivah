@@ -1,10 +1,12 @@
-
 import { Route, Switch, useLocation } from "wouter";
 import { Suspense, lazy, useEffect, memo, useMemo, useRef } from "react";
 import Home from "@/pages/home";
 import NotFound from "@/pages/not-found";
 import ProfileDetailPage from "@/components/profile-detail-page";
 import ProfileBrowser from "@/components/profile-browser";
+import { AccountPage } from "@/pages/account";
+import { ProfileEditPage } from "@/pages/profile-edit";
+import { PartnerPreferencesPage } from "@/features/partner-preferences";
 
 // Lazy load heavy components
 const ProfileDetailModal = lazy(() => import("@/components/profile-detail-modal"));
@@ -43,17 +45,21 @@ const AppRouter = memo(() => {
           <Route path="/" exact>
             {homeInstance}
           </Route>
-          
+
           <Route path="/profiles" exact>
             <div className="min-h-screen flex flex-col">
               <ProfileBrowser />
             </div>
           </Route>
-          
+
+          <Route path="/account" component={AccountPage} />
+          <Route path="/profile/edit" component={ProfileEditPage} />
+          <Route path="/profile/preferences" component={PartnerPreferencesPage} />
+
           <Route path="/profile/:id">
             {(params) => <ProfileDetailPage profileId={params.id} />}
           </Route>
-          
+
           <Route component={NotFound} />
         </Switch>
       </div>
