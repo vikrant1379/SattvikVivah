@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 // Cleanup script to kill processes on port 5000
-const { execSync } = require('child_process');
+import { execSync } from 'child_process';
 
 try {
   // Kill any processes using port 5000
