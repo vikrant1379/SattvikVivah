@@ -18,4 +18,4 @@ for (const command of cleanupCommands) {
   }
 }
 
-console.log('✅ Cleanup completed');
+console.log('✅ Cleanup complete');
