@@ -22,12 +22,10 @@ This document summarizes all the changes made to prepare the SattvikVivah applic
   - Error handling and validation
   - Support for all CRUD operations
 
-### 3. `netlify/functions/tsconfig.json`
-- **Purpose**: TypeScript configuration for Netlify Functions
-- **Features**:
-  - Extends main tsconfig.json
-  - Proper module resolution
-  - Path aliases for imports
+### 3. `netlify/functions/tsconfig.json` (Removed)
+- **Issue**: Caused build failures due to TypeScript configuration conflicts
+- **Solution**: Removed separate tsconfig.json and using main project configuration
+- **Result**: Build process now works correctly
 
 ### 4. `NETLIFY_DEPLOYMENT.md`
 - **Purpose**: Comprehensive deployment guide
