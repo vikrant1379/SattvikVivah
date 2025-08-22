@@ -146,14 +146,14 @@ const SpeakToExpertModal: React.FC<SpeakToExpertModalProps> = memo(
     };
 
     const canNavigateNext = () => {
-      console.log('canNavigateNext check:', {
+      console.log("canNavigateNext check:", {
         currentStep,
         selectedTier,
         selectedCategory,
         assessmentKeys: Object.keys(assessment),
-        assessmentLength: Object.keys(assessment).length
+        assessmentLength: Object.keys(assessment).length,
       });
-      
+
       switch (currentStep) {
         case "tier-selection":
           return !!selectedTier;
@@ -440,22 +440,22 @@ const SpeakToExpertModal: React.FC<SpeakToExpertModalProps> = memo(
                 <div className="flex flex-col sm:flex-row gap-3 bg-gradient-to-r from-orange-50/50 to-rose-50/50 rounded-lg p-4 border border-orange-200">
                   <Button
                     onClick={() => {
-                      console.log('Button clicked!', { 
-                        currentStep, 
+                      console.log("Button clicked!", {
+                        currentStep,
                         canNavigate: canNavigateNext(),
                         selectedTier,
-                        selectedCategory 
+                        selectedCategory,
                       });
-                      
+
                       try {
                         if (currentStep === "tier-selection") {
-                          console.log('Navigating to category-selection');
+                          console.log("Navigating to category-selection");
                           setCurrentStep("category-selection");
                         } else if (currentStep === "category-selection") {
-                          console.log('Navigating to assessment');
+                          console.log("Navigating to assessment");
                           setCurrentStep("assessment");
                         } else if (currentStep === "assessment") {
-                          console.log('Navigating to consultation-form');
+                          console.log("Navigating to consultation-form");
                           setCurrentStep("consultation-form");
                         }
                       } catch (error) {
