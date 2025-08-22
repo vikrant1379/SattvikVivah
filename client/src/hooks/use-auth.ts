@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useEffect } from 'react';
 import { AuthService } from '@/services';
 
@@ -149,9 +148,9 @@ export const useAuth = () => {
     }
   }, []);
 
-  const isAuthenticated = useCallback(() => {
-    return AuthService.isAuthenticated();
-  }, []);
+  const isAuthenticated = (): boolean => {
+    return !!user;
+  };
 
   const clearError = useCallback(() => {
     setError(null);
