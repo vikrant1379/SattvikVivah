@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import LoginOptions from "@/components/login-options";
 import SignupOptions from "@/components/signup-options";
+import SpeakToExpertModal from "@/components/speak-to-expert-modal";
 import { useAuth } from "@/hooks/use-auth";
 import { Heart, Search, Users, Star, Shield, CheckCircle, Award, Lock, Crown, Phone } from "lucide-react";
 
@@ -30,6 +31,7 @@ const Home = memo(() => {
 
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
+  const [isSpeakToExpertOpen, setIsSpeakToExpertOpen] = useState(false);
   const { isAuthenticated, user } = useAuth();
 
   const handleFindMatches = () => {
@@ -181,6 +183,7 @@ const Home = memo(() => {
                     variant="outline"
                     size="lg"
                     className="border-orange-300 text-orange-700 hover:bg-orange-50 hover:border-orange-400 hover:text-orange-800 px-8 py-4 text-lg font-semibold transition-all duration-300"
+                    onClick={() => setIsSpeakToExpertOpen(true)}
                   >
                     <Phone className="w-5 h-5 mr-2" />
                     Speak to Expert
@@ -389,6 +392,12 @@ const Home = memo(() => {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Speak to Expert Modal */}
+      <SpeakToExpertModal 
+        isOpen={isSpeakToExpertOpen} 
+        onClose={() => setIsSpeakToExpertOpen(false)} 
+      />
     </div>
   );
 });
