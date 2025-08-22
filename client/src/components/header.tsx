@@ -94,27 +94,40 @@ const Header = memo(() => {
                 }} />
               </div>
             ) : (
-              <div className="flex items-center space-x-3">
-                <Button
-                  variant="ghost"
-                  onClick={handleProfileClick}
-                  className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-orange-50 transition-colors"
-                >
-                  <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-                    <User className="w-4 h-4 text-gray-500" />
-                  </div>
-                  <div className="flex flex-col items-start">
-                    <span className="text-sm font-medium text-gray-900">Sign In</span>
-                    <span className="text-xs text-gray-500">Access your profile</span>
-                  </div>
-                </Button>
+              <div className="flex items-center">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      className="flex items-center space-x-2 h-auto p-2 hover:bg-orange-50 rounded-lg"
+                    >
+                      <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                        <User className="w-4 h-4 text-gray-500" />
+                      </div>
+                      <ChevronDown className="w-4 h-4 text-gray-500" />
+                    </Button>
+                  </DropdownMenuTrigger>
 
-                <Button
-                  onClick={handleSignupClick}
-                  className="bg-saffron hover:bg-saffron/90 text-white px-4 py-2 rounded-lg font-medium text-sm"
-                >
-                  Sign Up Free
-                </Button>
+                  <DropdownMenuContent className="w-48" align="end">
+                    <DropdownMenuItem 
+                      onClick={handleProfileClick}
+                      className="flex items-center space-x-3 py-3 cursor-pointer"
+                    >
+                      <User className="w-4 h-4 text-gray-600" />
+                      <span>Sign In</span>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuSeparator />
+
+                    <DropdownMenuItem 
+                      onClick={handleSignupClick}
+                      className="flex items-center space-x-3 py-3 cursor-pointer text-saffron hover:text-saffron/80"
+                    >
+                      <User className="w-4 h-4" />
+                      <span>Sign Up Free</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             )}
           </div>
