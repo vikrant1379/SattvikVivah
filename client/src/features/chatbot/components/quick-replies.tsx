@@ -1,10 +1,11 @@
 import React from 'react';
-import { setLocation } from 'wouter';
+import { useLocation } from 'wouter';
 import { useChatbot } from '../contexts/chatbot-context';
 import { RESPONSE_TEMPLATES } from '../constants/chatbot.constants';
 
 export const QuickReplies: React.FC = () => {
   const { sendMessage, state } = useChatbot();
+  const [, setLocation] = useLocation();
   
 
   // Get contextual quick replies based on current flow
