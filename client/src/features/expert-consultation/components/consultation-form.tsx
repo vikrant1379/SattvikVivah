@@ -84,10 +84,6 @@ export const ConsultationForm = memo<ConsultationFormProps>(({
     });
   };
 
-  const handleContinueJourney = () => {
-    form.handleSubmit(handleSubmit)();
-  };
-
   return (
     <div className={`space-y-6 ${className}`}>
       <div className="text-center">
@@ -223,10 +219,9 @@ export const ConsultationForm = memo<ConsultationFormProps>(({
           {/* Submit Button */}
           <div className="pt-4">
             <Button
-              type="button"
-              onClick={handleContinueJourney}
+              type="submit"
               disabled={isSubmitting}
-              className="w-full bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white py-3 text-lg font-semibold disabled:opacity-50"
+              className="w-full bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white py-3 text-lg font-semibold disabled:opacity-50 transition-all duration-200 hover:shadow-lg active:scale-95"
             >
               {isSubmitting ? (
                 <div className="flex items-center justify-center space-x-2">
