@@ -169,7 +169,12 @@ const SpeakToExpertModal: React.FC<SpeakToExpertModalProps> = memo(
     // Non-authenticated user view
     if (!isAuthenticated && currentStep === "login-prompt") {
       return (
-        <Dialog open={isOpen} onOpenChange={onClose}>
+        <Dialog open={isOpen} onOpenChange={(open) => {
+          if (!open) {
+            onClose();
+          }
+          handleModalOpen(open);
+        }}>
           <DialogContent className="sm:max-w-lg">
             <DialogHeader>
               <DialogTitle className="text-center text-2xl font-bold text-orange-800 flex items-center justify-center space-x-2 font-serif">
@@ -317,7 +322,12 @@ const SpeakToExpertModal: React.FC<SpeakToExpertModalProps> = memo(
 
     // Authenticated user multi-step view
     return (
-      <Dialog open={isOpen} onOpenChange={onClose}>
+      <Dialog open={isOpen} onOpenChange={(open) => {
+        if (!open) {
+          onClose();
+        }
+        handleModalOpen(open);
+      }}>
         <DialogContent className="sm:max-w-4xl max-h-[95vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-center text-2xl font-bold text-orange-800 flex items-center justify-center space-x-2 font-serif">
