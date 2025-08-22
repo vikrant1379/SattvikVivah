@@ -1,3 +1,4 @@
+
 import { useState, memo } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -11,7 +12,9 @@ import {
   CheckCircle,
   Clock,
   Phone,
-  ArrowLeft
+  ArrowLeft,
+  Star,
+  Sparkles
 } from "lucide-react";
 import { ConsultationTierSelector } from "@/features/expert-consultation/components/consultation-tier-selector";
 import { ExpertCategorySelector } from "@/features/expert-consultation/components/expert-category-selector";
@@ -62,7 +65,7 @@ const SpeakToExpertModal: React.FC<SpeakToExpertModalProps> = memo(({ isOpen, on
     window.open(whatsappUrl, '_blank');
 
     toast({
-      title: "WhatsApp Seva Started",
+      title: "🙏 WhatsApp Seva Started",
       description: "You'll be connected with our divine guidance counselor shortly.",
     });
     onClose();
@@ -82,13 +85,13 @@ const SpeakToExpertModal: React.FC<SpeakToExpertModalProps> = memo(({ isOpen, on
         timestamp: new Date().toISOString()
       };
 
-      console.log('Consultation submitted:', consultationData);
+      console.log('Sacred consultation submitted:', consultationData);
 
       // Simulate processing time
       await new Promise(resolve => setTimeout(resolve, 2000));
 
       toast({
-        title: "Divine Guidance Requested 🙏",
+        title: "🪷 Divine Guidance Requested",
         description: "Our spiritual counselor will connect with your soul within the promised timeframe.",
       });
 
@@ -111,19 +114,19 @@ const SpeakToExpertModal: React.FC<SpeakToExpertModalProps> = memo(({ isOpen, on
   const getStepTitle = () => {
     switch (currentStep) {
       case 'login-prompt':
-        return 'Seek Guidance for Your Sacred Journey';
+        return '🪷 Seek Guidance for Your Sacred Journey';
       case 'tier-selection':
-        return 'Choose Your Divine Path';
+        return '🕉️ Choose Your Divine Path';
       case 'category-selection':
-        return 'Select Your Guidance Focus';
+        return '🧘‍♀️ Select Your Guidance Focus';
       case 'assessment':
-        return 'Sacred Self-Discovery';
+        return '🌺 Sacred Self-Discovery';
       case 'consultation-form':
-        return 'Share Your Sacred Query';
+        return '📝 Share Your Sacred Query';
       case 'success':
-        return 'Your Sacred Journey Continues!';
+        return '✨ Your Sacred Journey Continues!';
       default:
-        return 'Expert Consultation';
+        return '🙏 Expert Consultation';
     }
   };
 
@@ -146,33 +149,43 @@ const SpeakToExpertModal: React.FC<SpeakToExpertModalProps> = memo(({ isOpen, on
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle className="text-center text-2xl font-bold text-orange-800 flex items-center justify-center space-x-2">
+            <DialogTitle className="text-center text-2xl font-bold text-orange-800 flex items-center justify-center space-x-2 font-serif">
               <div className="text-2xl">🪷</div>
               <span>{getStepTitle()}</span>
             </DialogTitle>
           </DialogHeader>
 
           <div className="space-y-6">
+            {/* Sanskrit Blessing */}
+            <div className="text-center">
+              <div className="text-lg font-bold text-orange-800 mb-2 font-serif">
+                गुरुर्ब्रह्मा गुरुर्विष्णुः गुरुर्देवो महेश्वरः
+              </div>
+              <p className="text-sm text-gray-600 italic">
+                "The guru is Brahma, Vishnu, and Shiva - divine guidance awaits"
+              </p>
+            </div>
+
             {/* Premium Login Section */}
-            <Card className="bg-gradient-to-r from-orange-50 to-rose-50 border-orange-200/50">
+            <Card className="bg-gradient-to-r from-orange-50 to-rose-50 border-orange-200/50 shadow-lg">
               <CardContent className="p-6 text-center">
-                <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-gradient-to-r from-orange-100 to-rose-100 rounded-full flex items-center justify-center mx-auto mb-4 border border-orange-200">
                   <Lock className="w-8 h-8 text-orange-600" />
                 </div>
 
-                <h3 className="text-xl font-semibold text-orange-800 mb-3">
-                  Login for Personalized Expert Consultation
+                <h3 className="text-xl font-semibold text-orange-800 mb-3 font-serif">
+                  Login for Personalized Divine Consultation
                 </h3>
 
                 <p className="text-gray-700 mb-4 leading-relaxed">
-                  To provide you with tailored dharmic advice based on your spiritual profile and life aspirations, 
-                  please login to your sacred account
+                  To provide you with tailored dharmic advice based on your spiritual profile and sacred aspirations, 
+                  please login to begin your guided journey
                 </p>
 
-                <div className="grid grid-cols-2 gap-3 mb-4">
+                <div className="grid grid-cols-2 gap-3 mb-6">
                   <div className="flex items-center space-x-2 text-sm text-gray-600">
                     <CheckCircle className="w-4 h-4 text-green-600" />
-                    <span>Personalized Dharmic Advice</span>
+                    <span>Personalized Dharmic Wisdom</span>
                   </div>
                   <div className="flex items-center space-x-2 text-sm text-gray-600">
                     <CheckCircle className="w-4 h-4 text-green-600" />
@@ -184,12 +197,12 @@ const SpeakToExpertModal: React.FC<SpeakToExpertModalProps> = memo(({ isOpen, on
                   </div>
                   <div className="flex items-center space-x-2 text-sm text-gray-600">
                     <CheckCircle className="w-4 h-4 text-green-600" />
-                    <span>Divine Follow-up Care</span>
+                    <span>Divine Follow-up Guidance</span>
                   </div>
                 </div>
 
                 <Button 
-                  className="w-full bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white font-semibold py-3 transition-all duration-200 hover:shadow-lg active:scale-95"
+                  className="w-full bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white font-semibold py-3 text-lg transition-all duration-300 hover:shadow-lg active:scale-95 font-serif"
                   onClick={() => {
                     try {
                       setCurrentStep('tier-selection');
@@ -198,6 +211,7 @@ const SpeakToExpertModal: React.FC<SpeakToExpertModalProps> = memo(({ isOpen, on
                     }
                   }}
                 >
+                  <Sparkles className="w-5 h-5 mr-2" />
                   🙏 Continue Sacred Journey
                 </Button>
               </CardContent>
@@ -209,24 +223,24 @@ const SpeakToExpertModal: React.FC<SpeakToExpertModalProps> = memo(({ isOpen, on
                 <span className="w-full border-t border-orange-200" />
               </div>
               <div className="relative flex justify-center text-sm uppercase">
-                <span className="bg-background px-4 text-gray-500 font-medium">या फिर</span>
+                <span className="bg-background px-4 text-orange-700 font-medium font-serif">या फिर</span>
               </div>
             </div>
 
             {/* WhatsApp Section */}
-            <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-green-200/50">
+            <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-green-200/50 shadow-lg">
               <CardContent className="p-6 text-center">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-gradient-to-r from-green-100 to-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-200">
                   <MessageCircle className="w-8 h-8 text-green-600" />
                 </div>
 
-                <h3 className="text-xl font-semibold text-green-800 mb-3">
+                <h3 className="text-xl font-semibold text-green-800 mb-3 font-serif">
                   Need Immediate Divine Help?
                 </h3>
 
-                <p className="text-gray-700 mb-4">
+                <p className="text-gray-700 mb-4 leading-relaxed">
                   Connect instantly with our spiritual counselor on WhatsApp for immediate dharmic guidance 
-                  and sacred matrimonial wisdom
+                  and sacred matrimonial wisdom from experienced guides
                 </p>
 
                 <div className="flex items-center justify-center space-x-2 mb-4">
@@ -236,28 +250,28 @@ const SpeakToExpertModal: React.FC<SpeakToExpertModalProps> = memo(({ isOpen, on
                   </Badge>
                   <Badge variant="outline" className="bg-white/80 border-green-200 text-green-700">
                     <Phone className="w-3 h-3 mr-1" />
-                    Voice/Video Seva
+                    Voice/Video Seva Available
                   </Badge>
                 </div>
 
                 <Button 
                   variant="outline"
-                  className="w-full border-green-300 text-green-700 hover:bg-green-50 hover:border-green-400 font-semibold py-3"
+                  className="w-full border-green-300 text-green-700 hover:bg-green-50 hover:border-green-400 font-semibold py-3 text-lg transition-all duration-300 font-serif"
                   onClick={handleWhatsAppClick}
                 >
                   <MessageCircle className="w-5 h-5 mr-2" />
-                  🙏 Start WhatsApp Seva
+                  🙏 Start WhatsApp Seva Now
                 </Button>
               </CardContent>
             </Card>
 
-            {/* Sanskrit Blessing */}
+            {/* Sanskrit Closing Blessing */}
             <div className="text-center py-4">
               <div className="text-base font-bold text-orange-800 mb-1 font-serif">
-                गुरुर्ब्रह्मा गुरुर्विष्णुः गुरुर्देवो महेश्वरः
+                सर्वे भवन्तु सुखिनः सर्वे सन्तु निरामयाः
               </div>
               <p className="text-xs text-gray-600 italic">
-                "The guru is Brahma, Vishnu, and Shiva - the divine teacher guides us"
+                "May all beings find happiness, may all be free from suffering"
               </p>
             </div>
           </div>
@@ -269,18 +283,18 @@ const SpeakToExpertModal: React.FC<SpeakToExpertModalProps> = memo(({ isOpen, on
   // Authenticated user multi-step view
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-4xl max-h-[95vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-center text-2xl font-bold text-orange-800 flex items-center justify-center space-x-2">
+          <DialogTitle className="text-center text-2xl font-bold text-orange-800 flex items-center justify-center space-x-2 font-serif">
             <div className="text-2xl">🕉️</div>
             <span>{getStepTitle()}</span>
           </DialogTitle>
           {user && (
             <div className="text-center">
-              <p className="text-gray-600">
-                Namaste, <span className="font-semibold text-orange-700">{user.name}</span>
+              <p className="text-gray-600 font-serif">
+                🙏 Namaste, <span className="font-semibold text-orange-700">{user.name}</span>
               </p>
-              <p className="text-sm text-muted-foreground">Let our spiritual guides illuminate your sacred path</p>
+              <p className="text-sm text-muted-foreground italic">Let our spiritual guides illuminate your sacred path to dharmic union</p>
             </div>
           )}
         </DialogHeader>
@@ -288,7 +302,7 @@ const SpeakToExpertModal: React.FC<SpeakToExpertModalProps> = memo(({ isOpen, on
         <div className="space-y-6">
           {/* Step Navigation */}
           {(currentStep === 'category-selection' || currentStep === 'assessment' || currentStep === 'consultation-form') && (
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between bg-orange-50/50 rounded-lg p-4 border border-orange-200">
               <Button 
                 variant="ghost" 
                 onClick={() => {
@@ -296,28 +310,46 @@ const SpeakToExpertModal: React.FC<SpeakToExpertModalProps> = memo(({ isOpen, on
                   else if (currentStep === 'assessment') setCurrentStep('category-selection');
                   else if (currentStep === 'consultation-form') setCurrentStep('assessment');
                 }}
-                className="text-orange-700 hover:text-orange-800"
+                className="text-orange-700 hover:text-orange-800 hover:bg-orange-100 font-serif"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Previous Step
+                Previous Sacred Step
               </Button>
-              <div className="text-sm text-gray-500">
-                Step {currentStep === 'tier-selection' ? 1 : 
+              <div className="text-sm text-gray-500 font-serif">
+                🪷 Step {currentStep === 'tier-selection' ? 1 : 
                       currentStep === 'category-selection' ? 2 : 
-                      currentStep === 'assessment' ? 3 : 4} of 4
+                      currentStep === 'assessment' ? 3 : 4} of 4 - Sacred Journey
               </div>
             </div>
           )}
+
+          {/* Success State */}
           {currentStep === 'success' && (
             <div className="text-center py-10">
-              <CheckCircle className="w-20 h-20 text-green-500 mx-auto mb-4" />
-              <h2 className="text-3xl font-bold text-green-700 mb-3">Your Divine Guidance is Confirmed!</h2>
-              <p className="text-lg text-gray-700 mb-6">
-                Our spiritual counselor is meditating on your query and will connect with you shortly. 
-                May your sacred journey be blessed.
+              <div className="w-24 h-24 bg-gradient-to-r from-green-100 to-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 border-4 border-green-200">
+                <CheckCircle className="w-12 h-12 text-green-600" />
+              </div>
+              <h2 className="text-3xl font-bold text-green-700 mb-3 font-serif">
+                🌺 Your Divine Guidance is Confirmed!
+              </h2>
+              <p className="text-lg text-gray-700 mb-6 leading-relaxed">
+                Our spiritual counselor is meditating on your sacred query and will connect with your soul shortly. 
+                May your dharmic journey be blessed with divine wisdom.
               </p>
-              <Button onClick={onClose} className="py-3 px-8 text-white font-semibold bg-orange-500 hover:bg-orange-600">
-                Return to Dashboard
+              <div className="bg-gradient-to-r from-orange-50 to-rose-50 border border-orange-200 rounded-lg p-6 mb-6">
+                <div className="text-lg font-bold text-orange-800 mb-2 font-serif">
+                  ॐ शुभस्य शीघ्रम् ॐ
+                </div>
+                <p className="text-sm text-gray-600 italic">
+                  "May auspiciousness come swiftly to your sacred journey"
+                </p>
+              </div>
+              <Button 
+                onClick={onClose} 
+                className="py-3 px-8 text-white font-semibold bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 transition-all duration-300 hover:shadow-lg font-serif text-lg"
+              >
+                <Star className="w-5 h-5 mr-2" />
+                Return to Sacred Dashboard
               </Button>
             </div>
           )}
@@ -353,13 +385,11 @@ const SpeakToExpertModal: React.FC<SpeakToExpertModalProps> = memo(({ isOpen, on
 
           {/* Navigation Buttons */}
           {currentStep !== 'consultation-form' && currentStep !== 'success' && (
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row gap-3 bg-gradient-to-r from-orange-50/50 to-rose-50/50 rounded-lg p-4 border border-orange-200">
               <Button
                 onClick={() => {
                   try {
-                    if (currentStep === 'overview') {
-                      setCurrentStep('tier-selection');
-                    } else if (currentStep === 'tier-selection') {
+                    if (currentStep === 'tier-selection') {
                       setCurrentStep('category-selection');
                     } else if (currentStep === 'category-selection') {
                       setCurrentStep('assessment');
@@ -371,25 +401,26 @@ const SpeakToExpertModal: React.FC<SpeakToExpertModalProps> = memo(({ isOpen, on
                   }
                 }}
                 disabled={!canNavigateNext()}
-                className="flex-1 bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white font-semibold py-3 transition-all duration-200 hover:shadow-lg active:scale-95"
+                className="flex-1 bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white font-semibold py-3 transition-all duration-300 hover:shadow-lg active:scale-95 disabled:opacity-50 font-serif text-lg"
               >
+                <Sparkles className="w-5 h-5 mr-2" />
                 🙏 Continue Sacred Journey
               </Button>
 
               <Button
                 type="button"
                 variant="outline"
-                className="border-green-300 text-green-700 hover:bg-green-50 font-semibold py-3"
+                className="border-green-300 text-green-700 hover:bg-green-50 font-semibold py-3 text-lg font-serif hover:border-green-400 transition-all duration-300"
                 onClick={handleWhatsAppClick}
               >
-                <MessageCircle className="w-4 h-4 mr-2" />
-                WhatsApp Seva
+                <MessageCircle className="w-5 h-5 mr-2" />
+                📱 Instant WhatsApp Seva
               </Button>
             </div>
           )}
 
-          {/* Sanskrit Blessing */}
-          <div className="text-center pt-4 border-t border-orange-200/50">
+          {/* Sanskrit Blessing Footer */}
+          <div className="text-center pt-6 border-t border-orange-200/50">
             <div className="text-sm font-bold text-orange-800 mb-1 font-serif">
               सर्वे भवन्तु सुखिनः सर्वे सन्तु निरामयाः
             </div>
