@@ -15,6 +15,8 @@ import SpeakToExpertModal from "@/components/speak-to-expert-modal";
 import { useAuth } from "@/hooks/use-auth";
 import { AuthService } from "@/services/auth.service";
 import { Heart, Search, Users, Star, Shield, CheckCircle, Award, Lock, Crown, Phone } from "lucide-react";
+import { SpiritualMetricsDashboard } from "@/components/spiritual-metrics-dashboard";
+import { SpiritualMembershipPlans } from "@/components/spiritual-membership-plans";
 
 const Home = memo(() => {
   const homeRef = useRef<HTMLDivElement>(null);
@@ -49,17 +51,17 @@ const Home = memo(() => {
   const handleFindMatches = () => {
     const authStatus = isAuthenticated();
     const serviceAuth = AuthService.isAuthenticated();
-    
+
     console.log('handleFindMatches called', {
       hookAuth: authStatus,
       serviceAuth: serviceAuth,
       user: user,
       isLoading: isLoading
     });
-    
+
     // Use service authentication as backup if hook is still loading
     const isUserAuthenticated = authStatus || (isLoading && serviceAuth);
-    
+
     if (isUserAuthenticated) {
       console.log('User is authenticated, navigating to profiles');
       setLocation('/profiles');
@@ -357,7 +359,8 @@ const Home = memo(() => {
         {/* Other Sections */}
         <ThreeSacredSteps />
         <SattvikConnectPreview />
-        <SuccessStoriesCarousel />
+        <SpiritualMetricsDashboard />
+        <SpiritualMembershipPlans />
       </main>
 
       <Footer />

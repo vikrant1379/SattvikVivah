@@ -1,4 +1,3 @@
-
 export const CONSULTATION_TIERS = [
   {
     id: 'samskara',
