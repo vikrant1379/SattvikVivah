@@ -46,22 +46,35 @@ const Header = memo(() => {
       <div className="bg-gray-100 border-b border-gray-200">
         <div className="container mx-auto px-4 py-2">
           <div className="flex items-center justify-end space-x-6">
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">Get the App</span>
+            <div className="flex items-center space-x-6">
               <div className="flex items-center space-x-2">
-                <div className="w-5 h-5 bg-black rounded-sm flex items-center justify-center">
-                  <span className="text-white text-xs">🍎</span>
+                <span className="text-sm text-gray-600">Get the App</span>
+                <div className="flex items-center space-x-2">
+                  <div className="w-5 h-5 bg-black rounded-sm flex items-center justify-center">
+                    <Smartphone className="w-3 h-3 text-white" />
+                  </div>
+                  <div className="w-5 h-5 bg-green-500 rounded-sm flex items-center justify-center">
+                    <Smartphone className="w-3 h-3 text-white" />
+                  </div>
                 </div>
-                <div className="w-5 h-5 bg-green-500 rounded-sm flex items-center justify-center">
-                  <span className="text-white text-xs">🤖</span>
-                </div>
+              </div>
+              
+              <div className="flex items-center space-x-1 text-sm text-gray-600">
+                <Phone className="w-4 h-4" />
+                <span>+91-9876543210</span>
               </div>
             </div>
             
             <div className="flex items-center space-x-4">
-              <User className="w-5 h-5 text-gray-500" />
-              <Bell className="w-5 h-5 text-gray-500" />
-              <Menu className="w-5 h-5 text-gray-500" />
+              <Button variant="ghost" size="sm" className="p-2 hover:bg-saffron/10">
+                <Star className="w-4 h-4 text-saffron" />
+              </Button>
+              <Button variant="ghost" size="sm" className="p-2 hover:bg-saffron/10">
+                <Bell className="w-4 h-4 text-gray-500 hover:text-saffron" />
+              </Button>
+              <Button variant="ghost" size="sm" className="p-2 hover:bg-saffron/10">
+                <Settings className="w-4 h-4 text-gray-500 hover:text-saffron" />
+              </Button>
             </div>
           </div>
         </div>
@@ -83,30 +96,34 @@ const Header = memo(() => {
           </Link>
 
           {/* Navigation Links */}
-          <nav className="hidden md:flex items-center space-x-6">
+          <nav className="hidden md:flex items-center space-x-8">
             <Link 
               href="/profiles" 
-              className="text-gray-700 hover:text-saffron transition-colors font-medium text-sm"
+              className="flex items-center space-x-2 text-gray-700 hover:text-saffron transition-colors font-medium text-sm group"
             >
-              Search Profiles
+              <Users className="w-4 h-4 group-hover:text-saffron" />
+              <span>Search Profiles</span>
+            </Link>
+            <Link 
+              href="/astrology" 
+              className="flex items-center space-x-2 text-gray-700 hover:text-saffron transition-colors font-medium text-sm group"
+            >
+              <Star className="w-4 h-4 group-hover:text-saffron" />
+              <span>Astrology</span>
             </Link>
             <Link 
               href="/success-stories" 
-              className="text-gray-700 hover:text-saffron transition-colors font-medium text-sm"
+              className="flex items-center space-x-2 text-gray-700 hover:text-saffron transition-colors font-medium text-sm group"
             >
-              Success Stories
-            </Link>
-            <Link 
-              href="/blog" 
-              className="text-gray-700 hover:text-saffron transition-colors font-medium text-sm"
-            >
-              Blog
+              <Heart className="w-4 h-4 group-hover:text-saffron" />
+              <span>Success Stories</span>
             </Link>
             <Link 
               href="/help" 
-              className="text-gray-700 hover:text-saffron transition-colors font-medium text-sm"
+              className="flex items-center space-x-2 text-gray-700 hover:text-saffron transition-colors font-medium text-sm group"
             >
-              Help
+              <HelpCircle className="w-4 h-4 group-hover:text-saffron" />
+              <span>Help</span>
             </Link>
           </nav>
 
@@ -160,7 +177,16 @@ const Header = memo(() => {
                         <div>
                           <div className="font-semibold text-gray-900">{user.name}</div>
                           <div className="text-sm text-gray-500">ID - {user.id}</div>
-                          <Badge className="text-xs px-2 py-1 mt-1 bg-purple-600 text-white">Basic</Badge>
+                          <div className="flex items-center space-x-2 mt-1">
+                            <Badge className="text-xs px-2 py-1 bg-purple-600 text-white flex items-center space-x-1">
+                              <Star className="w-3 h-3" />
+                              <span>Basic</span>
+                            </Badge>
+                            <div className="flex items-center space-x-1">
+                              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                              <span className="text-xs text-gray-500">Online</span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -282,13 +308,26 @@ const Header = memo(() => {
                   </Button>
                 </DropdownMenuTrigger>
 
-                <DropdownMenuContent className="w-48" align="end">
+                <DropdownMenuContent className="w-56" align="end">
+                  <div className="p-3 border-b">
+                    <div className="flex items-center space-x-2 text-saffron">
+                      <Clover className="w-5 h-5" />
+                      <span className="font-semibold">SattvikVivah</span>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">Your spiritual journey awaits</p>
+                  </div>
+                  
                   <DropdownMenuItem 
                     onClick={handleProfileClick}
                     className="flex items-center space-x-3 py-3 cursor-pointer"
                   >
-                    <User className="w-4 h-4 text-gray-600" />
-                    <span>Sign In</span>
+                    <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
+                      <User className="w-3 h-3 text-blue-600" />
+                    </div>
+                    <div className="flex-1">
+                      <span className="font-medium">Sign In</span>
+                      <p className="text-xs text-gray-500">Access your profile</p>
+                    </div>
                   </DropdownMenuItem>
 
                   <DropdownMenuSeparator />
@@ -297,9 +336,24 @@ const Header = memo(() => {
                     onClick={handleSignupClick}
                     className="flex items-center space-x-3 py-3 cursor-pointer text-saffron hover:text-saffron/80"
                   >
-                    <User className="w-4 h-4" />
-                    <span>Sign Up Free</span>
+                    <div className="w-6 h-6 bg-saffron/10 rounded-full flex items-center justify-center">
+                      <Heart className="w-3 h-3 text-saffron" />
+                    </div>
+                    <div className="flex-1">
+                      <span className="font-medium">Sign Up Free</span>
+                      <p className="text-xs text-gray-500">Start your journey</p>
+                    </div>
                   </DropdownMenuItem>
+                  
+                  <DropdownMenuSeparator />
+                  
+                  <div className="p-2">
+                    <div className="flex items-center justify-center space-x-4 text-gray-400">
+                      <Star className="w-4 h-4" />
+                      <Heart className="w-4 h-4" />
+                      <Clover className="w-4 h-4" />
+                    </div>
+                  </div>
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
