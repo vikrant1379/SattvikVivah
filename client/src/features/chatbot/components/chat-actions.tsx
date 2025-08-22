@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation as setLocation } from 'wouter';
 import { ChatAction } from '../types/chatbot.types';
 import { Button } from '@/components/ui/button';
 import { ExternalLink, User, Users, Phone, MessageSquare } from 'lucide-react';
@@ -10,25 +9,25 @@ interface ChatActionsProps {
 }
 
 export const ChatActions: React.FC<ChatActionsProps> = ({ actions }) => {
-  const navigate = useNavigate();
+  const setLocation = setLocation();
 
   const handleAction = (action: ChatAction) => {
     switch (action.type) {
       case 'login':
         // Open login modal or navigate to login
-        navigate('/login');
+        setLocation('/login');
         break;
-      
+
       case 'register':
         // Open registration modal or navigate to registration
-        navigate('/register');
+        setLocation('/register');
         break;
-      
+
       case 'view-profile':
         // Navigate to profile management
-        navigate('/profile');
+        setLocation('/profile');
         break;
-      
+
       case 'expert-consultation':
         // Open expert consultation modal
         const modal = document.querySelector('[data-expert-modal]') as HTMLElement;
@@ -40,14 +39,21 @@ export const ChatActions: React.FC<ChatActionsProps> = ({ actions }) => {
           expertSection?.scrollIntoView({ behavior: 'smooth' });
         }
         break;
-      
+
       case 'whatsapp':
         // Open WhatsApp with predefined message
         const phoneNumber = action.payload?.phone || '+919876543210';
         const message = action.payload?.message || 'Hi, I need help with my Sattvic Matrimony profile';
         window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
         break;
-      
+
+      case 'navigate_to_profiles':
+        setLocation('/profiles');
+        break;
+      case 'navigate_to_preferences':
+        setLocation('/profile/preferences');
+        break;
+
       default:
         console.log('Unknown action type:', action.type);
     }
