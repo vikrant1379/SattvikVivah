@@ -141,6 +141,22 @@ const HeroSection = memo(() => {
     },
   });
 
+  const handlePasswordChange = useCallback((value: string) => {
+    setPasswordStrength(checkPasswordStrength(value));
+  }, []);
+
+  const generatePassword = useCallback(() => {
+    const newPassword = generateSecurePassword();
+    form.setValue('password', newPassword);
+    // Trigger validation for the password field
+    form.trigger('password');
+    handlePasswordChange(newPassword);
+
+    toast({
+      description: "Strong password generated successfully!"
+    });
+  }, [form, toast, handlePasswordChange]);
+
   const registerMutation = useMutation({
     mutationFn: async (data: RegistrationForm) => {
       const response = await apiRequest("POST", "/api/users", data);
@@ -164,22 +180,6 @@ const HeroSection = memo(() => {
       setIsSubmitting(false);
     },
   });
-
-  const generatePassword = useCallback(() => {
-    const newPassword = generateSecurePassword();
-    form.setValue('password', newPassword);
-    // Trigger validation for the password field
-    form.trigger('password');
-    handlePasswordChange(newPassword);
-
-    toast({
-      description: "Strong password generated successfully!"
-    });
-  }, [form, toast, handlePasswordChange]);
-
-  const handlePasswordChange = useCallback((value: string) => {
-    setPasswordStrength(checkPasswordStrength(value));
-  }, []);
 
   const onSubmit = (data: RegistrationForm) => {
     setIsSubmitting(true);
