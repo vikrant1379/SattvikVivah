@@ -25,7 +25,7 @@ interface SpeakToExpertModalProps {
   onClose: () => void;
 }
 
-type ModalStep = 'login-prompt' | 'tier-selection' | 'category-selection' | 'assessment' | 'consultation-form';
+type ModalStep = 'login-prompt' | 'tier-selection' | 'category-selection' | 'assessment' | 'consultation-form' | 'success';
 
 const SpeakToExpertModal: React.FC<SpeakToExpertModalProps> = memo(({ isOpen, onClose }) => {
   const { isAuthenticated, user } = useAuth();
@@ -92,7 +92,7 @@ const SpeakToExpertModal: React.FC<SpeakToExpertModalProps> = memo(({ isOpen, on
         description: "Our spiritual counselor will connect with your soul within the promised timeframe.",
       });
 
-      onClose();
+      setCurrentStep('success');
     } catch (error) {
       toast({
         title: "Sacred Journey Interrupted",
@@ -120,6 +120,8 @@ const SpeakToExpertModal: React.FC<SpeakToExpertModalProps> = memo(({ isOpen, on
         return 'Sacred Self-Discovery';
       case 'consultation-form':
         return 'Share Your Sacred Query';
+      case 'success':
+        return 'Your Sacred Journey Continues!';
       default:
         return 'Expert Consultation';
     }
@@ -279,7 +281,7 @@ const SpeakToExpertModal: React.FC<SpeakToExpertModalProps> = memo(({ isOpen, on
 
         <div className="space-y-6">
           {/* Step Navigation */}
-          {currentStep !== 'tier-selection' && (
+          {(currentStep === 'category-selection' || currentStep === 'assessment' || currentStep === 'consultation-form') && (
             <div className="flex items-center justify-between">
               <Button 
                 variant="ghost" 
@@ -298,6 +300,19 @@ const SpeakToExpertModal: React.FC<SpeakToExpertModalProps> = memo(({ isOpen, on
                       currentStep === 'category-selection' ? 2 : 
                       currentStep === 'assessment' ? 3 : 4} of 4
               </div>
+            </div>
+          )}
+          {currentStep === 'success' && (
+            <div className="text-center py-10">
+              <CheckCircle className="w-20 h-20 text-green-500 mx-auto mb-4" />
+              <h2 className="text-3xl font-bold text-green-700 mb-3">Your Divine Guidance is Confirmed!</h2>
+              <p className="text-lg text-gray-700 mb-6">
+                Our spiritual counselor is meditating on your query and will connect with you shortly. 
+                May your sacred journey be blessed.
+              </p>
+              <Button onClick={onClose} className="py-3 px-8 text-white font-semibold bg-orange-500 hover:bg-orange-600">
+                Return to Dashboard
+              </Button>
             </div>
           )}
 
@@ -331,7 +346,7 @@ const SpeakToExpertModal: React.FC<SpeakToExpertModalProps> = memo(({ isOpen, on
           )}
 
           {/* Navigation Buttons */}
-          {currentStep !== 'consultation-form' && (
+          {currentStep !== 'consultation-form' && currentStep !== 'success' && (
             <div className="flex flex-col sm:flex-row gap-3">
               <Button
                 onClick={() => {

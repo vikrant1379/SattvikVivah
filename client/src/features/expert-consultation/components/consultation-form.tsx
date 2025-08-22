@@ -1,4 +1,3 @@
-
 import { memo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -85,6 +84,10 @@ export const ConsultationForm = memo<ConsultationFormProps>(({
     });
   };
 
+  const handleContinueJourney = () => {
+    form.handleSubmit(handleSubmit)();
+  };
+
   return (
     <div className={`space-y-6 ${className}`}>
       <div className="text-center">
@@ -137,13 +140,13 @@ export const ConsultationForm = memo<ConsultationFormProps>(({
                     {contactMethods.map((method) => {
                       const IconComponent = method.icon;
                       return (
-                        <div 
+                        <div
                           key={method.value}
                           className="flex items-center space-x-3 border rounded-lg p-4 hover:bg-orange-50/50 transition-colors"
                         >
                           <RadioGroupItem value={method.value} id={method.value} />
-                          <label 
-                            htmlFor={method.value} 
+                          <label
+                            htmlFor={method.value}
                             className="flex items-center space-x-3 cursor-pointer flex-1"
                           >
                             <div className={`w-10 h-10 ${method.bgColor} rounded-full flex items-center justify-center`}>
@@ -194,7 +197,7 @@ export const ConsultationForm = memo<ConsultationFormProps>(({
                         </div>
                       </label>
                     </div>
-                    
+
                     <div className="flex items-center space-x-3 border rounded-lg p-4 hover:bg-orange-50/50 transition-colors">
                       <RadioGroupItem value="priority" id="priority" />
                       <label htmlFor="priority" className="cursor-pointer flex-1">
@@ -218,22 +221,25 @@ export const ConsultationForm = memo<ConsultationFormProps>(({
           />
 
           {/* Submit Button */}
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white font-semibold py-3 text-lg"
-          >
-            {isSubmitting ? (
-              <>
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                Seeking Divine Guidance...
-              </>
-            ) : (
-              <>
-                🙏 Request Divine Guidance
-              </>
-            )}
-          </Button>
+          <div className="pt-4">
+            <Button
+              type="button"
+              onClick={handleContinueJourney}
+              disabled={isSubmitting}
+              className="w-full bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white py-3 text-lg font-semibold disabled:opacity-50"
+            >
+              {isSubmitting ? (
+                <div className="flex items-center justify-center space-x-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span>Sending Sacred Message...</span>
+                </div>
+              ) : (
+                <>
+                  🪷 Continue Sacred Journey
+                </>
+              )}
+            </Button>
+          </div>
         </form>
       </Form>
     </div>
