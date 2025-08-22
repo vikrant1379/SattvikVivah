@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation as setLocation } from 'wouter';
+import { useLocation } from 'wouter';
 import { ChatAction } from '../types/chatbot.types';
 import { Button } from '@/components/ui/button';
 import { ExternalLink, User, Users, Phone, MessageSquare } from 'lucide-react';
@@ -9,39 +9,33 @@ interface ChatActionsProps {
 }
 
 export const ChatActions: React.FC<ChatActionsProps> = ({ actions }) => {
-  const setLocation = setLocation();
+  const [, setLocation] = useLocation();
 
   const handleAction = (action: ChatAction) => {
     switch (action.type) {
       case 'login':
-        // Open login modal or navigate to login
         setLocation('/login');
         break;
 
       case 'register':
-        // Open registration modal or navigate to registration
         setLocation('/register');
         break;
 
       case 'view-profile':
-        // Navigate to profile management
         setLocation('/profile');
         break;
 
       case 'expert-consultation':
-        // Open expert consultation modal
         const modal = document.querySelector('[data-expert-modal]') as HTMLElement;
         if (modal) {
           modal.click();
         } else {
-          // Fallback: scroll to expert section
           const expertSection = document.querySelector('[data-expert-section]');
           expertSection?.scrollIntoView({ behavior: 'smooth' });
         }
         break;
 
       case 'whatsapp':
-        // Open WhatsApp with predefined message
         const phoneNumber = action.payload?.phone || '+919876543210';
         const message = action.payload?.message || 'Hi, I need help with my Sattvic Matrimony profile';
         window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
