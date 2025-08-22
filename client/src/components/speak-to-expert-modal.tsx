@@ -67,6 +67,13 @@ const SpeakToExpertModal: React.FC<SpeakToExpertModalProps> = memo(
       }
     };
 
+    // Update step when authentication status changes
+    useEffect(() => {
+      if (isOpen && isAuthenticated && currentStep === "login-prompt") {
+        setCurrentStep("tier-selection");
+      }
+    }, [isAuthenticated, isOpen, currentStep]);
+
     const handleWhatsAppClick = () => {
       const message =
         isAuthenticated && user?.name
@@ -234,10 +241,12 @@ const SpeakToExpertModal: React.FC<SpeakToExpertModalProps> = memo(
                   <Button
                     className="w-full bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white font-semibold py-3 text-lg transition-all duration-300 hover:shadow-lg active:scale-95 font-serif"
                     onClick={() => {
-                      try {
+                      if (isAuthenticated) {
                         setCurrentStep("tier-selection");
-                      } catch (error) {
-                        console.error("Step navigation error:", error);
+                      } else {
+                        // Close modal and trigger login
+                        onClose();
+                        window.dispatchEvent(new CustomEvent('trigger-login'));
                       }
                     }}
                   >
