@@ -85,19 +85,28 @@ const Header = memo(() => {
 
           {/* User Profile Section */}
           <div className="flex items-center space-x-4">
-            {isAuthenticated() && user ? ( // Changed to function call
+            {isAuthenticated() && user ? (
               <div className="flex items-center space-x-3">
-                <UserProfileMenu />
+                <UserProfileMenu user={{
+                  name: user.name,
+                  id: user.id,
+                  membershipType: 'Basic'
+                }} />
               </div>
             ) : (
               <div className="flex items-center space-x-3">
                 <Button
                   variant="ghost"
                   onClick={handleProfileClick}
-                  className="flex items-center space-x-2 px-4 py-2 rounded-lg border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-colors"
+                  className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-orange-50 transition-colors"
                 >
-                  <User className="w-4 h-4 text-gray-600" />
-                  <span className="text-sm font-medium text-gray-700">Login</span>
+                  <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                    <User className="w-4 h-4 text-gray-500" />
+                  </div>
+                  <div className="flex flex-col items-start">
+                    <span className="text-sm font-medium text-gray-900">Sign In</span>
+                    <span className="text-xs text-gray-500">Access your profile</span>
+                  </div>
                 </Button>
 
                 <Button

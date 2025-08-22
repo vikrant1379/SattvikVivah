@@ -35,12 +35,9 @@ interface UserProfileMenuProps {
 }
 
 export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ 
-  user = { 
-    name: 'Demo User', 
-    id: 'SVC40A72', 
-    membershipType: 'Sadhaka' 
-  } 
+  user 
 }) => {
+  if (!user) return null;
   const [, setLocation] = useLocation();
   const { logout } = useAuth();
 
