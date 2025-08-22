@@ -13,7 +13,7 @@ localPort = 5000
 externalPort = 80
 
 [workflows]
-runButton = "Run Development Server"
+runButton = "Direct Server Start"
 
 [[workflows.workflow]]
 name = "Code Quality Check"
@@ -49,3 +49,12 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "npm run dev"
+
+[[workflows.workflow]]
+name = "Direct Server Start"
+author = 46642098
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "NODE_ENV=development tsx server/index.ts"
