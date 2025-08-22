@@ -1,4 +1,19 @@
 
+export const INITIAL_MESSAGES = [
+  {
+    id: 'welcome_msg',
+    content: "🙏 Namaste! I'm Dharma, your spiritual guide at Sattvic Matrimony. How may I help you on your sacred journey to find your dharmic life partner? ✨",
+    sender: 'bot' as const,
+    timestamp: new Date(),
+    quickReplies: [
+      "Help me create my profile 🌸",
+      "How do I find compatible matches? 💝",
+      "I need expert guidance 🙏",
+      "Tell me about your features ✨"
+    ]
+  }
+];
+
 export const CHATBOT_CONFIG = {
   POSITION: {
     bottom: '20px',
