@@ -24,6 +24,7 @@ import {
   Edit,
   ChevronDown
 } from 'lucide-react';
+import { useAuth } from '@/hooks/use-auth';
 
 interface UserProfileMenuProps {
   user?: {
@@ -41,9 +42,19 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({
   } 
 }) => {
   const [, setLocation] = useLocation();
+  const { logout } = useAuth();
 
   const handleNavigation = (path: string) => {
     setLocation(path);
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await logout();
+      setLocation('/'); // Redirect to home page after logout
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
   };
 
   const getMembershipBadgeColor = (type: string) => {
@@ -202,7 +213,10 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem className="flex items-center space-x-3 py-3 cursor-pointer text-red-600 hover:text-red-700">
+        <DropdownMenuItem 
+          onClick={handleSignOut}
+          className="flex items-center space-x-3 py-3 cursor-pointer text-red-600 hover:text-red-700"
+        >
           <LogOut className="w-4 h-4" />
           <span>Sign Out</span>
         </DropdownMenuItem>
