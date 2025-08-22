@@ -145,18 +145,22 @@ export class AuthService {
   }
 
   static async getCurrentUser(): Promise<AuthUser | null> {
-    if (!this.isAuthenticated()) return null;
-    
     const userStr = localStorage.getItem(this.USER_KEY) || sessionStorage.getItem(this.USER_KEY);
-    if (!userStr) return null;
+    if (!userStr) {
+      console.log('getCurrentUser - no user data found');
+      return null;
+    }
 
     try {
       const user = JSON.parse(userStr);
-      return {
+      const currentUser = {
         ...user,
         name: `${user.firstName} ${user.lastName}`.trim()
       };
-    } catch {
+      console.log('getCurrentUser - found user:', currentUser);
+      return currentUser;
+    } catch (error) {
+      console.error('getCurrentUser - parse error:', error);
       return null;
     }
   }
@@ -171,7 +175,9 @@ export class AuthService {
   static isAuthenticated(): boolean {
     const token = localStorage.getItem(this.TOKEN_KEY) || sessionStorage.getItem(this.TOKEN_KEY);
     const user = localStorage.getItem(this.USER_KEY) || sessionStorage.getItem(this.USER_KEY);
-    return !!(token && user);
+    const isAuth = !!(token && user);
+    console.log('AuthService.isAuthenticated - token:', !!token, 'user:', !!user, 'result:', isAuth);
+    return isAuth;
   }
 
   static getToken(): string | null {

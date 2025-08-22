@@ -149,7 +149,10 @@ export const useAuth = () => {
   }, []);
 
   const isAuthenticated = (): boolean => {
-    return !!user;
+    const hasUser = !!user;
+    const hasToken = AuthService.isAuthenticated();
+    console.log('Auth check - hasUser:', hasUser, 'hasToken:', hasToken, 'user:', user);
+    return hasUser && hasToken;
   };
 
   const clearError = useCallback(() => {

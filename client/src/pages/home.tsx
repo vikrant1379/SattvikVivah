@@ -35,9 +35,12 @@ const Home = memo(() => {
   const { isAuthenticated, user } = useAuth();
 
   const handleFindMatches = () => {
+    console.log('handleFindMatches called, isAuthenticated:', isAuthenticated());
     if (isAuthenticated()) {
+      // Navigate to profiles page
       setLocation('/profiles');
     } else {
+      // Show login modal
       setIsLoginModalOpen(true);
     }
   };

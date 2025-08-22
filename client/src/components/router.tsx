@@ -14,12 +14,23 @@ const ProfileDetailModal = lazy(() => import("@/components/profile-detail-modal"
 
 // A wrapper component to protect routes that require authentication
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated } = useAuth(); // Use the useAuth hook to check authentication status
+  const { isAuthenticated, isLoading, user } = useAuth(); // Use the useAuth hook to check authentication status
   const [, setLocation] = useLocation();
+
+  console.log('ProtectedRoute - isAuthenticated:', isAuthenticated(), 'isLoading:', isLoading, 'user:', user);
+
+  // Show loading while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   // If the user is not authenticated, redirect them to the home page
   if (!isAuthenticated()) {
-    // You might want to redirect to a login page instead, depending on your app's flow
+    console.log('ProtectedRoute - redirecting to home, not authenticated');
     return <Home />;
   }
 
