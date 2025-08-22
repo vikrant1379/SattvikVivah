@@ -7,9 +7,24 @@ import ProfileBrowser from "@/components/profile-browser";
 import { AccountPage } from "@/pages/account";
 import { ProfileEditPage } from "@/pages/profile-edit";
 import { PartnerPreferencesPage } from "@/features/partner-preferences";
+import { useAuth } from "@/hooks/use-auth"; // Import useAuth hook
 
 // Lazy load heavy components
 const ProfileDetailModal = lazy(() => import("@/components/profile-detail-modal"));
+
+// A wrapper component to protect routes that require authentication
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated } = useAuth(); // Use the useAuth hook to check authentication status
+  const location = useLocation();
+
+  // If the user is not authenticated, redirect them to the home page
+  if (!isAuthenticated) {
+    // You might want to redirect to a login page instead, depending on your app's flow
+    return <Home />;
+  }
+
+  return children;
+};
 
 const AppRouter = memo(() => {
   const [location] = useLocation();
@@ -47,9 +62,11 @@ const AppRouter = memo(() => {
           </Route>
 
           <Route path="/profiles" exact>
-            <div className="min-h-screen flex flex-col">
-              <ProfileBrowser />
-            </div>
+            <ProtectedRoute> {/* Wrap the ProfileBrowser with ProtectedRoute */}
+              <div className="min-h-screen flex flex-col">
+                <ProfileBrowser />
+              </div>
+            </ProtectedRoute>
           </Route>
 
           <Route path="/account" component={AccountPage} />
@@ -57,7 +74,13 @@ const AppRouter = memo(() => {
           <Route path="/profile/preferences" component={PartnerPreferencesPage} />
 
           <Route path="/profile/:id">
-            {(params) => <ProfileDetailPage profileId={params.id} />}
+            {(params) => (
+              <ProtectedRoute>
+                <div className="min-h-screen flex flex-col">
+                  <ProfileDetailPage profileId={params.id} />
+                </div>
+              </ProtectedRoute>
+            )}
           </Route>
 
           <Route component={NotFound} />
