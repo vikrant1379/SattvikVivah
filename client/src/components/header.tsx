@@ -18,17 +18,13 @@ const Header = memo(() => {
   const { isAuthenticated, user, logout } = useAuth();
 
   const handleProfileClick = () => {
-    if (!isAuthenticated()) { // Changed to function call
+    if (!isAuthenticated()) {
       setIsLoginOpen(true);
     }
   };
 
   const handleSignupClick = () => {
     setIsSignupOpen(true);
-  };
-
-  const handleLogout = async () => {
-    await logout();
   };
 
   // Mock membership data - in real app this would come from user profile
