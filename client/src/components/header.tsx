@@ -1,8 +1,9 @@
 import { memo, useState } from "react";
 import { Link, useLocation } from "wouter";
-import { User, Clover, ChevronDown, Settings, Heart, Star, Phone, HelpCircle, Shield, LogOut, Edit, Users, Gift } from "lucide-react";
+import { User, Clover, ChevronDown, Settings, Heart, Star, Phone, HelpCircle, Shield, LogOut, Edit, Users, Gift, Smartphone, Menu, Bell } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import LoginOptions from "./login-options";
@@ -40,8 +41,34 @@ const Header = memo(() => {
   const [, setLocation] = useLocation();
 
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-temple-gold to-transparent opacity-60"></div>
+    <>
+      {/* Top Bar - Get the App */}
+      <div className="bg-gray-100 border-b border-gray-200">
+        <div className="container mx-auto px-4 py-2">
+          <div className="flex items-center justify-end space-x-6">
+            <div className="flex items-center space-x-4">
+              <span className="text-sm text-gray-600">Get the App</span>
+              <div className="flex items-center space-x-2">
+                <div className="w-5 h-5 bg-black rounded-sm flex items-center justify-center">
+                  <span className="text-white text-xs">🍎</span>
+                </div>
+                <div className="w-5 h-5 bg-green-500 rounded-sm flex items-center justify-center">
+                  <span className="text-white text-xs">🤖</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex items-center space-x-4">
+              <User className="w-5 h-5 text-gray-500" />
+              <Bell className="w-5 h-5 text-gray-500" />
+              <Menu className="w-5 h-5 text-gray-500" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-temple-gold to-transparent opacity-60"></div>
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Logo Section */}
@@ -86,49 +113,195 @@ const Header = memo(() => {
           {/* User Profile Section */}
           <div className="flex items-center space-x-4">
             {isAuthenticated() && user ? (
-              <div className="flex items-center space-x-3">
-                <UserProfileMenu user={{
-                  name: user.name,
-                  id: user.id,
-                  membershipType: 'Basic'
-                }} />
-              </div>
-            ) : (
-              <div className="flex items-center">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button 
-                      variant="ghost" 
-                      className="flex items-center space-x-2 h-auto p-2 hover:bg-orange-50 rounded-lg"
-                    >
-                      <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-                        <User className="w-4 h-4 text-gray-500" />
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    className="flex items-center space-x-2 h-auto p-2 hover:bg-orange-50 rounded-lg"
+                  >
+                    <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
+                      <User className="w-4 h-4 text-orange-600" />
+                    </div>
+                    <div className="flex flex-col items-start">
+                      <span className="text-sm font-medium text-gray-900">{user.name}</span>
+                      <Badge className="text-xs px-2 py-0 bg-purple-600 text-white">Basic</Badge>
+                    </div>
+                    <ChevronDown className="w-4 h-4 text-gray-500" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-80 p-0">
+                  <div className="h-full bg-white">
+                    {/* User Header */}
+                    <div className="p-6 border-b">
+                      <div className="flex items-center space-x-4">
+                        <div className="relative w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                          <User className="w-6 h-6 text-orange-600" />
+                          {/* Completion ring */}
+                          <svg className="absolute inset-0 w-12 h-12 transform -rotate-90" viewBox="0 0 36 36">
+                            <path
+                              d="M18 2.0845
+                                a 15.9155 15.9155 0 0 1 0 31.831
+                                a 15.9155 15.9155 0 0 1 0 -31.831"
+                              fill="none"
+                              stroke="#e5e7eb"
+                              strokeWidth="2"
+                            />
+                            <path
+                              d="M18 2.0845
+                                a 15.9155 15.9155 0 0 1 0 31.831
+                                a 15.9155 15.9155 0 0 1 0 -31.831"
+                              fill="none"
+                              stroke="#10b981"
+                              strokeWidth="2"
+                              strokeDasharray="85, 100"
+                            />
+                          </svg>
+                        </div>
+                        <div>
+                          <div className="font-semibold text-gray-900">{user.name}</div>
+                          <div className="text-sm text-gray-500">ID - {user.id}</div>
+                          <Badge className="text-xs px-2 py-1 mt-1 bg-purple-600 text-white">Basic</Badge>
+                        </div>
                       </div>
-                      <ChevronDown className="w-4 h-4 text-gray-500" />
-                    </Button>
-                  </DropdownMenuTrigger>
+                    </div>
 
-                  <DropdownMenuContent className="w-48" align="end">
-                    <DropdownMenuItem 
-                      onClick={handleProfileClick}
-                      className="flex items-center space-x-3 py-3 cursor-pointer"
-                    >
-                      <User className="w-4 h-4 text-gray-600" />
-                      <span>Sign In</span>
-                    </DropdownMenuItem>
+                    {/* Upgrade Membership Banner */}
+                    <div className="p-4">
+                      <div className="bg-gradient-to-r from-pink-500 to-purple-600 rounded-lg p-4 text-white text-center">
+                        <Button 
+                          variant="ghost" 
+                          className="w-full text-white hover:bg-white/20 flex items-center justify-center space-x-2"
+                          onClick={() => handleNavigation('/membership')}
+                        >
+                          <Gift className="w-4 h-4" />
+                          <span>Upgrade Membership</span>
+                        </Button>
+                        <p className="text-xs mt-2 opacity-90">Flat 54% OFF till 13 Aug</p>
+                      </div>
+                    </div>
 
-                    <DropdownMenuSeparator />
+                    {/* Menu Items */}
+                    <div className="px-4 space-y-1">
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start px-4 py-3 text-gray-700 hover:bg-gray-50"
+                        onClick={() => handleNavigation('/profile/edit')}
+                      >
+                        <Edit className="w-4 h-4 mr-3" />
+                        Edit Profile
+                      </Button>
 
-                    <DropdownMenuItem 
-                      onClick={handleSignupClick}
-                      className="flex items-center space-x-3 py-3 cursor-pointer text-saffron hover:text-saffron/80"
-                    >
-                      <User className="w-4 h-4" />
-                      <span>Sign Up Free</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start px-4 py-3 text-gray-700 hover:bg-gray-50"
+                        onClick={() => handleNavigation('/profile/preferences')}
+                      >
+                        <Heart className="w-4 h-4 mr-3" />
+                        Partner Preferences
+                      </Button>
+
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start px-4 py-3 text-gray-700 hover:bg-gray-50"
+                        onClick={() => handleNavigation('/astrology')}
+                      >
+                        <Star className="w-4 h-4 mr-3" />
+                        Astrology Services
+                      </Button>
+
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start px-4 py-3 text-gray-700 hover:bg-gray-50"
+                        onClick={() => handleNavigation('/phonebook')}
+                      >
+                        <Phone className="w-4 h-4 mr-3" />
+                        Phonebook
+                      </Button>
+
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start px-4 py-3 text-gray-700 hover:bg-gray-50"
+                        onClick={() => handleNavigation('/account/settings')}
+                      >
+                        <Settings className="w-4 h-4 mr-3" />
+                        Account & Settings
+                      </Button>
+
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start px-4 py-3 text-gray-700 hover:bg-gray-50"
+                        onClick={() => handleNavigation('/safety')}
+                      >
+                        <Shield className="w-4 h-4 mr-3" />
+                        Safety Centre
+                      </Button>
+
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start px-4 py-3 text-gray-700 hover:bg-gray-50"
+                        onClick={() => handleNavigation('/help')}
+                      >
+                        <HelpCircle className="w-4 h-4 mr-3" />
+                        Help & Support
+                      </Button>
+
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start px-4 py-3 text-gray-700 hover:bg-gray-50"
+                        onClick={() => handleNavigation('/success-stories')}
+                      >
+                        <Users className="w-4 h-4 mr-3" />
+                        Success Stories
+                      </Button>
+
+                      <div className="border-t pt-2 mt-4">
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-start px-4 py-3 text-red-600 hover:bg-red-50"
+                          onClick={handleLogout}
+                        >
+                          <LogOut className="w-4 h-4 mr-3" />
+                          Sign Out
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </SheetContent>
+              </Sheet>
+            ) : (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    className="flex items-center space-x-2 h-auto p-2 hover:bg-orange-50 rounded-lg"
+                  >
+                    <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                      <User className="w-4 h-4 text-gray-500" />
+                    </div>
+                    <ChevronDown className="w-4 h-4 text-gray-500" />
+                  </Button>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent className="w-48" align="end">
+                  <DropdownMenuItem 
+                    onClick={handleProfileClick}
+                    className="flex items-center space-x-3 py-3 cursor-pointer"
+                  >
+                    <User className="w-4 h-4 text-gray-600" />
+                    <span>Sign In</span>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuSeparator />
+
+                  <DropdownMenuItem 
+                    onClick={handleSignupClick}
+                    className="flex items-center space-x-3 py-3 cursor-pointer text-saffron hover:text-saffron/80"
+                  >
+                    <User className="w-4 h-4" />
+                    <span>Sign Up Free</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
           </div>
         </div>
@@ -153,6 +326,7 @@ const Header = memo(() => {
         </DialogContent>
       </Dialog>
     </header>
+    </>
   );
 });
 
