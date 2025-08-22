@@ -57,12 +57,16 @@ const HeroSection = memo(() => {
       const response = await apiRequest("POST", "/api/users", data);
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast({
         title: "Registration Successful!",
         description: "Welcome to SattvikVivah. Your spiritual journey begins now.",
       });
       form.reset();
+      // Navigate to profile completion or dashboard
+      setTimeout(() => {
+        window.location.href = '/profile-edit';
+      }, 2000);
     },
     onError: (error: any) => {
       toast({
@@ -295,10 +299,17 @@ const HeroSection = memo(() => {
 
                     <Button
                       type="submit"
-                      className="w-full bg-saffron text-primary-foreground hover:bg-saffron/90 shadow-lg hover-elevate font-medium"
+                      className="w-full bg-saffron text-primary-foreground hover:bg-saffron/90 shadow-lg hover-elevate font-medium transition-all duration-200 hover:shadow-xl active:scale-95"
                       disabled={isSubmitting || (passwordStrength && passwordStrength.score < 4)}
                     >
-                      {isSubmitting ? "Creating Account..." : "Start Your Spiritual Journey"}
+                      {isSubmitting ? (
+                        <div className="flex items-center justify-center space-x-2">
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          <span>Creating Sacred Account...</span>
+                        </div>
+                      ) : (
+                        "🪷 Start Your Spiritual Journey"
+                      )}
                     </Button>
 
                     {passwordStrength && passwordStrength.score < 4 && (

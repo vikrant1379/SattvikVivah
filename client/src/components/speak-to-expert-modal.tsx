@@ -189,7 +189,7 @@ const SpeakToExpertModal: React.FC<SpeakToExpertModalProps> = memo(({ isOpen, on
                 </div>
 
                 <Button 
-                  className="w-full bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white font-semibold py-3"
+                  className="w-full bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white font-semibold py-3 transition-all duration-200 hover:shadow-lg active:scale-95"
                   onClick={() => {
                     try {
                       setCurrentStep('tier-selection');
@@ -357,18 +357,23 @@ const SpeakToExpertModal: React.FC<SpeakToExpertModalProps> = memo(({ isOpen, on
               <Button
                 onClick={() => {
                   try {
-                    if (currentStep === 'overview') setCurrentStep('tier-selection');
-                    else if (currentStep === 'tier-selection') setCurrentStep('category-selection');
-                    else if (currentStep === 'category-selection') setCurrentStep('assessment');
-                    else if (currentStep === 'assessment') setCurrentStep('consultation-form');
+                    if (currentStep === 'overview') {
+                      setCurrentStep('tier-selection');
+                    } else if (currentStep === 'tier-selection') {
+                      setCurrentStep('category-selection');
+                    } else if (currentStep === 'category-selection') {
+                      setCurrentStep('assessment');
+                    } else if (currentStep === 'assessment') {
+                      setCurrentStep('consultation-form');
+                    }
                   } catch (error) {
                     console.error('Navigation error:', error);
                   }
                 }}
                 disabled={!canNavigateNext()}
-                className="flex-1 bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white font-semibold py-3"
+                className="flex-1 bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white font-semibold py-3 transition-all duration-200 hover:shadow-lg active:scale-95"
               >
-                Continue Sacred Journey
+                🙏 Continue Sacred Journey
               </Button>
 
               <Button

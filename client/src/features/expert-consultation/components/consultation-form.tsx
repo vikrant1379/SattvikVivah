@@ -229,9 +229,10 @@ export const ConsultationForm = memo<ConsultationFormProps>(({
                   <span>Sending Sacred Message...</span>
                 </div>
               ) : (
-                <>
-                  🪷 Continue Sacred Journey
-                </>
+                <div className="flex items-center justify-center space-x-2">
+                  <span>🪷</span>
+                  <span>Submit Sacred Query</span>
+                </div>
               )}
             </Button>
           </div>

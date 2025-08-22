@@ -316,9 +316,9 @@ const Home = memo(() => {
                     <Button 
                       onClick={handleFindMatches}
                       size="lg"
-                      className="bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white px-8 py-4 text-lg font-semibold"
+                      className="bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white px-8 py-4 text-lg font-semibold transition-all duration-200 hover:shadow-lg active:scale-95"
                     >
-                      Begin Your Sacred Journey
+                      🪷 Begin Your Sacred Journey
                     </Button>
                   </div>
                 </CardContent>
