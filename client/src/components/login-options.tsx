@@ -126,11 +126,19 @@ function LoginOptions() {
 
     if (success) {
       toast({
-        title: "Login Successful",
-        description: "Welcome back to SattvikVivah!",
-        duration: 3000
+        title: "Login Successful!",
+        description: "Welcome back to your spiritual journey.",
       });
-      setLocation('/profiles');
+
+      // Small delay to ensure auth state updates and close modal
+      setTimeout(() => {
+        // Close any open modals first
+        if (typeof window !== 'undefined') {
+          const event = new CustomEvent('close-auth-modal');
+          window.dispatchEvent(event);
+        }
+        setLocation('/profiles');
+      }, 200);
     } else {
       toast({
         title: "Login Failed",
@@ -150,11 +158,19 @@ function LoginOptions() {
 
     if (success) {
       toast({
-        title: "Login Successful",
-        description: "Welcome back to SattvikVivah!",
-        duration: 3000
+        title: "Login Successful!",
+        description: "Welcome back to your spiritual journey.",
       });
-      setLocation('/profiles');
+
+      // Small delay to ensure auth state updates and close modal
+      setTimeout(() => {
+        // Close any open modals first
+        if (typeof window !== 'undefined') {
+          const event = new CustomEvent('close-auth-modal');
+          window.dispatchEvent(event);
+        }
+        setLocation('/profiles');
+      }, 200);
     } else {
       toast({
         title: "Login Failed",
@@ -194,11 +210,18 @@ function LoginOptions() {
       otpRequestForm.reset();
       otpVerifyForm.reset();
       toast({
-        title: "Login Successful",
-        description: "Welcome back to SattvikVivah!",
-        duration: 3000
+        title: "Login Successful!",
+        description: "Welcome back to your spiritual journey.",
       });
-      setLocation('/profiles');
+      // Small delay to ensure auth state updates and close modal
+      setTimeout(() => {
+        // Close any open modals first
+        if (typeof window !== 'undefined') {
+          const event = new CustomEvent('close-auth-modal');
+          window.dispatchEvent(event);
+        }
+        setLocation('/profiles');
+      }, 200);
     } else {
       toast({
         title: "Login Failed",

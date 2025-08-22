@@ -28,9 +28,13 @@ export const useAuth = () => {
   useEffect(() => {
     const loadUser = async () => {
       try {
-        if (AuthService.isAuthenticated()) {
-          const currentUser = await AuthService.getCurrentUser();
+        const currentUser = await AuthService.getCurrentUser();
+        if (currentUser && AuthService.isAuthenticated()) {
+          console.log('useAuth - Loading existing user:', currentUser);
           setUser(currentUser);
+        } else {
+          console.log('useAuth - No valid user found, clearing auth');
+          await AuthService.logout();
         }
       } catch (err) {
         console.error('Failed to load user:', err);
@@ -149,6 +153,13 @@ export const useAuth = () => {
   }, []);
 
   const isAuthenticated = (): boolean => {
+    // If still loading, check service directly
+    if (isLoading) {
+      const serviceAuth = AuthService.isAuthenticated();
+      console.log('Auth check (loading) - serviceAuth:', serviceAuth);
+      return serviceAuth;
+    }
+    
     const hasUser = !!user;
     const hasToken = AuthService.isAuthenticated();
     console.log('Auth check - hasUser:', hasUser, 'hasToken:', hasToken, 'user:', user);

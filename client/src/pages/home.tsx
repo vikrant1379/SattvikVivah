@@ -13,6 +13,7 @@ import LoginOptions from "@/components/login-options";
 import SignupOptions from "@/components/signup-options";
 import SpeakToExpertModal from "@/components/speak-to-expert-modal";
 import { useAuth } from "@/hooks/use-auth";
+import { AuthService } from "@/services/auth.service";
 import { Heart, Search, Users, Star, Shield, CheckCircle, Award, Lock, Crown, Phone } from "lucide-react";
 
 const Home = memo(() => {
@@ -32,15 +33,38 @@ const Home = memo(() => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
   const [isSpeakToExpertOpen, setIsSpeakToExpertOpen] = useState(false);
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, isLoading } = useAuth();
+
+  // Listen for auth modal close events
+  useEffect(() => {
+    const handleCloseAuthModal = () => {
+      setIsLoginModalOpen(false);
+      setIsSignupModalOpen(false);
+    };
+
+    window.addEventListener('close-auth-modal', handleCloseAuthModal);
+    return () => window.removeEventListener('close-auth-modal', handleCloseAuthModal);
+  }, []);
 
   const handleFindMatches = () => {
-    console.log('handleFindMatches called, isAuthenticated:', isAuthenticated());
-    if (isAuthenticated()) {
-      // Navigate to profiles page
+    const authStatus = isAuthenticated();
+    const serviceAuth = AuthService.isAuthenticated();
+    
+    console.log('handleFindMatches called', {
+      hookAuth: authStatus,
+      serviceAuth: serviceAuth,
+      user: user,
+      isLoading: isLoading
+    });
+    
+    // Use service authentication as backup if hook is still loading
+    const isUserAuthenticated = authStatus || (isLoading && serviceAuth);
+    
+    if (isUserAuthenticated) {
+      console.log('User is authenticated, navigating to profiles');
       setLocation('/profiles');
     } else {
-      // Show login modal
+      console.log('User not authenticated, showing login modal');
       setIsLoginModalOpen(true);
     }
   };
