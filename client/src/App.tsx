@@ -7,6 +7,7 @@ import { useEffect, memo } from "react";
 import { preloadResource } from "@/utils";
 import { StaticDataService } from "@/services";
 import AppRouter from "@/components/router";
+import { ChatbotProvider, SattvicChatbot } from "@/features/chatbot";
 
 const App = memo(() => {
   // Preload critical resources and data
@@ -37,8 +38,11 @@ const App = memo(() => {
     <QueryClientProvider client={queryClient}>
       <SpiritualProvider>
         <TooltipProvider>
-          <AppRouter />
-          <Toaster />
+          <ChatbotProvider>
+            <AppRouter />
+            <SattvicChatbot />
+            <Toaster />
+          </ChatbotProvider>
         </TooltipProvider>
       </SpiritualProvider>
     </QueryClientProvider>

@@ -4,6 +4,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import Chatbot Styles */
+@import "./features/chatbot/styles/chatbot.css";
+
 /* Prevent browser autocomplete styling on all form fields */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
