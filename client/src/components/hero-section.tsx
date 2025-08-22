@@ -2,128 +2,23 @@ import { memo, useState, useCallback } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Combobox } from "@/components/ui/combobox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Eye, EyeOff, RefreshCw, Check, X } from "lucide-react";
-
-// Enhanced email validation
-const emailSchema = z.string()
-  .min(1, "Email is required")
-  .email("Please enter a valid email address")
-  .refine((email) => {
-    // Check for proper email format with domain validation
-    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-    return emailRegex.test(email);
-  }, "Please enter a valid email format")
-  .refine((email) => {
-    const parts = email.split('@');
-    if (parts.length !== 2) return false;
-    const [localPart, domain] = parts;
-
-    // Check local part is not empty and domain exists
-    if (!localPart || !domain) return false;
-
-    // Check domain has at least one dot and proper structure
-    const domainParts = domain.split('.');
-    return domainParts.length >= 2 && domainParts.every(part => part.length > 0);
-  }, "Please enter a valid email domain")
-  .refine((email) => {
-    // Additional check for common invalid domains
-    const domain = email.split('@')[1]?.toLowerCase();
-    const invalidDomains = ['test.com', 'example.com', 'temp.com', 'fake.com'];
-    return domain && !invalidDomains.includes(domain);
-  }, "Please enter a real email address");
-
-// Strong password validation
-const passwordSchema = z.string()
-  .min(8, "Password must be at least 8 characters")
-  .max(128, "Password must be less than 128 characters")
-  .refine((password) => /[a-z]/.test(password), "Password must contain at least one lowercase letter")
-  .refine((password) => /[A-Z]/.test(password), "Password must contain at least one uppercase letter")
-  .refine((password) => /\d/.test(password), "Password must contain at least one number")
-  .refine((password) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password), "Password must contain at least one special character");
-
-const registrationSchema = z.object({
-  profileFor: z.string().min(1, "Please select who you're creating this profile for"),
-  gender: z.string().min(1, "Please select gender"),
-  email: emailSchema,
-  password: passwordSchema,
-});
-
-type RegistrationForm = z.infer<typeof registrationSchema>;
-
-// Password strength checking
-interface PasswordStrength {
-  score: number;
-  feedback: string[];
-  hasLowercase: boolean;
-  hasUppercase: boolean;
-  hasNumber: boolean;
-  hasSpecial: boolean;
-  hasMinLength: boolean;
-}
-
-const checkPasswordStrength = (password: string): PasswordStrength => {
-  const hasLowercase = /[a-z]/.test(password);
-  const hasUppercase = /[A-Z]/.test(password);
-  const hasNumber = /\d/.test(password);
-  const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
-  const hasMinLength = password.length >= 8;
-
-  const checks = [hasLowercase, hasUppercase, hasNumber, hasSpecial, hasMinLength];
-  const score = checks.filter(Boolean).length;
-
-  const feedback: string[] = [];
-  if (!hasMinLength) feedback.push("At least 8 characters");
-  if (!hasLowercase) feedback.push("One lowercase letter");
-  if (!hasUppercase) feedback.push("One uppercase letter");
-  if (!hasNumber) feedback.push("One number");
-  if (!hasSpecial) feedback.push("One special character");
-
-  return {
-    score,
-    feedback,
-    hasLowercase,
-    hasUppercase,
-    hasNumber,
-    hasSpecial,
-    hasMinLength
-  };
-};
-
-// Auto-generate secure password
-const generateSecurePassword = (): string => {
-  const lowercase = 'abcdefghijklmnopqrstuvwxyz';
-  const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const numbers = '0123456789';
-  const symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?';
-
-  // Ensure at least one character from each category
-  let password = '';
-  password += lowercase[Math.floor(Math.random() * lowercase.length)];
-  password += uppercase[Math.floor(Math.random() * uppercase.length)];
-  password += numbers[Math.floor(Math.random() * numbers.length)];
-  password += symbols[Math.floor(Math.random() * symbols.length)];
-
-  // Fill remaining 8 characters randomly
-  const allChars = lowercase + uppercase + numbers + symbols;
-  for (let i = 4; i < 12; i++) {
-    password += allChars[Math.floor(Math.random() * allChars.length)];
-  }
-
-  // Shuffle the password
-  password = password.split('').sort(() => Math.random() - 0.5).join('');
-
-  return password;
-};
+import { 
+  registrationSchema, 
+  type RegistrationForm 
+} from "@/components/forms/registration-form/types";
+import { 
+  checkPasswordStrength, 
+  generateSecurePassword,
+  type PasswordStrength 
+} from "@/utils/auth";
 
 const HeroSection = memo(() => {
   const { toast } = useToast();
