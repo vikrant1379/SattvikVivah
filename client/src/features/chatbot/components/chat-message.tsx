@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ChatMessage as ChatMessageType } from '../types/chatbot.types';
 import { ChatActions } from './chat-actions';
@@ -10,7 +9,7 @@ interface ChatMessageProps {
 
 export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   const isBot = message.sender === 'bot';
-  
+
   return (
     <div className={`flex ${isBot ? 'justify-start' : 'justify-end'} animate-slideIn`}>
       <div className={`flex items-start space-x-2 max-w-[80%] ${!isBot && 'flex-row-reverse space-x-reverse'}`}>
@@ -20,7 +19,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
             <span className="text-sm">{BOT_PERSONALITY.emoji}</span>
           </div>
         )}
-        
+
         {/* Message Bubble */}
         <div
           className={`
@@ -42,7 +41,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
           >
             {message.content}
           </div>
-          
+
           {/* Actions */}
           {message.metadata?.actions && message.metadata.actions.length > 0 && (
             <div className="mt-3">
@@ -50,7 +49,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
             </div>
           )}
         </div>
-        
+
         {/* User Avatar */}
         {!isBot && (
           <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">

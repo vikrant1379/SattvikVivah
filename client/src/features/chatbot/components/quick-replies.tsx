@@ -1,10 +1,12 @@
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useChatbot } from '../contexts/chatbot-context';
 import { RESPONSE_TEMPLATES } from '../constants/chatbot.constants';
 
 export const QuickReplies: React.FC = () => {
   const { sendMessage, state } = useChatbot();
+  const navigate = useNavigate();
 
   // Get contextual quick replies based on current flow
   const getQuickReplies = () => {
@@ -25,6 +27,21 @@ export const QuickReplies: React.FC = () => {
   const handleQuickReply = async (reply: string) => {
     try {
       await sendMessage(reply);
+      
+      // Handle navigation based on reply content
+      if (reply.includes('create my profile') || reply.includes('Create my profile')) {
+        navigate('/profile');
+      } else if (reply.includes('expert guidance') || reply.includes('Expert consultation')) {
+        // Trigger expert consultation modal
+        const modal = document.querySelector('[data-expert-modal]') as HTMLElement;
+        if (modal) {
+          modal.click();
+        }
+      } else if (reply.includes('Help me find matches') || reply.includes('compatible matches')) {
+        navigate('/partner-preferences');
+      } else if (reply.includes('Photo selection tips') || reply.includes('Improve my bio')) {
+        navigate('/profile');
+      }
     } catch (error) {
       console.error('Failed to send quick reply:', error);
     }

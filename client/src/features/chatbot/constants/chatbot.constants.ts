@@ -4,10 +4,10 @@ export const CHATBOT_CONFIG = {
     bottom: '20px',
     right: '20px',
     floatSize: '60px',
-    chatWidth: '350px',
-    chatHeight: '500px',
+    chatWidth: '380px',
+    chatHeight: '600px',
     mobileWidth: '90vw',
-    mobileHeight: '70vh'
+    mobileHeight: '80vh'
   },
   ANIMATIONS: {
     breathingDuration: '3s',

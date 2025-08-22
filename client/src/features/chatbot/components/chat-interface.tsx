@@ -35,15 +35,15 @@ export const ChatInterface: React.FC = () => {
   const chatDimensions = isMobile 
     ? {
         width: CHATBOT_CONFIG.POSITION.mobileWidth,
-        height: CHATBOT_CONFIG.POSITION.mobileHeight,
+        height: '80vh', // Increased from 70vh
         bottom: '0',
         right: '0',
         left: '0',
         margin: 'auto'
       }
     : {
-        width: CHATBOT_CONFIG.POSITION.chatWidth,
-        height: CHATBOT_CONFIG.POSITION.chatHeight,
+        width: '380px', // Increased from 350px
+        height: '600px', // Increased from 500px
         bottom: '90px',
         right: CHATBOT_CONFIG.POSITION.right
       };
@@ -81,7 +81,7 @@ export const ChatInterface: React.FC = () => {
       <ChatHeader onClose={closeChatbot} />
 
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-orange-200">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-orange-200 min-h-0">
         {state.messages.length === 0 ? (
           <div className="flex items-center justify-center h-full">
             <div className="text-center text-gray-500 space-y-2">

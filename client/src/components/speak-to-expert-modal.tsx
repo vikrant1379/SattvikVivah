@@ -239,6 +239,7 @@ const SpeakToExpertModal: React.FC<SpeakToExpertModalProps> = memo(
                   </div>
 
                   <Button
+                    data-expert-modal
                     className="w-full bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white font-semibold py-3 text-lg transition-all duration-300 hover:shadow-lg active:scale-95 font-serif"
                     onClick={() => {
                       if (isAuthenticated) {
