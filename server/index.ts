@@ -103,5 +103,6 @@ app.use((req, res, next) => {
   } catch (error) {
     log(`❌ Failed to start server: ${error}`);
     process.exit(1);
+  }ss.exit(1);
   }
 })();
