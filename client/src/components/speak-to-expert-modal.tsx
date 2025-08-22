@@ -190,9 +190,9 @@ const SpeakToExpertModal: React.FC<SpeakToExpertModalProps> = memo(({ isOpen, on
 
                 <Button 
                   className="w-full bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white font-semibold py-3"
-                  onClick={onClose}
+                  onClick={() => setCurrentStep('tier-selection')}
                 >
-                  🙏 Login to Begin Sacred Journey
+                  🙏 Continue Sacred Journey
                 </Button>
               </CardContent>
             </Card>
