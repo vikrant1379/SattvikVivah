@@ -9,6 +9,10 @@ interface ChatbotContextType {
   selectQuickReply: (reply: string) => void;
   resetChat: () => void;
   setCurrentFlow: (flow: ChatFlow) => void;
+  toggleChatbot: () => void;
+  closeChatbot: () => void;
+  markAsRead: () => void;
+  triggerProactiveMessage: (trigger: string) => void;
 }
 
 const ChatbotContext = createContext<ChatbotContextType | undefined>(undefined);
@@ -16,6 +20,8 @@ const ChatbotContext = createContext<ChatbotContextType | undefined>(undefined);
 const initialState: ChatbotState = {
   messages: INITIAL_MESSAGES,
   isTyping: false,
+  isOpen: false,
+  unreadCount: 0,
   currentFlow: 'welcome',
   userContext: {},
   sessionId: `session_${Date.now()}`,
@@ -27,6 +33,7 @@ function chatbotReducer(state: ChatbotState, action: ChatbotAction): ChatbotStat
       return {
         ...state,
         messages: [...state.messages, action.payload],
+        unreadCount: state.isOpen ? state.unreadCount : state.unreadCount + 1,
       };
     case 'SET_TYPING':
       return {
@@ -42,6 +49,22 @@ function chatbotReducer(state: ChatbotState, action: ChatbotAction): ChatbotStat
       return {
         ...state,
         userContext: { ...state.userContext, ...action.payload },
+      };
+    case 'TOGGLE_CHATBOT':
+      return {
+        ...state,
+        isOpen: !state.isOpen,
+        unreadCount: !state.isOpen ? 0 : state.unreadCount,
+      };
+    case 'CLOSE_CHATBOT':
+      return {
+        ...state,
+        isOpen: false,
+      };
+    case 'MARK_AS_READ':
+      return {
+        ...state,
+        unreadCount: 0,
       };
     case 'RESET_CHAT':
       return {
@@ -123,6 +146,23 @@ export const ChatbotProvider: React.FC<{ children: ReactNode }> = ({ children })
     dispatch({ type: 'SET_CURRENT_FLOW', payload: flow });
   }, []);
 
+  const toggleChatbot = useCallback(() => {
+    dispatch({ type: 'TOGGLE_CHATBOT' });
+  }, []);
+
+  const closeChatbot = useCallback(() => {
+    dispatch({ type: 'CLOSE_CHATBOT' });
+  }, []);
+
+  const markAsRead = useCallback(() => {
+    dispatch({ type: 'MARK_AS_READ' });
+  }, []);
+
+  const triggerProactiveMessage = useCallback((trigger: string) => {
+    // Implementation for proactive messages
+    console.log('Proactive message triggered:', trigger);
+  }, []);
+
   // Initialize chatbot analytics - only run once
   useEffect(() => {
     const initializeAnalytics = async () => {
@@ -142,6 +182,10 @@ export const ChatbotProvider: React.FC<{ children: ReactNode }> = ({ children })
     selectQuickReply,
     resetChat,
     setCurrentFlow,
+    toggleChatbot,
+    closeChatbot,
+    markAsRead,
+    triggerProactiveMessage,
   };
 
   return (

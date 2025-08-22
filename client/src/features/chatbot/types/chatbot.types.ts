@@ -20,12 +20,23 @@ export interface ChatAction {
 
 export interface ChatbotState {
   isOpen: boolean;
-  isLoading: boolean;
+  isTyping: boolean;
   messages: ChatMessage[];
   unreadCount: number;
-  currentFlow: ConversationFlow;
-  userContext: UserContext;
+  currentFlow: string;
+  userContext: Record<string, any>;
+  sessionId: string;
 }
+
+export type ChatbotAction = 
+  | { type: 'ADD_MESSAGE'; payload: ChatMessage }
+  | { type: 'SET_TYPING'; payload: boolean }
+  | { type: 'SET_CURRENT_FLOW'; payload: string }
+  | { type: 'UPDATE_USER_CONTEXT'; payload: Record<string, any> }
+  | { type: 'TOGGLE_CHATBOT' }
+  | { type: 'CLOSE_CHATBOT' }
+  | { type: 'MARK_AS_READ' }
+  | { type: 'RESET_CHAT' };
 
 export interface UserContext {
   isAuthenticated: boolean;
