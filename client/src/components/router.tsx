@@ -9,6 +9,7 @@ import { ProfileEditPage } from "@/pages/profile-edit";
 import { PartnerPreferencesPage } from "@/features/partner-preferences";
 import { useAuth } from "@/hooks/use-auth"; // Import useAuth hook
 import { PaymentPage } from "@/pages/payment";
+import SpiritualDashboardPage from '@/pages/spiritual-dashboard';
 
 // Lazy load heavy components
 const ProfileDetailModal = lazy(() => import("@/components/profile-detail-modal"));
@@ -85,6 +86,7 @@ const AppRouter = memo(() => {
           <Route path="/profile/edit" component={ProfileEditPage} />
           <Route path="/profile/preferences" component={PartnerPreferencesPage} />
           <Route path="/payment" component={PaymentPage} />
+          <Route path="/spiritual-dashboard" component={SpiritualDashboardPage} />
 
           <Route path="/profile/:id">
             {(params) => (
