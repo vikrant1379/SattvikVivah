@@ -133,33 +133,33 @@ export const PaymentContainer: React.FC<PaymentContainerProps> = ({ selectedPlan
   }, [paymentState.step]);
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <Card className="w-full max-w-lg max-h-[90vh] overflow-y-auto bg-white">
+    <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <Card className="w-full max-w-md max-h-[90vh] overflow-y-auto bg-white shadow-2xl rounded-xl border-0">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+        <div className="flex items-center justify-between p-6 border-b border-gray-100 bg-white rounded-t-xl">
           <div className="flex items-center gap-3">
             {paymentState.step !== 'method' && paymentState.step !== 'success' && paymentState.step !== 'error' && (
-              <Button variant="ghost" size="sm" onClick={goBack} className="p-1">
+              <Button variant="ghost" size="sm" onClick={goBack} className="p-2 hover:bg-gray-100 rounded-full">
                 <ArrowLeft className="w-4 h-4" />
               </Button>
             )}
-            <h2 className="text-lg font-medium text-gray-900">{getStepTitle()}</h2>
+            <h2 className="text-xl font-semibold text-gray-900">{getStepTitle()}</h2>
           </div>
-          <Button variant="ghost" size="sm" onClick={onClose} className="p-1">
+          <Button variant="ghost" size="sm" onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full">
             <X className="w-4 h-4" />
           </Button>
         </div>
 
         {/* Content */}
-        <div className="p-6">
+        <div className="p-6 bg-white">
           {renderStep()}
         </div>
 
         {/* Security Footer */}
         {paymentState.step !== 'success' && paymentState.step !== 'error' && (
-          <div className="border-t border-gray-200 px-6 py-3 bg-gray-50">
+          <div className="border-t border-gray-100 px-6 py-4 bg-gray-50 rounded-b-xl">
             <div className="flex items-center justify-center gap-2 text-xs text-gray-600">
-              <Shield className="w-3 h-3" />
+              <Shield className="w-3 h-3 text-green-600" />
               <span>Secured by 256-bit SSL encryption</span>
             </div>
           </div>
