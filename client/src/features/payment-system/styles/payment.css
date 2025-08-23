@@ -1,0 +1,194 @@
+
+/* Payment System Styles */
+
+.payment-container {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Card Input Animations */
+.card-input {
+  transition: all 0.2s ease-in-out;
+}
+
+.card-input:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: #3b82f6;
+}
+
+.card-input.error {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Payment Method Cards */
+.payment-method-card {
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.payment-method-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.payment-method-card.selected {
+  border-color: #3b82f6;
+  background-color: #f0f9ff;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* Loading States */
+.payment-loading {
+  position: relative;
+}
+
+.payment-loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.payment-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #f3f4f6;
+  border-top: 2px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Success/Error States */
+.payment-success {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+.payment-error {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .payment-container {
+    padding: 16px;
+  }
+  
+  .payment-method-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .payment-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Bank Grid */
+.bank-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+/* UPI QR Code Container */
+.upi-qr-container {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  padding: 24px;
+  color: white;
+}
+
+/* Security Indicators */
+.security-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: #10b981;
+  color: white;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.security-badge.ssl {
+  background: #3b82f6;
+}
+
+.security-badge.pci {
+  background: #8b5cf6;
+}
+
+/* Toast Notifications */
+.payment-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 16px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  min-width: 300px;
+}
+
+.payment-toast.success {
+  background: #10b981;
+  color: white;
+}
+
+.payment-toast.error {
+  background: #ef4444;
+  color: white;
+}
+
+.payment-toast.info {
+  background: #3b82f6;
+  color: white;
+}
+
+/* Accessibility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .payment-method-card {
+    border: 2px solid #000;
+  }
+  
+  .payment-method-card.selected {
+    background: #000;
+    color: #fff;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .payment-method-card,
+  .card-input,
+  .payment-spinner {
+    transition: none;
+    animation: none;
+  }
+}
