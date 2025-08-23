@@ -60,6 +60,12 @@ const Header = memo(() => {
               Search Profiles
             </Link>
             <Link 
+              href="/spiritual-dashboard" 
+              className="text-gray-700 hover:text-saffron transition-colors font-medium text-sm"
+            >
+              Spiritual Dashboard
+            </Link>
+            <Link 
               href="/success-stories" 
               className="text-gray-700 hover:text-saffron transition-colors font-medium text-sm"
             >
