@@ -1,10 +1,18 @@
 import { memo } from "react";
+import { useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Check } from "lucide-react";
 
 const MembershipPlans = memo(() => {
+  const [, setLocation] = useLocation();
+
+  const handlePlanSelect = (planName: string) => {
+    // Navigate to payment page
+    setLocation('/payment');
+  };
+
   const plans = [
     {
       name: "Seeker",
@@ -117,6 +125,7 @@ const MembershipPlans = memo(() => {
                 
                 <Button 
                   variant={plan.buttonVariant}
+                  onClick={() => handlePlanSelect(plan.name)}
                   className={`w-full ${
                     plan.buttonVariant === 'default' 
                       ? 'bg-lotus-pink text-white hover:bg-lotus-pink/90'
